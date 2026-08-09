@@ -16,6 +16,10 @@ Phase 4: KMP/CMP foundation and product vertical slice.
 - Open-Meteo forecast/geocoding client, normalized weather domain, SQLDelight cache, and snapshot retention.
 - Cache-first weather state with explicit loading, content, refresh, stale, offline, and empty-error presentation.
 - Shared current-weather screen and interactive -24/+24-hour timeline.
+- First-run city search and contextual approximate-location flows on Android and iOS.
+- User-triggered place switching with a cancellable picker.
+- Deterministic comparison and best-time-outside engines with shared tests and documented thresholds.
+- Seven-day recent context kept secondary to the centred -24/+24-hour timeline.
 - Legacy tracked AAB removed from the open-source branch because it embeds the revoked/rotated credential candidate; it remains recoverable from the legacy tag.
 
 ## Verified
@@ -26,6 +30,7 @@ Phase 4: KMP/CMP foundation and product vertical slice.
 - `./gradlew :shared:allTests :app:assembleDebug` succeeds on the Nimbo branch.
 - iOS app builds with `xcodebuild` and launches on an iPhone 16 Pro iOS 18.5 simulator.
 - Live Open-Meteo data rendered successfully in the iOS simulator.
+- Android API 36 emulator clean install, city search, selection, live refresh, timeline centring, permission prompt, and detail scrolling pass.
 
 ## Known issues
 
@@ -57,6 +62,6 @@ Phase 4: KMP/CMP foundation and product vertical slice.
 
 ## Next steps
 
-1. Commit the green KMP/CMP foundation without staging `.idea` changes.
-2. Replace the temporary Tashkent bootstrap with onboarding, city search, and platform location permission flows.
-3. Implement deterministic insight and best-time-outside engines with shared tests.
+1. Commit onboarding, location, history, and deterministic engine work without staging `.idea` changes.
+2. Add automatic/metric/imperial settings and localized presentation resources.
+3. Validate Arabic RTL and large-font adaptive layouts on both platforms.

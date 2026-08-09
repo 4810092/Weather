@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.sqldelight.coroutines)
         }
         androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.android.driver)
         }

@@ -10,7 +10,7 @@ internal actual class DatabaseDriverFactory actual constructor(
 ) {
     actual fun create(): SqlDriver = AndroidSqliteDriver(
         schema = NimboDatabase.Schema,
-        context = context.applicationContext,
+        context = context.activity.applicationContext,
         name = "nimbo.db",
     )
 }

@@ -1,5 +1,5 @@
 package uz.ganikhodjaev.weather.shared
 
-import android.content.Context
+import android.app.Activity
 
-actual class PlatformContext(val applicationContext: Context)
+actual class PlatformContext(val activity: Activity)

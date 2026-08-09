@@ -7,7 +7,6 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import uz.ganikhodjaev.weather.shared.model.Location
@@ -26,7 +25,9 @@ internal class OpenMeteoService(
             socketTimeoutMillis = 15_000
         }
         install(HttpRequestRetry) {
-            retryIf(maxRetries = 2) { _, response -> !response.status.isSuccess() }
+            retryIf(maxRetries = 2) { _, response ->
+                response.status.value == 429 || response.status.value >= 500
+            }
             retryOnExceptionIf(maxRetries = 2) { _, _ -> true }
             exponentialDelay()
         }
@@ -39,7 +40,7 @@ internal class OpenMeteoService(
         parameter("longitude", location.longitude)
         parameter("timezone", "auto")
         parameter("timeformat", "unixtime")
-        parameter("past_days", 1)
+        parameter("past_days", 7)
         parameter("forecast_days", 2)
         parameter(
             "hourly",

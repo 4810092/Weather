@@ -18,10 +18,10 @@ internal class WeatherRepository(
 ) {
     private val queries = database.weatherQueries
 
-    suspend fun ensureActiveLocation(): Location {
+    fun activeLocation(): Location? {
         val stored = queries.selectActiveLocation().executeAsOneOrNull()
-        if (stored != null) {
-            return Location(
+        return stored?.let {
+            Location(
                 id = stored.id,
                 name = stored.name,
                 country = stored.country,
@@ -30,24 +30,13 @@ internal class WeatherRepository(
                 timezone = stored.timezone,
             )
         }
-
-        val legacyLocation = Location(
-            id = "1512569",
-            name = "Tashkent",
-            country = "Uzbekistan",
-            latitude = 41.3111,
-            longitude = 69.2797,
-            timezone = "Asia/Tashkent",
-        )
-        setActiveLocation(legacyLocation)
-        return legacyLocation
     }
 
     fun observe(location: Location): Flow<WeatherSnapshot?> {
         val now = Clock.System.now().epochSeconds
         return queries.selectTimeline(
             location_id = location.id,
-            epoch_seconds = now - TIMELINE_SECONDS,
+            epoch_seconds = now - HISTORY_SECONDS,
             epoch_seconds_ = now + TIMELINE_SECONDS,
         ) { _, epoch, temperature, apparent, code, rainChance, rainMm, wind, gust, humidity, uv, _, fetchedAt ->
             WeatherHour(
@@ -63,14 +52,18 @@ internal class WeatherRepository(
                 uvIndex = uv,
                 fetchedAtEpochSeconds = fetchedAt,
             )
-        }.asFlow().mapToList(Dispatchers.Default).map { timeline ->
-            if (timeline.isEmpty()) return@map null
-            val current = timeline.minBy { abs(it.epochSeconds - Clock.System.now().epochSeconds) }
-            val fetchedAt = timeline.maxOf { it.fetchedAtEpochSeconds }
+        }.asFlow().mapToList(Dispatchers.Default).map { allHours ->
+            if (allHours.isEmpty()) return@map null
+            val current = allHours.minBy { abs(it.epochSeconds - Clock.System.now().epochSeconds) }
+            val fetchedAt = allHours.maxOf { it.fetchedAtEpochSeconds }
             WeatherSnapshot(
                 location = location,
                 current = current,
-                timeline = timeline,
+                timeline = allHours.filter {
+                    it.epochSeconds >= current.epochSeconds - TIMELINE_SECONDS &&
+                        it.epochSeconds <= current.epochSeconds + TIMELINE_SECONDS
+                },
+                recentHistory = allHours.filter { it.epochSeconds < current.epochSeconds },
                 fetchedAtEpochSeconds = fetchedAt,
                 isStale = Clock.System.now().epochSeconds - fetchedAt > STALE_AFTER_SECONDS,
             )
@@ -144,6 +137,7 @@ internal class WeatherRepository(
 
     private companion object {
         const val TIMELINE_SECONDS = 24L * 60L * 60L
+        const val HISTORY_SECONDS = 7L * 24L * 60L * 60L
         const val STALE_AFTER_SECONDS = 6L * 60L * 60L
         const val SNAPSHOT_RETENTION_SECONDS = 14L * 24L * 60L * 60L
     }

@@ -27,6 +27,7 @@ data class WeatherSnapshot(
     val location: Location,
     val current: WeatherHour,
     val timeline: List<WeatherHour>,
+    val recentHistory: List<WeatherHour> = emptyList(),
     val fetchedAtEpochSeconds: Long,
     val isStale: Boolean,
 )

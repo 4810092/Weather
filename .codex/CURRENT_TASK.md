@@ -2,20 +2,20 @@
 
 ## Goal
 
-Build the real first-run location experience and deterministic insight engines on the green KMP/CMP foundation.
+Add production units, localization, RTL, and adaptive/accessibility behavior to the green product flow.
 
 ## Acceptance criteria
 
 - Android application ID remains `uz.ganikhodjaev.weather`.
-- A clean install asks for context before showing a location.
-- Users can search for a city and use the app when location access is unavailable or denied.
-- Platform location requests are contextual, optional, and approximate by default.
-- Insight and best-time-outside domain outputs are deterministic, explainable, localized outside domain, and unit tested.
+- Automatic, metric, and imperial units convert only at the presentation boundary.
+- English, Russian, Arabic, Spanish, French, German, Portuguese, Simplified Chinese, Japanese, Korean, Hindi, Turkish, and Uzbek user-facing strings exist.
+- Arabic layout direction, timeline behavior, selected-hour affordances, and large font scale are verified.
+- Location/refresh failures are localized semantic states rather than domain-authored sentences.
 - Cache-first behavior and both platform builds stay green.
 
 ## Affected areas
 
-Shared onboarding/domain/presentation/UI, Android and iOS location adapters, SQLDelight queries, and tests.
+Shared resources/settings/presentation/UI, SQLDelight settings migration, conversion tests, and platform UI smoke tests.
 
 ## Checks
 
