@@ -2,11 +2,11 @@
 
 ## Where we are
 
-The legacy repository has been audited. A recovery tag and Nimbo branch exist. Architecture and provider decisions are recorded; implementation has not yet replaced legacy code.
+The legacy repository is audited and recoverable through `legacy-android-v1.0.1`. The Nimbo branch now has a working KMP/CMP foundation: shared Compose UI/domain/data, Android shell, iOS shell, Open-Meteo, and SQLDelight cache.
 
 ## Green
 
-Legacy `./gradlew test assembleDebug` succeeds at commit `8fcefb8`. The tracked legacy AAB signature verifies.
+Shared tests and Android debug assembly succeed. The iOS simulator app builds, launches, and renders live Tashkent weather on an iPhone 16 Pro simulator.
 
 ## Broken or blocked
 
@@ -14,13 +14,12 @@ No local Play upload keystore or Apple account verification. The exposed OpenWea
 
 ## What remains
 
-All KMP/CMP implementation, product features, global quality, store assets, signing, QA, and submission.
+Onboarding/location selection, deterministic insight engines, historical comparison UX, localization, settings, accessibility/adaptive polish, store assets, CI, signing, upgrade QA, and submission.
 
 ## Run next
 
-Read `.codex/PROJECT_STATE.md` and `.codex/CURRENT_TASK.md`, then create and build the KMP/CMP vertical slice.
+Read `.codex/PROJECT_STATE.md` and `.codex/CURRENT_TASK.md`, then implement onboarding and location selection without regressing the green vertical slice.
 
 ## Relevant files
 
-`docs/AUDIT.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, and `docs/adr/`.
-
+`shared/`, `app/`, `iosApp/`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, and `docs/adr/`.

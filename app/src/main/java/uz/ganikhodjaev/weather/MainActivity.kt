@@ -1,18 +1,16 @@
 package uz.ganikhodjaev.weather
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import uz.ganikhodjaev.weather.ui.main.MainFragment
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import uz.ganikhodjaev.weather.shared.NimboApp
+import uz.ganikhodjaev.weather.shared.PlatformContext
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment())
-                .commitNow()
+        setContent {
+            NimboApp(PlatformContext(applicationContext))
         }
     }
 }

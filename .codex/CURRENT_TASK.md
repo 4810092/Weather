@@ -2,21 +2,21 @@
 
 ## Goal
 
-Create the Nimbo KMP/CMP foundation and first real vertical slice from Open-Meteo through normalized domain state into shared Compose UI on Android and iOS.
+Build the real first-run location experience and deterministic insight engines on the green KMP/CMP foundation.
 
 ## Acceptance criteria
 
 - Android application ID remains `uz.ganikhodjaev.weather`.
-- Android and iOS compile from the same shared UI/domain code.
-- No API secret is present in new code.
-- Current/hourly Open-Meteo data is decoded into domain models and rendered through explicit UI state.
-- Foundation tests pass on supported host targets.
+- A clean install asks for context before showing a location.
+- Users can search for a city and use the app when location access is unavailable or denied.
+- Platform location requests are contextual, optional, and approximate by default.
+- Insight and best-time-outside domain outputs are deterministic, explainable, localized outside domain, and unit tested.
+- Cache-first behavior and both platform builds stay green.
 
 ## Affected areas
 
-Gradle structure, Android shell, new iOS shell, shared model/data/domain/UI, CI, and legacy code removal.
+Shared onboarding/domain/presentation/UI, Android and iOS location adapters, SQLDelight queries, and tests.
 
 ## Checks
 
-Android unit tests and debug build; shared tests; iOS simulator framework/app build; secret scan; package identity validation.
-
+Shared tests; Android debug/release build; iOS simulator build and launch; permission-denied and offline smoke tests.

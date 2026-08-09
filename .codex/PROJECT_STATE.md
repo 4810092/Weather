@@ -4,19 +4,28 @@ Last updated: 2026-08-09
 
 ## Current phase
 
-Phase 0-3: audit, product definition, research, and architecture decisions.
+Phase 4: KMP/CMP foundation and product vertical slice.
 
 ## Implemented
 
 - Legacy audit and recovery tag `legacy-android-v1.0.1`.
 - Production Android identity and signing certificate fingerprint recorded.
 - Baseline product, design, architecture, privacy, quality, release, roadmap, and ADR documentation.
+- KMP shared module targeting Android, iOS device, and iOS simulator.
+- Separate Android application shell and UIKit iOS shell rendering shared Compose UI.
+- Open-Meteo forecast/geocoding client, normalized weather domain, SQLDelight cache, and snapshot retention.
+- Cache-first weather state with explicit loading, content, refresh, stale, offline, and empty-error presentation.
+- Shared current-weather screen and interactive -24/+24-hour timeline.
+- Legacy tracked AAB removed from the open-source branch because it embeds the revoked/rotated credential candidate; it remains recoverable from the legacy tag.
 
 ## Verified
 
 - Baseline commit `8fcefb8` builds with `./gradlew test assembleDebug` on Java 17.
 - Legacy AAB signature verifies and its certificate fingerprint is documented.
 - Local toolchain includes Xcode 26.6, Swift 6.3.3, Android SDK 36, and iOS simulators.
+- `./gradlew :shared:allTests :app:assembleDebug` succeeds on the Nimbo branch.
+- iOS app builds with `xcodebuild` and launches on an iPhone 16 Pro iOS 18.5 simulator.
+- Live Open-Meteo data rendered successfully in the iOS simulator.
 
 ## Known issues
 
@@ -32,7 +41,7 @@ Phase 0-3: audit, product definition, research, and architecture decisions.
 
 ## Last known green commit
 
-`8fcefb8` (legacy baseline).
+`f2b26f5` plus the current foundation working tree. Replace with the foundation commit after it is created.
 
 ## Store status
 
@@ -41,13 +50,13 @@ Phase 0-3: audit, product definition, research, and architecture decisions.
 
 ## Important commands
 
-- `./gradlew test assembleDebug`
+- `./gradlew :shared:allTests :app:assembleDebug`
+- `xcodebuild -project iosApp/Nimbo.xcodeproj -scheme Nimbo -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build`
 - `xcodebuild -version`
 - `git status --short --branch`
 
 ## Next steps
 
-1. Commit audit/research documentation without staging `.idea` changes.
-2. Replace the Android-only build with a KMP/CMP vertical slice while preserving the application ID.
-3. Build Android and iOS targets before expanding features.
-
+1. Commit the green KMP/CMP foundation without staging `.idea` changes.
+2. Replace the temporary Tashkent bootstrap with onboarding, city search, and platform location permission flows.
+3. Implement deterministic insight and best-time-outside engines with shared tests.
