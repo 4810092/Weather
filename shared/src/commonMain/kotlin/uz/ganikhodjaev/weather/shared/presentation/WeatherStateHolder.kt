@@ -13,6 +13,10 @@ import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
+import uz.ganikhodjaev.weather.shared.model.DisplayUnits
+import uz.ganikhodjaev.weather.shared.model.UnitPreference
+import uz.ganikhodjaev.weather.shared.model.UnitSystem
+import uz.ganikhodjaev.weather.shared.model.resolve
 
 internal sealed interface WeatherUiState {
     data object Loading : WeatherUiState
@@ -30,6 +34,8 @@ internal sealed interface WeatherUiState {
         val weather: WeatherSnapshot,
         val isRefreshing: Boolean,
         val refreshMessage: String? = null,
+        val unitPreference: UnitPreference,
+        val displayUnits: DisplayUnits,
     ) : WeatherUiState
 
     data class EmptyError(val message: String) : WeatherUiState
@@ -38,6 +44,7 @@ internal sealed interface WeatherUiState {
 internal class WeatherStateHolder(
     private val repository: WeatherRepository,
     private val locationProvider: DeviceLocationProvider,
+    private val automaticUnitSystem: UnitSystem,
     private val scope: CoroutineScope,
 ) {
     private val mutableState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
@@ -47,11 +54,13 @@ internal class WeatherStateHolder(
     private var observationJob: Job? = null
     private var searchJob: Job? = null
     private var activeLocation: Location? = null
+    private var unitPreference = UnitPreference.Automatic
     private var contentBeforeLocationPicker: WeatherUiState.Content? = null
 
     fun start() {
         if (started) return
         started = true
+        unitPreference = repository.unitPreference()
         val storedLocation = repository.activeLocation()
         if (storedLocation == null) {
             mutableState.value = WeatherUiState.ChooseLocation()
@@ -155,6 +164,16 @@ internal class WeatherStateHolder(
         }
     }
 
+    fun setUnitPreference(preference: UnitPreference) {
+        unitPreference = preference
+        repository.setUnitPreference(preference)
+        val current = mutableState.value as? WeatherUiState.Content ?: return
+        mutableState.value = current.copy(
+            unitPreference = preference,
+            displayUnits = preference.resolve(automaticUnitSystem),
+        )
+    }
+
     private suspend fun activate(location: Location, persist: Boolean) {
         if (persist) repository.setActiveLocation(location)
         contentBeforeLocationPicker = null
@@ -169,6 +188,8 @@ internal class WeatherStateHolder(
                         weather = weather,
                         isRefreshing = old?.isRefreshing ?: false,
                         refreshMessage = old?.refreshMessage,
+                        unitPreference = unitPreference,
+                        displayUnits = unitPreference.resolve(automaticUnitSystem),
                     )
                 }
             }

@@ -50,6 +50,8 @@ import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.Location
+import uz.ganikhodjaev.weather.shared.model.DisplayUnits
+import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.domain.BestTimeOutsideEngine
 import uz.ganikhodjaev.weather.shared.domain.OutsideHazard
 import uz.ganikhodjaev.weather.shared.domain.OutsideReason
@@ -60,7 +62,6 @@ import uz.ganikhodjaev.weather.shared.domain.WeatherInsightEngine
 import uz.ganikhodjaev.weather.shared.model.weatherCondition
 import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 import kotlin.math.abs
-import kotlin.math.roundToInt
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -73,6 +74,7 @@ internal fun WeatherScreen(
     onUseDeviceLocation: () -> Unit,
     onChangeLocation: () -> Unit,
     onCancelLocationChange: () -> Unit,
+    onUnitPreferenceChanged: (UnitPreference) -> Unit,
 ) {
     when (state) {
         WeatherUiState.Loading -> LoadingScreen()
@@ -84,7 +86,12 @@ internal fun WeatherScreen(
             onCancel = onCancelLocationChange,
         )
         is WeatherUiState.EmptyError -> ErrorScreen(state.message, onRetry)
-        is WeatherUiState.Content -> WeatherContent(state, onRetry, onChangeLocation)
+        is WeatherUiState.Content -> WeatherContent(
+            state,
+            onRetry,
+            onChangeLocation,
+            onUnitPreferenceChanged,
+        )
     }
 }
 
@@ -240,6 +247,7 @@ private fun WeatherContent(
     state: WeatherUiState.Content,
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
+    onUnitPreferenceChanged: (UnitPreference) -> Unit,
 ) {
     val weather = state.weather
     var selected by remember(weather.fetchedAtEpochSeconds) { mutableStateOf(weather.current) }
@@ -297,7 +305,7 @@ private fun WeatherContent(
 
         Spacer(Modifier.height(32.dp))
         Text(
-            text = "${weather.current.temperatureC.roundToInt()}°",
+            text = "${state.displayUnits.temperature(weather.current.temperatureC)}°",
             fontSize = 88.sp,
             lineHeight = 88.sp,
             fontWeight = FontWeight.Light,
@@ -308,7 +316,7 @@ private fun WeatherContent(
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = "Feels like ${weather.current.apparentTemperatureC.roundToInt()}°",
+            text = "Feels like ${state.displayUnits.temperature(weather.current.apparentTemperatureC)}°",
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.titleMedium,
         )
@@ -346,17 +354,20 @@ private fun WeatherContent(
         Timeline(
             weather = weather,
             selected = selected,
+            units = state.displayUnits,
             onSelected = { selected = it },
         )
         Spacer(Modifier.height(18.dp))
-        SelectedHour(selected, weather.location.timezone)
+        SelectedHour(selected, weather.location.timezone, state.displayUnits)
         Spacer(Modifier.height(18.dp))
         OutsideCard(outside, weather.location.timezone)
         val recentDays = remember(weather) { recentDaySummaries(weather) }
         if (recentDays.isNotEmpty()) {
             Spacer(Modifier.height(18.dp))
-            RecentDays(recentDays)
+            RecentDays(recentDays, state.displayUnits)
         }
+        Spacer(Modifier.height(18.dp))
+        UnitsCard(state.unitPreference, state.displayUnits, onUnitPreferenceChanged)
         Spacer(Modifier.height(24.dp))
         Text(
             text = "Weather data by Open-Meteo · Location data by GeoNames",
@@ -369,13 +380,13 @@ private fun WeatherContent(
 
 private data class RecentDaySummary(
     val daysAgo: Int,
-    val averageC: Int,
-    val lowC: Int,
-    val highC: Int,
+    val averageC: Double,
+    val lowC: Double,
+    val highC: Double,
 )
 
 @Composable
-private fun RecentDays(days: List<RecentDaySummary>) {
+private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits) {
     Column {
         Text("Recent days", fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(10.dp))
@@ -400,12 +411,12 @@ private fun RecentDays(days: List<RecentDaySummary>) {
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        "${day.averageC}° avg",
+                        "${units.temperature(day.averageC)}° avg",
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        "${day.lowC}°–${day.highC}°",
+                        "${units.temperature(day.lowC)}°–${units.temperature(day.highC)}°",
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -427,10 +438,53 @@ private fun recentDaySummaries(weather: WeatherSnapshot): List<RecentDaySummary>
         if (hours.isEmpty()) return@mapNotNull null
         RecentDaySummary(
             daysAgo = daysAgo,
-            averageC = hours.map { it.temperatureC }.average().roundToInt(),
-            lowC = hours.minOf { it.temperatureC }.roundToInt(),
-            highC = hours.maxOf { it.temperatureC }.roundToInt(),
+            averageC = hours.map { it.temperatureC }.average(),
+            lowC = hours.minOf { it.temperatureC },
+            highC = hours.maxOf { it.temperatureC },
         )
+    }
+}
+
+@Composable
+private fun UnitsCard(
+    preference: UnitPreference,
+    units: DisplayUnits,
+    onPreferenceChanged: (UnitPreference) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.68f), RoundedCornerShape(24.dp))
+            .padding(18.dp),
+    ) {
+        Text("Units", fontWeight = FontWeight.SemiBold)
+        Text(
+            "Automatic currently uses ${units.temperatureSymbol} and ${units.windSymbol}.",
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodySmall,
+        )
+        Spacer(Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            UnitPreference.entries.forEach { option ->
+                OutlinedButton(
+                    onClick = { onPreferenceChanged(option) },
+                    modifier = Modifier.weight(1f),
+                    enabled = option != preference,
+                ) {
+                    Text(
+                        when (option) {
+                            UnitPreference.Automatic -> "Auto"
+                            UnitPreference.Metric -> "Metric"
+                            UnitPreference.Imperial -> "Imperial"
+                        },
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -482,6 +536,7 @@ private fun OutsideCard(recommendation: OutsideRecommendation, timezone: String)
 private fun Timeline(
     weather: WeatherSnapshot,
     selected: WeatherHour,
+    units: DisplayUnits,
     onSelected: (WeatherHour) -> Unit,
 ) {
     val now = Clock.System.now().epochSeconds
@@ -513,7 +568,7 @@ private fun Timeline(
                     )
                     .clickable { onSelected(hour) }
                     .semantics {
-                        contentDescription = "$hourLabel, ${hour.temperatureC.roundToInt()} degrees, " +
+                        contentDescription = "$hourLabel, ${units.temperature(hour.temperatureC)} degrees, " +
                             "${hour.precipitationProbability} percent chance of precipitation"
                     }
                     .padding(vertical = 10.dp),
@@ -523,7 +578,7 @@ private fun Timeline(
                 Spacer(Modifier.height(8.dp))
                 Text(weatherCondition(hour.weatherCode).symbol(), fontSize = 20.sp)
                 Spacer(Modifier.height(8.dp))
-                Text("${hour.temperatureC.roundToInt()}°", fontWeight = FontWeight.SemiBold)
+                Text("${units.temperature(hour.temperatureC)}°", fontWeight = FontWeight.SemiBold)
                 if (hour.precipitationProbability > 0) {
                     Text(
                         "${hour.precipitationProbability}%",
@@ -545,7 +600,7 @@ private fun Timeline(
 }
 
 @Composable
-private fun SelectedHour(hour: WeatherHour, timezone: String) {
+private fun SelectedHour(hour: WeatherHour, timezone: String, units: DisplayUnits) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -557,9 +612,9 @@ private fun SelectedHour(hour: WeatherHour, timezone: String) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.24f))
         Spacer(Modifier.height(12.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Detail("Feels like", "${hour.apparentTemperatureC.roundToInt()}°")
+            Detail("Feels like", "${units.temperature(hour.apparentTemperatureC)}°")
             Detail("Rain", "${hour.precipitationProbability}%")
-            Detail("Wind", "${hour.windKph.roundToInt()} km/h")
+            Detail("Wind", "${units.wind(hour.windKph)} ${units.windSymbol}")
         }
     }
 }

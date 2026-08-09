@@ -9,6 +9,7 @@ import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
+import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import kotlin.math.abs
 import kotlin.time.Clock
 
@@ -135,10 +136,20 @@ internal class WeatherRepository(
         }
     }
 
+    fun unitPreference(): UnitPreference = queries.selectSetting(UNIT_PREFERENCE_KEY)
+        .executeAsOneOrNull()
+        ?.let { stored -> UnitPreference.entries.firstOrNull { it.name == stored } }
+        ?: UnitPreference.Automatic
+
+    fun setUnitPreference(preference: UnitPreference) {
+        queries.upsertSetting(UNIT_PREFERENCE_KEY, preference.name)
+    }
+
     private companion object {
         const val TIMELINE_SECONDS = 24L * 60L * 60L
         const val HISTORY_SECONDS = 7L * 24L * 60L * 60L
         const val STALE_AFTER_SECONDS = 6L * 60L * 60L
         const val SNAPSHOT_RETENTION_SECONDS = 14L * 24L * 60L * 60L
+        const val UNIT_PREFERENCE_KEY = "unit_preference"
     }
 }

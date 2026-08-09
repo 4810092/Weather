@@ -10,14 +10,16 @@ import uz.ganikhodjaev.weather.shared.location.rememberDeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.presentation.WeatherStateHolder
 import uz.ganikhodjaev.weather.shared.ui.NimboTheme
 import uz.ganikhodjaev.weather.shared.ui.WeatherScreen
+import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
 
 @Composable
 fun NimboApp(platformContext: PlatformContext) {
     val container = remember { NimboContainer(platformContext) }
     val locationProvider = rememberDeviceLocationProvider(platformContext)
+    val automaticUnits = remember { automaticUnitSystem() }
     val scope = rememberCoroutineScope()
     val stateHolder = remember(locationProvider) {
-        WeatherStateHolder(container.weatherRepository, locationProvider, scope)
+        WeatherStateHolder(container.weatherRepository, locationProvider, automaticUnits, scope)
     }
     val state by stateHolder.state.collectAsState()
 
@@ -34,6 +36,7 @@ fun NimboApp(platformContext: PlatformContext) {
             onUseDeviceLocation = stateHolder::useDeviceLocation,
             onChangeLocation = stateHolder::showLocationPicker,
             onCancelLocationChange = stateHolder::cancelLocationPicker,
+            onUnitPreferenceChanged = stateHolder::setUnitPreference,
         )
     }
 }

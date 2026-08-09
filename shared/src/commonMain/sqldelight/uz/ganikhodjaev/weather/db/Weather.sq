@@ -37,6 +37,11 @@ CREATE TABLE forecast_snapshot (
   FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
 );
 
+CREATE TABLE app_setting (
+  key TEXT NOT NULL PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
 insertOrReplaceLocation:
 INSERT OR REPLACE INTO location(
   id, name, country, latitude, longitude, timezone, is_active
@@ -85,3 +90,9 @@ INSERT OR REPLACE INTO forecast_snapshot(
 
 deleteOldForecastSnapshots:
 DELETE FROM forecast_snapshot WHERE issued_at_epoch_seconds < ?;
+
+selectSetting:
+SELECT value FROM app_setting WHERE key = ? LIMIT 1;
+
+upsertSetting:
+INSERT OR REPLACE INTO app_setting(key, value) VALUES (?, ?);
