@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">Une météo qui vous parle.</string><string name="onboarding_body">Choisissez un lieu pour comparer les prochaines 24 heures au temps ressenti récemment.</string>
+    <string name="search_city">Rechercher une ville</string><string name="change_later">Vous pourrez changer plus tard.</string><string name="finding_area">Recherche de votre zone…</string><string name="use_location">Utiliser ma position approximative</string>
+    <string name="location_privacy">Nimbo ne demande votre position qu’après cet appui. La recherche fonctionne sans autorisation.</string><string name="error_title">Météo inaccessible</string><string name="try_again">Réessayer</string>
+    <string name="refreshing">Actualisation…</string><string name="refresh">Actualiser</string><string name="change_place">Changer de lieu</string><string name="feels_like">Ressenti %1$d°</string>
+    <string name="timeline_title">24 h avant · maintenant · 24 h après</string><string name="recent_days">Jours récents</string><string name="yesterday">Hier</string><string name="units">Unités</string>
+    <string name="best_time_outside">Meilleur moment pour sortir</string><string name="no_safe_window">Aucun créneau sûr à recommander aujourd’hui</string><string name="not_enough_data">Pas encore assez de données horaires.</string><string name="now">MAINTENANT</string>
+    <string name="detail_rain">Pluie</string><string name="detail_wind">Vent</string><string name="detail_feels_like">Ressenti</string>
+</resources>

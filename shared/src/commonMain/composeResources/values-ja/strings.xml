@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">体感でわかる天気。</string><string name="onboarding_body">場所を選び、これから24時間を最近体験した天気と比べましょう。</string>
+    <string name="search_city">都市を検索</string><string name="change_later">後で変更できます。</string><string name="finding_area">現在地を確認中…</string><string name="use_location">おおよその現在地を使う</string>
+    <string name="location_privacy">このボタンを押した場合のみ位置情報を求めます。都市検索に許可は不要です。</string><string name="error_title">天気を取得できません</string><string name="try_again">再試行</string>
+    <string name="refreshing">更新中…</string><string name="refresh">更新</string><string name="change_place">場所を変更</string><string name="feels_like">体感温度 %1$d°</string>
+    <string name="timeline_title">24時間前 · 現在 · 24時間後</string><string name="recent_days">最近の日</string><string name="yesterday">昨日</string><string name="units">単位</string>
+    <string name="best_time_outside">外出に最適な時間</string><string name="no_safe_window">今日は安全な時間帯をおすすめできません</string><string name="not_enough_data">時間ごとのデータがまだ不足しています。</string><string name="now">現在</string>
+    <string name="detail_rain">雨</string><string name="detail_wind">風</string><string name="detail_feels_like">体感</string>
+</resources>

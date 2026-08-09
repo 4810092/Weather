@@ -46,6 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
+import uz.ganikhodjaev.weather.shared.resources.Res
+import uz.ganikhodjaev.weather.shared.resources.*
 import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
@@ -117,14 +120,14 @@ private fun ChooseLocationScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Nimbo",
+                text = stringResource(Res.string.brand),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
             )
             if (state.canCancel) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(Res.string.cancel),
                     modifier = Modifier.clickable(onClick = onCancel).padding(8.dp),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium,
@@ -133,13 +136,13 @@ private fun ChooseLocationScreen(
         }
         Spacer(Modifier.height(18.dp))
         Text(
-            text = "Weather that feels familiar.",
+            text = stringResource(Res.string.onboarding_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.SemiBold,
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "Choose a place to see the next 24 hours alongside weather you've just experienced.",
+            text = stringResource(Res.string.onboarding_body),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.secondary,
         )
@@ -149,8 +152,8 @@ private fun ChooseLocationScreen(
             onValueChange = onQueryChanged,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            label = { Text("Search for a city") },
-            supportingText = { Text("You can change this later.") },
+            label = { Text(stringResource(Res.string.search_city)) },
+            supportingText = { Text(stringResource(Res.string.change_later)) },
         )
 
         if (state.isSearching) {
@@ -202,11 +205,15 @@ private fun ChooseLocationScreen(
             enabled = !state.isLocating,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(if (state.isLocating) "Finding your area…" else "Use my approximate location")
+            Text(
+                stringResource(
+                    if (state.isLocating) Res.string.finding_area else Res.string.use_location,
+                ),
+            )
         }
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "Nimbo only requests location after you tap this button. City search works without permission.",
+            text = stringResource(Res.string.location_privacy),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center,
@@ -217,12 +224,13 @@ private fun ChooseLocationScreen(
 
 @Composable
 private fun LoadingScreen() {
+    val loadingDescription = stringResource(Res.string.loading_weather)
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.semantics { contentDescription = "Loading weather" },
+            modifier = Modifier.semantics { contentDescription = loadingDescription },
         )
     }
 }
@@ -234,11 +242,11 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Weather is out of reach", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(Res.string.error_title), style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(12.dp))
         Text(message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary)
         Spacer(Modifier.height(24.dp))
-        Button(onClick = onRetry) { Text("Try again") }
+        Button(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
     }
 }
 
@@ -288,14 +296,16 @@ private fun WeatherContent(
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = if (state.isRefreshing) "Refreshing…" else "Refresh",
+                    text = stringResource(
+                        if (state.isRefreshing) Res.string.refreshing else Res.string.refresh,
+                    ),
                     modifier = Modifier.clickable(enabled = !state.isRefreshing, onClick = onRefresh),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = "Change place",
+                    text = stringResource(Res.string.change_place),
                     modifier = Modifier.clickable(onClick = onChangeLocation),
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.labelLarge,
@@ -316,7 +326,10 @@ private fun WeatherContent(
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = "Feels like ${state.displayUnits.temperature(weather.current.apparentTemperatureC)}°",
+            text = stringResource(
+                Res.string.feels_like,
+                state.displayUnits.temperature(weather.current.apparentTemperatureC),
+            ),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.titleMedium,
         )
@@ -337,7 +350,7 @@ private fun WeatherContent(
         if (weather.isStale || state.refreshMessage != null) {
             Spacer(Modifier.height(12.dp))
             Text(
-                text = state.refreshMessage ?: "Saved weather · update needed",
+                text = state.refreshMessage ?: stringResource(Res.string.saved_weather),
                 modifier = Modifier
                     .background(
                         MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
@@ -349,7 +362,7 @@ private fun WeatherContent(
         }
 
         Spacer(Modifier.height(32.dp))
-        Text("24 hours before · now · 24 hours ahead", fontWeight = FontWeight.SemiBold)
+        Text(stringResource(Res.string.timeline_title), fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(12.dp))
         Timeline(
             weather = weather,
@@ -370,7 +383,7 @@ private fun WeatherContent(
         UnitsCard(state.unitPreference, state.displayUnits, onUnitPreferenceChanged)
         Spacer(Modifier.height(24.dp))
         Text(
-            text = "Weather data by Open-Meteo · Location data by GeoNames",
+            text = stringResource(Res.string.attribution),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(bottom = 4.dp),
@@ -388,7 +401,7 @@ private data class RecentDaySummary(
 @Composable
 private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits) {
     Column {
-        Text("Recent days", fontWeight = FontWeight.SemiBold)
+        Text(stringResource(Res.string.recent_days), fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -405,18 +418,23 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits) {
                         .padding(14.dp),
                 ) {
                     Text(
-                        if (day.daysAgo == 1) "Yesterday" else "${day.daysAgo} days ago",
+                        if (day.daysAgo == 1) stringResource(Res.string.yesterday)
+                        else stringResource(Res.string.days_ago, day.daysAgo),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.secondary,
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        "${units.temperature(day.averageC)}° avg",
+                        stringResource(Res.string.average_temperature, units.temperature(day.averageC)),
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        "${units.temperature(day.lowC)}°–${units.temperature(day.highC)}°",
+                        stringResource(
+                            Res.string.temperature_range,
+                            units.temperature(day.lowC),
+                            units.temperature(day.highC),
+                        ),
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -457,9 +475,13 @@ private fun UnitsCard(
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.68f), RoundedCornerShape(24.dp))
             .padding(18.dp),
     ) {
-        Text("Units", fontWeight = FontWeight.SemiBold)
+        Text(stringResource(Res.string.units), fontWeight = FontWeight.SemiBold)
         Text(
-            "Automatic currently uses ${units.temperatureSymbol} and ${units.windSymbol}.",
+            stringResource(
+                Res.string.automatic_units_description,
+                units.temperatureSymbol,
+                units.windSymbol,
+            ),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodySmall,
         )
@@ -476,9 +498,9 @@ private fun UnitsCard(
                 ) {
                     Text(
                         when (option) {
-                            UnitPreference.Automatic -> "Auto"
-                            UnitPreference.Metric -> "Metric"
-                            UnitPreference.Imperial -> "Imperial"
+                            UnitPreference.Automatic -> stringResource(Res.string.unit_auto)
+                            UnitPreference.Metric -> stringResource(Res.string.unit_metric)
+                            UnitPreference.Imperial -> stringResource(Res.string.unit_imperial)
                         },
                         maxLines = 1,
                     )
@@ -490,42 +512,59 @@ private fun UnitsCard(
 
 @Composable
 private fun OutsideCard(recommendation: OutsideRecommendation, timezone: String) {
+    val reasonLabels = mapOf(
+        OutsideReason.ComfortableTemperature to stringResource(Res.string.reason_comfortable),
+        OutsideReason.LowerHeat to stringResource(Res.string.reason_milder),
+        OutsideReason.Dry to stringResource(Res.string.reason_dry),
+        OutsideReason.LightWind to stringResource(Res.string.reason_light_wind),
+        OutsideReason.LowUv to stringResource(Res.string.reason_low_uv),
+    )
+    val hazardLabels = mapOf(
+        OutsideHazard.ExtremeHeat to stringResource(Res.string.hazard_extreme_heat),
+        OutsideHazard.ExtremeCold to stringResource(Res.string.hazard_extreme_cold),
+        OutsideHazard.Thunderstorm to stringResource(Res.string.hazard_thunderstorm),
+        OutsideHazard.HeavyPrecipitation to stringResource(Res.string.hazard_heavy_precipitation),
+        OutsideHazard.StrongWind to stringResource(Res.string.hazard_strong_wind),
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.74f), RoundedCornerShape(24.dp))
             .padding(18.dp),
     ) {
-        Text("Best time to go outside", fontWeight = FontWeight.SemiBold)
+        Text(stringResource(Res.string.best_time_outside), fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(8.dp))
         when (recommendation) {
             is OutsideRecommendation.Recommended -> {
                 Text(
-                    text = "${formatHour(recommendation.startEpochSeconds, timezone)}–" +
+                    text = stringResource(
+                        Res.string.time_range,
+                        formatHour(recommendation.startEpochSeconds, timezone),
                         formatHour(recommendation.endEpochSeconds, timezone),
+                    ),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                 )
                 if (recommendation.reasons.isNotEmpty()) {
                     Text(
-                        recommendation.reasons.joinToString(" · ") { it.label() },
+                        recommendation.reasons.joinToString(" · ") { reasonLabels.getValue(it) },
                         color = MaterialTheme.colorScheme.secondary,
                     )
                 }
             }
             is OutsideRecommendation.Unsafe -> {
                 Text(
-                    "No safe window to recommend today",
+                    stringResource(Res.string.no_safe_window),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    recommendation.hazards.joinToString(" · ") { it.label() },
+                    recommendation.hazards.joinToString(" · ") { hazardLabels.getValue(it) },
                     color = MaterialTheme.colorScheme.secondary,
                 )
             }
             OutsideRecommendation.Unavailable -> Text(
-                "Not enough hourly data yet.",
+                stringResource(Res.string.not_enough_data),
                 color = MaterialTheme.colorScheme.secondary,
             )
         }
@@ -557,6 +596,12 @@ private fun Timeline(
             val isNow = abs(hour.epochSeconds - now) < 1_800
             val isSelected = hour.epochSeconds == selected.epochSeconds
             val hourLabel = formatHour(hour.epochSeconds, weather.location.timezone)
+            val hourDescription = stringResource(
+                Res.string.hour_accessibility,
+                hourLabel,
+                units.temperature(hour.temperatureC),
+                hour.precipitationProbability,
+            )
             Column(
                 modifier = Modifier
                     .width(64.dp)
@@ -568,13 +613,15 @@ private fun Timeline(
                     )
                     .clickable { onSelected(hour) }
                     .semantics {
-                        contentDescription = "$hourLabel, ${units.temperature(hour.temperatureC)} degrees, " +
-                            "${hour.precipitationProbability} percent chance of precipitation"
+                        contentDescription = hourDescription
                     }
                     .padding(vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(if (isNow) "NOW" else hourLabel, style = MaterialTheme.typography.labelSmall)
+                Text(
+                    if (isNow) stringResource(Res.string.now) else hourLabel,
+                    style = MaterialTheme.typography.labelSmall,
+                )
                 Spacer(Modifier.height(8.dp))
                 Text(weatherCondition(hour.weatherCode).symbol(), fontSize = 20.sp)
                 Spacer(Modifier.height(8.dp))
@@ -612,9 +659,15 @@ private fun SelectedHour(hour: WeatherHour, timezone: String, units: DisplayUnit
         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.24f))
         Spacer(Modifier.height(12.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Detail("Feels like", "${units.temperature(hour.apparentTemperatureC)}°")
-            Detail("Rain", "${hour.precipitationProbability}%")
-            Detail("Wind", "${units.wind(hour.windKph)} ${units.windSymbol}")
+            Detail(
+                stringResource(Res.string.detail_feels_like),
+                "${units.temperature(hour.apparentTemperatureC)}°",
+            )
+            Detail(stringResource(Res.string.detail_rain), "${hour.precipitationProbability}%")
+            Detail(
+                stringResource(Res.string.detail_wind),
+                stringResource(Res.string.wind_value, units.wind(hour.windKph), units.windSymbol),
+            )
         }
     }
 }
@@ -627,35 +680,30 @@ private fun Detail(label: String, value: String) {
     }
 }
 
+@Composable
 private fun comparisonInsight(comparison: TemperatureComparison): String = when (comparison) {
-    TemperatureComparison.MuchWarmer -> "Noticeably warmer than yesterday at this time."
-    TemperatureComparison.Warmer -> "A little warmer than yesterday at this time."
-    TemperatureComparison.Similar -> "About the same as yesterday at this time."
-    TemperatureComparison.Cooler -> "A little cooler than yesterday at this time."
-    TemperatureComparison.MuchCooler -> "Noticeably cooler than yesterday at this time."
-    TemperatureComparison.Unavailable -> "A clear view of the hours ahead."
+    TemperatureComparison.MuchWarmer -> stringResource(Res.string.comparison_much_warmer)
+    TemperatureComparison.Warmer -> stringResource(Res.string.comparison_warmer)
+    TemperatureComparison.Similar -> stringResource(Res.string.comparison_similar)
+    TemperatureComparison.Cooler -> stringResource(Res.string.comparison_cooler)
+    TemperatureComparison.MuchCooler -> stringResource(Res.string.comparison_much_cooler)
+    TemperatureComparison.Unavailable -> stringResource(Res.string.comparison_unavailable)
 }
 
+@Composable
 private fun upcomingInsight(insight: UpcomingInsight, timezone: String): String = when (insight) {
-    is UpcomingInsight.RainLikely -> "Rain is likely around ${formatHour(insight.epochSeconds, timezone)}."
-    is UpcomingInsight.TurningCooler -> "It turns cooler around ${formatHour(insight.epochSeconds, timezone)}."
-    is UpcomingInsight.TurningWarmer -> "It turns warmer around ${formatHour(insight.epochSeconds, timezone)}."
-}
-
-private fun OutsideReason.label(): String = when (this) {
-    OutsideReason.ComfortableTemperature -> "comfortable"
-    OutsideReason.LowerHeat -> "milder"
-    OutsideReason.Dry -> "dry"
-    OutsideReason.LightWind -> "light wind"
-    OutsideReason.LowUv -> "low UV"
-}
-
-private fun OutsideHazard.label(): String = when (this) {
-    OutsideHazard.ExtremeHeat -> "extreme heat"
-    OutsideHazard.ExtremeCold -> "extreme cold"
-    OutsideHazard.Thunderstorm -> "thunderstorm"
-    OutsideHazard.HeavyPrecipitation -> "heavy precipitation"
-    OutsideHazard.StrongWind -> "strong wind"
+    is UpcomingInsight.RainLikely -> stringResource(
+        Res.string.upcoming_rain,
+        formatHour(insight.epochSeconds, timezone),
+    )
+    is UpcomingInsight.TurningCooler -> stringResource(
+        Res.string.upcoming_cooler,
+        formatHour(insight.epochSeconds, timezone),
+    )
+    is UpcomingInsight.TurningWarmer -> stringResource(
+        Res.string.upcoming_warmer,
+        formatHour(insight.epochSeconds, timezone),
+    )
 }
 
 private fun formatHour(epochSeconds: Long, timezone: String): String {
@@ -673,17 +721,18 @@ private fun ambience(condition: WeatherCondition): Brush {
     return Brush.verticalGradient(colors)
 }
 
+@Composable
 private fun WeatherCondition.label(): String = when (this) {
-    WeatherCondition.Clear -> "Clear"
-    WeatherCondition.MainlyClear -> "Mostly clear"
-    WeatherCondition.Cloudy -> "Cloudy"
-    WeatherCondition.Fog -> "Foggy"
-    WeatherCondition.Drizzle -> "Drizzle"
-    WeatherCondition.Rain -> "Rain"
-    WeatherCondition.Snow -> "Snow"
-    WeatherCondition.Showers -> "Showers"
-    WeatherCondition.Thunderstorm -> "Thunderstorm"
-    WeatherCondition.Unknown -> "Weather"
+    WeatherCondition.Clear -> stringResource(Res.string.condition_clear)
+    WeatherCondition.MainlyClear -> stringResource(Res.string.condition_mostly_clear)
+    WeatherCondition.Cloudy -> stringResource(Res.string.condition_cloudy)
+    WeatherCondition.Fog -> stringResource(Res.string.condition_foggy)
+    WeatherCondition.Drizzle -> stringResource(Res.string.condition_drizzle)
+    WeatherCondition.Rain -> stringResource(Res.string.condition_rain)
+    WeatherCondition.Snow -> stringResource(Res.string.condition_snow)
+    WeatherCondition.Showers -> stringResource(Res.string.condition_showers)
+    WeatherCondition.Thunderstorm -> stringResource(Res.string.condition_thunderstorm)
+    WeatherCondition.Unknown -> stringResource(Res.string.condition_unknown)
 }
 
 private fun WeatherCondition.symbol(): String = when (this) {

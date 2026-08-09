@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">Um clima que parece familiar.</string><string name="onboarding_body">Escolha um lugar para comparar as próximas 24 horas com o clima que você sentiu recentemente.</string>
+    <string name="search_city">Buscar uma cidade</string><string name="change_later">Você pode alterar depois.</string><string name="finding_area">Localizando sua região…</string><string name="use_location">Usar minha localização aproximada</string>
+    <string name="location_privacy">O Nimbo só solicita sua localização após este toque. A busca funciona sem permissão.</string><string name="error_title">Não foi possível acessar o clima</string><string name="try_again">Tentar novamente</string>
+    <string name="refreshing">Atualizando…</string><string name="refresh">Atualizar</string><string name="change_place">Alterar local</string><string name="feels_like">Sensação de %1$d°</string>
+    <string name="timeline_title">24 h antes · agora · 24 h depois</string><string name="recent_days">Dias recentes</string><string name="yesterday">Ontem</string><string name="units">Unidades</string>
+    <string name="best_time_outside">Melhor hora para sair</string><string name="no_safe_window">Hoje não há um período seguro para recomendar</string><string name="not_enough_data">Ainda não há dados horários suficientes.</string><string name="now">AGORA</string>
+    <string name="detail_rain">Chuva</string><string name="detail_wind">Vento</string><string name="detail_feels_like">Sensação</string>
+</resources>

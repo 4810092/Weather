@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">मौसम जो जाना-पहचाना लगे।</string><string name="onboarding_body">अगले 24 घंटों की तुलना हाल ही में महसूस किए मौसम से करने के लिए स्थान चुनें।</string>
+    <string name="search_city">शहर खोजें</string><string name="change_later">इसे बाद में बदल सकते हैं।</string><string name="finding_area">आपका क्षेत्र ढूँढ रहे हैं…</string><string name="use_location">मेरी अनुमानित लोकेशन इस्तेमाल करें</string>
+    <string name="location_privacy">Nimbo इस बटन को दबाने के बाद ही लोकेशन माँगता है। शहर की खोज बिना अनुमति के चलती है।</string><string name="error_title">मौसम उपलब्ध नहीं है</string><string name="try_again">फिर कोशिश करें</string>
+    <string name="refreshing">अपडेट हो रहा है…</string><string name="refresh">अपडेट करें</string><string name="change_place">स्थान बदलें</string><string name="feels_like">महसूस होता है %1$d°</string>
+    <string name="timeline_title">24 घंटे पहले · अभी · 24 घंटे बाद</string><string name="recent_days">हाल के दिन</string><string name="yesterday">कल</string><string name="units">इकाइयाँ</string>
+    <string name="best_time_outside">बाहर जाने का सबसे अच्छा समय</string><string name="no_safe_window">आज सुझाने लायक सुरक्षित समय नहीं है</string><string name="not_enough_data">अभी पर्याप्त घंटेवार डेटा नहीं है।</string><string name="now">अभी</string>
+    <string name="detail_rain">बारिश</string><string name="detail_wind">हवा</string><string name="detail_feels_like">महसूस</string>
+</resources>

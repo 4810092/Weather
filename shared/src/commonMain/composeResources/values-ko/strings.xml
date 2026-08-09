@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">몸으로 기억하는 날씨.</string><string name="onboarding_body">장소를 선택하고 앞으로 24시간을 최근에 느낀 날씨와 비교하세요.</string>
+    <string name="search_city">도시 검색</string><string name="change_later">나중에 변경할 수 있습니다.</string><string name="finding_area">현재 지역 확인 중…</string><string name="use_location">대략적인 위치 사용</string>
+    <string name="location_privacy">이 버튼을 누른 뒤에만 위치를 요청합니다. 도시 검색은 권한 없이 작동합니다.</string><string name="error_title">날씨를 불러올 수 없습니다</string><string name="try_again">다시 시도</string>
+    <string name="refreshing">업데이트 중…</string><string name="refresh">업데이트</string><string name="change_place">장소 변경</string><string name="feels_like">체감 %1$d°</string>
+    <string name="timeline_title">24시간 전 · 지금 · 24시간 후</string><string name="recent_days">최근 날씨</string><string name="yesterday">어제</string><string name="units">단위</string>
+    <string name="best_time_outside">외출하기 좋은 시간</string><string name="no_safe_window">오늘은 안전한 시간대를 추천할 수 없습니다</string><string name="not_enough_data">시간별 데이터가 아직 부족합니다.</string><string name="now">지금</string>
+    <string name="detail_rain">비</string><string name="detail_wind">바람</string><string name="detail_feels_like">체감</string>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="onboarding_title">Погода, которую легко почувствовать.</string>
+    <string name="onboarding_body">Выберите место, чтобы сравнить ближайшие 24 часа с погодой, которую вы недавно ощущали.</string>
+    <string name="search_city">Найти город</string><string name="change_later">Это можно изменить позже.</string>
+    <string name="finding_area">Определяем ваш район…</string><string name="use_location">Использовать примерное местоположение</string>
+    <string name="location_privacy">Nimbo запросит геопозицию только после нажатия. Поиск города работает без разрешения.</string>
+    <string name="error_title">Погода сейчас недоступна</string><string name="try_again">Повторить</string>
+    <string name="refreshing">Обновляем…</string><string name="refresh">Обновить</string><string name="change_place">Сменить место</string>
+    <string name="feels_like">Ощущается как %1$d°</string><string name="timeline_title">24 часа назад · сейчас · 24 часа вперёд</string>
+    <string name="recent_days">Недавние дни</string><string name="yesterday">Вчера</string><string name="units">Единицы</string>
+    <string name="best_time_outside">Лучшее время выйти</string><string name="no_safe_window">Сегодня нет безопасного времени для рекомендации</string>
+    <string name="not_enough_data">Пока недостаточно почасовых данных.</string><string name="now">СЕЙЧАС</string>
+    <string name="detail_rain">Осадки</string><string name="detail_wind">Ветер</string><string name="detail_feels_like">Ощущается</string>
+</resources>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">熟悉体感的天气。</string><string name="onboarding_body">选择地点，将未来24小时与您刚刚经历的天气进行比较。</string>
+    <string name="search_city">搜索城市</string><string name="change_later">稍后可以更改。</string><string name="finding_area">正在查找您的区域…</string><string name="use_location">使用我的大致位置</string>
+    <string name="location_privacy">只有点击此按钮后，Nimbo 才会请求位置。无需授权也可搜索城市。</string><string name="error_title">暂时无法获取天气</string><string name="try_again">重试</string>
+    <string name="refreshing">正在更新…</string><string name="refresh">更新</string><string name="change_place">更改地点</string><string name="feels_like">体感 %1$d°</string>
+    <string name="timeline_title">过去24小时 · 现在 · 未来24小时</string><string name="recent_days">最近几天</string><string name="yesterday">昨天</string><string name="units">单位</string>
+    <string name="best_time_outside">今天最佳外出时间</string><string name="no_safe_window">今天没有可推荐的安全时段</string><string name="not_enough_data">小时数据暂时不足。</string><string name="now">现在</string>
+    <string name="detail_rain">降雨</string><string name="detail_wind">风</string><string name="detail_feels_like">体感</string>
+</resources>

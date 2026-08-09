@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">Tanıdık hissettiren hava.</string><string name="onboarding_body">Önümüzdeki 24 saati yakın zamanda hissettiğiniz havayla karşılaştırmak için bir yer seçin.</string>
+    <string name="search_city">Şehir ara</string><string name="change_later">Bunu daha sonra değiştirebilirsiniz.</string><string name="finding_area">Bölgeniz bulunuyor…</string><string name="use_location">Yaklaşık konumumu kullan</string>
+    <string name="location_privacy">Nimbo yalnızca bu düğmeye dokunduktan sonra konum ister. Şehir araması izinsiz çalışır.</string><string name="error_title">Hava durumuna ulaşılamıyor</string><string name="try_again">Tekrar dene</string>
+    <string name="refreshing">Güncelleniyor…</string><string name="refresh">Güncelle</string><string name="change_place">Yeri değiştir</string><string name="feels_like">Hissedilen %1$d°</string>
+    <string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string><string name="recent_days">Son günler</string><string name="yesterday">Dün</string><string name="units">Birimler</string>
+    <string name="best_time_outside">Dışarı çıkmak için en iyi zaman</string><string name="no_safe_window">Bugün önerilecek güvenli bir zaman yok</string><string name="not_enough_data">Henüz yeterli saatlik veri yok.</string><string name="now">ŞİMDİ</string>
+    <string name="detail_rain">Yağış</string><string name="detail_wind">Rüzgâr</string><string name="detail_feels_like">Hissedilen</string>
+</resources>

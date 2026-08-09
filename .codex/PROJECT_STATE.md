@@ -1,6 +1,6 @@
 # Project state
 
-Last updated: 2026-08-09
+Last updated: 2026-08-10
 
 ## Current phase
 
@@ -20,6 +20,8 @@ Phase 4: KMP/CMP foundation and product vertical slice.
 - User-triggered place switching with a cancellable picker.
 - Deterministic comparison and best-time-outside engines with shared tests and documented thresholds.
 - Seven-day recent context kept secondary to the centred -24/+24-hour timeline.
+- Automatic, metric, and imperial display units persisted through a SQLDelight migration.
+- Compose resource localization foundation with English plus 12 required locale overlays.
 - Legacy tracked AAB removed from the open-source branch because it embeds the revoked/rotated credential candidate; it remains recoverable from the legacy tag.
 
 ## Verified
@@ -31,12 +33,15 @@ Phase 4: KMP/CMP foundation and product vertical slice.
 - iOS app builds with `xcodebuild` and launches on an iPhone 16 Pro iOS 18.5 simulator.
 - Live Open-Meteo data rendered successfully in the iOS simulator.
 - Android API 36 emulator clean install, city search, selection, live refresh, timeline centring, permission prompt, and detail scrolling pass.
+- Russian localization renders successfully in the iOS simulator after a clean install.
 
 ## Known issues
 
 - OpenWeather key is exposed in Git history and must be revoked/rotated by the credential owner.
 - No signing keystore/config is available locally; Play App Signing and upload identity remain unverified.
 - Apple App ID/account state remains unverified.
+- Locale overlays still fall back to English for some secondary insight/reason/hazard strings.
+- Arabic RTL visual QA requires a non-Play Android image; the Play image removes debug-signed builds because this application ID is already published.
 - Pre-existing `.idea` worktree changes belong to the user and remain untouched.
 
 ## Current release versions

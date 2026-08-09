@@ -1,0 +1,14 @@
+<resources>
+    <string name="onboarding_title">طقس يمكنك أن تشعر به.</string>
+    <string name="onboarding_body">اختر مكانًا لمقارنة الساعات الـ24 القادمة بالطقس الذي شعرت به مؤخرًا.</string>
+    <string name="search_city">ابحث عن مدينة</string><string name="change_later">يمكنك تغيير ذلك لاحقًا.</string>
+    <string name="finding_area">جارٍ تحديد منطقتك…</string><string name="use_location">استخدام موقعي التقريبي</string>
+    <string name="location_privacy">لا يطلب Nimbo موقعك إلا بعد الضغط هنا. يعمل بحث المدن دون إذن.</string>
+    <string name="error_title">تعذّر الوصول إلى الطقس</string><string name="try_again">حاول مجددًا</string>
+    <string name="refreshing">جارٍ التحديث…</string><string name="refresh">تحديث</string><string name="change_place">تغيير المكان</string>
+    <string name="feels_like">المحسوسة %1$d°</string><string name="timeline_title">قبل 24 ساعة · الآن · بعد 24 ساعة</string>
+    <string name="recent_days">الأيام الأخيرة</string><string name="yesterday">أمس</string><string name="units">الوحدات</string>
+    <string name="best_time_outside">أفضل وقت للخروج</string><string name="no_safe_window">لا توجد فترة آمنة نوصي بها اليوم</string>
+    <string name="not_enough_data">لا تتوفر بيانات ساعية كافية بعد.</string><string name="now">الآن</string>
+    <string name="detail_rain">المطر</string><string name="detail_wind">الرياح</string><string name="detail_feels_like">المحسوسة</string>
+</resources>

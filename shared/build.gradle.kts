@@ -33,6 +33,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(compose.components.resources)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
@@ -64,4 +65,9 @@ sqldelight {
             packageName.set("uz.ganikhodjaev.weather.db")
         }
     }
+}
+
+compose.resources {
+    packageOfResClass = "uz.ganikhodjaev.weather.shared.resources"
+    generateResClass = always
 }

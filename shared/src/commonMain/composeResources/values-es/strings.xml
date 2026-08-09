@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">Un tiempo que se siente familiar.</string><string name="onboarding_body">Elige un lugar para comparar las próximas 24 horas con el tiempo que acabas de sentir.</string>
+    <string name="search_city">Buscar una ciudad</string><string name="change_later">Puedes cambiarlo más tarde.</string><string name="finding_area">Buscando tu zona…</string><string name="use_location">Usar mi ubicación aproximada</string>
+    <string name="location_privacy">Nimbo solo pide tu ubicación al tocar este botón. La búsqueda funciona sin permiso.</string><string name="error_title">No se puede obtener el tiempo</string><string name="try_again">Reintentar</string>
+    <string name="refreshing">Actualizando…</string><string name="refresh">Actualizar</string><string name="change_place">Cambiar lugar</string><string name="feels_like">Sensación de %1$d°</string>
+    <string name="timeline_title">24 h antes · ahora · 24 h después</string><string name="recent_days">Días recientes</string><string name="yesterday">Ayer</string><string name="units">Unidades</string>
+    <string name="best_time_outside">Mejor hora para salir</string><string name="no_safe_window">Hoy no hay un intervalo seguro que recomendar</string><string name="not_enough_data">Aún no hay suficientes datos por hora.</string><string name="now">AHORA</string>
+    <string name="detail_rain">Lluvia</string><string name="detail_wind">Viento</string><string name="detail_feels_like">Sensación</string>
+</resources>

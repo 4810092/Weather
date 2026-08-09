@@ -1,0 +1,9 @@
+<resources>
+    <string name="onboarding_title">Wetter, das sich vertraut anfühlt.</string><string name="onboarding_body">Wähle einen Ort und vergleiche die nächsten 24 Stunden mit dem Wetter, das du gerade erlebt hast.</string>
+    <string name="search_city">Stadt suchen</string><string name="change_later">Du kannst das später ändern.</string><string name="finding_area">Deine Gegend wird gesucht…</string><string name="use_location">Ungefähren Standort verwenden</string>
+    <string name="location_privacy">Nimbo fragt erst nach Tippen auf diese Schaltfläche nach deinem Standort. Die Stadtsuche funktioniert ohne Freigabe.</string><string name="error_title">Wetter nicht erreichbar</string><string name="try_again">Erneut versuchen</string>
+    <string name="refreshing">Wird aktualisiert…</string><string name="refresh">Aktualisieren</string><string name="change_place">Ort ändern</string><string name="feels_like">Gefühlt %1$d°</string>
+    <string name="timeline_title">24 Std. vorher · jetzt · 24 Std. später</string><string name="recent_days">Letzte Tage</string><string name="yesterday">Gestern</string><string name="units">Einheiten</string>
+    <string name="best_time_outside">Beste Zeit zum Rausgehen</string><string name="no_safe_window">Heute gibt es kein sicheres Zeitfenster</string><string name="not_enough_data">Noch nicht genügend Stundendaten.</string><string name="now">JETZT</string>
+    <string name="detail_rain">Regen</string><string name="detail_wind">Wind</string><string name="detail_feels_like">Gefühlt</string>
+</resources>
