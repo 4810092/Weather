@@ -16,8 +16,9 @@ release-journal changes are in scope.
   `5SWEZ7HTYP`.
 - RC tag: `v1.0.0-rc.1`, source commit
   `223864157d5fde8ccf4c686912473a9878285457`.
-- Pull request 1 is merged. Master CI run `31355374606` is green for Android,
-  shared checks, and the unsigned iOS build.
+- Pull requests 1 and 2 are merged. Current master is
+  `a769449ba4e7053b26c5286f849124a9a6c04076`; CI run `31358514085` is green
+  for Android/shared checks and the unsigned iOS build.
 - The August 10 gate executes 36 shared/host tests with zero failures.
 
 ## Android release state
@@ -33,20 +34,29 @@ release-journal changes are in scope.
   and Android Studio created matching store/key password entries in macOS
   Keychain on March 29, 2024. The exact local path is intentionally retained in
   the Keychain item label rather than committed to the public repository.
-- CLI retrieval of the saved passwords requires a macOS Keychain authorization
-  prompt. The workstation became locked before that prompt could be approved.
+- macOS Keychain access was authorized and the recovered keystore certificate
+  was verified. Its SHA-256 exactly matches the accepted Play upload
+  certificate; upload-key reset is not required.
 - The current Play Console role can upload releases but cannot request an upload
   key reset: the official reset control is disabled with `Permission required`.
   Reset is unnecessary if the recovered keystore is unlocked and its certificate
   matches the accepted upload certificate.
+- An unchanged R8 release AAB for 1.0.0 (3) was signed outside the repository
+  with the recovered upload key. Its file SHA-256 is
+  `90f4b3c0a002341855701fbf2c8714f48dcff0ba5c820acd89edd0123a0674c6`.
+  Play accepted it as version code 3, target API 36, and activated Internal
+  release `Nimbo 1.0.0 (3) — Internal` at 10:42 Asia/Tashkent. The existing
+  license-testers list (three accounts) has access.
 - The real Play-signed legacy universal APK, artifact
   `4859919545693253619`, passed clean launch, network, background/foreground,
   repeat launch, and offline cold launch on API 36. The required vc2 -> vc3
-  Play-delivered upgrade remains pending.
-- No Nimbo listing draft was published. A metadata draft was started, but the
-  browser file chooser and subsequent locked workstation prevented asset upload;
-  the console still reported no unpublished changes after the browser session
-  recovered.
+  Play-delivered upgrade remains pending. The Android 16 Play Store emulator is
+  running and the official Google sign-in flow is waiting for the Account
+  Holder to scan its passkey QR; no Google account was previously present on the
+  emulator.
+- The English default Play listing text is saved as an unpublished Nimbo draft.
+  Old visual assets still need to be replaced with the version-controlled
+  production assets before the listing is submitted.
 
 ## Apple release state
 
@@ -82,14 +92,14 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Unlock the release workstation and approve the macOS Keychain access prompt
-   for the recovered Weather upload-keystore credentials. Verify the keystore
-   certificate, sign the unchanged vc3 AAB, and upload it to Play Internal.
-2. Install legacy vc2 from Play, accept the Internal update to vc3 without
+1. Complete the passkey sign-in currently displayed on the Android 16 Play
+   Store emulator. Install legacy production vc2 from Play, accept the Internal
+   update to vc3 without
    uninstalling, and run the documented upgrade/smoke matrix.
-3. Publish the Nimbo Play listing and start the production rollout after the
+2. Replace the legacy Play listing visual assets, complete policy declarations,
+   and start the production rollout after the
    Play-delivered upgrade passes.
-4. The Apple Account Holder must grant the current Admin access to Certificates,
+3. The Apple Account Holder must grant the current Admin access to Certificates,
    Identifiers & Profiles (or sign the Account Holder into Xcode). Then create
    the exact App ID, App Store profile/record, upload build 1, complete
    TestFlight, and submit for review.

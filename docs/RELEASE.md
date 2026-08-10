@@ -17,11 +17,11 @@ listing at version code 2 / version name 1.0.1 and confirmed Play App Signing is
 enabled. Nimbo is version code 3 / version name 1.0.0. The original extensionless
 upload keystore was recovered outside the repository with alias `weather`; the
 matching store/key passwords remain in macOS Keychain. Its file and Keychain
-dates align with the March 2024 legacy release. Before use, unlock the Keychain,
-verify the keystore certificate against the accepted upload SHA-256 below, and
-keep all private material outside Git. The current Play role cannot request an
-upload-key reset (`Permission required`), but reset is unnecessary if the
-recovered key verifies.
+dates align with the March 2024 legacy release. Keychain access and certificate
+verification completed on August 10: the certificate exactly matches the
+accepted upload SHA-256 below. Keep all private material outside Git. The current
+Play role cannot request an upload-key reset (`Permission required`), but no
+reset is needed.
 
 The accepted upload certificate SHA-256 reported by Play is
 `43:15:48:A4:87:1C:9C:09:0E:EE:80:8A:C3:A3:48:98:F5:D7:86:02:D9:E7:47:DF:E8:1E:22:84:15:AA:C2:52`.
@@ -36,6 +36,15 @@ Installing a locally QA-signed Nimbo APK over it fails with
 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, as it must. The remaining upgrade gate is
 therefore specifically a Play-signed version code 3 internal-track build, not
 legacy artifact availability.
+
+Play accepted the unchanged signed AAB as version code 3 / version name 1.0.0,
+target API 36. Internal release `Nimbo 1.0.0 (3) — Internal` became active for
+the existing three-account license-testers list at 10:42 Asia/Tashkent on August
+10. Its signed file SHA-256 is
+`90f4b3c0a002341855701fbf2c8714f48dcff0ba5c820acd89edd0123a0674c6`.
+The real upgrade gate still requires installing legacy vc2 from Play and then
+accepting the Play-delivered Internal vc3 update without uninstalling. The
+Android 16 Play Store emulator is ready and awaits Account Holder passkey login.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
