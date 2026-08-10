@@ -1,13 +1,86 @@
+<?xml version="1.0"?>
 <resources>
-    <string name="brand">Nimbo</string><string name="cancel">Cancelar</string><string name="onboarding_title">Um tempo que parece familiar.</string><string name="onboarding_body">Escolha um local para ver as próximas 24 horas ao lado do tempo que sentiu recentemente.</string>
-    <string name="search_city">Pesquisar uma cidade</string><string name="current_location">Localização atual</string><string name="change_later">Pode alterar isto mais tarde.</string><string name="finding_area">A localizar a sua área…</string><string name="use_location">Usar a minha localização aproximada</string><string name="location_privacy">O Nimbo só pede a localização depois de tocar neste botão. A pesquisa de cidades funciona sem permissão.</string>
-    <string name="loading_weather">A carregar o tempo</string><string name="error_title">Não foi possível obter o tempo</string><string name="try_again">Tentar novamente</string><string name="refreshing">A atualizar…</string><string name="refresh">Atualizar</string><string name="change_place">Mudar local</string><string name="feels_like">Sensação de %1$d°</string><string name="saved_weather">Tempo guardado · atualização necessária</string><string name="timeline_title">24 horas antes · agora · 24 horas depois</string><string name="attribution">Dados meteorológicos por Open-Meteo · Dados de locais por GeoNames</string>
-    <string name="recent_days">Dias recentes</string><string name="yesterday">Ontem</string><plurals name="days_ago"><item quantity="one">Há %1$d dia</item><item quantity="many">Há %1$d dias</item><item quantity="other">Há %1$d dias</item></plurals><string name="average_temperature">Média %1$d°</string><string name="temperature_range">%1$d°–%2$d°</string>
-    <string name="units">Unidades</string><string name="automatic_units_description">O modo automático usa atualmente %1$s e %2$s.</string><string name="unit_auto">Auto</string><string name="unit_metric">Métrico</string><string name="unit_imperial">Imperial</string>
-    <string name="best_time_outside">Melhor hora para sair</string><string name="time_range">%1$s–%2$s</string><string name="no_safe_window">Hoje não há um período seguro a recomendar</string><string name="not_enough_data">Ainda não há dados horários suficientes.</string><string name="hour_accessibility">%1$s, %2$d graus, %3$d por cento de probabilidade de precipitação</string><string name="now">AGORA</string>
-    <string name="detail_rain">Precipitação</string><string name="detail_feels_like">Sensação</string><string name="detail_wind">Vento</string><string name="wind_value">%1$d %2$s</string>
-    <string name="comparison_much_warmer">Nitidamente mais quente do que ontem a esta hora.</string><string name="comparison_warmer">Um pouco mais quente do que ontem a esta hora.</string><string name="comparison_similar">Quase igual a ontem a esta hora.</string><string name="comparison_cooler">Um pouco mais fresco do que ontem a esta hora.</string><string name="comparison_much_cooler">Nitidamente mais fresco do que ontem a esta hora.</string><string name="comparison_unavailable">Uma visão clara das próximas horas.</string><string name="upcoming_rain">É provável que chova por volta das %1$s.</string><string name="upcoming_cooler">Ficará mais fresco por volta das %1$s.</string><string name="upcoming_warmer">Ficará mais quente por volta das %1$s.</string>
-    <string name="reason_comfortable">temperatura agradável</string><string name="reason_milder">mais ameno</string><string name="reason_dry">seco</string><string name="reason_light_wind">vento fraco</string><string name="reason_low_uv">UV baixo</string><string name="hazard_extreme_heat">calor extremo</string><string name="hazard_extreme_cold">frio extremo</string><string name="hazard_thunderstorm">trovoada</string><string name="hazard_heavy_precipitation">precipitação intensa</string><string name="hazard_strong_wind">vento forte</string>
-    <string name="condition_clear">Céu limpo</string><string name="condition_mostly_clear">Pouco nublado</string><string name="condition_cloudy">Nublado</string><string name="condition_foggy">Nevoeiro</string><string name="condition_drizzle">Chuvisco</string><string name="condition_rain">Chuva</string><string name="condition_snow">Neve</string><string name="condition_showers">Aguaceiros</string><string name="condition_thunderstorm">Trovoada</string><string name="condition_unknown">Tempo</string>
-    <string name="no_matching_places">Não foram encontrados locais correspondentes.</string><string name="city_search_unavailable">A pesquisa de cidades está indisponível. Verifique a ligação e tente novamente.</string><string name="location_permission_denied">O acesso à localização não foi concedido. Pesquise uma cidade.</string><string name="location_services_disabled">Os serviços de localização estão desligados. Pesquise uma cidade ou ative-os nas Definições.</string><string name="location_unavailable">Não foi possível determinar a sua localização. Pesquise uma cidade.</string><string name="refresh_failed_saved">Não foi possível atualizar. A mostrar o tempo guardado.</string><string name="weather_unavailable">O tempo está indisponível. Verifique a ligação e tente novamente.</string>
+  <string name="brand">Nimbo</string>
+  <string name="cancel">Cancelar</string>
+  <string name="onboarding_title">Um tempo que parece familiar.</string>
+  <string name="onboarding_body">Escolha um local para ver as próximas 24 horas ao lado do tempo que sentiu recentemente.</string>
+  <string name="search_city">Pesquisar uma cidade</string>
+  <string name="current_location">Localização atual</string>
+  <string name="change_later">Pode alterar isto mais tarde.</string>
+  <string name="finding_area">A localizar a sua área…</string>
+  <string name="use_location">Usar a minha localização aproximada</string>
+  <string name="location_privacy">Depois de tocar, o Nimbo envia uma localização aproximada à Open-Meteo para carregar o tempo local. A pesquisa de cidades funciona sem permissão.</string>
+  <string name="loading_weather">A carregar o tempo</string>
+  <string name="error_title">Não foi possível obter o tempo</string>
+  <string name="try_again">Tentar novamente</string>
+  <string name="refreshing">A atualizar…</string>
+  <string name="refresh">Atualizar</string>
+  <string name="change_place">Mudar local</string>
+  <string name="feels_like">Sensação de %1$d°</string>
+  <string name="saved_weather">Tempo guardado · atualização necessária</string>
+  <string name="timeline_title">24 horas antes · agora · 24 horas depois</string>
+  <string name="attribution">Dados de tempo e locais por Open-Meteo · Locais baseados no GeoNames</string>
+  <string name="about_nimbo">Sobre o Nimbo</string>
+  <string name="privacy_policy">Política de privacidade</string>
+  <string name="open_source_licenses">Licenças de código aberto</string>
+  <string name="recent_days">Dias recentes</string>
+  <string name="yesterday">Ontem</string>
+  <plurals name="days_ago">
+    <item quantity="one">Há %1$d dia</item>
+    <item quantity="many">Há %1$d dias</item>
+    <item quantity="other">Há %1$d dias</item>
+  </plurals>
+  <string name="average_temperature">Média %1$d°</string>
+  <string name="temperature_range">%1$d°–%2$d°</string>
+  <string name="units">Unidades</string>
+  <string name="automatic_units_description">O modo automático usa atualmente %1$s e %2$s.</string>
+  <string name="unit_auto">Auto</string>
+  <string name="unit_metric">Métrico</string>
+  <string name="unit_imperial">Imperial</string>
+  <string name="best_time_outside">Melhor hora para sair</string>
+  <string name="time_range">%1$s–%2$s</string>
+  <string name="no_safe_window">Hoje não há um período seguro a recomendar</string>
+  <string name="not_enough_data">Ainda não há dados horários suficientes.</string>
+  <string name="hour_accessibility">%1$s, %2$d graus, %3$d por cento de probabilidade de precipitação</string>
+  <string name="now">AGORA</string>
+  <string name="detail_rain">Precipitação</string>
+  <string name="detail_feels_like">Sensação</string>
+  <string name="detail_wind">Vento</string>
+  <string name="wind_value">%1$d %2$s</string>
+  <string name="comparison_much_warmer">Nitidamente mais quente do que ontem a esta hora.</string>
+  <string name="comparison_warmer">Um pouco mais quente do que ontem a esta hora.</string>
+  <string name="comparison_similar">Quase igual a ontem a esta hora.</string>
+  <string name="comparison_cooler">Um pouco mais fresco do que ontem a esta hora.</string>
+  <string name="comparison_much_cooler">Nitidamente mais fresco do que ontem a esta hora.</string>
+  <string name="comparison_unavailable">Uma visão clara das próximas horas.</string>
+  <string name="upcoming_rain">É provável que chova por volta das %1$s.</string>
+  <string name="upcoming_cooler">Ficará mais fresco por volta das %1$s.</string>
+  <string name="upcoming_warmer">Ficará mais quente por volta das %1$s.</string>
+  <string name="reason_comfortable">temperatura agradável</string>
+  <string name="reason_milder">mais ameno</string>
+  <string name="reason_dry">seco</string>
+  <string name="reason_light_wind">vento fraco</string>
+  <string name="reason_low_uv">UV baixo</string>
+  <string name="hazard_extreme_heat">calor extremo</string>
+  <string name="hazard_extreme_cold">frio extremo</string>
+  <string name="hazard_thunderstorm">trovoada</string>
+  <string name="hazard_heavy_precipitation">precipitação intensa</string>
+  <string name="hazard_strong_wind">vento forte</string>
+  <string name="condition_clear">Céu limpo</string>
+  <string name="condition_mostly_clear">Pouco nublado</string>
+  <string name="condition_cloudy">Nublado</string>
+  <string name="condition_foggy">Nevoeiro</string>
+  <string name="condition_drizzle">Chuvisco</string>
+  <string name="condition_rain">Chuva</string>
+  <string name="condition_snow">Neve</string>
+  <string name="condition_showers">Aguaceiros</string>
+  <string name="condition_thunderstorm">Trovoada</string>
+  <string name="condition_unknown">Tempo</string>
+  <string name="no_matching_places">Não foram encontrados locais correspondentes.</string>
+  <string name="city_search_unavailable">A pesquisa de cidades está indisponível. Verifique a ligação e tente novamente.</string>
+  <string name="location_permission_denied">O acesso à localização não foi concedido. Pesquise uma cidade.</string>
+  <string name="location_services_disabled">Os serviços de localização estão desligados. Pesquise uma cidade ou ative-os nas Definições.</string>
+  <string name="location_unavailable">Não foi possível determinar a sua localização. Pesquise uma cidade.</string>
+  <string name="refresh_failed_saved">Não foi possível atualizar. A mostrar o tempo guardado.</string>
+  <string name="weather_unavailable">O tempo está indisponível. Verifique a ligação e tente novamente.</string>
 </resources>

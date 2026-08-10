@@ -1,13 +1,85 @@
+<?xml version="1.0"?>
 <resources>
-    <string name="brand">Nimbo</string><string name="cancel">Bekor qilish</string><string name="onboarding_title">Tanish tuyuladigan ob-havo.</string><string name="onboarding_body">Yaqinda his qilgan ob-havongiz bilan keyingi 24 soatni taqqoslash uchun joy tanlang.</string>
-    <string name="search_city">Shahar qidirish</string><string name="current_location">Joriy joylashuv</string><string name="change_later">Buni keyinroq o‘zgartirishingiz mumkin.</string><string name="finding_area">Hududingiz aniqlanmoqda…</string><string name="use_location">Taxminiy joylashuvimdan foydalanish</string><string name="location_privacy">Nimbo joylashuvni faqat shu tugmani bosganingizdan keyin so‘raydi. Shahar qidirish ruxsatsiz ham ishlaydi.</string>
-    <string name="loading_weather">Ob-havo yuklanmoqda</string><string name="error_title">Ob-havoni olib bo‘lmadi</string><string name="try_again">Qayta urinish</string><string name="refreshing">Yangilanmoqda…</string><string name="refresh">Yangilash</string><string name="change_place">Joyni o‘zgartirish</string><string name="feels_like">His qilinishi %1$d°</string><string name="saved_weather">Saqlangan ob-havo · yangilash kerak</string><string name="timeline_title">24 soat oldin · hozir · 24 soat keyin</string><string name="attribution">Ob-havo ma’lumotlari: Open-Meteo · Joy ma’lumotlari: GeoNames</string>
-    <string name="recent_days">So‘nggi kunlar</string><string name="yesterday">Kecha</string><plurals name="days_ago"><item quantity="one">%1$d kun oldin</item><item quantity="other">%1$d kun oldin</item></plurals><string name="average_temperature">O‘rtacha %1$d°</string><string name="temperature_range">%1$d°–%2$d°</string>
-    <string name="units">O‘lchov birliklari</string><string name="automatic_units_description">Avtomatik rejim hozir %1$s va %2$s dan foydalanadi.</string><string name="unit_auto">Avtomatik</string><string name="unit_metric">Metrik</string><string name="unit_imperial">Imperial</string>
-    <string name="best_time_outside">Tashqariga chiqish uchun eng yaxshi vaqt</string><string name="time_range">%1$s–%2$s</string><string name="no_safe_window">Bugun tavsiya qilish uchun xavfsiz vaqt yo‘q</string><string name="not_enough_data">Hali yetarli soatlik ma’lumot yo‘q.</string><string name="hour_accessibility">%1$s, %2$d daraja, yog‘in ehtimoli %3$d foiz</string><string name="now">HOZIR</string>
-    <string name="detail_rain">Yog‘in</string><string name="detail_feels_like">His qilinishi</string><string name="detail_wind">Shamol</string><string name="wind_value">%1$d %2$s</string>
-    <string name="comparison_much_warmer">Kecha shu vaqtdagidan ancha iliqroq.</string><string name="comparison_warmer">Kecha shu vaqtdagidan biroz iliqroq.</string><string name="comparison_similar">Kecha shu vaqtdagi bilan deyarli bir xil.</string><string name="comparison_cooler">Kecha shu vaqtdagidan biroz salqinroq.</string><string name="comparison_much_cooler">Kecha shu vaqtdagidan ancha salqinroq.</string><string name="comparison_unavailable">Kelgusi soatlarning aniq ko‘rinishi.</string><string name="upcoming_rain">Taxminan %1$s da yomg‘ir yog‘ishi mumkin.</string><string name="upcoming_cooler">Taxminan %1$s da havo salqinlashadi.</string><string name="upcoming_warmer">Taxminan %1$s da havo iliqlashadi.</string>
-    <string name="reason_comfortable">qulay harorat</string><string name="reason_milder">yumshoqroq</string><string name="reason_dry">quruq</string><string name="reason_light_wind">yengil shamol</string><string name="reason_low_uv">past UV</string><string name="hazard_extreme_heat">o‘ta issiq</string><string name="hazard_extreme_cold">o‘ta sovuq</string><string name="hazard_thunderstorm">momaqaldiroq</string><string name="hazard_heavy_precipitation">kuchli yog‘in</string><string name="hazard_strong_wind">kuchli shamol</string>
-    <string name="condition_clear">Ochiq</string><string name="condition_mostly_clear">Asosan ochiq</string><string name="condition_cloudy">Bulutli</string><string name="condition_foggy">Tumanli</string><string name="condition_drizzle">Mayda yomg‘ir</string><string name="condition_rain">Yomg‘ir</string><string name="condition_snow">Qor</string><string name="condition_showers">Jala</string><string name="condition_thunderstorm">Momaqaldiroq</string><string name="condition_unknown">Ob-havo</string>
-    <string name="no_matching_places">Mos joy topilmadi.</string><string name="city_search_unavailable">Shahar qidiruvi ishlamayapti. Internetni tekshirib, qayta urining.</string><string name="location_permission_denied">Joylashuvga ruxsat berilmadi. Shaharni qo‘lda qidiring.</string><string name="location_services_disabled">Joylashuv xizmatlari o‘chiq. Shahar qidiring yoki ularni Sozlamalarda yoqing.</string><string name="location_unavailable">Joylashuvingizni aniqlab bo‘lmadi. Shaharni qo‘lda qidiring.</string><string name="refresh_failed_saved">Yangilab bo‘lmadi. Saqlangan ob-havo ko‘rsatilmoqda.</string><string name="weather_unavailable">Ob-havo mavjud emas. Internetni tekshirib, qayta urining.</string>
+  <string name="brand">Nimbo</string>
+  <string name="cancel">Bekor qilish</string>
+  <string name="onboarding_title">Tanish tuyuladigan ob-havo.</string>
+  <string name="onboarding_body">Yaqinda his qilgan ob-havongiz bilan keyingi 24 soatni taqqoslash uchun joy tanlang.</string>
+  <string name="search_city">Shahar qidirish</string>
+  <string name="current_location">Joriy joylashuv</string>
+  <string name="change_later">Buni keyinroq o‘zgartirishingiz mumkin.</string>
+  <string name="finding_area">Hududingiz aniqlanmoqda…</string>
+  <string name="use_location">Taxminiy joylashuvimdan foydalanish</string>
+  <string name="location_privacy">Bosganingizdan keyin Nimbo mahalliy ob-havoni yuklash uchun taxminiy joylashuvni Open-Meteo’ga yuboradi. Shahar qidirish ruxsatsiz ham ishlaydi.</string>
+  <string name="loading_weather">Ob-havo yuklanmoqda</string>
+  <string name="error_title">Ob-havoni olib bo‘lmadi</string>
+  <string name="try_again">Qayta urinish</string>
+  <string name="refreshing">Yangilanmoqda…</string>
+  <string name="refresh">Yangilash</string>
+  <string name="change_place">Joyni o‘zgartirish</string>
+  <string name="feels_like">His qilinishi %1$d°</string>
+  <string name="saved_weather">Saqlangan ob-havo · yangilash kerak</string>
+  <string name="timeline_title">24 soat oldin · hozir · 24 soat keyin</string>
+  <string name="attribution">Ob-havo va joylar: Open-Meteo · Joylar GeoNames asosida</string>
+  <string name="about_nimbo">Nimbo haqida</string>
+  <string name="privacy_policy">Maxfiylik siyosati</string>
+  <string name="open_source_licenses">Ochiq manba litsenziyalari</string>
+  <string name="recent_days">So‘nggi kunlar</string>
+  <string name="yesterday">Kecha</string>
+  <plurals name="days_ago">
+    <item quantity="one">%1$d kun oldin</item>
+    <item quantity="other">%1$d kun oldin</item>
+  </plurals>
+  <string name="average_temperature">O‘rtacha %1$d°</string>
+  <string name="temperature_range">%1$d°–%2$d°</string>
+  <string name="units">O‘lchov birliklari</string>
+  <string name="automatic_units_description">Avtomatik rejim hozir %1$s va %2$s dan foydalanadi.</string>
+  <string name="unit_auto">Avtomatik</string>
+  <string name="unit_metric">Metrik</string>
+  <string name="unit_imperial">Imperial</string>
+  <string name="best_time_outside">Tashqariga chiqish uchun eng yaxshi vaqt</string>
+  <string name="time_range">%1$s–%2$s</string>
+  <string name="no_safe_window">Bugun tavsiya qilish uchun xavfsiz vaqt yo‘q</string>
+  <string name="not_enough_data">Hali yetarli soatlik ma’lumot yo‘q.</string>
+  <string name="hour_accessibility">%1$s, %2$d daraja, yog‘in ehtimoli %3$d foiz</string>
+  <string name="now">HOZIR</string>
+  <string name="detail_rain">Yog‘in</string>
+  <string name="detail_feels_like">His qilinishi</string>
+  <string name="detail_wind">Shamol</string>
+  <string name="wind_value">%1$d %2$s</string>
+  <string name="comparison_much_warmer">Kecha shu vaqtdagidan ancha iliqroq.</string>
+  <string name="comparison_warmer">Kecha shu vaqtdagidan biroz iliqroq.</string>
+  <string name="comparison_similar">Kecha shu vaqtdagi bilan deyarli bir xil.</string>
+  <string name="comparison_cooler">Kecha shu vaqtdagidan biroz salqinroq.</string>
+  <string name="comparison_much_cooler">Kecha shu vaqtdagidan ancha salqinroq.</string>
+  <string name="comparison_unavailable">Kelgusi soatlarning aniq ko‘rinishi.</string>
+  <string name="upcoming_rain">Taxminan %1$s da yomg‘ir yog‘ishi mumkin.</string>
+  <string name="upcoming_cooler">Taxminan %1$s da havo salqinlashadi.</string>
+  <string name="upcoming_warmer">Taxminan %1$s da havo iliqlashadi.</string>
+  <string name="reason_comfortable">qulay harorat</string>
+  <string name="reason_milder">yumshoqroq</string>
+  <string name="reason_dry">quruq</string>
+  <string name="reason_light_wind">yengil shamol</string>
+  <string name="reason_low_uv">past UV</string>
+  <string name="hazard_extreme_heat">o‘ta issiq</string>
+  <string name="hazard_extreme_cold">o‘ta sovuq</string>
+  <string name="hazard_thunderstorm">momaqaldiroq</string>
+  <string name="hazard_heavy_precipitation">kuchli yog‘in</string>
+  <string name="hazard_strong_wind">kuchli shamol</string>
+  <string name="condition_clear">Ochiq</string>
+  <string name="condition_mostly_clear">Asosan ochiq</string>
+  <string name="condition_cloudy">Bulutli</string>
+  <string name="condition_foggy">Tumanli</string>
+  <string name="condition_drizzle">Mayda yomg‘ir</string>
+  <string name="condition_rain">Yomg‘ir</string>
+  <string name="condition_snow">Qor</string>
+  <string name="condition_showers">Jala</string>
+  <string name="condition_thunderstorm">Momaqaldiroq</string>
+  <string name="condition_unknown">Ob-havo</string>
+  <string name="no_matching_places">Mos joy topilmadi.</string>
+  <string name="city_search_unavailable">Shahar qidiruvi ishlamayapti. Internetni tekshirib, qayta urining.</string>
+  <string name="location_permission_denied">Joylashuvga ruxsat berilmadi. Shaharni qo‘lda qidiring.</string>
+  <string name="location_services_disabled">Joylashuv xizmatlari o‘chiq. Shahar qidiring yoki ularni Sozlamalarda yoqing.</string>
+  <string name="location_unavailable">Joylashuvingizni aniqlab bo‘lmadi. Shaharni qo‘lda qidiring.</string>
+  <string name="refresh_failed_saved">Yangilab bo‘lmadi. Saqlangan ob-havo ko‘rsatilmoqda.</string>
+  <string name="weather_unavailable">Ob-havo mavjud emas. Internetni tekshirib, qayta urining.</string>
 </resources>

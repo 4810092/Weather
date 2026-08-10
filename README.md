@@ -34,9 +34,17 @@ Run the production gates locally:
 ```sh
 python3 scripts/check_localizations.py
 python3 scripts/check_repository.py
+python3 scripts/check_store_metadata.py
+python3 scripts/check_store_assets.py
 ./gradlew ktlintCheck :shared:allTests :shared:testAndroidHostTest \
   :shared:verifySqlDelightMigration :app:bundleRelease
 ```
+
+## Screenshots
+
+| Phone | Tablet |
+| --- | --- |
+| ![Nimbo hourly weather on a phone](store/screenshots/google-play/phone-en/03-details.png) | ![Nimbo adaptive two-column weather layout on a tablet](store/screenshots/google-play/tablet-en/01-overview.png) |
 
 ## Project map
 
@@ -47,6 +55,6 @@ python3 scripts/check_repository.py
 
 See [Architecture](docs/ARCHITECTURE.md), [Localization](docs/LOCALIZATION.md), [Privacy](docs/PRIVACY.md), and [Contributing](CONTRIBUTING.md).
 
-Weather data is provided by [Open-Meteo](https://open-meteo.com/); place search is provided by [GeoNames](https://www.geonames.org/). Provider terms and deployment constraints are documented in [Provider attribution](docs/PROVIDERS.md).
+Weather and place search are provided by [Open-Meteo](https://open-meteo.com/); its geocoding service is based on [GeoNames](https://www.geonames.org/). Provider terms and deployment constraints are documented in [Provider attribution](docs/PROVIDERS.md).
 
 Licensed under Apache-2.0.

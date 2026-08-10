@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import uz.ganikhodjaev.weather.shared.data.WeatherRepository
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
+import uz.ganikhodjaev.weather.shared.location.coarsened
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.UnitPreference
@@ -142,7 +143,10 @@ internal class WeatherStateHolder(
         scope.launch {
             when (val result = locationProvider.requestCurrentLocation()) {
                 is DeviceLocationResult.Success -> {
-                    val coordinates = result.coordinates
+                    // Always reduce device coordinates before persistence or network use.
+                    // Two decimal places are roughly kilometre-scale and cannot represent
+                    // a precise street-level location even when iOS grants Precise Location.
+                    val coordinates = result.coordinates.coarsened()
                     activate(
                         Location(
                             id = "device:${coordinates.latitude}:${coordinates.longitude}",

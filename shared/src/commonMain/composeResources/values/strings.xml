@@ -8,7 +8,7 @@
     <string name="change_later">You can change this later.</string>
     <string name="finding_area">Finding your area…</string>
     <string name="use_location">Use my approximate location</string>
-    <string name="location_privacy">Nimbo only requests location after you tap this button. City search works without permission.</string>
+    <string name="location_privacy">After you tap, Nimbo sends an approximate location to Open-Meteo to load local weather. City search works without permission.</string>
     <string name="loading_weather">Loading weather</string>
     <string name="error_title">Weather is out of reach</string>
     <string name="try_again">Try again</string>
@@ -18,7 +18,10 @@
     <string name="feels_like">Feels like %1$d°</string>
     <string name="saved_weather">Saved weather · update needed</string>
     <string name="timeline_title">24 hours before · now · 24 hours ahead</string>
-    <string name="attribution">Weather data by Open-Meteo · Location data by GeoNames</string>
+    <string name="attribution">Weather and place data by Open-Meteo · Places based on GeoNames</string>
+    <string name="about_nimbo">About Nimbo</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="open_source_licenses">Open-source licenses</string>
     <string name="recent_days">Recent days</string>
     <string name="yesterday">Yesterday</string>
     <plurals name="days_ago">

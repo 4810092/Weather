@@ -1,8 +1,12 @@
-# Repository audit
+# Repository baseline audit
 
 Date: 2026-08-09  
 Baseline commit: `8fcefb8`  
 Recovery tag: `legacy-android-v1.0.1`
+
+This section records the repository as originally received. Statements below are
+historical findings, not the current Nimbo implementation. Current remediation is
+recorded at the end so the document does not confuse baseline and release state.
 
 ## Production identity
 
@@ -61,3 +65,24 @@ Recovery tag: `legacy-android-v1.0.1`
 - Apple Developer: team access and whether App ID `uz.ganikhodjaev.weather` already exists.
 - Real devices and store-managed production APK for final upgrade testing.
 
+## Current remediation checkpoint — 2026-08-10
+
+- The public branch and recovery tag were rewritten to remove the embedded
+  OpenWeather credential and legacy AAB. `gitleaks git --log-opts=--all` reports
+  zero leaks across all reachable history. Nimbo has no client API key and uses
+  the keyless Open-Meteo endpoint.
+- Repository cleanup cannot revoke an already disclosed credential. No
+  authenticated OpenWeather account is available in this environment, so the
+  owner must identify the legacy key in the OpenWeather account, revoke it, and
+  review its usage history. This remains an external security action even though
+  Nimbo no longer depends on the key.
+- Play Console was inspected: production is version code 2 / version name 1.0.1,
+  and Play App Signing is enabled. The accepted upload private key is not present
+  locally; it must be recovered or reset before version code 3 can be delivered.
+- The Apple team is `5SWEZ7HTYP`; a valid Apple Distribution certificate is in the
+  keychain. A device archive for `uz.ganikhodjaev.weather` succeeds, but App Store
+  export cannot obtain an account/profile because Xcode has no authenticated
+  Apple Developer account in this environment.
+- The current code is SQLDelight-backed, offline-first, localized, R8-enabled, and
+  covered by the quality and release evidence in `QUALITY.md`, `QA_MATRIX.md`, and
+  `RELEASE.md`.

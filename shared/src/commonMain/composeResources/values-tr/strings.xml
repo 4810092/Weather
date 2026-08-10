@@ -1,13 +1,85 @@
+<?xml version="1.0"?>
 <resources>
-    <string name="brand">Nimbo</string><string name="cancel">İptal</string><string name="onboarding_title">Tanıdık hissettiren hava durumu.</string><string name="onboarding_body">Yakın zamanda hissettiğiniz havayla birlikte önünüzdeki 24 saati görmek için bir yer seçin.</string>
-    <string name="search_city">Şehir ara</string><string name="current_location">Mevcut konum</string><string name="change_later">Bunu daha sonra değiştirebilirsiniz.</string><string name="finding_area">Bölgeniz bulunuyor…</string><string name="use_location">Yaklaşık konumumu kullan</string><string name="location_privacy">Nimbo yalnızca bu düğmeye dokunduktan sonra konum ister. Şehir arama izinsiz çalışır.</string>
-    <string name="loading_weather">Hava durumu yükleniyor</string><string name="error_title">Hava durumuna ulaşılamıyor</string><string name="try_again">Tekrar dene</string><string name="refreshing">Yenileniyor…</string><string name="refresh">Yenile</string><string name="change_place">Yeri değiştir</string><string name="feels_like">Hissedilen %1$d°</string><string name="saved_weather">Kayıtlı hava · güncelleme gerekli</string><string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string><string name="attribution">Hava verileri Open-Meteo · Konum verileri GeoNames</string>
-    <string name="recent_days">Son günler</string><string name="yesterday">Dün</string><plurals name="days_ago"><item quantity="one">%1$d gün önce</item><item quantity="other">%1$d gün önce</item></plurals><string name="average_temperature">Ort. %1$d°</string><string name="temperature_range">%1$d°–%2$d°</string>
-    <string name="units">Birimler</string><string name="automatic_units_description">Otomatik mod şu anda %1$s ve %2$s kullanıyor.</string><string name="unit_auto">Otomatik</string><string name="unit_metric">Metrik</string><string name="unit_imperial">İngiliz</string>
-    <string name="best_time_outside">Dışarı çıkmak için en iyi zaman</string><string name="time_range">%1$s–%2$s</string><string name="no_safe_window">Bugün önerilebilecek güvenli bir zaman yok</string><string name="not_enough_data">Henüz yeterli saatlik veri yok.</string><string name="hour_accessibility">%1$s, %2$d derece, yüzde %3$d yağış olasılığı</string><string name="now">ŞİMDİ</string>
-    <string name="detail_rain">Yağış</string><string name="detail_feels_like">Hissedilen</string><string name="detail_wind">Rüzgâr</string><string name="wind_value">%1$d %2$s</string>
-    <string name="comparison_much_warmer">Dün bu saate göre belirgin biçimde daha sıcak.</string><string name="comparison_warmer">Dün bu saate göre biraz daha sıcak.</string><string name="comparison_similar">Dün bu saatle hemen hemen aynı.</string><string name="comparison_cooler">Dün bu saate göre biraz daha serin.</string><string name="comparison_much_cooler">Dün bu saate göre belirgin biçimde daha serin.</string><string name="comparison_unavailable">Önümüzdeki saatlere net bir bakış.</string><string name="upcoming_rain">%1$s civarında yağmur olası.</string><string name="upcoming_cooler">%1$s civarında hava serinleyecek.</string><string name="upcoming_warmer">%1$s civarında hava ısınacak.</string>
-    <string name="reason_comfortable">rahat sıcaklık</string><string name="reason_milder">daha ılık</string><string name="reason_dry">kuru</string><string name="reason_light_wind">hafif rüzgâr</string><string name="reason_low_uv">düşük UV</string><string name="hazard_extreme_heat">aşırı sıcak</string><string name="hazard_extreme_cold">aşırı soğuk</string><string name="hazard_thunderstorm">gök gürültülü fırtına</string><string name="hazard_heavy_precipitation">şiddetli yağış</string><string name="hazard_strong_wind">kuvvetli rüzgâr</string>
-    <string name="condition_clear">Açık</string><string name="condition_mostly_clear">Çoğunlukla açık</string><string name="condition_cloudy">Bulutlu</string><string name="condition_foggy">Sisli</string><string name="condition_drizzle">Çisenti</string><string name="condition_rain">Yağmur</string><string name="condition_snow">Kar</string><string name="condition_showers">Sağanak</string><string name="condition_thunderstorm">Gök gürültülü fırtına</string><string name="condition_unknown">Hava durumu</string>
-    <string name="no_matching_places">Eşleşen yer bulunamadı.</string><string name="city_search_unavailable">Şehir arama kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string><string name="location_permission_denied">Konum erişimi verilmedi. Bunun yerine şehir arayın.</string><string name="location_services_disabled">Konum hizmetleri kapalı. Bir şehir arayın veya Ayarlar’dan etkinleştirin.</string><string name="location_unavailable">Konumunuz belirlenemedi. Bunun yerine şehir arayın.</string><string name="refresh_failed_saved">Yenilenemedi. Kayıtlı hava durumu gösteriliyor.</string><string name="weather_unavailable">Hava durumu kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
+  <string name="brand">Nimbo</string>
+  <string name="cancel">İptal</string>
+  <string name="onboarding_title">Tanıdık hissettiren hava durumu.</string>
+  <string name="onboarding_body">Yakın zamanda hissettiğiniz havayla birlikte önünüzdeki 24 saati görmek için bir yer seçin.</string>
+  <string name="search_city">Şehir ara</string>
+  <string name="current_location">Mevcut konum</string>
+  <string name="change_later">Bunu daha sonra değiştirebilirsiniz.</string>
+  <string name="finding_area">Bölgeniz bulunuyor…</string>
+  <string name="use_location">Yaklaşık konumumu kullan</string>
+  <string name="location_privacy">Dokunduktan sonra Nimbo, yerel hava durumunu yüklemek için yaklaşık konumu Open-Meteo’ya gönderir. Şehir arama izinsiz çalışır.</string>
+  <string name="loading_weather">Hava durumu yükleniyor</string>
+  <string name="error_title">Hava durumuna ulaşılamıyor</string>
+  <string name="try_again">Tekrar dene</string>
+  <string name="refreshing">Yenileniyor…</string>
+  <string name="refresh">Yenile</string>
+  <string name="change_place">Yeri değiştir</string>
+  <string name="feels_like">Hissedilen %1$d°</string>
+  <string name="saved_weather">Kayıtlı hava · güncelleme gerekli</string>
+  <string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string>
+  <string name="attribution">Hava ve yer verileri Open-Meteo · Yerler GeoNames tabanlıdır</string>
+  <string name="about_nimbo">Nimbo hakkında</string>
+  <string name="privacy_policy">Gizlilik politikası</string>
+  <string name="open_source_licenses">Açık kaynak lisansları</string>
+  <string name="recent_days">Son günler</string>
+  <string name="yesterday">Dün</string>
+  <plurals name="days_ago">
+    <item quantity="one">%1$d gün önce</item>
+    <item quantity="other">%1$d gün önce</item>
+  </plurals>
+  <string name="average_temperature">Ort. %1$d°</string>
+  <string name="temperature_range">%1$d°–%2$d°</string>
+  <string name="units">Birimler</string>
+  <string name="automatic_units_description">Otomatik mod şu anda %1$s ve %2$s kullanıyor.</string>
+  <string name="unit_auto">Otomatik</string>
+  <string name="unit_metric">Metrik</string>
+  <string name="unit_imperial">İngiliz</string>
+  <string name="best_time_outside">Dışarı çıkmak için en iyi zaman</string>
+  <string name="time_range">%1$s–%2$s</string>
+  <string name="no_safe_window">Bugün önerilebilecek güvenli bir zaman yok</string>
+  <string name="not_enough_data">Henüz yeterli saatlik veri yok.</string>
+  <string name="hour_accessibility">%1$s, %2$d derece, yüzde %3$d yağış olasılığı</string>
+  <string name="now">ŞİMDİ</string>
+  <string name="detail_rain">Yağış</string>
+  <string name="detail_feels_like">Hissedilen</string>
+  <string name="detail_wind">Rüzgâr</string>
+  <string name="wind_value">%1$d %2$s</string>
+  <string name="comparison_much_warmer">Dün bu saate göre belirgin biçimde daha sıcak.</string>
+  <string name="comparison_warmer">Dün bu saate göre biraz daha sıcak.</string>
+  <string name="comparison_similar">Dün bu saatle hemen hemen aynı.</string>
+  <string name="comparison_cooler">Dün bu saate göre biraz daha serin.</string>
+  <string name="comparison_much_cooler">Dün bu saate göre belirgin biçimde daha serin.</string>
+  <string name="comparison_unavailable">Önümüzdeki saatlere net bir bakış.</string>
+  <string name="upcoming_rain">%1$s civarında yağmur olası.</string>
+  <string name="upcoming_cooler">%1$s civarında hava serinleyecek.</string>
+  <string name="upcoming_warmer">%1$s civarında hava ısınacak.</string>
+  <string name="reason_comfortable">rahat sıcaklık</string>
+  <string name="reason_milder">daha ılık</string>
+  <string name="reason_dry">kuru</string>
+  <string name="reason_light_wind">hafif rüzgâr</string>
+  <string name="reason_low_uv">düşük UV</string>
+  <string name="hazard_extreme_heat">aşırı sıcak</string>
+  <string name="hazard_extreme_cold">aşırı soğuk</string>
+  <string name="hazard_thunderstorm">gök gürültülü fırtına</string>
+  <string name="hazard_heavy_precipitation">şiddetli yağış</string>
+  <string name="hazard_strong_wind">kuvvetli rüzgâr</string>
+  <string name="condition_clear">Açık</string>
+  <string name="condition_mostly_clear">Çoğunlukla açık</string>
+  <string name="condition_cloudy">Bulutlu</string>
+  <string name="condition_foggy">Sisli</string>
+  <string name="condition_drizzle">Çisenti</string>
+  <string name="condition_rain">Yağmur</string>
+  <string name="condition_snow">Kar</string>
+  <string name="condition_showers">Sağanak</string>
+  <string name="condition_thunderstorm">Gök gürültülü fırtına</string>
+  <string name="condition_unknown">Hava durumu</string>
+  <string name="no_matching_places">Eşleşen yer bulunamadı.</string>
+  <string name="city_search_unavailable">Şehir arama kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
+  <string name="location_permission_denied">Konum erişimi verilmedi. Bunun yerine şehir arayın.</string>
+  <string name="location_services_disabled">Konum hizmetleri kapalı. Bir şehir arayın veya Ayarlar’dan etkinleştirin.</string>
+  <string name="location_unavailable">Konumunuz belirlenemedi. Bunun yerine şehir arayın.</string>
+  <string name="refresh_failed_saved">Yenilenemedi. Kayıtlı hava durumu gösteriliyor.</string>
+  <string name="weather_unavailable">Hava durumu kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
 </resources>

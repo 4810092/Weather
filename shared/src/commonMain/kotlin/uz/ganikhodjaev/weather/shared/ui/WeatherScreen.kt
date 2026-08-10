@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -371,6 +372,36 @@ private fun WeatherContent(
                     .clickable { uriHandler.openUri("https://open-meteo.com/") }
                     .padding(vertical = 12.dp)
             )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                TextButton(
+                    onClick = {
+                        uriHandler.openUri("https://github.com/4810092/Weather")
+                    }
+                ) {
+                    Text(stringResource(Res.string.about_nimbo))
+                }
+                TextButton(
+                    onClick = {
+                        uriHandler.openUri(
+                            "https://github.com/4810092/Weather/blob/master/docs/PRIVACY.md"
+                        )
+                    }
+                ) {
+                    Text(stringResource(Res.string.privacy_policy))
+                }
+                TextButton(
+                    onClick = {
+                        uriHandler.openUri(
+                            "https://github.com/4810092/Weather/blob/master/LICENSE"
+                        )
+                    }
+                ) {
+                    Text(stringResource(Res.string.open_source_licenses))
+                }
+            }
         }
     }
 }
@@ -661,14 +692,17 @@ private fun UnitButton(
     OutlinedButton(
         onClick = { onPreferenceChanged(option) },
         modifier = modifier,
-        enabled = option != preference
+        enabled = option != preference,
+        contentPadding = PaddingValues(horizontal = 6.dp)
     ) {
         Text(
             when (option) {
                 UnitPreference.Automatic -> stringResource(Res.string.unit_auto)
                 UnitPreference.Metric -> stringResource(Res.string.unit_metric)
                 UnitPreference.Imperial -> stringResource(Res.string.unit_imperial)
-            }
+            },
+            maxLines = 1,
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }

@@ -4,7 +4,7 @@ English is the canonical source locale in Compose Multiplatform resources. Compl
 
 User-facing state carries semantic message identifiers, never preformatted English errors, so error, retry, offline, search, and permission paths resolve through the same localized resources. Time is formatted by the platform locale while applying the selected city's IANA timezone. Units are converted only at the presentation boundary. Relative-day labels use plural resources rather than sentence concatenation.
 
-Run `python3 scripts/check_localizations.py` to compare every overlay with the canonical set, including resource types and positional placeholders. CI runs the same command, so a new canonical resource without every production translation fails the build.
+Run `python3 scripts/check_localizations.py` to compare every overlay with the canonical set, including resource types and positional placeholders. The same check verifies all 13 localized iOS location-permission descriptions in `InfoPlist.strings`. CI runs the command, so a new canonical resource without every production translation or a missing system permission localization fails the build.
 
 ## Release QA
 

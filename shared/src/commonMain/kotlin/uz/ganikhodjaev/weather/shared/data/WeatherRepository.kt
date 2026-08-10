@@ -165,6 +165,11 @@ internal class WeatherRepository(
                 timezone = location.timezone,
                 is_active = 1
             )
+            // Keep only the selected place. Child rows are removed explicitly so
+            // privacy retention does not depend on platform foreign-key settings.
+            queries.deleteWeatherForInactiveLocations()
+            queries.deleteForecastSnapshotsForInactiveLocations()
+            queries.deleteInactiveLocations()
         }
     }
 

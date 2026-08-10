@@ -13,6 +13,21 @@ RESOURCE_ROOT = ROOT / "shared/src/commonMain/composeResources"
 PRODUCTION_LOCALES = (
     "ar", "de", "es", "fr", "hi", "ja", "ko", "pt", "ru", "tr", "uz", "zh-rCN",
 )
+IOS_LOCALE_DIRECTORIES = {
+    "en": "en.lproj",
+    "ar": "ar.lproj",
+    "de": "de.lproj",
+    "es": "es.lproj",
+    "fr": "fr.lproj",
+    "hi": "hi.lproj",
+    "ja": "ja.lproj",
+    "ko": "ko.lproj",
+    "pt": "pt.lproj",
+    "ru": "ru.lproj",
+    "tr": "tr.lproj",
+    "uz": "uz.lproj",
+    "zh-rCN": "zh-Hans.lproj",
+}
 PLACEHOLDER = re.compile(r"%\d+\$[a-zA-Z]")
 
 
@@ -60,13 +75,27 @@ def main() -> int:
                     f"found {translated[key]}"
                 )
 
+    ios_root = ROOT / "iosApp/Nimbo"
+    permission_key = "NSLocationWhenInUseUsageDescription"
+    for locale, directory in IOS_LOCALE_DIRECTORIES.items():
+        path = ios_root / directory / "InfoPlist.strings"
+        if not path.exists():
+            failures.append(f"iOS {locale}: missing {path.relative_to(ROOT)}")
+            continue
+        content = path.read_text(encoding="utf-8")
+        if not re.search(
+            rf'^\s*"{permission_key}"\s*=\s*".+";\s*$', content, re.MULTILINE
+        ):
+            failures.append(f"iOS {locale}: missing localized {permission_key}")
+
     if failures:
         print("Localization completeness failed:", file=sys.stderr)
         print("\n".join(f"- {failure}" for failure in failures), file=sys.stderr)
         return 1
     print(
         f"Localization completeness passed: {len(canonical)} resources × "
-        f"{len(PRODUCTION_LOCALES)} production overlays."
+        f"{len(PRODUCTION_LOCALES)} production overlays; "
+        f"{len(IOS_LOCALE_DIRECTORIES)} iOS permission localizations."
     )
     return 0
 

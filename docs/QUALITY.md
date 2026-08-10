@@ -2,6 +2,10 @@
 
 ## Automated gates
 
+The August 10 release gate executes 36 shared/host test cases with zero failures,
+in addition to compile, static, localization, metadata, asset, and repository
+checks.
+
 - Formatting and static analysis.
 - Common/domain tests for comparisons, insights, comfort scoring, unit conversions, weather-code mapping, timezones, DST, and date boundaries.
 - Data tests for decoding, mapping, cache policy, stale/fresh behavior, failures, snapshots, and migrations.
@@ -9,6 +13,8 @@
 - SQLDelight migration parity is also checked against the committed versioned schema by `verifySqlDelightMigration`; both checks run from a clean build in CI.
 - State-holder tests for onboarding, permission, cached/offline, refresh, retry, and location changes.
 - Android and iOS compilation on pull requests; release builds on release candidates.
+- Store metadata covers 13 locales; store artwork and 13 production screenshots
+  are validated for expected dimensions and formats in CI.
 - Critical UI flows and screenshot coverage for light, dark, Arabic RTL, large text, phone, and tablet when the selected tooling is stable on both targets.
 
 ## Manual release matrix

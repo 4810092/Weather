@@ -31,6 +31,8 @@ jobs:
         run: |
           python3 scripts/check_repository.py
           python3 scripts/check_localizations.py
+          python3 scripts/check_store_metadata.py
+          python3 scripts/check_store_assets.py
           git diff --check
       - name: Static analysis, tests, migrations, and Android release build
         run: >-
