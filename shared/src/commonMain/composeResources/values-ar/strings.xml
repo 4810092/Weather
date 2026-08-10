@@ -1,14 +1,78 @@
 <resources>
-    <string name="onboarding_title">طقس يمكنك أن تشعر به.</string>
-    <string name="onboarding_body">اختر مكانًا لمقارنة الساعات الـ24 القادمة بالطقس الذي شعرت به مؤخرًا.</string>
-    <string name="search_city">ابحث عن مدينة</string><string name="change_later">يمكنك تغيير ذلك لاحقًا.</string>
-    <string name="finding_area">جارٍ تحديد منطقتك…</string><string name="use_location">استخدام موقعي التقريبي</string>
-    <string name="location_privacy">لا يطلب Nimbo موقعك إلا بعد الضغط هنا. يعمل بحث المدن دون إذن.</string>
-    <string name="error_title">تعذّر الوصول إلى الطقس</string><string name="try_again">حاول مجددًا</string>
-    <string name="refreshing">جارٍ التحديث…</string><string name="refresh">تحديث</string><string name="change_place">تغيير المكان</string>
-    <string name="feels_like">المحسوسة %1$d°</string><string name="timeline_title">قبل 24 ساعة · الآن · بعد 24 ساعة</string>
-    <string name="recent_days">الأيام الأخيرة</string><string name="yesterday">أمس</string><string name="units">الوحدات</string>
-    <string name="best_time_outside">أفضل وقت للخروج</string><string name="no_safe_window">لا توجد فترة آمنة نوصي بها اليوم</string>
-    <string name="not_enough_data">لا تتوفر بيانات ساعية كافية بعد.</string><string name="now">الآن</string>
-    <string name="detail_rain">المطر</string><string name="detail_wind">الرياح</string><string name="detail_feels_like">المحسوسة</string>
+    <string name="brand">Nimbo</string>
+    <string name="cancel">إلغاء</string>
+    <string name="onboarding_title">طقس يبدو مألوفًا.</string>
+    <string name="onboarding_body">اختر مكانًا لترى الساعات الـ24 القادمة إلى جانب طقس عشته مؤخرًا.</string>
+    <string name="search_city">ابحث عن مدينة</string>
+    <string name="current_location">الموقع الحالي</string>
+    <string name="change_later">يمكنك تغيير هذا لاحقًا.</string>
+    <string name="finding_area">جارٍ تحديد منطقتك…</string>
+    <string name="use_location">استخدام موقعي التقريبي</string>
+    <string name="location_privacy">لا يطلب Nimbo الموقع إلا بعد الضغط على هذا الزر. يعمل البحث عن مدينة دون إذن.</string>
+    <string name="loading_weather">جارٍ تحميل الطقس</string>
+    <string name="error_title">تعذّر الوصول إلى الطقس</string>
+    <string name="try_again">حاول مجددًا</string>
+    <string name="refreshing">جارٍ التحديث…</string>
+    <string name="refresh">تحديث</string>
+    <string name="change_place">تغيير المكان</string>
+    <string name="feels_like">المحسوسة &#x2066;%1$d°&#x2069;</string>
+    <string name="saved_weather">طقس محفوظ · يلزم التحديث</string>
+    <string name="timeline_title">قبل 24 ساعة · الآن · بعد 24 ساعة</string>
+    <string name="attribution">بيانات الطقس من Open-Meteo · بيانات المواقع من GeoNames</string>
+    <string name="recent_days">الأيام الأخيرة</string>
+    <string name="yesterday">أمس</string>
+    <plurals name="days_ago"><item quantity="zero">منذ %1$d يوم</item><item quantity="one">منذ يوم واحد</item><item quantity="two">منذ يومين</item><item quantity="few">منذ %1$d أيام</item><item quantity="many">منذ %1$d يومًا</item><item quantity="other">منذ %1$d يوم</item></plurals>
+    <string name="average_temperature">المتوسط %1$d°</string>
+    <string name="temperature_range">%1$d°–%2$d°</string>
+    <string name="units">الوحدات</string>
+    <string name="automatic_units_description">يستخدم الوضع التلقائي حاليًا %1$s و%2$s.</string>
+    <string name="unit_auto">تلقائي</string>
+    <string name="unit_metric">متري</string>
+    <string name="unit_imperial">إمبراطوري</string>
+    <string name="best_time_outside">أفضل وقت للخروج</string>
+    <string name="time_range">%1$s–%2$s</string>
+    <string name="no_safe_window">لا توجد فترة آمنة موصى بها اليوم</string>
+    <string name="not_enough_data">لا تتوفر بيانات كافية لكل ساعة بعد.</string>
+    <string name="hour_accessibility">%1$s، %2$d درجة، احتمال هطول %3$d بالمئة</string>
+    <string name="now">الآن</string>
+    <string name="detail_rain">الهطول</string>
+    <string name="detail_feels_like">المحسوسة</string>
+    <string name="detail_wind">الرياح</string>
+    <string name="wind_value">&#x2066;%1$d %2$s&#x2069;</string>
+    <string name="comparison_much_warmer">أدفأ بوضوح من أمس في هذا الوقت.</string>
+    <string name="comparison_warmer">أدفأ قليلًا من أمس في هذا الوقت.</string>
+    <string name="comparison_similar">مماثل تقريبًا لأمس في هذا الوقت.</string>
+    <string name="comparison_cooler">أبرد قليلًا من أمس في هذا الوقت.</string>
+    <string name="comparison_much_cooler">أبرد بوضوح من أمس في هذا الوقت.</string>
+    <string name="comparison_unavailable">نظرة واضحة إلى الساعات القادمة.</string>
+    <string name="upcoming_rain">يُحتمل هطول المطر نحو %1$s.</string>
+    <string name="upcoming_cooler">يصبح الطقس أبرد نحو %1$s.</string>
+    <string name="upcoming_warmer">يصبح الطقس أدفأ نحو %1$s.</string>
+    <string name="reason_comfortable">حرارة مريحة</string>
+    <string name="reason_milder">ألطف</string>
+    <string name="reason_dry">جاف</string>
+    <string name="reason_light_wind">رياح خفيفة</string>
+    <string name="reason_low_uv">أشعة فوق بنفسجية منخفضة</string>
+    <string name="hazard_extreme_heat">حرارة شديدة</string>
+    <string name="hazard_extreme_cold">برد شديد</string>
+    <string name="hazard_thunderstorm">عاصفة رعدية</string>
+    <string name="hazard_heavy_precipitation">هطول غزير</string>
+    <string name="hazard_strong_wind">رياح قوية</string>
+    <string name="condition_clear">صافٍ</string>
+    <string name="condition_mostly_clear">صافٍ غالبًا</string>
+    <string name="condition_cloudy">غائم</string>
+    <string name="condition_foggy">ضبابي</string>
+    <string name="condition_drizzle">رذاذ</string>
+    <string name="condition_rain">مطر</string>
+    <string name="condition_snow">ثلج</string>
+    <string name="condition_showers">زخات</string>
+    <string name="condition_thunderstorm">عاصفة رعدية</string>
+    <string name="condition_unknown">الطقس</string>
+    <string name="no_matching_places">لم يتم العثور على أماكن مطابقة.</string>
+    <string name="city_search_unavailable">البحث عن المدن غير متاح. تحقق من الاتصال وحاول مجددًا.</string>
+    <string name="location_permission_denied">لم يُمنح إذن الموقع. ابحث عن مدينة بدلًا من ذلك.</string>
+    <string name="location_services_disabled">خدمات الموقع متوقفة. ابحث عن مدينة أو فعّلها من الإعدادات.</string>
+    <string name="location_unavailable">تعذّر تحديد موقعك. ابحث عن مدينة بدلًا من ذلك.</string>
+    <string name="refresh_failed_saved">تعذّر التحديث. يتم عرض الطقس المحفوظ.</string>
+    <string name="weather_unavailable">الطقس غير متاح. تحقق من الاتصال وحاول مجددًا.</string>
 </resources>

@@ -1,18 +1,18 @@
 package uz.ganikhodjaev.weather.shared.domain
 
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.weatherCondition
-import kotlin.time.Instant
 
 internal enum class OutsideReason {
     ComfortableTemperature,
     LowerHeat,
     Dry,
     LightWind,
-    LowUv,
+    LowUv
 }
 
 internal enum class OutsideHazard {
@@ -20,7 +20,7 @@ internal enum class OutsideHazard {
     ExtremeCold,
     Thunderstorm,
     HeavyPrecipitation,
-    StrongWind,
+    StrongWind
 }
 
 internal sealed interface OutsideRecommendation {
@@ -28,7 +28,7 @@ internal sealed interface OutsideRecommendation {
         val startEpochSeconds: Long,
         val endEpochSeconds: Long,
         val reasons: List<OutsideReason>,
-        val score: Int,
+        val score: Int
     ) : OutsideRecommendation
 
     data class Unsafe(val hazards: Set<OutsideHazard>) : OutsideRecommendation
@@ -39,7 +39,7 @@ internal class BestTimeOutsideEngine {
     fun evaluate(
         timeline: List<WeatherHour>,
         timezone: String,
-        nowEpochSeconds: Long,
+        nowEpochSeconds: Long
     ): OutsideRecommendation {
         val zone = runCatching { TimeZone.of(timezone) }.getOrElse { TimeZone.UTC }
         val localDate = Instant.fromEpochSeconds(nowEpochSeconds).toLocalDateTime(zone).date
@@ -57,8 +57,11 @@ internal class BestTimeOutsideEngine {
         val safeWindows = windows.filter { window -> window.flatMap(::hazards).isEmpty() }
         if (safeWindows.isEmpty()) {
             val detected = today.flatMap(::hazards).toSet()
-            return if (detected.isEmpty()) OutsideRecommendation.Unavailable
-            else OutsideRecommendation.Unsafe(detected)
+            return if (detected.isEmpty()) {
+                OutsideRecommendation.Unavailable
+            } else {
+                OutsideRecommendation.Unsafe(detected)
+            }
         }
 
         val best = safeWindows.maxBy(::windowScore)
@@ -67,7 +70,7 @@ internal class BestTimeOutsideEngine {
             startEpochSeconds = best.first().epochSeconds,
             endEpochSeconds = best.last().epochSeconds + HOUR_SECONDS,
             reasons = reasons,
-            score = windowScore(best).toInt().coerceIn(0, 100),
+            score = windowScore(best).toInt().coerceIn(0, 100)
         )
     }
 
@@ -104,8 +107,11 @@ internal class BestTimeOutsideEngine {
 
     private fun reasons(hours: List<WeatherHour>): List<OutsideReason> = buildList {
         val averageFeels = hours.map { it.apparentTemperatureC }.average()
-        if (averageFeels in 16.0..25.0) add(OutsideReason.ComfortableTemperature)
-        else if (averageFeels < 32.0) add(OutsideReason.LowerHeat)
+        if (averageFeels in 16.0..25.0) {
+            add(OutsideReason.ComfortableTemperature)
+        } else if (averageFeels < 32.0) {
+            add(OutsideReason.LowerHeat)
+        }
         if (hours.all { it.precipitationProbability < 30 && it.precipitationMm < 0.2 }) {
             add(OutsideReason.Dry)
         }

@@ -6,7 +6,7 @@ import uz.ganikhodjaev.weather.shared.PlatformContext
 internal data class DeviceCoordinates(
     val latitude: Double,
     val longitude: Double,
-    val timezone: String,
+    val timezone: String
 )
 
 internal sealed interface DeviceLocationResult {
@@ -22,5 +22,5 @@ internal fun interface DeviceLocationProvider {
 
 @Composable
 internal expect fun rememberDeviceLocationProvider(
-    platformContext: PlatformContext,
+    platformContext: PlatformContext
 ): DeviceLocationProvider

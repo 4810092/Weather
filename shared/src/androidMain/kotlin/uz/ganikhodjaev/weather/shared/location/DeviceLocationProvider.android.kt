@@ -12,32 +12,33 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
+import java.util.TimeZone
+import kotlin.coroutines.resume
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import uz.ganikhodjaev.weather.shared.PlatformContext
-import java.util.TimeZone
-import kotlin.coroutines.resume
 
 @Composable
 internal actual fun rememberDeviceLocationProvider(
-    platformContext: PlatformContext,
+    platformContext: PlatformContext
 ): DeviceLocationProvider {
     val activity = platformContext.activity
     val permissionResult = remember { PermissionResult() }
     val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
+        ActivityResultContracts.RequestPermission()
     ) { granted -> permissionResult.complete(granted) }
 
     return remember(activity, permissionLauncher) {
         DeviceLocationProvider {
             val alreadyGranted = ContextCompat.checkSelfPermission(
                 activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-            val granted = alreadyGranted || permissionResult.request {
-                permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-            }
+            val granted = alreadyGranted ||
+                permissionResult.request {
+                    permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                }
             if (!granted) {
                 DeviceLocationResult.PermissionDenied
             } else {
@@ -52,8 +53,8 @@ internal actual fun rememberDeviceLocationProvider(
                             DeviceCoordinates(
                                 latitude = location.latitude,
                                 longitude = location.longitude,
-                                timezone = TimeZone.getDefault().id,
-                            ),
+                                timezone = TimeZone.getDefault().id
+                            )
                         )
                     } ?: DeviceLocationResult.Failed("A current location was not available.")
                 }

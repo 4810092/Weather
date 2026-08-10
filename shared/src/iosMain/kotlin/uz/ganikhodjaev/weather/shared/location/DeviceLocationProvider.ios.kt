@@ -2,6 +2,8 @@ package uz.ganikhodjaev.weather.shared.location
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -18,12 +20,10 @@ import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 import uz.ganikhodjaev.weather.shared.PlatformContext
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 @Composable
 internal actual fun rememberDeviceLocationProvider(
-    platformContext: PlatformContext,
+    platformContext: PlatformContext
 ): DeviceLocationProvider = remember(platformContext) { IosDeviceLocationProvider() }
 
 @OptIn(ExperimentalForeignApi::class)
@@ -33,7 +33,7 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
     private val delegate = LocationDelegate(
         onAuthorizationChanged = ::authorizationChanged,
         onLocations = ::locationsUpdated,
-        onError = ::locationFailed,
+        onError = ::locationFailed
     )
 
     init {
@@ -44,18 +44,20 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
     override suspend fun requestCurrentLocation(): DeviceLocationResult =
         withTimeoutOrNull(12_000) {
             suspendCancellableCoroutine { next ->
-            continuation?.resume(DeviceLocationResult.Failed("A newer location request replaced this one."))
-            continuation = next
-            next.invokeOnCancellation { continuation = null }
-            when (manager.authorizationStatus) {
-                kCLAuthorizationStatusDenied,
-                kCLAuthorizationStatusRestricted -> finish(
-                    DeviceLocationResult.PermissionDenied,
+                continuation?.resume(
+                    DeviceLocationResult.Failed("A newer location request replaced this one.")
                 )
-                kCLAuthorizationStatusNotDetermined ->
-                    manager.requestWhenInUseAuthorization()
-                else -> requestIfAvailable()
-            }
+                continuation = next
+                next.invokeOnCancellation { continuation = null }
+                when (manager.authorizationStatus) {
+                    kCLAuthorizationStatusDenied,
+                    kCLAuthorizationStatusRestricted -> finish(
+                        DeviceLocationResult.PermissionDenied
+                    )
+                    kCLAuthorizationStatusNotDetermined ->
+                        manager.requestWhenInUseAuthorization()
+                    else -> requestIfAvailable()
+                }
             }
         } ?: DeviceLocationResult.Failed("A current location wasn't available in time.")
 
@@ -64,7 +66,7 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
         when (manager.authorizationStatus) {
             kCLAuthorizationStatusDenied,
             kCLAuthorizationStatusRestricted -> finish(
-                DeviceLocationResult.PermissionDenied,
+                DeviceLocationResult.PermissionDenied
             )
             kCLAuthorizationStatusAuthorizedAlways,
             kCLAuthorizationStatusAuthorizedWhenInUse -> requestIfAvailable()
@@ -79,9 +81,9 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
                 DeviceCoordinates(
                     latitude = location.coordinate.useContents { latitude },
                     longitude = location.coordinate.useContents { longitude },
-                    timezone = TimeZone.currentSystemDefault().id,
-                ),
-            ),
+                    timezone = TimeZone.currentSystemDefault().id
+                )
+            )
         )
     }
 
@@ -107,8 +109,9 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
 private class LocationDelegate(
     private val onAuthorizationChanged: (CLLocationManager) -> Unit,
     private val onLocations: (List<*>) -> Unit,
-    private val onError: (NSError) -> Unit,
-) : NSObject(), CLLocationManagerDelegateProtocol {
+    private val onError: (NSError) -> Unit
+) : NSObject(),
+    CLLocationManagerDelegateProtocol {
     override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
         onAuthorizationChanged(manager)
     }

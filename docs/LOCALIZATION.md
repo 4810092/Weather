@@ -1,15 +1,14 @@
-# Localization status
+# Localization
 
-English is the canonical source locale in Compose Multiplatform resources.
+English is the canonical source locale in Compose Multiplatform resources. Complete overlays ship for Russian, Arabic, Spanish, French, German, Portuguese, Simplified Chinese, Japanese, Korean, Hindi, Turkish, and Uzbek.
 
-Locale overlays currently exist for Russian, Arabic, Spanish, French, German, Portuguese, Simplified Chinese, Japanese, Korean, Hindi, Turkish, and Uzbek. The first-run flow, primary controls, current conditions, timeline heading, recent-days heading, units heading, and outside-time states are localized. Secondary insight/reason/hazard strings still fall back to English in overlays that do not yet override them; this must be closed and reviewed by native speakers before release.
+User-facing state carries semantic message identifiers, never preformatted English errors, so error, retry, offline, search, and permission paths resolve through the same localized resources. Time is formatted by the platform locale while applying the selected city's IANA timezone. Units are converted only at the presentation boundary. Relative-day labels use plural resources rather than sentence concatenation.
 
-The app follows the system language. Android per-app language metadata is intentionally not enabled yet; the published app identity caused the Play-enabled QA emulator to replace/remove debug builds signed with the debug certificate, so per-app locale switching could not be evaluated reliably there.
+Run `python3 scripts/check_localizations.py` to compare every overlay with the canonical set, including resource types and positional placeholders. CI runs the same command, so a new canonical resource without every production translation fails the build.
 
-## Release gates
+## Release QA
 
-- Complete every resource key in all 12 overlays.
-- Review translations in context with native speakers.
-- Run Arabic on a non-Play API 36 emulator and an iOS simulator/device.
-- Verify mirrored timeline direction and gestures, selected-hour placement, numerals, time formatting, and icons.
-- Verify 200% font scale and narrow phone layouts in every script family.
+- Review translations in context with native speakers before store submission.
+- Run Arabic on a non-Play API 36 emulator and iOS Simulator/device.
+- Chronological weather data remains past-to-future from left to right in all locales; surrounding controls and text follow RTL. This avoids reversing the meaning of the time axis merely because the reading direction changes.
+- Verify selected-hour placement, localized numerals/time, icons, 200% font scale, and narrow layouts for every script family.

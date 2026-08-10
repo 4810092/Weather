@@ -5,17 +5,15 @@ import kotlin.math.roundToInt
 internal enum class UnitPreference {
     Automatic,
     Metric,
-    Imperial,
+    Imperial
 }
 
 internal enum class UnitSystem {
     Metric,
-    Imperial,
+    Imperial
 }
 
-internal data class DisplayUnits(
-    val system: UnitSystem,
-) {
+internal data class DisplayUnits(val system: UnitSystem) {
     fun temperature(celsius: Double): Int = when (system) {
         UnitSystem.Metric -> celsius.roundToInt()
         UnitSystem.Imperial -> (celsius * 9.0 / 5.0 + 32.0).roundToInt()
@@ -47,5 +45,5 @@ internal fun UnitPreference.resolve(automatic: UnitSystem): DisplayUnits = Displ
         UnitPreference.Automatic -> automatic
         UnitPreference.Metric -> UnitSystem.Metric
         UnitPreference.Imperial -> UnitSystem.Imperial
-    },
+    }
 )

@@ -7,11 +7,14 @@ Date: 2026-08-09
 
 The database is the UI source of truth. A refresh writes current/hourly data and an issued forecast snapshot transactionally. UI renders cached data first and observes database changes.
 
-Current/hourly data is fresh for 15 minutes, usable-but-aging for 6 hours, and stale after 6 hours. Stale data remains visible with its age until replaced or explicitly cleared. Historical observations are refreshed independently and retained for the recent comparison window; forecast snapshots are retained long enough to compare issued values with observations.
+Current/hourly data is stale after 6 hours. Stale data remains visible with its age until replaced or explicitly cleared. A primary request fetches yesterday plus the next two days and commits before a secondary seven-day history request starts. Historical data is therefore enriched independently and retained for the recent comparison window.
 
-Refresh order is current/hourly, today's context, yesterday, deeper history, then issued-forecast enrichment. Retries are bounded, cancellation-aware, and limited to transient failures.
+Provider payloads are mapped before opening the write transaction. A payload with no complete required hourly row fails without deleting or replacing cached data; shorter optional arrays use neutral defaults. A valid partial payload commits every complete row.
+
+Forecast snapshots are recorded only for future hours in the next 48 hours. The issuance timestamp is rounded to the hour, so repeated refreshes within an hour replace rather than duplicate the same snapshot. Snapshots older than 14 days are removed on every successful write. This bounds the steady-state snapshot set to at most roughly 16,128 rows per retained location (14 days × 24 hourly issuances × 48 valid hours), before SQLite page overhead. Weather rows are kept for eight days behind and three days ahead.
+
+Retries are bounded, cancellation-aware, and limited to transient failures.
 
 ## Consequences
 
 Network failure cannot blank a usable screen. Users always see whether data is offline or stale. Secondary history work cannot delay the first meaningful UI.
-

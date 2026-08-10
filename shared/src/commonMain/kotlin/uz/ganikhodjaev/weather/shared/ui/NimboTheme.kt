@@ -15,7 +15,7 @@ private val LightColors = lightColorScheme(
     surface = Color(0xFFF8FBFF),
     onSurface = Color(0xFF15212A),
     secondary = Color(0xFF5B7282),
-    outline = Color(0xFF8796A0),
+    outline = Color(0xFF8796A0)
 )
 
 private val DarkColors = darkColorScheme(
@@ -26,13 +26,13 @@ private val DarkColors = darkColorScheme(
     surface = Color(0xFF16232D),
     onSurface = Color(0xFFE6F0F5),
     secondary = Color(0xFFB7C9D4),
-    outline = Color(0xFF7E919D),
+    outline = Color(0xFF7E919D)
 )
 
 @Composable
 internal fun NimboTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) DarkColors else LightColors,
-        content = content,
+        content = content
     )
 }

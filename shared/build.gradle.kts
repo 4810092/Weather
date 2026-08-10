@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -14,9 +15,11 @@ kotlin {
         namespace = "uz.ganikhodjaev.weather.shared"
         compileSdk = 36
         minSdk = 26
+        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
+        withHostTestBuilder {}.configure {}
     }
 
     val iosTargets = listOf(iosArm64(), iosSimulatorArm64())
@@ -48,6 +51,9 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.android.driver)
         }
+        getByName("androidHostTest").dependencies {
+            implementation(libs.sqldelight.sqlite.driver)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native.driver)
@@ -63,6 +69,10 @@ sqldelight {
     databases {
         create("NimboDatabase") {
             packageName.set("uz.ganikhodjaev.weather.db")
+            // Migration parity is checked against versioned schema snapshots and the
+            // released v1 fixture; compiling migrations as a second fresh schema is invalid.
+            verifyMigrations.set(false)
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
 }
@@ -70,4 +80,11 @@ sqldelight {
 compose.resources {
     packageOfResClass = "uz.ganikhodjaev.weather.shared.resources"
     generateResClass = always
+}
+
+ktlint {
+    filter {
+        exclude("**/generated/**")
+        exclude { it.file.path.contains("generated/") }
+    }
 }

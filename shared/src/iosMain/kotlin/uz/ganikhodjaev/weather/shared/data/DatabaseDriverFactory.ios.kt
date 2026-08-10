@@ -5,11 +5,9 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.PlatformContext
 
-internal actual class DatabaseDriverFactory actual constructor(
-    context: PlatformContext,
-) {
+internal actual class DatabaseDriverFactory actual constructor(context: PlatformContext) {
     actual fun create(): SqlDriver = NativeSqliteDriver(
         schema = NimboDatabase.Schema,
-        name = "nimbo.db",
+        name = "nimbo.db"
     )
 }

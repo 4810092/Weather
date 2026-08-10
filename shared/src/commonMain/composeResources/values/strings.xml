@@ -4,6 +4,7 @@
     <string name="onboarding_title">Weather that feels familiar.</string>
     <string name="onboarding_body">Choose a place to see the next 24 hours alongside weather you’ve just experienced.</string>
     <string name="search_city">Search for a city</string>
+    <string name="current_location">Current location</string>
     <string name="change_later">You can change this later.</string>
     <string name="finding_area">Finding your area…</string>
     <string name="use_location">Use my approximate location</string>
@@ -20,7 +21,10 @@
     <string name="attribution">Weather data by Open-Meteo · Location data by GeoNames</string>
     <string name="recent_days">Recent days</string>
     <string name="yesterday">Yesterday</string>
-    <string name="days_ago">%1$d days ago</string>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d day ago</item>
+        <item quantity="other">%1$d days ago</item>
+    </plurals>
     <string name="average_temperature">%1$d° avg</string>
     <string name="temperature_range">%1$d°–%2$d°</string>
     <string name="units">Units</string>
@@ -67,4 +71,11 @@
     <string name="condition_showers">Showers</string>
     <string name="condition_thunderstorm">Thunderstorm</string>
     <string name="condition_unknown">Weather</string>
+    <string name="no_matching_places">No matching places found.</string>
+    <string name="city_search_unavailable">City search is unavailable. Check your connection and try again.</string>
+    <string name="location_permission_denied">Location access wasn’t granted. Search for a city instead.</string>
+    <string name="location_services_disabled">Location services are off. Search for a city or enable them in Settings.</string>
+    <string name="location_unavailable">Couldn’t determine your location. Search for a city instead.</string>
+    <string name="refresh_failed_saved">Couldn’t refresh. Showing saved weather.</string>
+    <string name="weather_unavailable">Weather is unavailable. Check your connection and try again.</string>
 </resources>

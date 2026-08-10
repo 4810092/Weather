@@ -15,7 +15,10 @@ class UnitsTest {
 
     @Test
     fun resolvesAutomaticWithoutChangingStoredPreference() {
-        assertEquals(UnitSystem.Imperial, UnitPreference.Automatic.resolve(UnitSystem.Imperial).system)
+        assertEquals(
+            UnitSystem.Imperial,
+            UnitPreference.Automatic.resolve(UnitSystem.Imperial).system
+        )
         assertEquals(UnitSystem.Metric, UnitPreference.Metric.resolve(UnitSystem.Imperial).system)
     }
 }

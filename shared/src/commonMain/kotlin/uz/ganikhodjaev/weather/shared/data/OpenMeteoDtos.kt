@@ -9,7 +9,7 @@ internal data class ForecastResponse(
     val longitude: Double,
     val timezone: String,
     @SerialName("utc_offset_seconds") val utcOffsetSeconds: Int,
-    val hourly: HourlyResponse,
+    val hourly: HourlyResponse
 )
 
 @Serializable
@@ -23,13 +23,11 @@ internal data class HourlyResponse(
     @SerialName("wind_speed_10m") val windSpeed: List<Double>,
     @SerialName("wind_gusts_10m") val windGusts: List<Double?>,
     @SerialName("relative_humidity_2m") val humidity: List<Int>,
-    @SerialName("uv_index") val uvIndex: List<Double?>,
+    @SerialName("uv_index") val uvIndex: List<Double?>
 )
 
 @Serializable
-internal data class GeocodingResponse(
-    val results: List<GeocodingResult> = emptyList(),
-)
+internal data class GeocodingResponse(val results: List<GeocodingResult> = emptyList())
 
 @Serializable
 internal data class GeocodingResult(
@@ -40,5 +38,5 @@ internal data class GeocodingResult(
     val timezone: String,
     @SerialName("country_code") val countryCode: String,
     val country: String? = null,
-    val admin1: String? = null,
+    val admin1: String? = null
 )

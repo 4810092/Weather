@@ -6,7 +6,7 @@ data class Location(
     val country: String,
     val latitude: Double,
     val longitude: Double,
-    val timezone: String,
+    val timezone: String
 )
 
 data class WeatherHour(
@@ -20,7 +20,7 @@ data class WeatherHour(
     val gustKph: Double,
     val humidityPercent: Int,
     val uvIndex: Double,
-    val fetchedAtEpochSeconds: Long,
+    val fetchedAtEpochSeconds: Long
 )
 
 data class WeatherSnapshot(
@@ -29,7 +29,7 @@ data class WeatherSnapshot(
     val timeline: List<WeatherHour>,
     val recentHistory: List<WeatherHour> = emptyList(),
     val fetchedAtEpochSeconds: Long,
-    val isStale: Boolean,
+    val isStale: Boolean
 )
 
 enum class WeatherCondition {
@@ -42,7 +42,7 @@ enum class WeatherCondition {
     Snow,
     Showers,
     Thunderstorm,
-    Unknown,
+    Unknown
 }
 
 fun weatherCondition(code: Int): WeatherCondition = when (code) {

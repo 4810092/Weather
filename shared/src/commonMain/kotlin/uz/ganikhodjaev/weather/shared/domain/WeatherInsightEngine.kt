@@ -1,8 +1,7 @@
 package uz.ganikhodjaev.weather.shared.domain
 
-import uz.ganikhodjaev.weather.shared.model.WeatherHour
-import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import kotlin.math.abs
+import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 
 internal enum class TemperatureComparison {
     MuchWarmer,
@@ -10,7 +9,7 @@ internal enum class TemperatureComparison {
     Similar,
     Cooler,
     MuchCooler,
-    Unavailable,
+    Unavailable
 }
 
 internal sealed interface UpcomingInsight {
@@ -21,17 +20,21 @@ internal sealed interface UpcomingInsight {
 
 internal data class WeatherInsights(
     val comparison: TemperatureComparison,
-    val upcoming: UpcomingInsight?,
+    val upcoming: UpcomingInsight?
 )
 
 internal class WeatherInsightEngine {
     fun evaluate(weather: WeatherSnapshot): WeatherInsights = WeatherInsights(
         comparison = compareWithYesterday(weather),
-        upcoming = findUpcomingChange(weather),
+        upcoming = findUpcomingChange(weather)
     )
 
     private fun compareWithYesterday(weather: WeatherSnapshot): TemperatureComparison {
-        val target = weather.current.epochSeconds - DAY_SECONDS
+        val target = sameLocalTimeDaysAgo(
+            epochSeconds = weather.current.epochSeconds,
+            timezone = weather.location.timezone,
+            daysAgo = 1
+        )
         val yesterday = (weather.recentHistory + weather.timeline)
             .filter { abs(it.epochSeconds - target) <= MATCH_WINDOW_SECONDS }
             .minByOrNull { abs(it.epochSeconds - target) }
@@ -63,7 +66,6 @@ internal class WeatherInsightEngine {
     }
 
     private companion object {
-        const val DAY_SECONDS = 24L * 60L * 60L
         const val MATCH_WINDOW_SECONDS = 90L * 60L
         const val LOOK_AHEAD_SECONDS = 12L * 60L * 60L
     }

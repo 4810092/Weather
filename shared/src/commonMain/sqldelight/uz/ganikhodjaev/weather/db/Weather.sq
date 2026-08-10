@@ -56,6 +56,13 @@ SELECT * FROM location WHERE is_active = 1 LIMIT 1;
 deleteWeatherForLocation:
 DELETE FROM weather_hour WHERE location_id = ?;
 
+deleteWeatherOutsideWindow:
+DELETE FROM weather_hour
+WHERE location_id = ? AND (epoch_seconds < ? OR epoch_seconds > ?);
+
+updateLocationTimezone:
+UPDATE location SET timezone = ? WHERE id = ?;
+
 insertOrReplaceWeatherHour:
 INSERT OR REPLACE INTO weather_hour(
   location_id,

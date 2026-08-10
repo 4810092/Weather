@@ -11,9 +11,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import uz.ganikhodjaev.weather.shared.model.Location
 
-internal class OpenMeteoService(
-    engineClient: HttpClient = createPlatformHttpClient(),
-) {
+internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpClient()) {
     private val client = engineClient.config {
         expectSuccess = true
         install(ContentNegotiation) {
@@ -33,35 +31,36 @@ internal class OpenMeteoService(
         }
     }
 
-    suspend fun forecast(location: Location): ForecastResponse = client.get(
-        "https://api.open-meteo.com/v1/forecast",
-    ) {
-        parameter("latitude", location.latitude)
-        parameter("longitude", location.longitude)
-        parameter("timezone", "auto")
-        parameter("timeformat", "unixtime")
-        parameter("past_days", 7)
-        parameter("forecast_days", 2)
-        parameter(
-            "hourly",
-            listOf(
-                "temperature_2m",
-                "apparent_temperature",
-                "weather_code",
-                "precipitation_probability",
-                "precipitation",
-                "wind_speed_10m",
-                "wind_gusts_10m",
-                "relative_humidity_2m",
-                "uv_index",
-            ).joinToString(","),
-        )
-    }.body()
+    suspend fun forecast(location: Location, pastDays: Int, forecastDays: Int): ForecastResponse =
+        client.get(
+            "https://api.open-meteo.com/v1/forecast"
+        ) {
+            parameter("latitude", location.latitude)
+            parameter("longitude", location.longitude)
+            parameter("timezone", "auto")
+            parameter("timeformat", "unixtime")
+            parameter("past_days", pastDays)
+            parameter("forecast_days", forecastDays)
+            parameter(
+                "hourly",
+                listOf(
+                    "temperature_2m",
+                    "apparent_temperature",
+                    "weather_code",
+                    "precipitation_probability",
+                    "precipitation",
+                    "wind_speed_10m",
+                    "wind_gusts_10m",
+                    "relative_humidity_2m",
+                    "uv_index"
+                ).joinToString(",")
+            )
+        }.body()
 
     suspend fun searchCities(query: String, language: String): List<Location> {
         if (query.trim().length < 2) return emptyList()
         val response: GeocodingResponse = client.get(
-            "https://geocoding-api.open-meteo.com/v1/search",
+            "https://geocoding-api.open-meteo.com/v1/search"
         ) {
             parameter("name", query.trim())
             parameter("count", 8)
@@ -75,7 +74,7 @@ internal class OpenMeteoService(
                 country = result.country ?: result.countryCode,
                 latitude = result.latitude,
                 longitude = result.longitude,
-                timezone = result.timezone,
+                timezone = result.timezone
             )
         }
     }

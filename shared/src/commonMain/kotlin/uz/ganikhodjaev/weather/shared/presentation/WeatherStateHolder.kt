@@ -1,7 +1,7 @@
 package uz.ganikhodjaev.weather.shared.presentation
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,11 +11,11 @@ import kotlinx.coroutines.launch
 import uz.ganikhodjaev.weather.shared.data.WeatherRepository
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
-import uz.ganikhodjaev.weather.shared.model.Location
-import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
+import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.UnitSystem
+import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.resolve
 
 internal sealed interface WeatherUiState {
@@ -26,26 +26,36 @@ internal sealed interface WeatherUiState {
         val results: List<Location> = emptyList(),
         val isSearching: Boolean = false,
         val isLocating: Boolean = false,
-        val message: String? = null,
-        val canCancel: Boolean = false,
+        val message: UiMessage? = null,
+        val canCancel: Boolean = false
     ) : WeatherUiState
 
     data class Content(
         val weather: WeatherSnapshot,
         val isRefreshing: Boolean,
-        val refreshMessage: String? = null,
+        val refreshMessage: UiMessage? = null,
         val unitPreference: UnitPreference,
-        val displayUnits: DisplayUnits,
+        val displayUnits: DisplayUnits
     ) : WeatherUiState
 
-    data class EmptyError(val message: String) : WeatherUiState
+    data class EmptyError(val message: UiMessage) : WeatherUiState
+}
+
+internal enum class UiMessage {
+    NoMatchingPlaces,
+    CitySearchUnavailable,
+    LocationPermissionDenied,
+    LocationServicesDisabled,
+    LocationUnavailable,
+    RefreshFailedShowingSaved,
+    WeatherUnavailable
 }
 
 internal class WeatherStateHolder(
     private val repository: WeatherRepository,
     private val locationProvider: DeviceLocationProvider,
     private val automaticUnitSystem: UnitSystem,
-    private val scope: CoroutineScope,
+    private val scope: CoroutineScope
 ) {
     private val mutableState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
     val state: StateFlow<WeatherUiState> = mutableState.asStateFlow()
@@ -77,7 +87,7 @@ internal class WeatherStateHolder(
             query = normalized,
             results = if (normalized.length < 2) emptyList() else current.results,
             isSearching = normalized.length >= 2,
-            message = null,
+            message = null
         )
         if (normalized.length < 2) return
 
@@ -91,7 +101,7 @@ internal class WeatherStateHolder(
                     mutableState.value = latest.copy(
                         results = results,
                         isSearching = false,
-                        message = if (results.isEmpty()) "No matching places found." else null,
+                        message = if (results.isEmpty()) UiMessage.NoMatchingPlaces else null
                     )
                 }
             } catch (cancelled: CancellationException) {
@@ -102,7 +112,7 @@ internal class WeatherStateHolder(
                 if (latest.query == before.query) {
                     mutableState.value = latest.copy(
                         isSearching = false,
-                        message = "City search is unavailable. Check your connection and try again.",
+                        message = UiMessage.CitySearchUnavailable
                     )
                 }
             }
@@ -136,23 +146,23 @@ internal class WeatherStateHolder(
                     activate(
                         Location(
                             id = "device:${coordinates.latitude}:${coordinates.longitude}",
-                            name = "Current location",
+                            name = "",
                             country = "",
                             latitude = coordinates.latitude,
                             longitude = coordinates.longitude,
-                            timezone = coordinates.timezone,
+                            timezone = coordinates.timezone
                         ),
-                        persist = true,
+                        persist = true
                     )
                 }
                 DeviceLocationResult.PermissionDenied -> showLocationMessage(
-                    "Location access wasn't granted. Search for a city instead.",
+                    UiMessage.LocationPermissionDenied
                 )
                 DeviceLocationResult.ServicesDisabled -> showLocationMessage(
-                    "Location services are off. Search for a city or enable them in Settings.",
+                    UiMessage.LocationServicesDisabled
                 )
                 is DeviceLocationResult.Failed -> showLocationMessage(
-                    result.reason.ifBlank { "Couldn't determine your location. Search for a city instead." },
+                    UiMessage.LocationUnavailable
                 )
             }
         }
@@ -170,7 +180,7 @@ internal class WeatherStateHolder(
         val current = mutableState.value as? WeatherUiState.Content ?: return
         mutableState.value = current.copy(
             unitPreference = preference,
-            displayUnits = preference.resolve(automaticUnitSystem),
+            displayUnits = preference.resolve(automaticUnitSystem)
         )
     }
 
@@ -189,7 +199,7 @@ internal class WeatherStateHolder(
                         isRefreshing = old?.isRefreshing ?: false,
                         refreshMessage = old?.refreshMessage,
                         unitPreference = unitPreference,
-                        displayUnits = unitPreference.resolve(automaticUnitSystem),
+                        displayUnits = unitPreference.resolve(automaticUnitSystem)
                     )
                 }
             }
@@ -197,7 +207,7 @@ internal class WeatherStateHolder(
         refreshInternal(location)
     }
 
-    private fun showLocationMessage(message: String) {
+    private fun showLocationMessage(message: UiMessage) {
         val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         mutableState.value = latest.copy(isLocating = false, message = message)
     }
@@ -208,10 +218,19 @@ internal class WeatherStateHolder(
             mutableState.value = current.copy(isRefreshing = true, refreshMessage = null)
         }
         try {
-            repository.refresh(location)
+            repository.refreshPrimary(location)
             val updated = mutableState.value
             if (updated is WeatherUiState.Content) {
                 mutableState.value = updated.copy(isRefreshing = false, refreshMessage = null)
+            }
+            scope.launch {
+                try {
+                    repository.refreshHistory(location)
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (error: Throwable) {
+                    logFailure("historical weather refresh", error)
+                }
             }
         } catch (cancelled: CancellationException) {
             throw cancelled
@@ -221,11 +240,11 @@ internal class WeatherStateHolder(
             mutableState.value = if (cached is WeatherUiState.Content) {
                 cached.copy(
                     isRefreshing = false,
-                    refreshMessage = "Couldn't refresh. Showing saved weather.",
+                    refreshMessage = UiMessage.RefreshFailedShowingSaved
                 )
             } else {
                 WeatherUiState.EmptyError(
-                    "Weather is unavailable. Check your connection and try again.",
+                    UiMessage.WeatherUnavailable
                 )
             }
         }

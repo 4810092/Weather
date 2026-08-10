@@ -26,15 +26,10 @@ flowchart TD
 - Platform APIs are narrow interfaces for foreground location, locale/region, network reachability hints, and app settings links.
 - State holders expose immutable `StateFlow<UiState>` and accept explicit actions. One-off effects are limited to platform launches and permission requests.
 
-## Initial module direction
+## Implemented modules
 
-- `composeApp`: Android application, iOS framework, shared root UI and navigation.
-- `core:model`: normalized models and value types.
-- `core:domain`: insight, comparison, unit, timezone, and outdoor-comfort rules.
-- `core:data`: repository, Ktor clients, SQLDelight persistence, cache policy, snapshots.
-- `core:designsystem`: tokens and shared visual components.
-- `feature:weather`, `feature:location`, `feature:settings`: presentation and Compose UI.
-- `iosApp`: thin UIKit/Swift entry point embedding the shared Compose controller.
+- `shared`: normalized models, deterministic domain engines, Ktor provider clients, SQLDelight persistence, state holder, localized Compose UI, and platform contracts/implementations.
+- `app`: thin Android application shell. It owns the immutable production application ID and release packaging.
+- `iosApp`: thin UIKit/Swift shell embedding the shared Compose controller. It owns the bundle identifier and Apple packaging/signing configuration.
 
-The first implementation milestone is a real vertical slice before further module extraction.
-
+Nimbo intentionally keeps one cohesive shared module for v1. Package boundaries enforce the layers without creating premature Gradle modules. Extraction is justified only when build performance or independent ownership requires it.

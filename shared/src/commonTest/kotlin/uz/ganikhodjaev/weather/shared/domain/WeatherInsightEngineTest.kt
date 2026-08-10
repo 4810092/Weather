@@ -14,10 +14,15 @@ class WeatherInsightEngineTest {
         val yesterday = hour(now - 86_400L, temperature = 24.0)
         val current = hour(now, temperature = 28.0)
         val rain = hour(now + 3_600L, temperature = 27.0, rainChance = 70)
-        val insights = WeatherInsightEngine().evaluate(snapshot(current, listOf(yesterday, current, rain)))
+        val insights = WeatherInsightEngine().evaluate(
+            snapshot(current, listOf(yesterday, current, rain))
+        )
 
         assertEquals(TemperatureComparison.Warmer, insights.comparison)
-        assertEquals(rain.epochSeconds, assertIs<UpcomingInsight.RainLikely>(insights.upcoming).epochSeconds)
+        assertEquals(
+            rain.epochSeconds,
+            assertIs<UpcomingInsight.RainLikely>(insights.upcoming).epochSeconds
+        )
     }
 
     @Test
@@ -34,7 +39,7 @@ class WeatherInsightEngineTest {
         current = current,
         timeline = timeline,
         fetchedAtEpochSeconds = current.fetchedAtEpochSeconds,
-        isStale = false,
+        isStale = false
     )
 }
 
@@ -47,7 +52,7 @@ internal fun hour(
     rainMm: Double = 0.0,
     wind: Double = 8.0,
     gust: Double = 12.0,
-    uv: Double = 1.0,
+    uv: Double = 1.0
 ) = WeatherHour(
     epochSeconds = epoch,
     temperatureC = temperature,
@@ -59,5 +64,5 @@ internal fun hour(
     gustKph = gust,
     humidityPercent = 50,
     uvIndex = uv,
-    fetchedAtEpochSeconds = epoch,
+    fetchedAtEpochSeconds = epoch
 )

@@ -16,7 +16,7 @@ class WeatherModelsTest {
             75 to WeatherCondition.Snow,
             82 to WeatherCondition.Showers,
             99 to WeatherCondition.Thunderstorm,
-            1000 to WeatherCondition.Unknown,
+            1000 to WeatherCondition.Unknown
         )
 
         expected.forEach { (code, condition) ->
