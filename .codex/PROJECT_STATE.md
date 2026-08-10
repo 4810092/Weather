@@ -128,8 +128,14 @@ release-journal changes are in scope.
   attached to version 1.0; export compliance records no custom encryption.
 - App Store version metadata, review contact/notes, manual-release selection,
   and real production-UI screenshots for iPhone 6.9-inch and iPad 13-inch are
-  saved. App Information subtitle/category and the 4+ age-rating questionnaire
-  are prepared but not yet submitted.
+  saved. App Information uses subtitle `Weather made familiar`, primary category
+  Weather, and the saved 4+ age rating.
+- Apple App Privacy is published: Coarse Location and Search History are used
+  only for App Functionality, are not linked to identity, and are not used for
+  tracking. The public privacy-policy URL points to `docs/PRIVACY.md` on the
+  repository's `master` branch.
+- TestFlight build 1 is processed and reports `Ready to Submit`; internal test
+  notes are prepared and the tester assignment/device smoke remain.
 - `iPhone (Khasan)` running iOS 26.6 is currently connected and available to
   Xcode; the other known physical devices are offline.
 
@@ -143,9 +149,8 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Save App Information/age rating, complete App Privacy, enable build 1 for
-   internal TestFlight, smoke-test it on the connected iPhone, and submit 1.0
-   for App Review.
+1. Assign an internal tester to TestFlight build 1, smoke-test it on the
+   connected iPhone, and submit 1.0 for App Review.
 2. Promote verified version code 4 to Production with the completed listing and
    policy changes.
 

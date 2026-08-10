@@ -142,8 +142,12 @@ display name remains `Nimbo`. Xcode uploaded the verified IPA at 13:29
 Asia/Tashkent, Apple processed build 1, and the build is attached to version
 1.0 with export compliance recorded as no custom encryption. English metadata,
 review notes/contact, manual release, and real production-UI iPhone/iPad
-screenshots are saved. The remaining store gates are App Information/age-rating
-save, App Privacy, internal TestFlight smoke, and App Review submission.
+screenshots are saved. App Information is saved with Weather category, subtitle,
+and a 4+ rating. App Privacy is published with only Coarse Location and Search
+History disclosed for App Functionality, not linked to identity and not used for
+tracking; the public privacy-policy URL targets `docs/PRIVACY.md` on `master`.
+Build 1 reports `Ready to Submit`; the remaining gates are internal tester
+assignment, TestFlight smoke, and App Review submission.
 `iPhone (Khasan)` on iOS 26.6 is connected for the TestFlight smoke.
 
 ## Credentials

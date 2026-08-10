@@ -40,11 +40,12 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | App Store export | Profile `Nimbo App Store 1.0`; iOS 1.0 (1) IPA deep-codesign valid, `beta-reports-active=true`, `get-task-allow=false`, SHA-256 recorded in release journal | Pass |
 | App Store upload | Xcode upload succeeded; Apple processed build 1, export compliance completed, and build is attached to version 1.0 | Pass |
 | Store metadata | English metadata, review information, manual release, and production-UI iPhone/iPad screenshots saved | Pass |
-| TestFlight | Connected physical `iPhone (Khasan)` on iOS 26.6 is available; internal availability and device smoke remain | Pending device smoke |
+| App Privacy | Published: Coarse Location and Search History for App Functionality only; not linked, not tracking; public privacy-policy URL saved | Pass |
+| TestFlight | Build 1 is processed and `Ready to Submit`; connected physical `iPhone (Khasan)` on iOS 26.6 is available; tester assignment and device smoke remain | Pending device smoke |
 
 ## Release blockers
 
 - Promote the verified Internal RC2 version code 4 to Production.
-- Save App Information/age rating, complete App Privacy, enable internal
-  TestFlight, and perform the physical-device/VoiceOver smoke test.
+- Assign the internal TestFlight tester and perform the physical-device/VoiceOver
+  smoke test.
 - App Review submission and external moderation.
