@@ -14,15 +14,15 @@ release-journal changes are in scope.
   target API 36.
 - iOS: `uz.ganikhodjaev.weather`, marketing version `1.0`, build `1`, team
   `5SWEZ7HTYP`.
-- RC tag: `v1.0.0-rc.1`, source commit
-  `223864157d5fde8ccf4c686912473a9878285457`.
+- RC tags: `v1.0.0-rc.1` at
+  `223864157d5fde8ccf4c686912473a9878285457`; `v1.0.0-rc.2` at
+  `692c0acbb1a807ae1b9024f104f0dbf657cad4f7`.
 - RC2 is a release-only compatibility fix after Play review found that the
   coarse-location permission implicitly required location hardware. The app now
   explicitly marks `android.hardware.location` optional, and CI prevents this
-  declaration from regressing. RC2 will be tagged after its pull request reaches
-  green master.
-- Pull requests 1 through 4 are merged. Current master is
-  `3b314d656806629d85ed7f2483b76edaf5ed07ee`; CI run `31363873493` is green
+  declaration from regressing.
+- Pull requests 1 through 5 are merged. Current master is
+  `692c0acbb1a807ae1b9024f104f0dbf657cad4f7`; PR CI run `31365961384` is green
   for Android/shared checks and the unsigned iOS build.
 - The August 10 gate executes 36 shared/host tests with zero failures.
 

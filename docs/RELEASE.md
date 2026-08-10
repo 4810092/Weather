@@ -94,6 +94,10 @@ non-blocking recommendation to upload native debug symbols. Internal activation
 and a Play-delivered version code 3 -> 4 smoke are the next Android gates;
 version code 3 must not be promoted to Production.
 
+RC2 is tagged `v1.0.0-rc.2` at master commit
+`692c0acbb1a807ae1b9024f104f0dbf657cad4f7`. Pull request 5 passed both
+Android/shared and unsigned iOS CI before merge.
+
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
 ## iOS prerequisites
