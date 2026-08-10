@@ -16,6 +16,11 @@
   <string name="refreshing">Обновляем…</string>
   <string name="refresh">Обновить</string>
   <string name="change_place">Сменить место</string>
+  <string name="theme">Тема</string>
+  <string name="theme_description">Использовать тему устройства или выбрать вручную.</string>
+  <string name="theme_system">Системная</string>
+  <string name="theme_light">Светлая</string>
+  <string name="theme_dark">Тёмная</string>
   <string name="feels_like">Ощущается как %1$d°</string>
   <string name="saved_weather">Сохранённая погода · нужно обновить</string>
   <string name="timeline_title">24 часа назад · сейчас · 24 часа вперёд</string>

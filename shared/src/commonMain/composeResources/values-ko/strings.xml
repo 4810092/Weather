@@ -16,6 +16,11 @@
   <string name="refreshing">새로고침 중…</string>
   <string name="refresh">새로고침</string>
   <string name="change_place">장소 변경</string>
+  <string name="theme">테마</string>
+  <string name="theme_description">기기 화면 모드를 따르거나 직접 선택하세요.</string>
+  <string name="theme_system">시스템</string>
+  <string name="theme_light">라이트</string>
+  <string name="theme_dark">다크</string>
   <string name="feels_like">체감 %1$d°</string>
   <string name="saved_weather">저장된 날씨 · 업데이트 필요</string>
   <string name="timeline_title">24시간 전 · 지금 · 24시간 후</string>

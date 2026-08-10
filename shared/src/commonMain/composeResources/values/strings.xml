@@ -15,6 +15,11 @@
     <string name="refreshing">Refreshing…</string>
     <string name="refresh">Refresh</string>
     <string name="change_place">Change place</string>
+    <string name="theme">Theme</string>
+    <string name="theme_description">Follow the device appearance or choose one.</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="feels_like">Feels like %1$d°</string>
     <string name="saved_weather">Saved weather · update needed</string>
     <string name="timeline_title">24 hours before · now · 24 hours ahead</string>

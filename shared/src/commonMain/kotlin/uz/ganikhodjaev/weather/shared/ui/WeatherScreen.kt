@@ -48,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -83,6 +82,7 @@ import uz.ganikhodjaev.weather.shared.domain.WeatherInsights
 import uz.ganikhodjaev.weather.shared.domain.localDateDaysAgo
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
 import uz.ganikhodjaev.weather.shared.model.Location
+import uz.ganikhodjaev.weather.shared.model.ThemePreference
 import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
@@ -102,7 +102,9 @@ internal fun WeatherScreen(
     onUseDeviceLocation: () -> Unit,
     onChangeLocation: () -> Unit,
     onCancelLocationChange: () -> Unit,
-    onUnitPreferenceChanged: (UnitPreference) -> Unit
+    onUnitPreferenceChanged: (UnitPreference) -> Unit,
+    themePreference: ThemePreference,
+    onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
     when (state) {
         WeatherUiState.Loading -> LoadingScreen()
@@ -118,7 +120,9 @@ internal fun WeatherScreen(
             state,
             onRetry,
             onChangeLocation,
-            onUnitPreferenceChanged
+            onUnitPreferenceChanged,
+            themePreference,
+            onThemePreferenceChanged
         )
     }
 }
@@ -219,7 +223,7 @@ private fun ChooseLocationScreen(
                             )
                         }
                     }
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                    HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
                 }
 
                 state.message?.let { message ->
@@ -313,12 +317,14 @@ private fun WeatherContent(
     state: WeatherUiState.Content,
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
-    onUnitPreferenceChanged: (UnitPreference) -> Unit
+    onUnitPreferenceChanged: (UnitPreference) -> Unit,
+    themePreference: ThemePreference,
+    onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
     val weather = state.weather
     var selected by remember(weather.fetchedAtEpochSeconds) { mutableStateOf(weather.current) }
     val condition = weatherCondition(weather.current.weatherCode)
-    val background = ambience(condition)
+    val background = LocalNimboThemeTokens.current.ambience(condition)
     val insights = remember(weather) { WeatherInsightEngine().evaluate(weather) }
     val outside = remember(weather) {
         BestTimeOutsideEngine().evaluate(
@@ -369,7 +375,9 @@ private fun WeatherContent(
                     recentDays = recentDays,
                     horizontalPadding = horizontalPadding,
                     onSelected = { selected = it },
-                    onUnitPreferenceChanged = onUnitPreferenceChanged
+                    onUnitPreferenceChanged = onUnitPreferenceChanged,
+                    themePreference = themePreference,
+                    onThemePreferenceChanged = onThemePreferenceChanged
                 )
 
                 Spacer(Modifier.height(24.dp))
@@ -544,7 +552,7 @@ private fun CurrentSummary(
             text = state.refreshMessage?.localized() ?: stringResource(Res.string.saved_weather),
             modifier = Modifier
                 .background(
-                    MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                    LocalNimboThemeTokens.current.statusSurface,
                     RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -562,7 +570,9 @@ private fun WeatherDetails(
     recentDays: List<RecentDaySummary>,
     horizontalPadding: Dp,
     onSelected: (WeatherHour) -> Unit,
-    onUnitPreferenceChanged: (UnitPreference) -> Unit
+    onUnitPreferenceChanged: (UnitPreference) -> Unit,
+    themePreference: ThemePreference,
+    onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
     val weather = state.weather
     CenteredSection(horizontalPadding) {
@@ -594,6 +604,10 @@ private fun WeatherDetails(
     Spacer(Modifier.height(18.dp))
     CenteredSection(horizontalPadding) {
         UnitsCard(state.unitPreference, state.displayUnits, onUnitPreferenceChanged)
+    }
+    Spacer(Modifier.height(18.dp))
+    CenteredSection(horizontalPadding) {
+        ThemeCard(themePreference, onThemePreferenceChanged)
     }
 }
 
@@ -632,7 +646,7 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
                     modifier = Modifier
                         .width(116.dp)
                         .background(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.68f),
+                            LocalNimboThemeTokens.current.subtleSurface,
                             RoundedCornerShape(18.dp)
                         )
                         .padding(14.dp)
@@ -702,7 +716,7 @@ private fun UnitsCard(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                MaterialTheme.colorScheme.surface.copy(alpha = 0.68f),
+                LocalNimboThemeTokens.current.subtleSurface,
                 RoundedCornerShape(24.dp)
             )
             .padding(18.dp)
@@ -738,18 +752,96 @@ private fun UnitsCard(
 }
 
 @Composable
+private fun ThemeCard(preference: ThemePreference, onPreferenceChanged: (ThemePreference) -> Unit) {
+    val accessibilityLayout = LocalDensity.current.fontScale >= 1.5f
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                LocalNimboThemeTokens.current.subtleSurface,
+                RoundedCornerShape(24.dp)
+            )
+            .padding(18.dp)
+    ) {
+        Text(stringResource(Res.string.theme), fontWeight = FontWeight.SemiBold)
+        Text(
+            stringResource(Res.string.theme_description),
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(Modifier.height(12.dp))
+        if (accessibilityLayout) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ThemePreference.entries.forEach { option ->
+                    ThemeButton(option, preference, onPreferenceChanged, Modifier.fillMaxWidth())
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ThemePreference.entries.forEach { option ->
+                    ThemeButton(option, preference, onPreferenceChanged, Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ThemeButton(
+    option: ThemePreference,
+    preference: ThemePreference,
+    onPreferenceChanged: (ThemePreference) -> Unit,
+    modifier: Modifier
+) {
+    val selectedOption = option == preference
+    val buttonModifier = modifier.semantics {
+        selected = selectedOption
+        role = Role.RadioButton
+    }
+    val content: @Composable () -> Unit = {
+        Text(
+            when (option) {
+                ThemePreference.System -> stringResource(Res.string.theme_system)
+                ThemePreference.Light -> stringResource(Res.string.theme_light)
+                ThemePreference.Dark -> stringResource(Res.string.theme_dark)
+            },
+            maxLines = 1,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+    if (selectedOption) {
+        Button(
+            onClick = {},
+            modifier = buttonModifier,
+            contentPadding = PaddingValues(horizontal = 6.dp),
+            content = { content() }
+        )
+    } else {
+        OutlinedButton(
+            onClick = { onPreferenceChanged(option) },
+            modifier = buttonModifier,
+            contentPadding = PaddingValues(horizontal = 6.dp),
+            content = { content() }
+        )
+    }
+}
+
+@Composable
 private fun UnitButton(
     option: UnitPreference,
     preference: UnitPreference,
     onPreferenceChanged: (UnitPreference) -> Unit,
     modifier: Modifier
 ) {
-    OutlinedButton(
-        onClick = { onPreferenceChanged(option) },
-        modifier = modifier,
-        enabled = option != preference,
-        contentPadding = PaddingValues(horizontal = 6.dp)
-    ) {
+    val selectedOption = option == preference
+    val buttonModifier = modifier.semantics {
+        selected = selectedOption
+        role = Role.RadioButton
+    }
+    val content: @Composable () -> Unit = {
         Text(
             when (option) {
                 UnitPreference.Automatic -> stringResource(Res.string.unit_auto)
@@ -758,6 +850,21 @@ private fun UnitButton(
             },
             maxLines = 1,
             style = MaterialTheme.typography.labelLarge
+        )
+    }
+    if (selectedOption) {
+        Button(
+            onClick = {},
+            modifier = buttonModifier,
+            contentPadding = PaddingValues(horizontal = 6.dp),
+            content = { content() }
+        )
+    } else {
+        OutlinedButton(
+            onClick = { onPreferenceChanged(option) },
+            modifier = buttonModifier,
+            contentPadding = PaddingValues(horizontal = 6.dp),
+            content = { content() }
         )
     }
 }
@@ -782,7 +889,7 @@ private fun OutsideCard(recommendation: OutsideRecommendation, timezone: String)
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                MaterialTheme.colorScheme.surface.copy(alpha = 0.74f),
+                LocalNimboThemeTokens.current.cardSurface,
                 RoundedCornerShape(24.dp)
             )
             .padding(18.dp)
@@ -870,10 +977,16 @@ private fun Timeline(
                 Column(
                     modifier = Modifier
                         .width(64.dp)
-                        .alpha(if (past) 0.55f else 1f)
+                        .alpha(
+                            if (past) {
+                                LocalNimboThemeTokens.current.pastContentAlpha
+                            } else {
+                                1f
+                            }
+                        )
                         .background(
                             if (isSelected) {
-                                MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                                LocalNimboThemeTokens.current.selectedSurface
                             } else {
                                 Color.Transparent
                             },
@@ -935,14 +1048,14 @@ private fun SelectedHour(hour: WeatherHour, timezone: String, units: DisplayUnit
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                MaterialTheme.colorScheme.surface.copy(alpha = 0.74f),
+                LocalNimboThemeTokens.current.cardSurface,
                 RoundedCornerShape(24.dp)
             )
             .padding(18.dp)
     ) {
         Text(isolatedLocalHour(hour.epochSeconds, timezone), fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(10.dp))
-        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.24f))
+        HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
         Spacer(Modifier.height(12.dp))
         if (accessibilityLayout) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -1022,22 +1135,6 @@ private fun UiMessage.localized(): String = stringResource(
         UiMessage.WeatherUnavailable -> Res.string.weather_unavailable
     }
 )
-
-private fun ambience(condition: WeatherCondition): Brush {
-    val colors = when (condition) {
-        WeatherCondition.Clear, WeatherCondition.MainlyClear -> listOf(
-            Color(0xFFDDEEFF),
-            Color(0xFFF8F3E8)
-        )
-        WeatherCondition.Rain, WeatherCondition.Showers, WeatherCondition.Thunderstorm -> listOf(
-            Color(0xFFD8E1E8),
-            Color(0xFFF2F5F7)
-        )
-        WeatherCondition.Snow -> listOf(Color(0xFFEAF4F7), Color(0xFFF7FAFB))
-        else -> listOf(Color(0xFFE2EAF0), Color(0xFFF6F8FA))
-    }
-    return Brush.verticalGradient(colors)
-}
 
 @Composable
 private fun WeatherCondition.label(): String = when (this) {

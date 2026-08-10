@@ -16,6 +16,11 @@
   <string name="refreshing">正在刷新…</string>
   <string name="refresh">刷新</string>
   <string name="change_place">更改地点</string>
+  <string name="theme">主题</string>
+  <string name="theme_description">跟随设备外观或手动选择。</string>
+  <string name="theme_system">跟随系统</string>
+  <string name="theme_light">浅色</string>
+  <string name="theme_dark">深色</string>
   <string name="feels_like">体感 %1$d°</string>
   <string name="saved_weather">已保存的天气 · 需要更新</string>
   <string name="timeline_title">24 小时前 · 现在 · 24 小时后</string>

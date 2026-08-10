@@ -16,6 +16,11 @@
   <string name="refreshing">Yenileniyor…</string>
   <string name="refresh">Yenile</string>
   <string name="change_place">Yeri değiştir</string>
+  <string name="theme">Tema</string>
+  <string name="theme_description">Cihaz temasını kullanın veya kendiniz seçin.</string>
+  <string name="theme_system">Sistem</string>
+  <string name="theme_light">Açık</string>
+  <string name="theme_dark">Koyu</string>
   <string name="feels_like">Hissedilen %1$d°</string>
   <string name="saved_weather">Kayıtlı hava · güncelleme gerekli</string>
   <string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string>

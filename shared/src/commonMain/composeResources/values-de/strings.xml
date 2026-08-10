@@ -16,6 +16,11 @@
   <string name="refreshing">Wird aktualisiert…</string>
   <string name="refresh">Aktualisieren</string>
   <string name="change_place">Ort ändern</string>
+  <string name="theme">Design</string>
+  <string name="theme_description">Gerätedesign verwenden oder manuell auswählen.</string>
+  <string name="theme_system">System</string>
+  <string name="theme_light">Hell</string>
+  <string name="theme_dark">Dunkel</string>
   <string name="feels_like">Gefühlt %1$d°</string>
   <string name="saved_weather">Gespeichertes Wetter · Aktualisierung nötig</string>
   <string name="timeline_title">24 Stunden vorher · jetzt · 24 Stunden danach</string>

@@ -16,6 +16,11 @@
   <string name="refreshing">Actualizando…</string>
   <string name="refresh">Actualizar</string>
   <string name="change_place">Cambiar lugar</string>
+  <string name="theme">Tema</string>
+  <string name="theme_description">Usa el tema del dispositivo o elige uno.</string>
+  <string name="theme_system">Sistema</string>
+  <string name="theme_light">Claro</string>
+  <string name="theme_dark">Oscuro</string>
   <string name="feels_like">Sensación de %1$d°</string>
   <string name="saved_weather">Tiempo guardado · requiere actualización</string>
   <string name="timeline_title">24 horas antes · ahora · 24 horas después</string>

@@ -8,6 +8,19 @@ private let nimboBackgroundColor = UIColor { traits in
     return UIColor(red: 243 / 255, green: 247 / 255, blue: 252 / 255, alpha: 1)
 }
 
+private let nimboThemePreferenceKey = "theme_preference"
+
+private func storedInterfaceStyle() -> UIUserInterfaceStyle {
+    switch UserDefaults.standard.string(forKey: nimboThemePreferenceKey) {
+    case "Light":
+        return .light
+    case "Dark":
+        return .dark
+    default:
+        return .unspecified
+    }
+}
+
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
@@ -18,6 +31,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let rootViewController = MainViewControllerKt.MainViewController()
+        let interfaceStyle = storedInterfaceStyle()
+        window.overrideUserInterfaceStyle = interfaceStyle
+        rootViewController.overrideUserInterfaceStyle = interfaceStyle
         rootViewController.view.backgroundColor = nimboBackgroundColor
         window.backgroundColor = nimboBackgroundColor
         window.rootViewController = rootViewController
