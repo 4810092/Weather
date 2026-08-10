@@ -74,8 +74,7 @@ declared as having no health functions or regional health requirements. Data
 Safety records encrypted transport, no account, no third-party sharing,
 optional approximate location and in-app search history collected for app
 functionality, and automatic deletion within 90 days. The privacy-policy URL
-was corrected to the current repository `docs/PRIVACY.md`. These are saved
-drafts pending production release submission; they are not yet public.
+was corrected to the current repository `docs/PRIVACY.md`.
 
 The first Production review draft used the Play-tested version code 3 binary.
 Play correctly warned that the coarse-location permission implicitly made
@@ -101,6 +100,16 @@ and no crash. Version code 3 must not be promoted to Production.
 RC2 is tagged `v1.0.0-rc.2` at master commit
 `692c0acbb1a807ae1b9024f104f0dbf657cad4f7`. Pull request 5 passed both
 Android/shared and unsigned iOS CI before merge.
+
+The obsolete Production draft containing version code 3 was replaced with the
+already validated version code 4 artifact. Google Play accepted Production
+release `Nimbo 1.0.0 (4)` for review at 14:21 Asia/Tashkent on August 10, 2026.
+The Publishing overview reports `Изменения на проверке` while Play performs its
+common-issues pre-submit check. The release requests a 100% rollout across all
+target countries because Production reports zero active installs; a staged
+percentage cannot produce a meaningful risk sample. Managed publishing is off,
+so an approved change will roll out automatically. The only validation warning
+is the non-blocking native-debug-symbol recommendation.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
@@ -146,9 +155,16 @@ screenshots are saved. App Information is saved with Weather category, subtitle,
 and a 4+ rating. App Privacy is published with only Coarse Location and Search
 History disclosed for App Functionality, not linked to identity and not used for
 tracking; the public privacy-policy URL targets `docs/PRIVACY.md` on `master`.
-Build 1 reports `Ready to Submit`; the remaining gates are internal tester
-assignment, TestFlight smoke, and App Review submission.
-`iPhone (Khasan)` on iOS 26.6 is connected for the TestFlight smoke.
+Build 1 reports `Ready to Submit`. At the owner's explicit direction to proceed
+directly to release, no internal TestFlight tester was assigned and no physical
+TestFlight smoke is claimed. Pricing is free with United States as the base
+storefront, all 175 countries or regions are selected, and untested Apple
+Silicon Mac and Apple Vision Pro distribution are disabled. Content-rights
+information records the necessary rights for the third-party weather and place
+data. App Store version 1.0 build 1 was submitted at 14:18 Asia/Tashkent on
+August 10, 2026. Submission
+`1e305187-129c-466b-bc74-3347254eaea1` is `Waiting for Review`; manual release is
+selected for the first version.
 
 ## Credentials
 

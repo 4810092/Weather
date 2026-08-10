@@ -4,9 +4,10 @@ Last updated: 2026-08-10
 
 ## Current phase
 
-Production release execution for Nimbo 1.0.0 RC2. Product and architecture work
-are frozen; only signing, publishing, compliance, release QA, security, and
-release-journal changes are in scope.
+Production submissions for Nimbo 1.0.0 RC2 are now with Google Play and Apple.
+Product and architecture work remain frozen; only store-review responses,
+publishing, compliance, release QA, security, and release-journal changes are in
+scope.
 
 ## Source and versions
 
@@ -70,7 +71,7 @@ release-journal changes are in scope.
   hour nodes expose localized semantic descriptions including time,
   temperature, condition, apparent temperature, precipitation, and wind. No app
   crash or ANR was observed in logcat or process exit history.
-- The English default Play listing is saved as an unpublished Nimbo draft. Its
+- The English default Play listing was completed for Nimbo. Its
   legacy icon, feature graphic, and two legacy phone screenshots were detached
   and replaced with the version-controlled Nimbo icon, feature graphic, five
   phone screenshots, four 7-inch tablet screenshots, and four 10-inch tablet
@@ -81,8 +82,7 @@ release-journal changes are in scope.
   approximate location and in-app search history collected for app
   functionality, and automatic deletion within 90 days. The listing privacy URL
   now points to the repository's current `docs/PRIVACY.md` rather than the stale
-  legacy URL. These changes are saved as drafts and are not yet submitted for
-  Play review.
+  legacy URL.
 - The first Production review draft using version code 3 exposed one phone and
   five tablets as newly unsupported because Play inferred required
   `android.hardware.location`. Those devices have zero active installs, but the
@@ -99,6 +99,16 @@ release-journal changes are in scope.
   without uninstall; `firstInstallTime` remained 11:08 and installer remained
   `com.android.vending`. Online and airplane-mode cached cold launches passed,
   including the saved-weather indicator, timeline semantics, and no crash.
+- The obsolete Production draft containing version code 3 was replaced with the
+  already validated version code 4 artifact. Production release
+  `Nimbo 1.0.0 (4)` was submitted to Google Play review at 14:21
+  Asia/Tashkent on August 10, 2026. Play reports the change under
+  `Изменения на проверке` and is running its common-issues pre-submit check.
+  The requested rollout is 100% across all target countries: Production has
+  zero active installs, so a staged percentage would provide no practical risk
+  reduction. Managed publishing is disabled, so the rollout starts
+  automatically after Google approval. The sole validation warning is the
+  non-blocking recommendation to upload native debug symbols.
 
 ## Apple release state
 
@@ -134,8 +144,18 @@ release-journal changes are in scope.
   only for App Functionality, are not linked to identity, and are not used for
   tracking. The public privacy-policy URL points to `docs/PRIVACY.md` on the
   repository's `master` branch.
-- TestFlight build 1 is processed and reports `Ready to Submit`; internal test
-  notes are prepared and the tester assignment/device smoke remain.
+- TestFlight build 1 is processed and reports `Ready to Submit`. At the owner's
+  explicit instruction to proceed directly to release, no internal tester was
+  assigned and no TestFlight device smoke was claimed.
+- App Store pricing is free in the United States base storefront and all 175
+  countries or regions are selected. The untested Apple Silicon Mac and Apple
+  Vision Pro availability options are disabled; the release scope is iPhone
+  and iPad. Content-rights information confirms the necessary rights to the
+  third-party weather and place data.
+- iOS version 1.0 build 1 was submitted to App Review at 14:18 Asia/Tashkent on
+  August 10, 2026. Submission
+  `1e305187-129c-466b-bc74-3347254eaea1` is `Waiting for Review`; manual release
+  remains selected for the first App Store version.
 - `iPhone (Khasan)` running iOS 26.6 is currently connected and available to
   Xcode; the other known physical devices are offline.
 
@@ -149,10 +169,11 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Assign an internal tester to TestFlight build 1, smoke-test it on the
-   connected iPhone, and submit 1.0 for App Review.
-2. Promote verified version code 4 to Production with the completed listing and
-   policy changes.
+1. Monitor Google Play common-issues checks and review for Production version
+   code 4; fix and resubmit any actionable issue, otherwise verify rollout.
+2. Monitor App Review submission
+   `1e305187-129c-466b-bc74-3347254eaea1`; fix and resubmit any actionable issue,
+   otherwise perform the selected manual release after approval.
 
 ## Worktree rule
 
