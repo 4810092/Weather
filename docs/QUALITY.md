@@ -22,10 +22,14 @@ Clean install, install-over-production, foreground/background, process death, pe
 - Timeline avoids per-frame allocations and unnecessary recomposition.
 - Historical and snapshot maintenance run after primary current/hourly work.
 
+Measured release and simulator evidence is maintained in [PERFORMANCE.md](PERFORMANCE.md). The current Android R8 checkpoint has a 218 ms median cached cold activity start and an 18 ms p90 scripted timeline frame time on the API 36 emulator.
+
 ## RTL and accessibility evidence
 
 - Arabic was exercised on the non-Play API 36 `Nimbo_API_36` Android emulator and an iPhone 16 Pro / iOS 18.5 Simulator. On both platforms surrounding content follows RTL while the chronological timeline remains left-to-right by product decision.
-- Timeline hours are individually focusable buttons with localized semantic weather summaries and selected state. The timeline is not exposed only as decorative pixels.
-- Android 200% font scale was exercised on the emulator; the screen remains vertically scrollable and primary content does not overlap.
+- Timeline hours are individually focusable buttons with localized time, condition, temperature, feels-like, precipitation, wind, and selected state. The timeline is not exposed only as decorative pixels.
+- A real TalkBack service was enabled on API 36. Focus traversed into the hourly timeline, scrolled it to 15:00, and activated that hour; the selected detail card updated accordingly.
+- Android 160% and 200% font-scale passes remained vertically scrollable. iOS `accessibility-extra-large` found and drove a header-collapse fix; the corrected layout was retested with Increase Contrast enabled.
+- iOS Simulator accessibility inspection exposes each hourly entry as a button with the full localized summary and selected state. The installed iOS 18.1 Simulator runtime does not expose VoiceOver itself, so VoiceOver gesture/audio testing remains a physical/TestFlight release gate.
 
 Simulator evidence does not replace final TalkBack/VoiceOver testing on release-signed builds and real devices. Those checks remain required in the release QA matrix.

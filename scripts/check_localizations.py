@@ -28,15 +28,25 @@ def read(path: Path) -> dict[str, tuple[str, set[str]]]:
     return resources
 
 
+def read_directory(path: Path) -> dict[str, tuple[str, set[str]]]:
+    resources: dict[str, tuple[str, set[str]]] = {}
+    for xml_path in sorted(path.glob("*.xml")):
+        for name, signature in read(xml_path).items():
+            if name in resources:
+                raise ValueError(f"duplicate resource {name} in {path}")
+            resources[name] = signature
+    return resources
+
+
 def main() -> int:
-    canonical = read(RESOURCE_ROOT / "values/strings.xml")
+    canonical = read_directory(RESOURCE_ROOT / "values")
     failures: list[str] = []
     for locale in PRODUCTION_LOCALES:
         path = RESOURCE_ROOT / f"values-{locale}/strings.xml"
         if not path.exists():
             failures.append(f"{locale}: missing strings.xml")
             continue
-        translated = read(path)
+        translated = read_directory(path.parent)
         missing = sorted(canonical.keys() - translated.keys())
         extra = sorted(translated.keys() - canonical.keys())
         if missing:
