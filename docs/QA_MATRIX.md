@@ -20,6 +20,7 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Real production upgrade | Google Play production 1.0.1 (2) updated in place to Internal Nimbo 1.0.0 (3); first-install time, Play installer, signing certificate, state, online/offline launch, locale/theme/units, timeline, history, and Best Time Outside were preserved | Pass |
 | Play internal delivery | Upload key recovered and certificate matched; version code 4 RC2 is active for three internal testers. Preserved Play-installed vc3 updated to vc4 without uninstall; first-install time, installer, online render, cached airplane-mode cold launch, semantics, and crash check passed | Pass |
 | Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
+| Production submission | Production draft vc3 was replaced by validated vc4; all 11,361 phones and 6,279 tablets remain supported; 100% rollout submitted with zero active Production installs | In Google review |
 
 ## iOS
 
@@ -41,11 +42,11 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | App Store upload | Xcode upload succeeded; Apple processed build 1, export compliance completed, and build is attached to version 1.0 | Pass |
 | Store metadata | English metadata, review information, manual release, and production-UI iPhone/iPad screenshots saved | Pass |
 | App Privacy | Published: Coarse Location and Search History for App Functionality only; not linked, not tracking; public privacy-policy URL saved | Pass |
-| TestFlight | Build 1 is processed and `Ready to Submit`; connected physical `iPhone (Khasan)` on iOS 26.6 is available; tester assignment and device smoke remain | Pending device smoke |
+| TestFlight | Build 1 is processed and `Ready to Submit`; at the owner's explicit direction to proceed directly to release, no tester was assigned and no physical TestFlight smoke is claimed | Not performed |
+| App Review | iOS 1.0 (1), submission `1e305187-129c-466b-bc74-3347254eaea1`, submitted August 10, 2026 | Waiting for Review |
 
-## Release blockers
+## External waiting states
 
-- Promote the verified Internal RC2 version code 4 to Production.
-- Assign the internal TestFlight tester and perform the physical-device/VoiceOver
-  smoke test.
-- App Review submission and external moderation.
+- Google Play review and automatic 100% rollout of Production version code 4.
+- Apple review of submission `1e305187-129c-466b-bc74-3347254eaea1`, followed
+  by the selected manual App Store release after approval.
