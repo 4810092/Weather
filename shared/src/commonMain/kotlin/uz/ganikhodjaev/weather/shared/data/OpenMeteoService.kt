@@ -58,11 +58,21 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
         }.body()
 
     suspend fun searchCities(query: String, language: String): List<Location> {
-        if (query.trim().length < 2) return emptyList()
+        val normalizedQuery = query.trim()
+        if (normalizedQuery.length < 2) return emptyList()
+        val normalizedLanguage = language.trim().lowercase().ifBlank { ENGLISH_LANGUAGE }
+        val localizedResults = requestCities(normalizedQuery, normalizedLanguage)
+        if (localizedResults.isNotEmpty() || normalizedLanguage == ENGLISH_LANGUAGE) {
+            return localizedResults
+        }
+        return requestCities(normalizedQuery, ENGLISH_LANGUAGE)
+    }
+
+    private suspend fun requestCities(query: String, language: String): List<Location> {
         val response: GeocodingResponse = client.get(
             "https://geocoding-api.open-meteo.com/v1/search"
         ) {
-            parameter("name", query.trim())
+            parameter("name", query)
             parameter("count", 8)
             parameter("language", language)
             parameter("format", "json")
@@ -77,5 +87,9 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
                 timezone = result.timezone
             )
         }
+    }
+
+    private companion object {
+        const val ENGLISH_LANGUAGE = "en"
     }
 }

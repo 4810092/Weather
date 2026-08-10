@@ -48,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -452,10 +453,8 @@ private fun WeatherHeader(
     val location: @Composable (Modifier) -> Unit = { modifier ->
         Column(modifier = modifier) {
             Text(
-                text = if (weather.location.id.startsWith("device:")) {
+                text = weather.location.name.ifBlank {
                     stringResource(Res.string.current_location)
-                } else {
-                    weather.location.name
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
@@ -984,13 +983,13 @@ private fun Timeline(
                                 1f
                             }
                         )
+                        .clip(RoundedCornerShape(18.dp))
                         .background(
                             if (isSelected) {
                                 LocalNimboThemeTokens.current.selectedSurface
                             } else {
                                 Color.Transparent
-                            },
-                            RoundedCornerShape(18.dp)
+                            }
                         )
                         .clickable { onSelected(hour) }
                         .semantics {

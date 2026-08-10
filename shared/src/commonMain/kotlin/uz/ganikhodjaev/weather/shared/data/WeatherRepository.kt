@@ -173,6 +173,14 @@ internal class WeatherRepository(
         }
     }
 
+    fun updateLocationDetails(location: Location) {
+        queries.updateLocationDetails(
+            name = location.name,
+            country = location.country,
+            id = location.id
+        )
+    }
+
     fun unitPreference(): UnitPreference = queries.selectSetting(UNIT_PREFERENCE_KEY)
         .executeAsOneOrNull()
         ?.let { stored -> UnitPreference.entries.firstOrNull { it.name == stored } }

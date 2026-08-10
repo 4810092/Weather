@@ -40,6 +40,7 @@ fun NimboApp(platformContext: PlatformContext) {
         WeatherStateHolder(container.weatherRepository, locationProvider, automaticUnits, scope)
     }
     val state by stateHolder.state.collectAsState()
+    val searchLanguage = Locale.current.language.lowercase()
     val layoutDirection = if (Locale.current.language in RTL_LANGUAGES) {
         LayoutDirection.Rtl
     } else {
@@ -66,7 +67,9 @@ fun NimboApp(platformContext: PlatformContext) {
                     WeatherScreen(
                         state = state,
                         onRetry = stateHolder::refresh,
-                        onSearchQueryChanged = stateHolder::updateSearchQuery,
+                        onSearchQueryChanged = { query ->
+                            stateHolder.updateSearchQuery(query, searchLanguage)
+                        },
                         onLocationSelected = stateHolder::chooseLocation,
                         onUseDeviceLocation = stateHolder::useDeviceLocation,
                         onChangeLocation = stateHolder::showLocationPicker,

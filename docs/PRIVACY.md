@@ -11,8 +11,11 @@ Location permission is optional. Nimbo requests foreground approximate location
 only after the user chooses that option. Before any storage or network request,
 device coordinates are reduced to two decimal places (roughly kilometre-scale).
 The reduced coordinates are sent over HTTPS to Open-Meteo to return weather for
-that area. A user may instead search for a city without granting location access;
-the search text is sent over HTTPS to Open-Meteo's geocoding service.
+that area. Nimbo also asks the device's Android or iOS reverse-geocoding service
+to turn the reduced coordinates into a city and country for display. That system
+service may process the request over the network under the platform provider's
+terms. A user may instead search for a city without granting location access; the
+search text is sent over HTTPS to Open-Meteo's geocoding service.
 
 Open-Meteo says its free API server logs may contain IP addresses, requested
 coordinates, and request URLs for troubleshooting and abuse prevention, and that

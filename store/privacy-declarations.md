@@ -7,7 +7,7 @@ endpoints, SQLDelight schema, and dependency graph on August 10, 2026.
 
 | Data or capability | Behavior |
 | --- | --- |
-| Approximate location | Optional foreground permission. Coordinates are rounded to two decimals before local storage or HTTPS transmission to Open-Meteo. |
+| Approximate location | Optional foreground permission. Coordinates are rounded to two decimals before local storage, HTTPS transmission to Open-Meteo, or system reverse geocoding for the displayed city name. |
 | Precise location | Not retained or transmitted by Nimbo, even if iOS grants precise access. |
 | City search | Query text is sent over HTTPS to Open-Meteo geocoding. |
 | Local storage | One active place, bounded weather cache/snapshots, units, and refresh metadata. Android backup is disabled; iOS backup follows the user's system settings. |

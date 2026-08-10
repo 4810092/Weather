@@ -77,6 +77,9 @@ WHERE location_id = ? AND (epoch_seconds < ? OR epoch_seconds > ?);
 updateLocationTimezone:
 UPDATE location SET timezone = ? WHERE id = ?;
 
+updateLocationDetails:
+UPDATE location SET name = ?, country = ? WHERE id = ?;
+
 insertOrReplaceWeatherHour:
 INSERT OR REPLACE INTO weather_hour(
   location_id,

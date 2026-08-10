@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import uz.ganikhodjaev.weather.shared.data.WeatherRepository
+import uz.ganikhodjaev.weather.shared.location.DeviceCoordinates
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
 import uz.ganikhodjaev.weather.shared.location.coarsened
@@ -64,6 +66,7 @@ internal class WeatherStateHolder(
     private var started = false
     private var observationJob: Job? = null
     private var searchJob: Job? = null
+    private var placeResolutionJob: Job? = null
     private var activeLocation: Location? = null
     private var unitPreference = UnitPreference.Automatic
     private var contentBeforeLocationPicker: WeatherUiState.Content? = null
@@ -80,7 +83,7 @@ internal class WeatherStateHolder(
         }
     }
 
-    fun updateSearchQuery(query: String) {
+    fun updateSearchQuery(query: String, language: String) {
         val current = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         searchJob?.cancel()
         val normalized = query.trimStart().take(80)
@@ -96,7 +99,7 @@ internal class WeatherStateHolder(
             delay(350)
             val before = mutableState.value as? WeatherUiState.ChooseLocation ?: return@launch
             try {
-                val results = repository.searchCities(normalized, language = "en")
+                val results = repository.searchCities(normalized, language)
                 val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return@launch
                 if (latest.query == normalized) {
                     mutableState.value = latest.copy(
@@ -122,6 +125,7 @@ internal class WeatherStateHolder(
 
     fun chooseLocation(location: Location) {
         searchJob?.cancel()
+        placeResolutionJob?.cancel()
         scope.launch { activate(location, persist = true) }
     }
 
@@ -147,17 +151,21 @@ internal class WeatherStateHolder(
                     // Two decimal places are roughly kilometre-scale and cannot represent
                     // a precise street-level location even when iOS grants Precise Location.
                     val coordinates = result.coordinates.coarsened()
-                    activate(
-                        Location(
-                            id = "device:${coordinates.latitude}:${coordinates.longitude}",
-                            name = "",
-                            country = "",
-                            latitude = coordinates.latitude,
-                            longitude = coordinates.longitude,
-                            timezone = coordinates.timezone
-                        ),
-                        persist = true
+                    val location = Location(
+                        id = "device:${coordinates.latitude}:${coordinates.longitude}",
+                        name = "",
+                        country = "",
+                        latitude = coordinates.latitude,
+                        longitude = coordinates.longitude,
+                        timezone = coordinates.timezone
                     )
+                    repository.setActiveLocation(location)
+                    activeLocation = location
+                    placeResolutionJob?.cancel()
+                    placeResolutionJob = scope.launch {
+                        resolveDevicePlace(location, coordinates)
+                    }
+                    activate(location, persist = false)
                 }
                 DeviceLocationResult.PermissionDenied -> showLocationMessage(
                     UiMessage.LocationPermissionDenied
@@ -214,6 +222,41 @@ internal class WeatherStateHolder(
     private fun showLocationMessage(message: UiMessage) {
         val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         mutableState.value = latest.copy(isLocating = false, message = message)
+    }
+
+    private suspend fun resolveDevicePlace(location: Location, coordinates: DeviceCoordinates) {
+        val place = try {
+            withTimeoutOrNull(8_000) {
+                locationProvider.resolvePlace(coordinates)
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            logFailure("device place lookup", error)
+            null
+        } ?: return
+        val resolvedLocation = location.copy(
+            name = place.name.trim(),
+            country = place.country.trim()
+        )
+        if (resolvedLocation.name.isBlank() && resolvedLocation.country.isBlank()) return
+        if (activeLocation?.id != location.id) return
+
+        repository.updateLocationDetails(resolvedLocation)
+        activeLocation = resolvedLocation
+        val current = mutableState.value as? WeatherUiState.Content
+        if (current?.weather?.location?.id == location.id) {
+            mutableState.value = current.copy(
+                weather = current.weather.copy(location = resolvedLocation)
+            )
+        }
+        contentBeforeLocationPicker = contentBeforeLocationPicker?.let { content ->
+            if (content.weather.location.id == location.id) {
+                content.copy(weather = content.weather.copy(location = resolvedLocation))
+            } else {
+                content
+            }
+        }
     }
 
     private suspend fun refreshInternal(location: Location) {
