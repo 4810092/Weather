@@ -16,6 +16,11 @@
   <string name="refreshing">अपडेट हो रहा है…</string>
   <string name="refresh">अपडेट करें</string>
   <string name="change_place">स्थान बदलें</string>
+  <string name="theme">थीम</string>
+  <string name="theme_description">डिवाइस की थीम इस्तेमाल करें या खुद चुनें।</string>
+  <string name="theme_system">सिस्टम</string>
+  <string name="theme_light">लाइट</string>
+  <string name="theme_dark">डार्क</string>
   <string name="feels_like">महसूस %1$d°</string>
   <string name="saved_weather">सहेजा गया मौसम · अपडेट आवश्यक</string>
   <string name="timeline_title">24 घंटे पहले · अभी · 24 घंटे बाद</string>

@@ -16,6 +16,11 @@
   <string name="refreshing">更新中…</string>
   <string name="refresh">更新</string>
   <string name="change_place">場所を変更</string>
+  <string name="theme">テーマ</string>
+  <string name="theme_description">デバイスの外観を使用するか選択します。</string>
+  <string name="theme_system">システム</string>
+  <string name="theme_light">ライト</string>
+  <string name="theme_dark">ダーク</string>
   <string name="feels_like">体感 %1$d°</string>
   <string name="saved_weather">保存済みの天気 · 更新が必要です</string>
   <string name="timeline_title">24時間前 · 現在 · 24時間後</string>

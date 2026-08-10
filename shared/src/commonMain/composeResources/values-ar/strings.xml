@@ -16,6 +16,11 @@
   <string name="refreshing">جارٍ التحديث…</string>
   <string name="refresh">تحديث</string>
   <string name="change_place">تغيير المكان</string>
+  <string name="theme">المظهر</string>
+  <string name="theme_description">استخدم مظهر الجهاز أو اختر مظهرًا.</string>
+  <string name="theme_system">النظام</string>
+  <string name="theme_light">فاتح</string>
+  <string name="theme_dark">داكن</string>
   <string name="feels_like">المحسوسة ⁦%1$d°⁩</string>
   <string name="saved_weather">طقس محفوظ · يلزم التحديث</string>
   <string name="timeline_title">قبل 24 ساعة · الآن · بعد 24 ساعة</string>

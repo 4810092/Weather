@@ -16,6 +16,11 @@
   <string name="refreshing">Yangilanmoqda…</string>
   <string name="refresh">Yangilash</string>
   <string name="change_place">Joyni o‘zgartirish</string>
+  <string name="theme">Mavzu</string>
+  <string name="theme_description">Qurilma mavzusidan foydalaning yoki o‘zingiz tanlang.</string>
+  <string name="theme_system">Tizim</string>
+  <string name="theme_light">Yorug‘</string>
+  <string name="theme_dark">Qorong‘i</string>
   <string name="feels_like">His qilinishi %1$d°</string>
   <string name="saved_weather">Saqlangan ob-havo · yangilash kerak</string>
   <string name="timeline_title">24 soat oldin · hozir · 24 soat keyin</string>
