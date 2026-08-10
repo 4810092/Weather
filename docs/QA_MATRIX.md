@@ -18,7 +18,7 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Release/R8 | Minify, resource shrink, lint vital, package and local install | Pass |
 | Production legacy install | Play App Bundle Explorer universal APK, artifact `4859919545693253619`, version 2 (1.0.1), Play certificate verified; clean install, network render, foreground/background, and offline cold launch passed | Pass |
 | Real production upgrade | Google Play production 1.0.1 (2) updated in place to Internal Nimbo 1.0.0 (3); first-install time, Play installer, signing certificate, state, online/offline launch, locale/theme/units, timeline, history, and Best Time Outside were preserved | Pass |
-| Play internal delivery | Upload key recovered and certificate matched; version code 3 delivered and smoke-tested. Version code 4 RC2 upload is accepted and restores six hardware-location-filtered devices; activation and scoped smoke remain | Pending RC2 activation |
+| Play internal delivery | Upload key recovered and certificate matched; version code 4 RC2 is active for three internal testers. Preserved Play-installed vc3 updated to vc4 without uninstall; first-install time, installer, online render, cached airplane-mode cold launch, semantics, and crash check passed | Pass |
 | Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
 
 ## iOS
@@ -35,15 +35,15 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | System permission localization | All 13 `InfoPlist.strings` permission descriptions packaged in the device archive | Pass |
 | VoiceOver gestures/audio | VoiceOver is not exposed by this iOS Simulator runtime | Pending physical/TestFlight |
 | Device archive | Xcode 26.6/iOS 26.5 SDK archive succeeds for arm64 with bundle ID and team verified | Pass |
-| App Store record | Team App Store Connect is accessible; no Nimbo app exists and the available Bundle ID list does not contain `uz.ganikhodjaev.weather` | Needs App ID |
-| App Store export/TestFlight | Automatic export fails with `No Accounts` and no App Store profile; archive remains development-signed (`get-task-allow=true`) | Blocked externally |
+| Apple App ID | Explicit `uz.ganikhodjaev.weather` registered as Nimbo in team `5SWEZ7HTYP`; no optional capabilities enabled | Pass |
+| App Store record | Exact Bundle ID is available; `Nimbo` is globally occupied, and store-only fallback `Nimbo Weather` is prepared while the binary name remains Nimbo | Pending creation |
+| App Store export | Profile `Nimbo App Store 1.0`; iOS 1.0 (1) IPA deep-codesign valid, `beta-reports-active=true`, `get-task-allow=false`, SHA-256 recorded in release journal | Pass |
+| TestFlight | Connected physical `iPhone (Khasan)` on iOS 26.6 is available; build upload/processing and device smoke remain | Pending upload |
 
 ## Release blockers
 
-- Account Holder/Admin access to Certificates, Identifiers & Profiles to register
-  explicit App ID `uz.ganikhodjaev.weather`, followed by Xcode account sign-in and
-  an App Store distribution profile.
-- Activate Internal RC2, install Play-delivered version code 4 over the preserved
-  version code 3 test installation, and promote version code 4 to Production.
+- Create the App Store Connect record under the available store-only name and
+  upload the verified distribution IPA.
+- Promote the verified Internal RC2 version code 4 to Production.
 - Distribution-signed archive upload, TestFlight processing, and physical-device VoiceOver smoke test.
 - Live store-form entry, upload processing, and moderation.

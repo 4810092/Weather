@@ -88,11 +88,17 @@ release-journal changes are in scope.
   `android.hardware.location`. Those devices have zero active installs, but the
   exclusion contradicted Nimbo's manual-city flow, so version code 3 will not be
   promoted. Version code 4 contains only the explicit optional-hardware manifest
-  fix. Its upload-signed AAB was accepted into an Internal RC2 draft; SHA-256 is
+  fix. Its upload-signed AAB was accepted into Internal Testing; SHA-256 is
   `919fa79df1f52cc7ed4750f3f979f812c84e796741aa7ec5adf0251e42b05dd3`.
   Play validation now restores all six devices (11,361 phones and 6,279 tablets
   supported) and reports no device-loss warning. The sole remaining warning is
-  the non-blocking recommendation to upload native debug symbols.
+  the non-blocking recommendation to upload native debug symbols. Internal
+  release `Nimbo 1.0.0 (4) — Internal RC2` became active for the existing three
+  testers at 12:35 Asia/Tashkent on August 10, 2026. The preserved version code
+  3 installation then updated through Google Play to version code 4 at 13:20
+  without uninstall; `firstInstallTime` remained 11:08 and installer remained
+  `com.android.vending`. Online and airplane-mode cached cold launches passed,
+  including the saved-weather indicator, timeline semantics, and no crash.
 
 ## Apple release state
 
@@ -100,23 +106,29 @@ release-journal changes are in scope.
   all apps. The Account Holder is `4810092@gmail.com`.
 - A valid Apple Distribution identity for team `5SWEZ7HTYP`, including its
   private key, exists in login Keychain.
-- Sixteen current provisioning profiles for this team exist locally, including
-  App Store profiles for other apps; none targets
-  `uz.ganikhodjaev.weather`.
+- App Store profile `Nimbo App Store 1.0` was generated for
+  `5SWEZ7HTYP.uz.ganikhodjaev.weather`, includes the existing Apple Distribution
+  certificate, expires January 15, 2027, and is installed locally outside Git.
 - Xcode 26.6 currently has no signed-in Apple Account.
-- App Store Connect has no Nimbo record. Its New App Bundle ID list does not
-  contain `uz.ganikhodjaev.weather`.
-- The Apple Developer identifier portal returns `This request is forbidden for
-  security reasons` for the current Admin. App Store Connect's role dialog lists
-  the generic Admin developer privileges, but the separate Certificates,
-  Identifiers & Profiles resource is not assigned to this user.
+- Certificates, Identifiers & Profiles access is now active for the current
+  Admin. Explicit App ID `uz.ganikhodjaev.weather` was registered as `Nimbo` in
+  team `5SWEZ7HTYP` on August 10, 2026 with no optional capabilities enabled.
+- App Store Connect has no Nimbo record yet. Its New App form exposes the exact
+  registered Bundle ID, but Apple rejected the globally occupied store name
+  `Nimbo`; `Nimbo Weather` is prepared as the minimal store-only fallback. The
+  on-device display name remains `Nimbo`.
 - Local App Store Connect `.p8` candidates belong to another app workflow; no
   usable issuer/key pairing for this team was found. The Integrations page is
   not accessible to the current web user.
-- A device archive builds with Xcode 26.6 / iOS 26.5 SDK but is development
-  signed. There is no App Store export, upload, TestFlight build, or App Review
-  submission.
-- Four physical iOS devices are known to Xcode but are currently offline.
+- Xcode 26.6 / iOS 26.5 SDK produced a distribution-signed archive and exported
+  IPA for iOS 1.0 (1). The IPA SHA-256 is
+  `cb5c75bdcb574770e887aede7b05a36f33b2d4c4eb944f2dcf42032e23a46335`;
+  bundle ID, marketing/build versions, embedded App Store profile, deep
+  codesign validation, `beta-reports-active=true`, and
+  `get-task-allow=false` were verified. No upload, TestFlight build, or App
+  Review submission exists yet.
+- `iPhone (Khasan)` running iOS 26.6 is currently connected and available to
+  Xcode; the other known physical devices are offline.
 
 ## Legacy OpenWeather credential
 
@@ -128,14 +140,11 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Activate Internal RC2, install the Play-delivered version code 4 update on the
-   preserved version code 3 test installation, run the manifest-scoped smoke,
-   then promote version code 4 to Production with the completed listing and
+1. Promote verified version code 4 to Production with the completed listing and
    policy changes.
-2. The Apple Account Holder must grant the current Admin access to Certificates,
-   Identifiers & Profiles (or sign the Account Holder into Xcode). Then create
-   the exact App ID, App Store profile/record, upload build 1, complete
-   TestFlight, and submit for review.
+2. Create the App Store Connect record under the prepared store-only name,
+   upload the verified iOS 1.0 (1) IPA, complete metadata and TestFlight on the
+   connected iPhone, and submit for review.
 
 ## Worktree rule
 
