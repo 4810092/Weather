@@ -7,6 +7,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -64,6 +65,20 @@ if f'applicationId = "{identity}"' not in android:
     fail("Android production applicationId changed")
 if f"PRODUCT_BUNDLE_IDENTIFIER: {identity}" not in ios:
     fail("iOS production bundle identifier changed")
+
+manifest = ET.parse(ROOT / "app/src/main/AndroidManifest.xml").getroot()
+android_name = "{http://schemas.android.com/apk/res/android}name"
+android_required = "{http://schemas.android.com/apk/res/android}required"
+location_feature = next(
+    (
+        feature
+        for feature in manifest.findall("uses-feature")
+        if feature.get(android_name) == "android.hardware.location"
+    ),
+    None,
+)
+if location_feature is None or location_feature.get(android_required) != "false":
+    fail("optional city-search flow requires android.hardware.location to be optional")
 
 license_text = (ROOT / "LICENSE").read_text()
 if "Apache License" not in license_text or "Version 2.0, January 2004" not in license_text:
