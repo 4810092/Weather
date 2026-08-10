@@ -14,8 +14,9 @@ Verify Play App Signing and the upload certificate in Play Console. A local or C
 
 Play Console inspection on August 10, 2026 confirmed the existing production
 listing at version code 2 / version name 1.0.1 and confirmed Play App Signing is
-enabled. Nimbo is version code 3 / version name 1.0.0. The original extensionless
-upload keystore was recovered outside the repository with alias `weather`; the
+enabled. The current Nimbo candidate is version code 4 / version name 1.0.0.
+The original extensionless upload keystore was recovered outside the repository
+with alias `weather`; the
 matching store/key passwords remain in macOS Keychain. Its file and Keychain
 dates align with the March 2024 legacy release. Keychain access and certificate
 verification completed on August 10: the certificate exactly matches the
@@ -59,6 +60,39 @@ hour semantics, yesterday comparison, recent-day history, and Best Time
 Outside. Logcat and process exit history showed no crash or ANR. This closes the
 legacy Play 1.0.1 (2) -> Nimbo 1.0.0 (3) release gate; listing/policy completion
 and production promotion remain.
+
+The production listing draft was completed on August 10. The legacy icon,
+feature graphic, and two legacy phone screenshots were detached, while the
+version-controlled Nimbo icon, feature graphic, five phone screenshots, four
+7-inch tablet screenshots, and four 10-inch tablet screenshots were assigned.
+The final asset counts are 1/1 icon, 1/1 feature graphic, 5/8 phone, 4/8
+7-inch, and 4/8 10-inch. The saved draft uses the Nimbo name and source-backed
+copy.
+
+The Play app-content overview reports every declaration complete. Health is
+declared as having no health functions or regional health requirements. Data
+Safety records encrypted transport, no account, no third-party sharing,
+optional approximate location and in-app search history collected for app
+functionality, and automatic deletion within 90 days. The privacy-policy URL
+was corrected to the current repository `docs/PRIVACY.md`. These are saved
+drafts pending production release submission; they are not yet public.
+
+The first Production review draft used the Play-tested version code 3 binary.
+Play correctly warned that the coarse-location permission implicitly made
+`android.hardware.location` required, excluding one phone and five tablets.
+That contradicted the product contract because manual city search works without
+location permission or hardware. RC2 therefore adds only an explicit
+`android:required="false"` location-hardware declaration and increments Android
+version code to 4 while retaining version name 1.0.0. A repository check now
+guards the optional-hardware declaration.
+
+The upload-signed RC2 AAB was accepted by Play with SHA-256
+`919fa79df1f52cc7ed4750f3f979f812c84e796741aa7ec5adf0251e42b05dd3`.
+Internal review reports all six devices restored, totals of 11,361 phones and
+6,279 tablets, and no device-loss warning. The only remaining warning is the
+non-blocking recommendation to upload native debug symbols. Internal activation
+and a Play-delivered version code 3 -> 4 smoke are the next Android gates;
+version code 3 must not be promoted to Production.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 

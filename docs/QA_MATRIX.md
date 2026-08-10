@@ -17,8 +17,9 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Store screenshots | Five 1080 × 1920 phone and four 2560 × 1440 tablet images from the locally signed R8 build; dimensions checked in CI | Pass |
 | Release/R8 | Minify, resource shrink, lint vital, package and local install | Pass |
 | Production legacy install | Play App Bundle Explorer universal APK, artifact `4859919545693253619`, version 2 (1.0.1), Play certificate verified; clean install, network render, foreground/background, and offline cold launch passed | Pass |
-| Real production upgrade | Installing locally QA-signed Nimbo over the Play APK correctly fails `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; a Play-signed version 3 is required | Blocked externally |
-| Play internal delivery | Cannot upload until the accepted upload key is recovered or reset | Blocked externally |
+| Real production upgrade | Google Play production 1.0.1 (2) updated in place to Internal Nimbo 1.0.0 (3); first-install time, Play installer, signing certificate, state, online/offline launch, locale/theme/units, timeline, history, and Best Time Outside were preserved | Pass |
+| Play internal delivery | Upload key recovered and certificate matched; version code 3 delivered and smoke-tested. Version code 4 RC2 upload is accepted and restores six hardware-location-filtered devices; activation and scoped smoke remain | Pending RC2 activation |
+| Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
 
 ## iOS
 
@@ -39,10 +40,10 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 
 ## Release blockers
 
-- Android accepted upload private key or a completed Google Play upload-key reset.
 - Account Holder/Admin access to Certificates, Identifiers & Profiles to register
   explicit App ID `uz.ganikhodjaev.weather`, followed by Xcode account sign-in and
   an App Store distribution profile.
-- Play-delivered legacy update test and Play internal smoke test.
+- Activate Internal RC2, install Play-delivered version code 4 over the preserved
+  version code 3 test installation, and promote version code 4 to Production.
 - Distribution-signed archive upload, TestFlight processing, and physical-device VoiceOver smoke test.
 - Live store-form entry, upload processing, and moderation.
