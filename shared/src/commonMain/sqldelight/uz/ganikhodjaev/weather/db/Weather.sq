@@ -1,0 +1,119 @@
+CREATE TABLE location (
+  id TEXT NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  country TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  timezone TEXT NOT NULL,
+  is_active INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE weather_hour (
+  location_id TEXT NOT NULL,
+  epoch_seconds INTEGER NOT NULL,
+  temperature_c REAL NOT NULL,
+  apparent_temperature_c REAL NOT NULL,
+  weather_code INTEGER NOT NULL,
+  precipitation_probability INTEGER NOT NULL,
+  precipitation_mm REAL NOT NULL,
+  wind_kph REAL NOT NULL,
+  gust_kph REAL NOT NULL,
+  humidity_percent INTEGER NOT NULL,
+  uv_index REAL NOT NULL,
+  source TEXT NOT NULL,
+  fetched_at_epoch_seconds INTEGER NOT NULL,
+  PRIMARY KEY (location_id, epoch_seconds, source),
+  FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
+);
+
+CREATE TABLE forecast_snapshot (
+  location_id TEXT NOT NULL,
+  issued_at_epoch_seconds INTEGER NOT NULL,
+  valid_at_epoch_seconds INTEGER NOT NULL,
+  temperature_c REAL NOT NULL,
+  weather_code INTEGER NOT NULL,
+  precipitation_probability INTEGER NOT NULL,
+  PRIMARY KEY (location_id, issued_at_epoch_seconds, valid_at_epoch_seconds),
+  FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
+);
+
+CREATE TABLE app_setting (
+  key TEXT NOT NULL PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+insertOrReplaceLocation:
+INSERT OR REPLACE INTO location(
+  id, name, country, latitude, longitude, timezone, is_active
+) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deactivateLocations:
+UPDATE location SET is_active = 0;
+
+deleteWeatherForInactiveLocations:
+DELETE FROM weather_hour
+WHERE location_id IN (SELECT id FROM location WHERE is_active = 0);
+
+deleteForecastSnapshotsForInactiveLocations:
+DELETE FROM forecast_snapshot
+WHERE location_id IN (SELECT id FROM location WHERE is_active = 0);
+
+deleteInactiveLocations:
+DELETE FROM location WHERE is_active = 0;
+
+selectActiveLocation:
+SELECT * FROM location WHERE is_active = 1 LIMIT 1;
+
+selectLocationById:
+SELECT * FROM location WHERE id = ? LIMIT 1;
+
+deleteWeatherForLocation:
+DELETE FROM weather_hour WHERE location_id = ?;
+
+deleteWeatherOutsideWindow:
+DELETE FROM weather_hour
+WHERE location_id = ? AND (epoch_seconds < ? OR epoch_seconds > ?);
+
+updateLocationTimezone:
+UPDATE location SET timezone = ? WHERE id = ?;
+
+insertOrReplaceWeatherHour:
+INSERT OR REPLACE INTO weather_hour(
+  location_id,
+  epoch_seconds,
+  temperature_c,
+  apparent_temperature_c,
+  weather_code,
+  precipitation_probability,
+  precipitation_mm,
+  wind_kph,
+  gust_kph,
+  humidity_percent,
+  uv_index,
+  source,
+  fetched_at_epoch_seconds
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectTimeline:
+SELECT * FROM weather_hour
+WHERE location_id = ? AND epoch_seconds BETWEEN ? AND ?
+ORDER BY epoch_seconds ASC;
+
+insertForecastSnapshot:
+INSERT OR REPLACE INTO forecast_snapshot(
+  location_id,
+  issued_at_epoch_seconds,
+  valid_at_epoch_seconds,
+  temperature_c,
+  weather_code,
+  precipitation_probability
+) VALUES (?, ?, ?, ?, ?, ?);
+
+deleteOldForecastSnapshots:
+DELETE FROM forecast_snapshot WHERE issued_at_epoch_seconds < ?;
+
+selectSetting:
+SELECT value FROM app_setting WHERE key = ? LIMIT 1;
+
+upsertSetting:
+INSERT OR REPLACE INTO app_setting(key, value) VALUES (?, ?);

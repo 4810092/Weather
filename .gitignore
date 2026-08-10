@@ -1,5 +1,6 @@
 *.iml
 .gradle
+**/.gradle/
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -8,8 +9,25 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
+build/
+**/build/
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# Apple/Xcode local state and generated build products
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Signing material and local secrets must never be committed
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.cer
+.env
+.env.*
+secrets.properties
+signing.properties
