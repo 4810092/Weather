@@ -16,7 +16,8 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Tablet portrait/landscape | Adaptive constrained portrait and two-column landscape composition | Pass |
 | Store screenshots | Five 1080 × 1920 phone and four 2560 × 1440 tablet images from the locally signed R8 build; dimensions checked in CI | Pass |
 | Release/R8 | Minify, resource shrink, lint vital, package and local install | Pass |
-| Real production upgrade | Exact Play production version is 2 (1.0.1), but the accepted upload private key is unavailable locally | Blocked externally |
+| Production legacy install | Play App Bundle Explorer universal APK, artifact `4859919545693253619`, version 2 (1.0.1), Play certificate verified; clean install, network render, foreground/background, and offline cold launch passed | Pass |
+| Real production upgrade | Installing locally QA-signed Nimbo over the Play APK correctly fails `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; a Play-signed version 3 is required | Blocked externally |
 | Play internal delivery | Cannot upload until the accepted upload key is recovered or reset | Blocked externally |
 
 ## iOS

@@ -79,6 +79,12 @@ recorded at the end so the document does not confuse baseline and release state.
 - Play Console was inspected: production is version code 2 / version name 1.0.1,
   and Play App Signing is enabled. The accepted upload private key is not present
   locally; it must be recovered or reset before version code 3 can be delivered.
+- App Bundle Explorer artifact `4859919545693253619` supplied the actual
+  Play-signed universal production APK. Its signing certificate SHA-256 is
+  `99:B8:76:1F:7E:FB:2F:02:90:E4:A1:98:E9:46:54:36:C7:3B:CA:D0:DD:61:91:14:12:6F:F5:67:FF:80:BF:63`.
+  This is the Google-managed app-signing identity; the older certificate recorded
+  in the baseline section belongs to the uploaded artifact, not the APK delivered
+  by Play.
 - The Apple team is `5SWEZ7HTYP`; a valid Apple Distribution certificate is in the
   keychain. App Store Connect is accessible and has no existing Nimbo app. Its
   New App form lists the team's available Bundle IDs and does not contain
