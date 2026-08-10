@@ -43,6 +43,14 @@ App Store provisioning profile, so that archive must not be uploaded or describe
 as distribution-signed. Sign in to the named team in Xcode, repeat export, inspect
 the exported entitlements, and only then upload.
 
+The authenticated App Store Connect team currently has no Nimbo app. The New App
+form's Bundle ID list does not contain `uz.ganikhodjaev.weather`; the exact App ID
+therefore needs to be registered before creating the record. The current Apple
+Developer web user receives `Access Unavailable` on Certificates, Identifiers &
+Profiles despite having App Store Connect access. The Account Holder (or an Admin
+with that resource permission) must register this exact explicit ID—never a new
+or approximate identifier—then make it available to the Xcode signing session.
+
 ## Credentials
 
 No signing key, certificate, provisioning profile, API key, Play service account, App Store Connect key, or password belongs in Git. CI receives short-lived or encrypted secrets. Release artifacts are attached to releases or uploaded to stores, not committed.

@@ -33,12 +33,15 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | System permission localization | All 13 `InfoPlist.strings` permission descriptions packaged in the device archive | Pass |
 | VoiceOver gestures/audio | VoiceOver is not exposed by this iOS Simulator runtime | Pending physical/TestFlight |
 | Device archive | Xcode 26.6/iOS 26.5 SDK archive succeeds for arm64 with bundle ID and team verified | Pass |
+| App Store record | Team App Store Connect is accessible; no Nimbo app exists and the available Bundle ID list does not contain `uz.ganikhodjaev.weather` | Needs App ID |
 | App Store export/TestFlight | Automatic export fails with `No Accounts` and no App Store profile; archive remains development-signed (`get-task-allow=true`) | Blocked externally |
 
 ## Release blockers
 
 - Android accepted upload private key or a completed Google Play upload-key reset.
-- Authenticated Apple Developer/App Store Connect account in Xcode and an App Store distribution profile for `uz.ganikhodjaev.weather`.
+- Account Holder/Admin access to Certificates, Identifiers & Profiles to register
+  explicit App ID `uz.ganikhodjaev.weather`, followed by Xcode account sign-in and
+  an App Store distribution profile.
 - Play-delivered legacy update test and Play internal smoke test.
 - Distribution-signed archive upload, TestFlight processing, and physical-device VoiceOver smoke test.
 - Live store-form entry, upload processing, and moderation.

@@ -80,9 +80,13 @@ recorded at the end so the document does not confuse baseline and release state.
   and Play App Signing is enabled. The accepted upload private key is not present
   locally; it must be recovered or reset before version code 3 can be delivered.
 - The Apple team is `5SWEZ7HTYP`; a valid Apple Distribution certificate is in the
-  keychain. A device archive for `uz.ganikhodjaev.weather` succeeds, but App Store
-  export cannot obtain an account/profile because Xcode has no authenticated
-  Apple Developer account in this environment.
+  keychain. App Store Connect is accessible and has no existing Nimbo app. Its
+  New App form lists the team's available Bundle IDs and does not contain
+  `uz.ganikhodjaev.weather`, confirming that the exact explicit identifier still
+  needs registration. The Apple Developer resource page returns `Access
+  Unavailable` to the current web user, and Xcode has no authenticated account,
+  so neither identifier registration nor App Store provisioning can be completed
+  in the current session.
 - The current code is SQLDelight-backed, offline-first, localized, R8-enabled, and
   covered by the quality and release evidence in `QUALITY.md`, `QA_MATRIX.md`, and
   `RELEASE.md`.
