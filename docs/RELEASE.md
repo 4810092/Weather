@@ -74,8 +74,7 @@ declared as having no health functions or regional health requirements. Data
 Safety records encrypted transport, no account, no third-party sharing,
 optional approximate location and in-app search history collected for app
 functionality, and automatic deletion within 90 days. The privacy-policy URL
-was corrected to the current repository `docs/PRIVACY.md`. These are saved
-drafts pending production release submission; they are not yet public.
+was corrected to the current repository `docs/PRIVACY.md`.
 
 The first Production review draft used the Play-tested version code 3 binary.
 Play correctly warned that the coarse-location permission implicitly made
@@ -90,9 +89,28 @@ The upload-signed RC2 AAB was accepted by Play with SHA-256
 `919fa79df1f52cc7ed4750f3f979f812c84e796741aa7ec5adf0251e42b05dd3`.
 Internal review reports all six devices restored, totals of 11,361 phones and
 6,279 tablets, and no device-loss warning. The only remaining warning is the
-non-blocking recommendation to upload native debug symbols. Internal activation
-and a Play-delivered version code 3 -> 4 smoke are the next Android gates;
-version code 3 must not be promoted to Production.
+non-blocking recommendation to upload native debug symbols. Internal release
+`Nimbo 1.0.0 (4) — Internal RC2` became active for the existing three testers at
+12:35 Asia/Tashkent on August 10, 2026. The preserved version code 3 install then
+updated through Google Play to version code 4 at 13:20 without uninstall;
+`firstInstallTime` and the Play installer were preserved. Online and
+airplane-mode cached cold launches passed with the expected saved-weather state
+and no crash. Version code 3 must not be promoted to Production.
+
+RC2 is tagged `v1.0.0-rc.2` at master commit
+`692c0acbb1a807ae1b9024f104f0dbf657cad4f7`. Pull request 5 passed both
+Android/shared and unsigned iOS CI before merge.
+
+The obsolete Production draft containing version code 3 was replaced with the
+already validated version code 4 artifact. Google Play accepted Production
+release `Nimbo 1.0.0 (4)` for review at 14:21 Asia/Tashkent on August 10, 2026.
+The common-issues pre-submit check completed without another issue. The
+Publishing overview reports `Изменения на проверке` and
+`Изменения находятся на рассмотрении`. The release requests a 100% rollout
+across all target countries because Production reports zero active installs; a
+staged percentage cannot produce a meaningful risk sample. Managed publishing
+is off, so an approved change will roll out automatically. The only validation
+warning is the non-blocking native-debug-symbol recommendation.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
@@ -105,30 +123,49 @@ The device archive command is:
 ```sh
 xcodebuild -project iosApp/Nimbo.xcodeproj -scheme Nimbo \
   -configuration Release -destination 'generic/platform=iOS' \
-  -archivePath build/Nimbo.xcarchive -allowProvisioningUpdates archive
+  -archivePath build/Nimbo.xcarchive \
+  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='Apple Distribution' \
+  DEVELOPMENT_TEAM=5SWEZ7HTYP \
+  PROVISIONING_PROFILE_SPECIFIER='Nimbo App Store 1.0' archive
 xcodebuild -exportArchive -archivePath build/Nimbo.xcarchive \
   -exportPath build/app-store-export \
-  -exportOptionsPlist iosApp/ExportOptions.plist \
-  -allowProvisioningUpdates
+  -exportOptionsPlist iosApp/ExportOptions.plist
 ```
 
-At the August 10, 2026 checkpoint the first command produced a valid arm64 archive
-with the requested team and bundle ID. Export stopped with `No Accounts` and no
-App Store provisioning profile, so that archive must not be uploaded or described
-as distribution-signed. Sign in to the named team in Xcode, repeat export, inspect
-the exported entitlements, and only then upload.
+On August 10, 2026 these commands produced and exported a valid arm64 App Store
+archive without requiring an Xcode account login. The archive and exported IPA
+use the explicit Nimbo profile and the existing Apple Distribution private key;
+the post-export verification below is mandatory before upload.
 
-The authenticated App Store Connect team currently has no Nimbo app. The New App
-form's Bundle ID list does not contain `uz.ganikhodjaev.weather`; the exact App ID
-therefore needs to be registered before creating the record. The current web user
-is an App Store Connect Admin, but the Apple Developer identifier portal returns
-`This request is forbidden for security reasons` because the separate
-Certificates, Identifiers & Profiles resource is not assigned. Xcode 26.6 also
-has no signed-in Apple Account. A valid Apple Distribution private key for team
-`5SWEZ7HTYP` and current profiles for other apps exist locally, but no profile
-targets Nimbo. The Account Holder must grant that resource to the current Admin
-or sign the Account Holder into Xcode; then register this exact explicit ID—never
-a new or approximate identifier—and create its App Store distribution profile.
+The current Admin has Certificates, Identifiers & Profiles access, and explicit App ID
+`uz.ganikhodjaev.weather` was registered as `Nimbo` in team `5SWEZ7HTYP` on
+August 10, 2026 without optional capabilities. Xcode 26.6 is authenticated for
+the same team, and the valid Apple Distribution private key is present locally. App Store profile
+`Nimbo App Store 1.0` was generated and installed, and Xcode 26.6 exported a
+distribution-signed iOS 1.0 (1) IPA with SHA-256
+`cb5c75bdcb574770e887aede7b05a36f33b2d4c4eb944f2dcf42032e23a46335`.
+Deep codesign validation passed; the embedded profile has
+`beta-reports-active=true` and `get-task-allow=false`. Apple rejected `Nimbo` as
+a globally occupied App Store name, so the minimal store-only fallback
+`Nimbo Weather` is used for App Store Connect record `6799886897`; the binary
+display name remains `Nimbo`. Xcode uploaded the verified IPA at 13:29
+Asia/Tashkent, Apple processed build 1, and the build is attached to version
+1.0 with export compliance recorded as no custom encryption. English metadata,
+review notes/contact, manual release, and real production-UI iPhone/iPad
+screenshots are saved. App Information is saved with Weather category, subtitle,
+and a 4+ rating. App Privacy is published with only Coarse Location and Search
+History disclosed for App Functionality, not linked to identity and not used for
+tracking; the public privacy-policy URL targets `docs/PRIVACY.md` on `master`.
+Build 1 reports `Ready to Submit`. At the owner's explicit direction to proceed
+directly to release, no internal TestFlight tester was assigned and no physical
+TestFlight smoke is claimed. Pricing is free with United States as the base
+storefront, all 175 countries or regions are selected, and untested Apple
+Silicon Mac and Apple Vision Pro distribution are disabled. Content-rights
+information records the necessary rights for the third-party weather and place
+data. App Store version 1.0 build 1 was submitted at 14:18 Asia/Tashkent on
+August 10, 2026. Submission
+`1e305187-129c-466b-bc74-3347254eaea1` is `Waiting for Review`; manual release is
+selected for the first version.
 
 ## Credentials
 

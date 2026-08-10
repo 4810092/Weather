@@ -18,8 +18,9 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Release/R8 | Minify, resource shrink, lint vital, package and local install | Pass |
 | Production legacy install | Play App Bundle Explorer universal APK, artifact `4859919545693253619`, version 2 (1.0.1), Play certificate verified; clean install, network render, foreground/background, and offline cold launch passed | Pass |
 | Real production upgrade | Google Play production 1.0.1 (2) updated in place to Internal Nimbo 1.0.0 (3); first-install time, Play installer, signing certificate, state, online/offline launch, locale/theme/units, timeline, history, and Best Time Outside were preserved | Pass |
-| Play internal delivery | Upload key recovered and certificate matched; version code 3 delivered and smoke-tested. Version code 4 RC2 upload is accepted and restores six hardware-location-filtered devices; activation and scoped smoke remain | Pending RC2 activation |
+| Play internal delivery | Upload key recovered and certificate matched; version code 4 RC2 is active for three internal testers. Preserved Play-installed vc3 updated to vc4 without uninstall; first-install time, installer, online render, cached airplane-mode cold launch, semantics, and crash check passed | Pass |
 | Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
+| Production submission | Production draft vc3 was replaced by validated vc4; all 11,361 phones and 6,279 tablets remain supported; 100% rollout submitted with zero active Production installs | In Google review |
 
 ## iOS
 
@@ -35,15 +36,17 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | System permission localization | All 13 `InfoPlist.strings` permission descriptions packaged in the device archive | Pass |
 | VoiceOver gestures/audio | VoiceOver is not exposed by this iOS Simulator runtime | Pending physical/TestFlight |
 | Device archive | Xcode 26.6/iOS 26.5 SDK archive succeeds for arm64 with bundle ID and team verified | Pass |
-| App Store record | Team App Store Connect is accessible; no Nimbo app exists and the available Bundle ID list does not contain `uz.ganikhodjaev.weather` | Needs App ID |
-| App Store export/TestFlight | Automatic export fails with `No Accounts` and no App Store profile; archive remains development-signed (`get-task-allow=true`) | Blocked externally |
+| Apple App ID | Explicit `uz.ganikhodjaev.weather` registered as Nimbo in team `5SWEZ7HTYP`; no optional capabilities enabled | Pass |
+| App Store record | Record `6799886897` created for exact Bundle ID under store-only name `Nimbo Weather`; binary name remains Nimbo | Pass |
+| App Store export | Profile `Nimbo App Store 1.0`; iOS 1.0 (1) IPA deep-codesign valid, `beta-reports-active=true`, `get-task-allow=false`, SHA-256 recorded in release journal | Pass |
+| App Store upload | Xcode upload succeeded; Apple processed build 1, export compliance completed, and build is attached to version 1.0 | Pass |
+| Store metadata | English metadata, review information, manual release, and production-UI iPhone/iPad screenshots saved | Pass |
+| App Privacy | Published: Coarse Location and Search History for App Functionality only; not linked, not tracking; public privacy-policy URL saved | Pass |
+| TestFlight | Build 1 is processed and `Ready to Submit`; at the owner's explicit direction to proceed directly to release, no tester was assigned and no physical TestFlight smoke is claimed | Not performed |
+| App Review | iOS 1.0 (1), submission `1e305187-129c-466b-bc74-3347254eaea1`, submitted August 10, 2026 | Waiting for Review |
 
-## Release blockers
+## External waiting states
 
-- Account Holder/Admin access to Certificates, Identifiers & Profiles to register
-  explicit App ID `uz.ganikhodjaev.weather`, followed by Xcode account sign-in and
-  an App Store distribution profile.
-- Activate Internal RC2, install Play-delivered version code 4 over the preserved
-  version code 3 test installation, and promote version code 4 to Production.
-- Distribution-signed archive upload, TestFlight processing, and physical-device VoiceOver smoke test.
-- Live store-form entry, upload processing, and moderation.
+- Google Play review and automatic 100% rollout of Production version code 4.
+- Apple review of submission `1e305187-129c-466b-bc74-3347254eaea1`, followed
+  by the selected manual App Store release after approval.
