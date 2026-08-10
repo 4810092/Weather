@@ -102,21 +102,19 @@ release-journal changes are in scope.
 
 ## Apple release state
 
-- App Store Connect is accessible as `kh.ganikhodjaev@gmail.com`, role Admin,
-  all apps. The Account Holder is `4810092@gmail.com`.
+- App Store Connect and Xcode 26.6 are authenticated as `4810092@gmail.com` for
+  team `5SWEZ7HTYP`; the web user has the Admin role and all-app access.
 - A valid Apple Distribution identity for team `5SWEZ7HTYP`, including its
   private key, exists in login Keychain.
 - App Store profile `Nimbo App Store 1.0` was generated for
   `5SWEZ7HTYP.uz.ganikhodjaev.weather`, includes the existing Apple Distribution
   certificate, expires January 15, 2027, and is installed locally outside Git.
-- Xcode 26.6 currently has no signed-in Apple Account.
 - Certificates, Identifiers & Profiles access is now active for the current
   Admin. Explicit App ID `uz.ganikhodjaev.weather` was registered as `Nimbo` in
   team `5SWEZ7HTYP` on August 10, 2026 with no optional capabilities enabled.
-- App Store Connect has no Nimbo record yet. Its New App form exposes the exact
-  registered Bundle ID, but Apple rejected the globally occupied store name
-  `Nimbo`; `Nimbo Weather` is prepared as the minimal store-only fallback. The
-  on-device display name remains `Nimbo`.
+- App Store Connect record `6799886897` was created with the exact registered
+  Bundle ID and the store-only name `Nimbo Weather`; Apple rejected the globally
+  occupied name `Nimbo`. The on-device display name remains `Nimbo`.
 - Local App Store Connect `.p8` candidates belong to another app workflow; no
   usable issuer/key pairing for this team was found. The Integrations page is
   not accessible to the current web user.
@@ -125,8 +123,13 @@ release-journal changes are in scope.
   `cb5c75bdcb574770e887aede7b05a36f33b2d4c4eb944f2dcf42032e23a46335`;
   bundle ID, marketing/build versions, embedded App Store profile, deep
   codesign validation, `beta-reports-active=true`, and
-  `get-task-allow=false` were verified. No upload, TestFlight build, or App
-  Review submission exists yet.
+  `get-task-allow=false` were verified. The IPA was uploaded through Xcode at
+  13:29 Asia/Tashkent and processed as TestFlight/App Store build 1. Build 1 is
+  attached to version 1.0; export compliance records no custom encryption.
+- App Store version metadata, review contact/notes, manual-release selection,
+  and real production-UI screenshots for iPhone 6.9-inch and iPad 13-inch are
+  saved. App Information subtitle/category and the 4+ age-rating questionnaire
+  are prepared but not yet submitted.
 - `iPhone (Khasan)` running iOS 26.6 is currently connected and available to
   Xcode; the other known physical devices are offline.
 
@@ -140,11 +143,11 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Promote verified version code 4 to Production with the completed listing and
+1. Save App Information/age rating, complete App Privacy, enable build 1 for
+   internal TestFlight, smoke-test it on the connected iPhone, and submit 1.0
+   for App Review.
+2. Promote verified version code 4 to Production with the completed listing and
    policy changes.
-2. Create the App Store Connect record under the prepared store-only name,
-   upload the verified iOS 1.0 (1) IPA, complete metadata and TestFlight on the
-   connected iPhone, and submit for review.
 
 ## Worktree rule
 

@@ -36,14 +36,15 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | VoiceOver gestures/audio | VoiceOver is not exposed by this iOS Simulator runtime | Pending physical/TestFlight |
 | Device archive | Xcode 26.6/iOS 26.5 SDK archive succeeds for arm64 with bundle ID and team verified | Pass |
 | Apple App ID | Explicit `uz.ganikhodjaev.weather` registered as Nimbo in team `5SWEZ7HTYP`; no optional capabilities enabled | Pass |
-| App Store record | Exact Bundle ID is available; `Nimbo` is globally occupied, and store-only fallback `Nimbo Weather` is prepared while the binary name remains Nimbo | Pending creation |
+| App Store record | Record `6799886897` created for exact Bundle ID under store-only name `Nimbo Weather`; binary name remains Nimbo | Pass |
 | App Store export | Profile `Nimbo App Store 1.0`; iOS 1.0 (1) IPA deep-codesign valid, `beta-reports-active=true`, `get-task-allow=false`, SHA-256 recorded in release journal | Pass |
-| TestFlight | Connected physical `iPhone (Khasan)` on iOS 26.6 is available; build upload/processing and device smoke remain | Pending upload |
+| App Store upload | Xcode upload succeeded; Apple processed build 1, export compliance completed, and build is attached to version 1.0 | Pass |
+| Store metadata | English metadata, review information, manual release, and production-UI iPhone/iPad screenshots saved | Pass |
+| TestFlight | Connected physical `iPhone (Khasan)` on iOS 26.6 is available; internal availability and device smoke remain | Pending device smoke |
 
 ## Release blockers
 
-- Create the App Store Connect record under the available store-only name and
-  upload the verified distribution IPA.
 - Promote the verified Internal RC2 version code 4 to Production.
-- Distribution-signed archive upload, TestFlight processing, and physical-device VoiceOver smoke test.
-- Live store-form entry, upload processing, and moderation.
+- Save App Information/age rating, complete App Privacy, enable internal
+  TestFlight, and perform the physical-device/VoiceOver smoke test.
+- App Review submission and external moderation.

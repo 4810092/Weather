@@ -127,19 +127,23 @@ archive without requiring an Xcode account login. The archive and exported IPA
 use the explicit Nimbo profile and the existing Apple Distribution private key;
 the post-export verification below is mandatory before upload.
 
-The authenticated App Store Connect team currently has no Nimbo app. The current
-Admin now has Certificates, Identifiers & Profiles access, and explicit App ID
+The current Admin has Certificates, Identifiers & Profiles access, and explicit App ID
 `uz.ganikhodjaev.weather` was registered as `Nimbo` in team `5SWEZ7HTYP` on
-August 10, 2026 without optional capabilities. The New App form now exposes the
-exact Bundle ID. Xcode 26.6 still has no signed-in Apple Account, but the valid
-Apple Distribution private key is present locally. App Store profile
+August 10, 2026 without optional capabilities. Xcode 26.6 is authenticated for
+the same team, and the valid Apple Distribution private key is present locally. App Store profile
 `Nimbo App Store 1.0` was generated and installed, and Xcode 26.6 exported a
 distribution-signed iOS 1.0 (1) IPA with SHA-256
 `cb5c75bdcb574770e887aede7b05a36f33b2d4c4eb944f2dcf42032e23a46335`.
 Deep codesign validation passed; the embedded profile has
 `beta-reports-active=true` and `get-task-allow=false`. Apple rejected `Nimbo` as
 a globally occupied App Store name, so the minimal store-only fallback
-`Nimbo Weather` is prepared; the binary display name remains `Nimbo`.
+`Nimbo Weather` is used for App Store Connect record `6799886897`; the binary
+display name remains `Nimbo`. Xcode uploaded the verified IPA at 13:29
+Asia/Tashkent, Apple processed build 1, and the build is attached to version
+1.0 with export compliance recorded as no custom encryption. English metadata,
+review notes/contact, manual release, and real production-UI iPhone/iPad
+screenshots are saved. The remaining store gates are App Information/age-rating
+save, App Privacy, internal TestFlight smoke, and App Review submission.
 `iPhone (Khasan)` on iOS 26.6 is connected for the TestFlight smoke.
 
 ## Credentials
