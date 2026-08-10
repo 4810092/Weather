@@ -14,10 +14,17 @@ Verify Play App Signing and the upload certificate in Play Console. A local or C
 
 Play Console inspection on August 10, 2026 confirmed the existing production
 listing at version code 2 / version name 1.0.1 and confirmed Play App Signing is
-enabled. Nimbo is version code 3 / version name 1.0.0. The accepted upload private
-key is not available locally, so internal-track upload and the real install-over-
-production test remain blocked until that key is recovered or Play completes an
-upload-key reset.
+enabled. Nimbo is version code 3 / version name 1.0.0. The original extensionless
+upload keystore was recovered outside the repository with alias `weather`; the
+matching store/key passwords remain in macOS Keychain. Its file and Keychain
+dates align with the March 2024 legacy release. Before use, unlock the Keychain,
+verify the keystore certificate against the accepted upload SHA-256 below, and
+keep all private material outside Git. The current Play role cannot request an
+upload-key reset (`Permission required`), but reset is unnecessary if the
+recovered key verifies.
+
+The accepted upload certificate SHA-256 reported by Play is
+`43:15:48:A4:87:1C:9C:09:0E:EE:80:8A:C3:A3:48:98:F5:D7:86:02:D9:E7:47:DF:E8:1E:22:84:15:AA:C2:52`.
 
 The production legacy input is no longer inferred from package metadata. App
 Bundle Explorer artifact `4859919545693253619` was downloaded as Google's signed
@@ -56,11 +63,15 @@ the exported entitlements, and only then upload.
 
 The authenticated App Store Connect team currently has no Nimbo app. The New App
 form's Bundle ID list does not contain `uz.ganikhodjaev.weather`; the exact App ID
-therefore needs to be registered before creating the record. The current Apple
-Developer web user receives `Access Unavailable` on Certificates, Identifiers &
-Profiles despite having App Store Connect access. The Account Holder (or an Admin
-with that resource permission) must register this exact explicit ID—never a new
-or approximate identifier—then make it available to the Xcode signing session.
+therefore needs to be registered before creating the record. The current web user
+is an App Store Connect Admin, but the Apple Developer identifier portal returns
+`This request is forbidden for security reasons` because the separate
+Certificates, Identifiers & Profiles resource is not assigned. Xcode 26.6 also
+has no signed-in Apple Account. A valid Apple Distribution private key for team
+`5SWEZ7HTYP` and current profiles for other apps exist locally, but no profile
+targets Nimbo. The Account Holder must grant that resource to the current Admin
+or sign the Account Holder into Xcode; then register this exact explicit ID—never
+a new or approximate identifier—and create its App Store distribution profile.
 
 ## Credentials
 

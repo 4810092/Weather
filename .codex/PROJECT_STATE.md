@@ -1,72 +1,100 @@
-# Project state
+# Nimbo project state
 
 Last updated: 2026-08-10
 
 ## Current phase
 
-Phase 4: KMP/CMP foundation and product vertical slice.
+Production release execution for Nimbo 1.0.0 RC1. Product and architecture work
+are frozen; only signing, publishing, compliance, release QA, security, and
+release-journal changes are in scope.
 
-## Implemented
+## Source and versions
 
-- Legacy audit and recovery tag `legacy-android-v1.0.1`.
-- Production Android identity and signing certificate fingerprint recorded.
-- Baseline product, design, architecture, privacy, quality, release, roadmap, and ADR documentation.
-- KMP shared module targeting Android, iOS device, and iOS simulator.
-- Separate Android application shell and UIKit iOS shell rendering shared Compose UI.
-- Open-Meteo forecast/geocoding client, normalized weather domain, SQLDelight cache, and snapshot retention.
-- Cache-first weather state with explicit loading, content, refresh, stale, offline, and empty-error presentation.
-- Shared current-weather screen and interactive -24/+24-hour timeline.
-- First-run city search and contextual approximate-location flows on Android and iOS.
-- User-triggered place switching with a cancellable picker.
-- Deterministic comparison and best-time-outside engines with shared tests and documented thresholds.
-- Seven-day recent context kept secondary to the centred -24/+24-hour timeline.
-- Automatic, metric, and imperial display units persisted through a SQLDelight migration.
-- Compose resource localization foundation with English plus 12 required locale overlays.
-- Legacy tracked AAB removed from the open-source branch because it embeds the revoked/rotated credential candidate; it remains recoverable from the legacy tag.
+- Android: `uz.ganikhodjaev.weather`, version name `1.0.0`, version code `3`,
+  target API 36.
+- iOS: `uz.ganikhodjaev.weather`, marketing version `1.0`, build `1`, team
+  `5SWEZ7HTYP`.
+- RC tag: `v1.0.0-rc.1`, source commit
+  `223864157d5fde8ccf4c686912473a9878285457`.
+- Pull request 1 is merged. Master CI run `31355374606` is green for Android,
+  shared checks, and the unsigned iOS build.
+- The August 10 gate executes 36 shared/host tests with zero failures.
 
-## Verified
+## Android release state
 
-- Baseline commit `8fcefb8` builds with `./gradlew test assembleDebug` on Java 17.
-- Legacy AAB signature verifies and its certificate fingerprint is documented.
-- Local toolchain includes Xcode 26.6, Swift 6.3.3, Android SDK 36, and iOS simulators.
-- `./gradlew :shared:allTests :app:assembleDebug` succeeds on the Nimbo branch.
-- iOS app builds with `xcodebuild` and launches on an iPhone 16 Pro iOS 18.5 simulator.
-- Live Open-Meteo data rendered successfully in the iOS simulator.
-- Android API 36 emulator clean install, city search, selection, live refresh, timeline centring, permission prompt, and detail scrolling pass.
-- Russian localization renders successfully in the iOS simulator after a clean install.
+- The existing Google Play app is `Tashkent Weather`, package
+  `uz.ganikhodjaev.weather`. Production is version code 2 / version name 1.0.1.
+- Play App Signing is enabled. The Google app-signing certificate SHA-256 is
+  `99:B8:76:1F:7E:FB:2F:02:90:E4:A1:98:E9:46:54:36:C7:3B:CA:D0:DD:61:91:14:12:6F:F5:67:FF:80:BF:63`.
+- The accepted upload certificate SHA-256 is
+  `43:15:48:A4:87:1C:9C:09:0E:EE:80:8A:C3:A3:48:98:F5:D7:86:02:D9:E7:47:DF:E8:1E:22:84:15:AA:C2:52`.
+- The original extensionless upload keystore was recovered outside the
+  repository. Its modification date is March 27, 2024, its alias is `weather`,
+  and Android Studio created matching store/key password entries in macOS
+  Keychain on March 29, 2024. The exact local path is intentionally retained in
+  the Keychain item label rather than committed to the public repository.
+- CLI retrieval of the saved passwords requires a macOS Keychain authorization
+  prompt. The workstation became locked before that prompt could be approved.
+- The current Play Console role can upload releases but cannot request an upload
+  key reset: the official reset control is disabled with `Permission required`.
+  Reset is unnecessary if the recovered keystore is unlocked and its certificate
+  matches the accepted upload certificate.
+- The real Play-signed legacy universal APK, artifact
+  `4859919545693253619`, passed clean launch, network, background/foreground,
+  repeat launch, and offline cold launch on API 36. The required vc2 -> vc3
+  Play-delivered upgrade remains pending.
+- No Nimbo listing draft was published. A metadata draft was started, but the
+  browser file chooser and subsequent locked workstation prevented asset upload;
+  the console still reported no unpublished changes after the browser session
+  recovered.
 
-## Known issues
+## Apple release state
 
-- OpenWeather key is exposed in Git history and must be revoked/rotated by the credential owner.
-- No signing keystore/config is available locally; Play App Signing and upload identity remain unverified.
-- Apple App ID/account state remains unverified.
-- Locale overlays still fall back to English for some secondary insight/reason/hazard strings.
-- Arabic RTL visual QA requires a non-Play Android image; the Play image removes debug-signed builds because this application ID is already published.
-- Pre-existing `.idea` worktree changes belong to the user and remain untouched.
+- App Store Connect is accessible as `kh.ganikhodjaev@gmail.com`, role Admin,
+  all apps. The Account Holder is `4810092@gmail.com`.
+- A valid Apple Distribution identity for team `5SWEZ7HTYP`, including its
+  private key, exists in login Keychain.
+- Sixteen current provisioning profiles for this team exist locally, including
+  App Store profiles for other apps; none targets
+  `uz.ganikhodjaev.weather`.
+- Xcode 26.6 currently has no signed-in Apple Account.
+- App Store Connect has no Nimbo record. Its New App Bundle ID list does not
+  contain `uz.ganikhodjaev.weather`.
+- The Apple Developer identifier portal returns `This request is forbidden for
+  security reasons` for the current Admin. App Store Connect's role dialog lists
+  the generic Admin developer privileges, but the separate Certificates,
+  Identifiers & Profiles resource is not assigned to this user.
+- Local App Store Connect `.p8` candidates belong to another app workflow; no
+  usable issuer/key pairing for this team was found. The Integrations page is
+  not accessible to the current web user.
+- A device archive builds with Xcode 26.6 / iOS 26.5 SDK but is development
+  signed. There is no App Store export, upload, TestFlight build, or App Review
+  submission.
+- Four physical iOS devices are known to Xcode but are currently offline.
 
-## Current release versions
+## Legacy OpenWeather credential
 
-- Legacy Android: 2 / 1.0.1.
-- Nimbo target: Android version code greater than Play production; iOS 1.0 build 1 or greater.
+- Nimbo uses keyless Open-Meteo and does not depend on the exposed legacy key.
+- Gitleaks reports zero leaks in all reachable public history after sanitation.
+- OpenWeather has no authenticated browser session, no matching environment
+  configuration, and no matching Keychain credential on this workstation. Key
+  status or revocation cannot be verified without the provider account.
 
-## Last known green commit
+## Next executable gates
 
-`f2b26f5` plus the current foundation working tree. Replace with the foundation commit after it is created.
+1. Unlock the release workstation and approve the macOS Keychain access prompt
+   for the recovered Weather upload-keystore credentials. Verify the keystore
+   certificate, sign the unchanged vc3 AAB, and upload it to Play Internal.
+2. Install legacy vc2 from Play, accept the Internal update to vc3 without
+   uninstalling, and run the documented upgrade/smoke matrix.
+3. Publish the Nimbo Play listing and start the production rollout after the
+   Play-delivered upgrade passes.
+4. The Apple Account Holder must grant the current Admin access to Certificates,
+   Identifiers & Profiles (or sign the Account Holder into Xcode). Then create
+   the exact App ID, App Store profile/record, upload build 1, complete
+   TestFlight, and submit for review.
 
-## Store status
+## Worktree rule
 
-- Google Play listing exists externally; access and current production configuration not yet verified.
-- App Store listing does not yet exist per product brief.
-
-## Important commands
-
-- `./gradlew :shared:allTests :app:assembleDebug`
-- `xcodebuild -project iosApp/Nimbo.xcodeproj -scheme Nimbo -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build`
-- `xcodebuild -version`
-- `git status --short --branch`
-
-## Next steps
-
-1. Commit onboarding, location, history, and deterministic engine work without staging `.idea` changes.
-2. Add automatic/metric/imperial settings and localized presentation resources.
-3. Validate Arabic RTL and large-font adaptive layouts on both platforms.
+Pre-existing `.idea` changes belong to the user. Do not reset, stash, stage, or
+commit them.
