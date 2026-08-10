@@ -16,8 +16,8 @@ release-journal changes are in scope.
   `5SWEZ7HTYP`.
 - RC tag: `v1.0.0-rc.1`, source commit
   `223864157d5fde8ccf4c686912473a9878285457`.
-- Pull requests 1 and 2 are merged. Current master is
-  `a769449ba4e7053b26c5286f849124a9a6c04076`; CI run `31358514085` is green
+- Pull requests 1 through 3 are merged. Current master is
+  `4b838f903b323308c56eeda23b90ddd084290de0`; CI run `31360257832` is green
   for Android/shared checks and the unsigned iOS build.
 - The August 10 gate executes 36 shared/host tests with zero failures.
 
@@ -47,13 +47,24 @@ release-journal changes are in scope.
   Play accepted it as version code 3, target API 36, and activated Internal
   release `Nimbo 1.0.0 (3) — Internal` at 10:42 Asia/Tashkent. The existing
   license-testers list (three accounts) has access.
-- The real Play-signed legacy universal APK, artifact
-  `4859919545693253619`, passed clean launch, network, background/foreground,
-  repeat launch, and offline cold launch on API 36. The required vc2 -> vc3
-  Play-delivered upgrade remains pending. The Android 16 Play Store emulator is
-  running and the official Google sign-in flow is waiting for the Account
-  Holder to scan its passkey QR; no Google account was previously present on the
-  emulator.
+- The required real Play delivery gate passed on the Android 16 / API 36
+  `Small_Phone` Play Store emulator (720 x 1280). Production version 1.0.1 (2)
+  was installed from Google Play at 11:08 Asia/Tashkent, launched, rendered live
+  Tashkent weather, and created persisted state. Without uninstalling, that
+  installation opted into Internal Testing and updated through Google Play to
+  Nimbo 1.0.0 (3) at 11:12. `firstInstallTime` remained 11:08 while
+  `lastUpdateTime` became 11:12; both installer and initiating package are
+  `com.android.vending`, and the Play app-signing certificate remained the
+  expected SHA-256 above.
+- Post-update smoke passed on that preserved installation: online cold launch,
+  background/foreground, force-stop/relaunch, offline cold launch from the local
+  database with the saved-weather indicator, Tashkent -> Samarkand -> Tashkent
+  manual city changes, metric selection persistence, light/dark appearance,
+  English, Russian, and Arabic RTL, selected-hour timeline interaction,
+  yesterday comparison, recent-day history, and Best Time Outside. Timeline
+  hour nodes expose localized semantic descriptions including time,
+  temperature, condition, apparent temperature, precipitation, and wind. No app
+  crash or ANR was observed in logcat or process exit history.
 - The English default Play listing text is saved as an unpublished Nimbo draft.
   Old visual assets still need to be replaced with the version-controlled
   production assets before the listing is submitted.
@@ -92,14 +103,10 @@ release-journal changes are in scope.
 
 ## Next executable gates
 
-1. Complete the passkey sign-in currently displayed on the Android 16 Play
-   Store emulator. Install legacy production vc2 from Play, accept the Internal
-   update to vc3 without
-   uninstalling, and run the documented upgrade/smoke matrix.
-2. Replace the legacy Play listing visual assets, complete policy declarations,
-   and start the production rollout after the
-   Play-delivered upgrade passes.
-3. The Apple Account Holder must grant the current Admin access to Certificates,
+1. Replace the legacy Play listing visual assets, complete policy declarations,
+   and start the production rollout now that the Play-delivered upgrade and
+   smoke gate have passed.
+2. The Apple Account Holder must grant the current Admin access to Certificates,
    Identifiers & Profiles (or sign the Account Holder into Xcode). Then create
    the exact App ID, App Store profile/record, upload build 1, complete
    TestFlight, and submit for review.

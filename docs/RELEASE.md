@@ -42,9 +42,23 @@ target API 36. Internal release `Nimbo 1.0.0 (3) — Internal` became active for
 the existing three-account license-testers list at 10:42 Asia/Tashkent on August
 10. Its signed file SHA-256 is
 `90f4b3c0a002341855701fbf2c8714f48dcff0ba5c820acd89edd0123a0674c6`.
-The real upgrade gate still requires installing legacy vc2 from Play and then
-accepting the Play-delivered Internal vc3 update without uninstalling. The
-Android 16 Play Store emulator is ready and awaits Account Holder passkey login.
+The real upgrade gate passed on August 10 on the Android 16 / API 36
+`Small_Phone` Play Store emulator (720 x 1280). Production 1.0.1 (2) was
+installed from Google Play and launched at 11:08 Asia/Tashkent. The same
+installation opted into Internal Testing and accepted the Play-delivered Nimbo
+1.0.0 (3) update at 11:12 without uninstalling. Package-manager evidence shows
+the original `firstInstallTime`, a later `lastUpdateTime`, installer and
+initiating package `com.android.vending`, and the unchanged expected Play
+app-signing certificate.
+
+The preserved post-update installation passed background/foreground,
+force-stop and online cold launch, offline cold launch with database-backed
+saved weather, manual city change and persistence, metric unit persistence,
+light/dark appearance, English, Russian, Arabic RTL, timeline selection and
+hour semantics, yesterday comparison, recent-day history, and Best Time
+Outside. Logcat and process exit history showed no crash or ANR. This closes the
+legacy Play 1.0.1 (2) -> Nimbo 1.0.0 (3) release gate; listing/policy completion
+and production promotion remain.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
