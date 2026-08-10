@@ -1,5 +1,9 @@
 package uz.ganikhodjaev.weather.shared
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -7,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
@@ -38,16 +43,22 @@ fun NimboApp(platformContext: PlatformContext) {
 
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         NimboTheme {
-            WeatherScreen(
-                state = state,
-                onRetry = stateHolder::refresh,
-                onSearchQueryChanged = stateHolder::updateSearchQuery,
-                onLocationSelected = stateHolder::chooseLocation,
-                onUseDeviceLocation = stateHolder::useDeviceLocation,
-                onChangeLocation = stateHolder::showLocationPicker,
-                onCancelLocationChange = stateHolder::cancelLocationPicker,
-                onUnitPreferenceChanged = stateHolder::setUnitPreference
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                WeatherScreen(
+                    state = state,
+                    onRetry = stateHolder::refresh,
+                    onSearchQueryChanged = stateHolder::updateSearchQuery,
+                    onLocationSelected = stateHolder::chooseLocation,
+                    onUseDeviceLocation = stateHolder::useDeviceLocation,
+                    onChangeLocation = stateHolder::showLocationPicker,
+                    onCancelLocationChange = stateHolder::cancelLocationPicker,
+                    onUnitPreferenceChanged = stateHolder::setUnitPreference
+                )
+            }
         }
     }
 }

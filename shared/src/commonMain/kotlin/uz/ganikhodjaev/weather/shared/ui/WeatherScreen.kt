@@ -135,118 +135,127 @@ private fun ChooseLocationScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .safeContentPadding()
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .widthIn(max = 680.dp)
-                .verticalScroll(rememberVerticalScrollState())
-                .padding(horizontal = 24.dp, vertical = 28.dp)
+                .fillMaxSize()
+                .safeContentPadding()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .widthIn(max = 680.dp)
+                    .verticalScroll(rememberVerticalScrollState())
+                    .padding(horizontal = 24.dp, vertical = 28.dp)
             ) {
-                Text(
-                    text = stringResource(Res.string.brand),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
-                )
-                if (state.canCancel) {
-                    TextButton(onClick = onCancel) {
-                        Text(stringResource(Res.string.cancel), fontWeight = FontWeight.Medium)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(Res.string.brand),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    if (state.canCancel) {
+                        TextButton(onClick = onCancel) {
+                            Text(stringResource(Res.string.cancel), fontWeight = FontWeight.Medium)
+                        }
                     }
                 }
-            }
-            Spacer(Modifier.height(18.dp))
-            Text(
-                text = stringResource(Res.string.onboarding_title),
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(Res.string.onboarding_body),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Spacer(Modifier.height(28.dp))
-            OutlinedTextField(
-                value = state.query,
-                onValueChange = onQueryChanged,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                label = { Text(stringResource(Res.string.search_city)) },
-                supportingText = { Text(stringResource(Res.string.change_later)) }
-            )
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    text = stringResource(Res.string.onboarding_title),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = stringResource(Res.string.onboarding_body),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Spacer(Modifier.height(28.dp))
+                OutlinedTextField(
+                    value = state.query,
+                    onValueChange = onQueryChanged,
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = { Text(stringResource(Res.string.search_city)) },
+                    supportingText = { Text(stringResource(Res.string.change_later)) }
+                )
 
-            if (state.isSearching) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp
-                    )
-                }
-            }
-
-            state.results.forEach { location ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onLocationSelected(location) }
-                        .padding(vertical = 14.dp)
-                        .semantics {
-                            contentDescription = "${location.name}, ${location.country}"
-                        }
-                ) {
-                    Text(location.name, fontWeight = FontWeight.SemiBold)
-                    if (location.country.isNotBlank()) {
-                        Text(
-                            location.country,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary
+                if (state.isSearching) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp
                         )
                     }
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-            }
 
-            state.message?.let { message ->
+                state.results.forEach { location ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onLocationSelected(location) }
+                            .padding(vertical = 14.dp)
+                            .semantics {
+                                contentDescription = "${location.name}, ${location.country}"
+                            }
+                    ) {
+                        Text(location.name, fontWeight = FontWeight.SemiBold)
+                        if (location.country.isNotBlank()) {
+                            Text(
+                                location.country,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                }
+
+                state.message?.let { message ->
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = message.localized(),
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+                OutlinedButton(
+                    onClick = onUseDeviceLocation,
+                    enabled = !state.isLocating,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        stringResource(
+                            if (state.isLocating) {
+                                Res.string.finding_area
+                            } else {
+                                Res.string.use_location
+                            }
+                        )
+                    )
+                }
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = message.localized(),
+                    text = stringResource(Res.string.location_privacy),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyMedium
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-
-            Spacer(Modifier.height(24.dp))
-            OutlinedButton(
-                onClick = onUseDeviceLocation,
-                enabled = !state.isLocating,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    stringResource(
-                        if (state.isLocating) Res.string.finding_area else Res.string.use_location
-                    )
-                )
-            }
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(Res.string.location_privacy),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }
@@ -270,22 +279,31 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .safeContentPadding(),
-        contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().widthIn(max = 560.dp).padding(32.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeContentPadding(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                stringResource(Res.string.error_title),
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(Modifier.height(12.dp))
-            Text(message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary)
-            Spacer(Modifier.height(24.dp))
-            Button(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
+            Column(
+                modifier = Modifier.fillMaxWidth().widthIn(max = 560.dp).padding(32.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(Res.string.error_title),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    message,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Spacer(Modifier.height(24.dp))
+                Button(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
+            }
         }
     }
 }
@@ -310,84 +328,89 @@ private fun WeatherContent(
         )
     }
 
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
     ) {
-        val wideLayout = maxWidth >= 840.dp
-        val horizontalPadding = if (wideLayout) 36.dp else 24.dp
-        val recentDays = remember(weather) { recentDaySummaries(weather) }
-        val uriHandler = LocalUriHandler.current
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .verticalScroll(rememberVerticalScrollState())
-                .padding(vertical = 16.dp)
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
         ) {
-            CenteredSection(horizontalPadding) {
-                WeatherHeader(
-                    state = state,
-                    onRefresh = onRefresh,
-                    onChangeLocation = onChangeLocation
-                )
-            }
-
-            Spacer(Modifier.height(if (wideLayout) 40.dp else 32.dp))
-            CenteredSection(horizontalPadding) {
-                CurrentSummary(state = state, condition = condition, insights = insights)
-            }
-            Spacer(Modifier.height(32.dp))
-            WeatherDetails(
-                state = state,
-                selected = selected,
-                outside = outside,
-                recentDays = recentDays,
-                horizontalPadding = horizontalPadding,
-                onSelected = { selected = it },
-                onUnitPreferenceChanged = onUnitPreferenceChanged
-            )
-
-            Spacer(Modifier.height(24.dp))
-            CenteredSection(horizontalPadding) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(Res.string.attribution),
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier
-                            .clickable { uriHandler.openUri("https://open-meteo.com/") }
-                            .padding(vertical = 12.dp)
+            val wideLayout = maxWidth >= 840.dp
+            val horizontalPadding = if (wideLayout) 36.dp else 24.dp
+            val recentDays = remember(weather) { recentDaySummaries(weather) }
+            val uriHandler = LocalUriHandler.current
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberVerticalScrollState())
+                    .padding(vertical = 16.dp)
+            ) {
+                CenteredSection(horizontalPadding) {
+                    WeatherHeader(
+                        state = state,
+                        onRefresh = onRefresh,
+                        onChangeLocation = onChangeLocation
                     )
-                    TextButton(
-                        onClick = {
-                            uriHandler.openUri("https://github.com/4810092/Weather")
-                        }
+                }
+
+                Spacer(Modifier.height(if (wideLayout) 40.dp else 32.dp))
+                CenteredSection(horizontalPadding) {
+                    CurrentSummary(state = state, condition = condition, insights = insights)
+                }
+                Spacer(Modifier.height(32.dp))
+                WeatherDetails(
+                    state = state,
+                    selected = selected,
+                    outside = outside,
+                    recentDays = recentDays,
+                    horizontalPadding = horizontalPadding,
+                    onSelected = { selected = it },
+                    onUnitPreferenceChanged = onUnitPreferenceChanged
+                )
+
+                Spacer(Modifier.height(24.dp))
+                CenteredSection(horizontalPadding) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(stringResource(Res.string.about_nimbo))
-                    }
-                    TextButton(
-                        onClick = {
-                            uriHandler.openUri(
-                                "https://github.com/4810092/Weather/blob/master/docs/PRIVACY.md"
-                            )
+                        Text(
+                            text = stringResource(Res.string.attribution),
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier
+                                .clickable { uriHandler.openUri("https://open-meteo.com/") }
+                                .padding(vertical = 12.dp)
+                        )
+                        TextButton(
+                            onClick = {
+                                uriHandler.openUri("https://github.com/4810092/Weather")
+                            }
+                        ) {
+                            Text(stringResource(Res.string.about_nimbo))
                         }
-                    ) {
-                        Text(stringResource(Res.string.privacy_policy))
-                    }
-                    TextButton(
-                        onClick = {
-                            uriHandler.openUri(
-                                "https://github.com/4810092/Weather/blob/master/LICENSE"
-                            )
+                        TextButton(
+                            onClick = {
+                                uriHandler.openUri(
+                                    "https://github.com/4810092/Weather/blob/master/docs/PRIVACY.md"
+                                )
+                            }
+                        ) {
+                            Text(stringResource(Res.string.privacy_policy))
                         }
-                    ) {
-                        Text(stringResource(Res.string.open_source_licenses))
+                        TextButton(
+                            onClick = {
+                                uriHandler.openUri(
+                                    "https://github.com/4810092/Weather/blob/master/LICENSE"
+                                )
+                            }
+                        ) {
+                            Text(stringResource(Res.string.open_source_licenses))
+                        }
                     }
                 }
             }
