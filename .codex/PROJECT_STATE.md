@@ -102,8 +102,9 @@ scope.
 - The obsolete Production draft containing version code 3 was replaced with the
   already validated version code 4 artifact. Production release
   `Nimbo 1.0.0 (4)` was submitted to Google Play review at 14:21
-  Asia/Tashkent on August 10, 2026. Play reports the change under
-  `Изменения на проверке` and is running its common-issues pre-submit check.
+  Asia/Tashkent on August 10, 2026. The common-issues pre-submit check completed
+  without another issue; Play now reports the change under
+  `Изменения на проверке` with `Изменения находятся на рассмотрении`.
   The requested rollout is 100% across all target countries: Production has
   zero active installs, so a staged percentage would provide no practical risk
   reduction. Managed publishing is disabled, so the rollout starts
@@ -169,8 +170,8 @@ scope.
 
 ## Next executable gates
 
-1. Monitor Google Play common-issues checks and review for Production version
-   code 4; fix and resubmit any actionable issue, otherwise verify rollout.
+1. Monitor Google Play review for Production version code 4; fix and resubmit
+   any actionable issue, otherwise verify rollout.
 2. Monitor App Review submission
    `1e305187-129c-466b-bc74-3347254eaea1`; fix and resubmit any actionable issue,
    otherwise perform the selected manual release after approval.

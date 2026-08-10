@@ -104,12 +104,13 @@ Android/shared and unsigned iOS CI before merge.
 The obsolete Production draft containing version code 3 was replaced with the
 already validated version code 4 artifact. Google Play accepted Production
 release `Nimbo 1.0.0 (4)` for review at 14:21 Asia/Tashkent on August 10, 2026.
-The Publishing overview reports `Изменения на проверке` while Play performs its
-common-issues pre-submit check. The release requests a 100% rollout across all
-target countries because Production reports zero active installs; a staged
-percentage cannot produce a meaningful risk sample. Managed publishing is off,
-so an approved change will roll out automatically. The only validation warning
-is the non-blocking native-debug-symbol recommendation.
+The common-issues pre-submit check completed without another issue. The
+Publishing overview reports `Изменения на проверке` and
+`Изменения находятся на рассмотрении`. The release requests a 100% rollout
+across all target countries because Production reports zero active installs; a
+staged percentage cannot produce a meaningful risk sample. Managed publishing
+is off, so an approved change will roll out automatically. The only validation
+warning is the non-blocking native-debug-symbol recommendation.
 
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
