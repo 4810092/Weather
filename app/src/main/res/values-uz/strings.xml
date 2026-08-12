@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Hozirgi ob-havo, bugungi eng yuqori va past harorat, yog‘in ehtimoli va havo sifati</string>
+    <string name="widget_open_nimbo">Nimbo’ni oching</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Yog‘in %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

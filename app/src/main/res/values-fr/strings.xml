@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Météo actuelle, maximales et minimales du jour, risque de pluie et qualité de l’air</string>
+    <string name="widget_open_nimbo">Ouvrir Nimbo</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Pluie %1$d%%</string>
+    <string name="widget_aqi">IQA %1$d</string>
+</resources>

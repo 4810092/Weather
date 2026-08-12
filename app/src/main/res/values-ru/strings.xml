@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Текущая погода, максимум и минимум за сегодня, вероятность осадков и качество воздуха</string>
+    <string name="widget_open_nimbo">Откройте Nimbo</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Осадки %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

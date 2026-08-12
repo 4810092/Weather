@@ -55,6 +55,37 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
                     "uv_index"
                 ).joinToString(",")
             )
+            parameter(
+                "daily",
+                listOf(
+                    "weather_code",
+                    "temperature_2m_max",
+                    "temperature_2m_min",
+                    "apparent_temperature_max",
+                    "apparent_temperature_min",
+                    "precipitation_probability_max",
+                    "precipitation_sum",
+                    "wind_speed_10m_max",
+                    "wind_gusts_10m_max",
+                    "uv_index_max",
+                    "sunrise",
+                    "sunset"
+                ).joinToString(",")
+            )
+        }.body()
+
+    suspend fun airQuality(location: Location): AirQualityResponse =
+        client.get("https://air-quality-api.open-meteo.com/v1/air-quality") {
+            parameter("latitude", location.latitude)
+            parameter("longitude", location.longitude)
+            parameter("timezone", "auto")
+            parameter("timeformat", "unixtime")
+            parameter("forecast_days", 5)
+            parameter(
+                "hourly",
+                listOf("us_aqi", "pm2_5", "pm10", "dust", "ozone", "nitrogen_dioxide")
+                    .joinToString(",")
+            )
         }.body()
 
     suspend fun searchCities(query: String, language: String): List<Location> {

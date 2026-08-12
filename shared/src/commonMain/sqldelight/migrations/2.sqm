@@ -1,0 +1,33 @@
+CREATE TABLE daily_forecast (
+  location_id TEXT NOT NULL,
+  epoch_seconds INTEGER NOT NULL,
+  weather_code INTEGER NOT NULL,
+  temperature_max_c REAL NOT NULL,
+  temperature_min_c REAL NOT NULL,
+  apparent_temperature_max_c REAL NOT NULL,
+  apparent_temperature_min_c REAL NOT NULL,
+  precipitation_probability_max INTEGER NOT NULL,
+  precipitation_mm REAL NOT NULL,
+  wind_max_kph REAL NOT NULL,
+  gust_max_kph REAL NOT NULL,
+  uv_index_max REAL NOT NULL,
+  sunrise_epoch_seconds INTEGER NOT NULL,
+  sunset_epoch_seconds INTEGER NOT NULL,
+  fetched_at_epoch_seconds INTEGER NOT NULL,
+  PRIMARY KEY (location_id, epoch_seconds),
+  FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
+);
+
+CREATE TABLE air_quality_hour (
+  location_id TEXT NOT NULL,
+  epoch_seconds INTEGER NOT NULL,
+  us_aqi INTEGER,
+  pm25 REAL,
+  pm10 REAL,
+  dust REAL,
+  ozone REAL,
+  nitrogen_dioxide REAL,
+  fetched_at_epoch_seconds INTEGER NOT NULL,
+  PRIMARY KEY (location_id, epoch_seconds),
+  FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
+);

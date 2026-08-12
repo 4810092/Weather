@@ -17,3 +17,13 @@ internal actual fun formatLocalHour(epochSeconds: Long, timezone: String): Strin
     }
     return formatter.stringFromDate(NSDate.dateWithTimeIntervalSince1970(epochSeconds.toDouble()))
 }
+
+internal actual fun formatLocalDay(epochSeconds: Long, timezone: String): String {
+    val formatter = NSDateFormatter().apply {
+        locale = NSLocale.currentLocale
+        dateStyle = 2u
+        timeStyle = 0u
+        NSTimeZone.timeZoneWithName(timezone)?.let { timeZone = it }
+    }
+    return formatter.stringFromDate(NSDate.dateWithTimeIntervalSince1970(epochSeconds.toDouble()))
+}

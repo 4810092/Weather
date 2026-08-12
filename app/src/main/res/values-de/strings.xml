@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Aktuelles Wetter, heutige Höchst- und Tiefstwerte, Regenwahrscheinlichkeit und Luftqualität</string>
+    <string name="widget_open_nimbo">Nimbo öffnen</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Regen %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

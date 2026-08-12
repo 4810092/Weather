@@ -9,12 +9,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+STORE_LOCALES = (
+    "en", "ru-RU", "ar", "es-ES", "fr-FR", "de-DE", "pt-PT",
+    "zh-CN", "ja-JP", "ko-KR", "hi-IN", "tr-TR", "uz-UZ",
+)
+
 EXPECTED = {
     "store/assets/google-play/icon-512.png": ((512, 512), "PNG"),
     "store/assets/google-play/feature-graphic-1024x500.jpg": ((1024, 500), "JPEG"),
-    "store/screenshots/app-store/iphone-6.9-en/01-current.png": ((1320, 2868), "PNG"),
-    "store/screenshots/app-store/ipad-13-en/01-portrait.png": ((2064, 2752), "PNG"),
+    "store/screenshots/google-play/wear-os-en/01-current.jpg": ((480, 480), "JPEG"),
+    "store/screenshots/app-store/apple-watch-en/01-current.jpg": ((416, 496), "JPEG"),
 }
+
+for locale in STORE_LOCALES:
+    EXPECTED[
+        f"store/screenshots/app-store/iphone-6.9-{locale}/01-current.png"
+    ] = ((1320, 2868), "PNG")
+    EXPECTED[
+        f"store/screenshots/app-store/ipad-13-{locale}/01-current.png"
+    ] = ((2064, 2752), "PNG")
 
 
 def inspect_image(path: Path) -> tuple[tuple[int, int], str, bool]:
@@ -57,6 +70,14 @@ for index, name in enumerate(
     start=1,
 ):
     EXPECTED[f"store/screenshots/google-play/phone-en/{name}"] = ((1080, 1920), "PNG")
+
+for locale in STORE_LOCALES:
+    if locale == "en":
+        continue
+    for name in ("01-current.png", "02-timeline-selected.png"):
+        EXPECTED[
+            f"store/screenshots/google-play/phone-{locale}/{name}"
+        ] = ((1080, 1920), "PNG")
 
 for name in (
     "01-overview.png",

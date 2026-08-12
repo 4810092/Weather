@@ -28,7 +28,7 @@ import uz.ganikhodjaev.weather.shared.PlatformContext
 internal actual fun rememberDeviceLocationProvider(
     platformContext: PlatformContext
 ): DeviceLocationProvider {
-    val activity = platformContext.activity
+    val activity = platformContext.requireActivity()
     val permissionResult = remember { PermissionResult() }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()

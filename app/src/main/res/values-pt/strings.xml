@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Tempo atual, máxima e mínima de hoje, probabilidade de chuva e qualidade do ar</string>
+    <string name="widget_open_nimbo">Abrir o Nimbo</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Chuva %1$d%%</string>
+    <string name="widget_aqi">IQA %1$d</string>
+</resources>

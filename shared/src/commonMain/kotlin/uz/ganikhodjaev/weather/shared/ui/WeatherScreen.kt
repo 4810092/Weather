@@ -28,11 +28,13 @@ import androidx.compose.foundation.rememberScrollState as rememberVerticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
@@ -81,6 +83,8 @@ import uz.ganikhodjaev.weather.shared.domain.UpcomingInsight
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsightEngine
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsights
 import uz.ganikhodjaev.weather.shared.domain.localDateDaysAgo
+import uz.ganikhodjaev.weather.shared.model.AirQualityHour
+import uz.ganikhodjaev.weather.shared.model.DailyForecast
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.ThemePreference
@@ -100,10 +104,12 @@ internal fun WeatherScreen(
     onRetry: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
     onLocationSelected: (Location) -> Unit,
+    onLocationDeleted: (Location) -> Unit,
     onUseDeviceLocation: () -> Unit,
     onChangeLocation: () -> Unit,
     onCancelLocationChange: () -> Unit,
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
+    onShareText: (String) -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
@@ -113,6 +119,7 @@ internal fun WeatherScreen(
             state = state,
             onQueryChanged = onSearchQueryChanged,
             onLocationSelected = onLocationSelected,
+            onLocationDeleted = onLocationDeleted,
             onUseDeviceLocation = onUseDeviceLocation,
             onCancel = onCancelLocationChange
         )
@@ -122,6 +129,7 @@ internal fun WeatherScreen(
             onRetry,
             onChangeLocation,
             onUnitPreferenceChanged,
+            onShareText,
             themePreference,
             onThemePreferenceChanged
         )
@@ -133,9 +141,40 @@ private fun ChooseLocationScreen(
     state: WeatherUiState.ChooseLocation,
     onQueryChanged: (String) -> Unit,
     onLocationSelected: (Location) -> Unit,
+    onLocationDeleted: (Location) -> Unit,
     onUseDeviceLocation: () -> Unit,
     onCancel: () -> Unit
 ) {
+    var pendingDeletion by remember { mutableStateOf<Location?>(null) }
+    pendingDeletion?.let { location ->
+        AlertDialog(
+            onDismissRequest = { pendingDeletion = null },
+            title = { Text(stringResource(Res.string.remove_saved_place)) },
+            text = {
+                Text(
+                    stringResource(
+                        Res.string.remove_saved_place_message,
+                        location.name.ifBlank { stringResource(Res.string.current_location) }
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onLocationDeleted(location)
+                        pendingDeletion = null
+                    }
+                ) {
+                    Text(stringResource(Res.string.remove))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDeletion = null }) {
+                    Text(stringResource(Res.string.cancel))
+                }
+            }
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -184,6 +223,56 @@ private fun ChooseLocationScreen(
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(Modifier.height(28.dp))
+                if (state.savedLocations.isNotEmpty()) {
+                    Text(
+                        text = stringResource(Res.string.saved_places),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    state.savedLocations.forEach { location ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clickable { onLocationSelected(location) }
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                Text(
+                                    location.name.ifBlank {
+                                        stringResource(Res.string.current_location)
+                                    }
+                                )
+                                if (location.country.isNotBlank()) {
+                                    Text(
+                                        location.country,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                            }
+                            if (location.id != state.activeLocationId) {
+                                val removeDescription = "${location.name}, " +
+                                    stringResource(Res.string.remove_saved_place)
+                                IconButton(
+                                    onClick = { pendingDeletion = location }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.ic_delete),
+                                        contentDescription = removeDescription,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
+                }
                 OutlinedTextField(
                     value = state.query,
                     onValueChange = onQueryChanged,
@@ -319,6 +408,7 @@ private fun WeatherContent(
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
+    onShareText: (String) -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
@@ -327,6 +417,12 @@ private fun WeatherContent(
     val condition = weatherCondition(weather.current.weatherCode)
     val background = LocalNimboThemeTokens.current.ambience(condition)
     val insights = remember(weather) { WeatherInsightEngine().evaluate(weather) }
+    val shareMessage = stringResource(
+        Res.string.share_weather_text,
+        weather.location.name.ifBlank { stringResource(Res.string.current_location) },
+        state.displayUnits.temperature(weather.current.temperatureC),
+        weather.current.precipitationProbability
+    )
     val outside = remember(weather) {
         BestTimeOutsideEngine().evaluate(
             timeline = weather.timeline,
@@ -360,7 +456,8 @@ private fun WeatherContent(
                     WeatherHeader(
                         state = state,
                         onRefresh = onRefresh,
-                        onChangeLocation = onChangeLocation
+                        onChangeLocation = onChangeLocation,
+                        onShare = { onShareText(shareMessage) }
                     )
                 }
 
@@ -447,7 +544,8 @@ private fun CenteredSection(horizontalPadding: Dp, content: @Composable () -> Un
 private fun WeatherHeader(
     state: WeatherUiState.Content,
     onRefresh: () -> Unit,
-    onChangeLocation: () -> Unit
+    onChangeLocation: () -> Unit,
+    onShare: () -> Unit
 ) {
     val weather = state.weather
     val location: @Composable (Modifier) -> Unit = { modifier ->
@@ -469,10 +567,16 @@ private fun WeatherHeader(
         }
     }
     val actions: @Composable () -> Unit = {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.End
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            OutlinedIconButton(onClick = onShare) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_share),
+                    contentDescription = stringResource(Res.string.share_weather)
+                )
+            }
             OutlinedIconButton(
                 onClick = onRefresh,
                 enabled = !state.isRefreshing
@@ -596,6 +700,23 @@ private fun WeatherDetails(
     CenteredSection(horizontalPadding) {
         OutsideCard(outside, weather.location.timezone)
     }
+    if (weather.airQuality.isNotEmpty()) {
+        Spacer(Modifier.height(18.dp))
+        CenteredSection(horizontalPadding) {
+            AirQualityCard(
+                weather.airQuality.minBy { abs(it.epochSeconds - weather.current.epochSeconds) }
+            )
+        }
+    }
+    if (weather.dailyForecast.isNotEmpty()) {
+        Spacer(Modifier.height(18.dp))
+        TenDayForecast(
+            days = weather.dailyForecast,
+            timezone = weather.location.timezone,
+            units = state.displayUnits,
+            contentPadding = horizontalPadding
+        )
+    }
     if (recentDays.isNotEmpty()) {
         Spacer(Modifier.height(18.dp))
         RecentDays(recentDays, state.displayUnits, horizontalPadding)
@@ -607,6 +728,108 @@ private fun WeatherDetails(
     Spacer(Modifier.height(18.dp))
     CenteredSection(horizontalPadding) {
         ThemeCard(themePreference, onThemePreferenceChanged)
+    }
+}
+
+@Composable
+private fun AirQualityCard(air: AirQualityHour) {
+    val aqi = air.usAqi
+    val label = when {
+        aqi == null -> stringResource(Res.string.not_enough_data)
+        aqi <= 50 -> stringResource(Res.string.aqi_good)
+        aqi <= 100 -> stringResource(Res.string.aqi_moderate)
+        aqi <= 150 -> stringResource(Res.string.aqi_unhealthy_sensitive)
+        aqi <= 200 -> stringResource(Res.string.aqi_unhealthy)
+        aqi <= 300 -> stringResource(Res.string.aqi_very_unhealthy)
+        else -> stringResource(Res.string.aqi_hazardous)
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(LocalNimboThemeTokens.current.subtleSurface, RoundedCornerShape(22.dp))
+            .padding(20.dp)
+    ) {
+        Text(stringResource(Res.string.air_quality), fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(aqi?.toString() ?: "—", style = MaterialTheme.typography.headlineLarge)
+            Spacer(Modifier.width(10.dp))
+            Text(label, color = MaterialTheme.colorScheme.secondary)
+        }
+        if (air.pm25 != null || air.pm10 != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                listOfNotNull(
+                    air.pm25?.let { "PM2.5 ${it.toInt()} μg/m³" },
+                    air.pm10?.let { "PM10 ${it.toInt()} μg/m³" }
+                ).joinToString(" · "),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            stringResource(Res.string.air_quality_attribution),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+private fun TenDayForecast(
+    days: List<DailyForecast>,
+    timezone: String,
+    units: DisplayUnits,
+    contentPadding: Dp
+) {
+    Column {
+        CenteredSection(contentPadding) {
+            Text(stringResource(Res.string.ten_day_forecast), fontWeight = FontWeight.SemiBold)
+        }
+        Spacer(Modifier.height(10.dp))
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = contentPadding),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(days.size, key = { days[it].epochSeconds }) { index ->
+                val day = days[index]
+                val title = when (index) {
+                    0 -> stringResource(Res.string.today)
+                    1 -> stringResource(Res.string.tomorrow)
+                    else -> formatLocalDay(day.epochSeconds, timezone)
+                }
+                Column(
+                    modifier = Modifier
+                        .width(138.dp)
+                        .background(
+                            LocalNimboThemeTokens.current.subtleSurface,
+                            RoundedCornerShape(18.dp)
+                        )
+                        .padding(14.dp)
+                ) {
+                    Text(title, style = MaterialTheme.typography.labelMedium)
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        weatherCondition(day.weatherCode).symbol(),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Text(
+                        stringResource(
+                            Res.string.temperature_range,
+                            units.temperature(day.temperatureMinC),
+                            units.temperature(day.temperatureMaxC)
+                        ),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "${day.precipitationProbabilityMax}% · UV ${day.uvIndexMax.toInt()}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+        }
     }
 }
 

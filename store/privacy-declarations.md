@@ -10,10 +10,11 @@ endpoints, SQLDelight schema, and dependency graph on August 10, 2026.
 | Approximate location | Optional foreground permission. Coordinates are rounded to two decimals before local storage, HTTPS transmission to Open-Meteo, or system reverse geocoding for the displayed city name. |
 | Precise location | Not retained or transmitted by Nimbo, even if iOS grants precise access. |
 | City search | Query text is sent over HTTPS to Open-Meteo geocoding. |
-| Local storage | One active place, bounded weather cache/snapshots, units, and refresh metadata. Android backup is disabled; iOS backup follows the user's system settings. |
+| Local storage | Up to ten saved places, bounded weather/AQI cache and snapshots, units, refresh metadata, and a compact widget/watch snapshot. Android backup is disabled; iOS backup follows the user's system settings. |
 | Provider retention | Open-Meteo states that API logs may include IP, URL, coordinates, and are deleted after 90 days. |
 | Accounts/identifiers | No account, advertising ID, vendor ID, installation ID, or custom identifier. |
 | Analytics/ads/crashes | No analytics, advertising, attribution, telemetry, or crash-reporting SDK. |
+| Store reviews | After four distinct successful updates, Nimbo may invoke the platform-owned in-app review prompt once per version. Review content is handled by the store and is not stored by Nimbo. |
 | Tracking | None. |
 
 ## Google Play Data safety answers

@@ -40,6 +40,48 @@ class ForecastResponseMappingTest {
         assertTrue(rows.isEmpty())
     }
 
+    @Test
+    fun dailyForecastUsesSafeDefaultsForOptionalProviderValues() {
+        val response = response(times = emptyList(), temperatures = emptyList()).copy(
+            daily = DailyResponse(
+                time = listOf(86_400L),
+                weatherCode = listOf(2),
+                temperatureMax = listOf(20.0),
+                temperatureMin = listOf(8.0),
+                apparentTemperatureMax = listOf(19.0),
+                apparentTemperatureMin = listOf(7.0),
+                windSpeedMax = listOf(12.0),
+                sunrise = listOf(90_000L),
+                sunset = listOf(130_000L)
+            )
+        )
+
+        val day = response.toDailyRows(fetchedAt = 99L).single()
+
+        assertEquals(0, day.precipitationProbabilityMax)
+        assertEquals(0.0, day.precipitationMm)
+        assertEquals(0.0, day.uvIndexMax)
+    }
+
+    @Test
+    fun airQualityKeepsTimelineWhenPollutantArraysArePartial() {
+        val rows = AirQualityResponse(
+            hourly = AirQualityHourlyResponse(
+                time = listOf(1L, 2L),
+                usAqi = listOf(42),
+                pm25 = emptyList(),
+                pm10 = emptyList(),
+                dust = emptyList(),
+                ozone = emptyList(),
+                nitrogenDioxide = emptyList()
+            )
+        ).toAirQualityRows(fetchedAt = 99L)
+
+        assertEquals(2, rows.size)
+        assertEquals(42, rows.first().usAqi)
+        assertEquals(null, rows.last().usAqi)
+    }
+
     private fun response(
         times: List<Long>,
         temperatures: List<Double>,

@@ -40,10 +40,16 @@ jobs:
           :shared:testAndroidHostTest
           :shared:verifySqlDelightMigration
           :app:bundleRelease
+          :wearApp:bundleRelease
       - uses: actions/upload-artifact@v7
         with:
           name: android-release-unsigned
           path: app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wear-release-unsigned
+          path: wearApp/build/outputs/bundle/release/wearApp-release.aab
           if-no-files-found: error
 
   ios:
@@ -57,14 +63,24 @@ jobs:
           java-version: "21"
       - uses: gradle/actions/setup-gradle@v6
       - name: Build iOS application without signing
-        run: >-
-          xcodebuild
-          -project iosApp/Nimbo.xcodeproj
-          -scheme Nimbo
-          -configuration Release
-          -sdk iphonesimulator
-          -destination 'generic/platform=iOS Simulator'
-          CODE_SIGNING_ALLOWED=NO
-          ARCHS=arm64
-          ONLY_ACTIVE_ARCH=YES
-          build
+        run: |
+          xcodebuild \
+            -project iosApp/Nimbo.xcodeproj \
+            -scheme NimboSimulator \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
+            build
+          xcodebuild \
+            -project iosApp/Nimbo.xcodeproj \
+            -scheme NimboWatch \
+            -configuration Release \
+            -sdk watchsimulator \
+            -destination 'generic/platform=watchOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
+            build

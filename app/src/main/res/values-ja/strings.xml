@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">現在の天気、今日の最高・最低気温、降水確率、空気質</string>
+    <string name="widget_open_nimbo">Nimboを開く</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">降水確率 %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

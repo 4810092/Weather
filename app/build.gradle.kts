@@ -12,8 +12,8 @@ android {
         applicationId = "uz.ganikhodjaev.weather"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0.1"
+        versionCode = 6
+        versionName = "1.0.2"
     }
 
     buildFeatures {
@@ -41,4 +41,6 @@ android {
 dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.play.services.wearable)
 }

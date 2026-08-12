@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Nimbo</string>
+    <string name="widget_description">Current weather, today’s high and low, rain chance, and air quality</string>
+    <string name="widget_open_nimbo">Open Nimbo</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Rain %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
 </resources>

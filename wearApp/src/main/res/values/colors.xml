@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="weather_background">#F3F7FC</color>
+    <color name="weather_primary">#17212B</color>
+    <color name="weather_secondary">#40566E</color>
+    <color name="weather_tertiary">#5B6B7C</color>
+    <color name="weather_accent">#0878C6</color>
+</resources>

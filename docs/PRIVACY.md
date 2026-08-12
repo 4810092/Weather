@@ -26,17 +26,23 @@ terms and privacy notice are available at
 
 ## Data stored on the device
 
-Nimbo stores one selected place, cached weather, short-lived forecast snapshots,
-unit preferences, and refresh metadata in its local database. Selecting another
-place removes the previous place and its cached weather. Weather rows are kept for
-at most eight days in the past and three days in the future; forecast snapshots are
-kept for 14 days. Uninstalling Nimbo removes its data because cloud/device backup
-is disabled on Android. On iOS, system backups can retain app data according to
+Nimbo stores up to ten selected places, cached weather and air quality, short-lived
+forecast snapshots, unit preferences, and refresh metadata in its local database.
+Weather rows are kept for at most eight days in the past and eleven days in the
+future; forecast snapshots are kept for 14 days. A compact copy of current weather
+is stored locally for home-screen widgets and synchronized to a paired watch. This
+watch/widget data contains no account or device identifier. Uninstalling Nimbo
+removes its data because cloud/device backup is disabled on Android. On iOS,
+system backups can retain app data according to
 the user's iCloud or device-backup settings; removing those backups is controlled
 by the user in Apple settings. Nimbo does not maintain a location trail or access
 location in the background.
 
 ## Tracking and sharing
+
+Nimbo can open the platform-owned App Store or Google Play review prompt after
+several successful updates. Any review a user chooses to submit is handled by the
+store under Apple’s or Google’s terms; Nimbo does not receive or store review text.
 
 Nimbo does not sell data, build advertising profiles, or track users across apps
 or websites. Open-Meteo processes approximate location and city-search requests
