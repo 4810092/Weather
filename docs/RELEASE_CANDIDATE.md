@@ -4,12 +4,12 @@ Prepared and uploaded on August 13, 2026.
 
 ## Store status
 
-- Google Play phone/tablet 1.0.2 (6) is in production review for a 100% rollout.
-  Managed publishing is off, so an approval will publish it automatically.
-- Wear OS 1.0.2 (1000006) is active in the Wear OS internal-testing track. The
-  required 480 x 480 Wear OS screenshot is saved in Play Console. Production
-  enrollment still requires the account holder to accept the Wear OS review
-  rules, after which the form-factor changes can be submitted.
+- Google Play phone/tablet 1.0.2 (6) is available in production in 177
+  countries/regions. Its 100% rollout completed on August 13, 2026 at 08:56.
+- Wear OS 1.0.2 (1000006) is active in the internal-testing track. The Wear OS
+  program rules have been accepted, and the production release, required
+  480 x 480 screenshot, and form-factor enrollment are in Google review. Managed
+  publishing is off, so approval will publish the Wear OS release automatically.
 - App Store Connect build 3 completed processing, export compliance was
   classified as using no app-implemented encryption, and the build was approved
   for the external `testers group`. Its public TestFlight link is
@@ -74,8 +74,8 @@ The matching Xcode archive is retained beside the IPA at
 - Perform a release-candidate smoke test on a physical Android phone and paired
   Wear OS watch: fresh install, upgrade, home widget, watch sync, C/F and Auto
   units, light/dark appearance, background refresh, offline state, and TalkBack.
-- After the phone production review completes, submit the pending Wear OS store
-  screenshot without restarting the phone review.
+- Monitor Google Play review and the post-launch Android vitals for both the
+  phone and Wear OS production releases.
 - Add the Apple Watch screenshot to the App Store product page before selecting
   a future production build.
 
