@@ -1,7 +1,22 @@
 # Nimbo 1.0.2 release candidate
 
-Prepared locally on August 13, 2026. Nothing from this candidate has been
-uploaded to App Store Connect or Google Play.
+Prepared and uploaded on August 13, 2026.
+
+## Store status
+
+- Google Play phone/tablet 1.0.2 (6) is in production review for a 100% rollout.
+  Managed publishing is off, so an approval will publish it automatically.
+- Wear OS 1.0.2 (1000006) is active in the Wear OS internal-testing track. The
+  required 480 x 480 Wear OS screenshot is saved in Play Console. Production
+  enrollment still requires the account holder to accept the Wear OS review
+  rules, after which the form-factor changes can be submitted.
+- App Store Connect build 3 completed processing, export compliance was
+  classified as using no app-implemented encryption, and the build was approved
+  for the external `testers group`. Its public TestFlight link is
+  <https://testflight.apple.com/join/HdE18dsh>.
+- The existing App Store production submission on build 2 was not changed;
+  build 3 is TestFlight-only until it is deliberately selected for a later App
+  Store release.
 
 ## Version identity
 
@@ -50,22 +65,19 @@ The matching Xcode archive is retained beside the IPA at
 - Required raw store captures exist for Wear OS (480 x 480) and Apple Watch
   Series 11 (416 x 496), with no alpha channel.
 
-## Required before upload
+## Remaining release follow-ups
 
-- Push the local candidate commit only when release testing is complete, then
-  let GitHub CI pass on that exact commit.
+- Let GitHub CI pass on the exact release commit.
 - Perform a release-candidate smoke test on a physical iPhone/iPad and paired
   Apple Watch: fresh install, upgrade, WidgetKit, watch sync, C/F and Auto units,
   light/dark appearance, background refresh, offline state, and VoiceOver.
 - Perform a release-candidate smoke test on a physical Android phone and paired
   Wear OS watch: fresh install, upgrade, home widget, watch sync, C/F and Auto
   units, light/dark appearance, background refresh, offline state, and TalkBack.
-- In App Store Connect, add the Apple Watch screenshot and review notes for the
-  widget/watch data flow. Do not select or submit build 3 until the physical
-  smoke test passes.
-- In Play Console, add Wear OS as a form factor, upload its required screenshot,
-  and use a test track first. Do not roll out either AAB until physical smoke and
-  the Play pre-launch report pass.
+- After the phone production review completes, submit the pending Wear OS store
+  screenshot without restarting the phone review.
+- Add the Apple Watch screenshot to the App Store product page before selecting
+  a future production build.
 
 Simulator and local signing evidence make this candidate upload-ready, but do
 not substitute for the two paired physical-device release gates above.
