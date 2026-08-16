@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -46,17 +47,21 @@ jobs:
           name: android-release-unsigned
           path: app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@v7
         with:
           name: wear-release-unsigned
           path: wearApp/build/outputs/bundle/release/wearApp-release.aab
           if-no-files-found: error
+          retention-days: 7
 
   ios:
     runs-on: macos-26
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-java@v5
         with:
           distribution: temurin

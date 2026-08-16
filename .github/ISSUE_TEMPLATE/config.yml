@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/4810092/Weather/security/advisories/new
+    about: Report vulnerabilities or sensitive findings privately.
+  - name: Support and questions
+    url: https://github.com/4810092/Weather/discussions
+    about: Ask setup and architecture questions without opening a bug.

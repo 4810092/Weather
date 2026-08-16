@@ -1,18 +1,52 @@
 # Localization
 
-English is the canonical source locale in Compose Multiplatform resources. Complete overlays ship for Russian, Arabic, Spanish, French, German, Portuguese, Simplified Chinese, Japanese, Korean, Hindi, Turkish, and Uzbek.
+Nimbo ships 13 languages: English plus complete overlays for Arabic, German, Spanish, French, Hindi, Japanese, Korean, Portuguese, Russian, Turkish, Uzbek, and Simplified Chinese.
 
-User-facing state carries semantic message identifiers, never preformatted English errors, so error, retry, offline, search, and permission paths resolve through the same localized resources. Time is formatted by the platform locale while applying the selected city's IANA timezone. Units are converted only at the presentation boundary. Relative-day labels use plural resources rather than sentence concatenation.
+## Resource ownership
 
-Manual city search sends the active app language to Open-Meteo so matching place names and returned labels are localized. If that search has no matches, Nimbo retries once in English; it does not fan out requests across every supported language.
+English Compose Multiplatform resources in `shared/src/commonMain/composeResources/values/` are canonical. The same locale set is maintained for:
 
-City and country labels resolved from device coordinates use the platform locale when the system geocoder can provide them. The localized "current location" label remains the fallback when no place name is available.
+- shared Compose strings and accessibility summaries;
+- Android application widget strings;
+- Wear OS strings;
+- iOS location-permission descriptions;
+- WidgetKit and watchOS surface strings;
+- store metadata and localized screenshot sets.
 
-Run `python3 scripts/check_localizations.py` to compare every overlay with the canonical set, including resource types and positional placeholders. The same check verifies all 13 localized iOS location-permission descriptions in `InfoPlist.strings`. CI runs the command, so a new canonical resource without every production translation or a missing system permission localization fails the build.
+User-facing state carries semantic message identifiers rather than preformatted English errors. Time formatting uses platform formatters with the selected location’s IANA timezone. SI values are converted only at the presentation boundary, and relative-day labels use plural resources rather than sentence concatenation.
+
+Manual city search sends the active app language to Open-Meteo. If the localized search returns no matches, it retries once in English; it does not fan out across every supported language. Reverse-geocoded device-place labels use the platform locale when available.
+
+## Automated parity check
+
+```sh
+python3 scripts/check_localizations.py
+```
+
+The script checks canonical keys, string/plural resource types, positional placeholders, every Android app/Wear overlay, all iOS permission localizations, and Apple widget/watch surface keys. It currently reports 102 canonical Compose resources, 12 translated overlays, and 13 Apple/permission locale sets.
+
+The script proves structural completeness, not translation quality. Native-language review and in-context screenshots remain necessary.
+
+## RTL and chronological data
+
+Arabic sets the surrounding Compose layout to RTL. The hourly and recent-day chronological rows install a local LTR direction so past-to-future meaning remains left-to-right and gestures do not reverse the time axis. Text inside each semantic description stays localized.
+
+This is an explicit product decision, not an automatic Compose default. Changes to the timeline must test Arabic selection, scrolling, focus order, localized time, and surrounding mirrored controls.
+
+## Contribution rules
+
+- Update every production overlay when adding or removing a canonical resource.
+- Preserve positional placeholders and resource type.
+- Translate a complete idea; do not construct sentences by concatenating fragments.
+- Keep provider/product terminology consistent with the privacy and attribution docs.
+- Do not use machine translation output as proof of correctness without review.
+- Include an in-context screenshot for a correction that depends on truncation, layout, or script rendering.
 
 ## Release QA
 
-- Review translations in context with native speakers before store submission.
-- Run Arabic on a non-Play API 36 emulator and iOS Simulator/device.
-- Chronological weather data remains past-to-future from left to right in all locales; surrounding controls and text follow RTL. This avoids reversing the meaning of the time axis merely because the reading direction changes.
-- Verify selected-hour placement, localized numerals/time, icons, 200% font scale, and narrow layouts for every script family.
+- Exercise at least one representative device size for each major script family.
+- Verify Arabic RTL, selected-hour placement, and chronological direction.
+- Check localized numerals/time, IANA timezone behavior, and a DST boundary where applicable.
+- Check 200% Android font scale and an iOS accessibility Dynamic Type size.
+- Verify TalkBack/VoiceOver summaries rather than only visible text.
+- Re-run store metadata/screenshot checks when production locale material changes.

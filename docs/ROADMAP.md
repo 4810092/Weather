@@ -1,27 +1,27 @@
-# Nimbo 1.0 roadmap
+# Roadmap
 
-## Foundation
+Last reviewed: August 16, 2026.
 
-- Complete repository and ecosystem audit.
-- Establish recovery tag, documentation, ADRs, module layout, Android/iOS shells, CI, and release-safe identifiers.
-- Deliver one end-to-end Open-Meteo vertical slice on Android and iOS.
+This is a small-maintainer direction of travel, not a promise of dates or a device-support commitment. Completed 1.0 work belongs in [CHANGELOG.md](../CHANGELOG.md); dated store status belongs in [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md).
 
-## Product
+## Near term
 
-- Location onboarding and manual city search.
-- Offline-first current/hourly weather with -24h/+24h timeline.
-- Seven-day historical comparison and stored forecast snapshots.
-- Deterministic insights and safe best-time-outside engine.
-- Settings, attribution, error states, and forecast-versus-observation detail.
+- Add direct tests for `WeatherStateHolder` onboarding, cache/refresh failure, search cancellation, and location changes.
+- Add more provider robustness fixtures for malformed/truncated daily and air-quality payloads without introducing live-provider CI tests.
+- Complete physical-device VoiceOver/TalkBack and paired phone/watch smoke checks for future releases.
+- Keep Open-Meteo terms, privacy declarations, dependencies, and store release evidence current.
+- Improve contributor-facing source links and examples when an external question exposes a real documentation gap.
 
-## Global quality
+## Later, when justified by evidence
 
-- Thirteen required locales, Arabic RTL, automatic/metric/imperial units, location timezones and DST.
-- Adaptive phone/tablet UI, accessibility, reduced motion, performance profiling, expanded tests, and screenshot baselines.
+- Add stable Compose UI or screenshot regression coverage if it can run reliably on both platform workflows.
+- Revisit shared-module boundaries if build performance or independent feature ownership makes extraction worthwhile.
+- Add a provider abstraction/fallback only if deployment terms, reliability evidence, or commercial requirements justify the maintenance cost.
+- Consider a deliberately synthetic demo-data path if first-run learning/testing remains materially harder than city search.
 
-## Release
+## Explicit non-goals
 
-- Legacy Android upgrade test, production signing, store assets/metadata, privacy declarations, staged Play rollout.
-- iOS signing, TestFlight validation, App Store submission.
-- Public repository audit, Apache-2.0 release, clean history, and v1.0 tag.
-
+- Turning Nimbo into a weather framework or SDK.
+- Adding OpenAI or another AI dependency to the weather product for program eligibility.
+- Adding telemetry, accounts, ads, or background location without a separate product/privacy decision.
+- Publishing roadmap issues, releases, or discussions merely to simulate project activity.

@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a focused product, platform, or reference-project improvement.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or learning need
+      description: What user or KMP developer problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest useful outcome, not only an implementation.
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Affected scope
+      multiple: true
+      options:
+        - Shared Kotlin or Compose
+        - Android
+        - iOS
+        - Wear OS or watchOS
+        - Persistence or networking
+        - Localization or accessibility
+        - Documentation or contributor tooling
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Alternatives and trade-offs
+      description: Optional. Include provider, privacy, maintenance, or platform-parity implications.
