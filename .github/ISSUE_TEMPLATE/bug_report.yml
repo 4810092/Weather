@@ -1,0 +1,64 @@
+name: Bug report
+description: Report a reproducible problem in Nimbo.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a problem. Please avoid sharing precise location data, credentials, or signing material.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android phone or tablet
+        - iPhone or iPad
+        - Wear OS
+        - watchOS
+        - Android widget
+        - iOS widget
+        - Build or development tooling
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: OS and device
+      description: For example, Android 16 on Pixel 9 or iOS 26.5 on iPhone 16.
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: Nimbo version or commit
+      description: App version/build number, Git commit, or branch.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open …
+        2. Select …
+        3. Observe …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Add redacted logs or screenshots when useful. Remove coordinates and other personal data first.

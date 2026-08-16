@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from urllib.parse import unquote
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -17,16 +18,29 @@ REQUIRED = (
     "CONTRIBUTING.md",
     "SECURITY.md",
     "CODE_OF_CONDUCT.md",
+    "SUPPORT.md",
+    "CHANGELOG.md",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
     "docs/ARCHITECTURE.md",
+    "docs/DEVELOPMENT.md",
+    "docs/TESTING.md",
+    "docs/LOCALIZATION.md",
     "docs/PRIVACY.md",
     "docs/PROVIDERS.md",
+    "docs/CODEX_FOR_OSS_APPLICATION.md",
 )
 FORBIDDEN_SUFFIXES = (
     ".aab",
     ".apk",
+    ".ipa",
     ".jks",
     ".keystore",
     ".p12",
+    ".p8",
+    ".pem",
+    ".key",
     ".mobileprovision",
 )
 SECRET_MARKERS = (
@@ -57,6 +71,39 @@ for relative in filter(None, tracked):
     payload = path.read_bytes()
     if any(pattern.search(payload) for pattern in SECRET_MARKERS):
         fail(f"possible embedded secret in {relative}")
+
+markdown_link = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+for relative in filter(None, tracked):
+    path = ROOT / relative
+    if path.suffix.lower() != ".md" or not path.is_file():
+        continue
+    for raw_target in markdown_link.findall(path.read_text(encoding="utf-8")):
+        target = raw_target.strip().strip("<>").split(maxsplit=1)[0]
+        if (
+            not target
+            or target.startswith(("#", "/"))
+            or re.match(r"^[a-z][a-z0-9+.-]*:", target, re.IGNORECASE)
+        ):
+            continue
+        local_target = unquote(target.split("#", 1)[0].split("?", 1)[0])
+        if local_target and not (path.parent / local_target).exists():
+            fail(f"broken local Markdown link in {relative}: {raw_target}")
+
+application_notes = (ROOT / "docs/CODEX_FOR_OSS_APPLICATION.md").read_text()
+answer_pattern = re.compile(
+    r"^### .+ — (?P<reported>\d+) characters\n\n(?P<answer>[^\n]+)$",
+    re.MULTILINE,
+)
+answers = list(answer_pattern.finditer(application_notes))
+if len(answers) != 4:
+    fail("expected four counted Codex for OSS application answers")
+for answer in answers:
+    reported = int(answer.group("reported"))
+    actual = len(answer.group("answer"))
+    if reported != actual:
+        fail(f"application answer count is {actual}, documented as {reported}")
+    if actual > 500:
+        fail(f"application answer exceeds 500 characters: {actual}")
 
 android = (ROOT / "app/build.gradle.kts").read_text()
 wear = (ROOT / "wearApp/build.gradle.kts").read_text()
