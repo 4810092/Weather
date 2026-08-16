@@ -1,5 +1,13 @@
 # Release process
 
+This is a chronological release journal. Statements inside a dated paragraph describe
+that checkpoint and may be superseded later in the same document. The latest recorded
+cross-platform state is [Nimbo 1.0.2 release candidate](RELEASE_CANDIDATE.md): Android
+phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026; Apple build 3
+is external TestFlight rather than an App Store production release; Wear OS production
+review and paired-device QA were still open at that checkpoint. Store consoles remain
+the authority for live status.
+
 ## Version identity
 
 - Product name: Nimbo.
@@ -14,7 +22,7 @@ Verify Play App Signing and the upload certificate in Play Console. A local or C
 
 Play Console inspection on August 10, 2026 confirmed the existing production
 listing at version code 2 / version name 1.0.1 and confirmed Play App Signing is
-enabled. The current Nimbo candidate is version code 4 / version name 1.0.0.
+enabled. The Nimbo candidate at that checkpoint was version code 4 / version name 1.0.0.
 The original extensionless upload keystore was recovered outside the repository
 with alias `weather`; the
 matching store/key passwords remain in macOS Keychain. Its file and Keychain

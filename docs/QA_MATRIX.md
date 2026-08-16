@@ -21,7 +21,7 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Real production upgrade | Google Play production 1.0.1 (2) updated in place to Internal Nimbo 1.0.0 (3); first-install time, Play installer, signing certificate, state, online/offline launch, locale/theme/units, timeline, history, and Best Time Outside were preserved | Pass |
 | Play internal delivery | Upload key recovered and certificate matched; version code 4 RC2 is active for three internal testers. Preserved Play-installed vc3 updated to vc4 without uninstall; first-install time, installer, online render, cached airplane-mode cold launch, semantics, and crash check passed | Pass |
 | Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
-| Production submission | Version code 4 became available in 177 countries; version code 5 was subsequently submitted for review | Production live; update status last recorded as in review |
+| Production submission | Version code 4 became available in 177 countries; later checkpoints advanced through version code 5 to phone/tablet 1.0.2 (6) | 1.0.2 rollout recorded complete on August 13 |
 | 1.0.2 candidate | Phone vc6 and Wear OS vc1000006 pass clean build, bundletool validation, upload-certificate verification, universal-APK install, and cold-launch smoke on API 36/Wear OS emulators | Pass locally; physical paired-device smoke pending |
 
 ## iOS
@@ -46,11 +46,16 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Store metadata | English metadata, review information, manual release, and production-UI iPhone/iPad screenshots saved | Pass |
 | App Privacy | Published: Coarse Location and Search History for App Functionality only; not linked, not tracking; public privacy-policy URL saved | Pass |
 | TestFlight | Builds 1 and 2 were processed; no tester was assigned and no physical TestFlight smoke is claimed | Not performed |
-| App Review | iOS 1.0 build 2, submission `d44f3a55-ae31-4a17-9195-371ba9efa478`, submitted August 10, 2026 | Last recorded as Waiting for Review |
+| App Review | iOS 1.0 build 2, submission `d44f3a55-ae31-4a17-9195-371ba9efa478`, submitted August 10, 2026; build 3 remained TestFlight-only at the later checkpoint | Historical submission; live status must be rechecked in App Store Connect |
 | 1.0 build 3 candidate | App, WidgetKit, and watchOS compile; automatic signing registered the new IDs/App Group; App Store export and deep codesign validation pass; required Apple Watch screenshot captured | Pass locally; physical paired-device/TestFlight smoke pending |
 
-## External waiting states
+## External and manual gates at the latest recorded checkpoint
 
-- Google Play review and automatic 100% rollout of Production version code 5.
-- Apple review of submission `d44f3a55-ae31-4a17-9195-371ba9efa478`, followed
-  by the selected manual App Store release after approval.
+- Recheck the live App Store status of the build-2 production submission before
+  describing it; build 3 is verified only as external TestFlight.
+- Complete physical iPhone/iPad/Apple Watch smoke and VoiceOver checks for a future
+  Apple production build.
+- Recheck Wear OS production review and complete paired Android/Wear OS physical-device
+  smoke before claiming that surface is production-validated.
+- Monitor production diagnostics after releases. No crash-free-rate, retention, or
+  active-user metric is claimed in this repository.

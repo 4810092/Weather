@@ -33,3 +33,6 @@ xcuserdata/
 .env.*
 secrets.properties
 signing.properties
+
+# Local agent/session state is not project documentation
+.codex/

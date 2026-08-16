@@ -1,46 +1,47 @@
 # Quality strategy
 
-## Automated gates
+Nimbo’s quality evidence has four layers: deterministic shared tests, actual SQLite migration/retention host tests, cross-platform build gates, and dated manual release QA. A claim belongs in the narrowest layer that proves it.
 
-The August 12 release gate executes 38 shared/host test cases with zero failures,
-in addition to compile, static, localization, metadata, asset, and repository
-checks.
+## Automated pull-request gates
 
-- Formatting and static analysis.
-- Common/domain tests for comparisons, insights, comfort scoring, unit conversions, weather-code mapping, timezones, DST, and date boundaries.
-- Data tests for decoding, mapping, cache policy, stale/fresh behavior, failures, snapshots, and migrations.
-- `ReleasedDatabaseMigrationTest` runs against `nimbo-v1.db`, captured from a real API 36 launch of commit `63092bb` after selecting approximate device location and syncing 216 hourly rows. The fixture has SQLite `user_version=1`, one active location, 216 weather rows, and 216 forecast snapshots; it does not contain the later `app_setting` table.
-- SQLDelight migration parity is also checked against the committed versioned schema by `verifySqlDelightMigration`; both checks run from a clean build in CI.
-- State-holder tests for onboarding, permission, cached/offline, refresh, retry, and location changes.
-- Android and iOS compilation on pull requests; release builds on release candidates.
-- Store metadata covers 13 locales; store artwork and 63 production screenshots
-  are validated for expected dimensions and formats in CI.
-- Critical UI flows and screenshot coverage for light, dark, Arabic RTL, large text, phone, and tablet when the selected tooling is stable on both targets.
+- Repository policy and simple secret-pattern checks for tracked files.
+- Local Markdown-link validation.
+- Complete resource/type/placeholder parity for 13 app languages and all widget/watch/permission surfaces.
+- Store metadata limits and 63 expected production-image dimensions/formats.
+- ktlint for Kotlin and Gradle Kotlin scripts.
+- 30 unique automated test functions: 28 common and two Android-host persistence/migration tests.
+- SQLDelight numbered-migration/schema verification plus a released-v1 SQLite fixture migration.
+- R8/resource-shrunk Android phone/tablet and Wear OS bundles.
+- Unsigned Release builds for iOS/WidgetKit and watchOS.
 
-## Manual release matrix
+See [TESTING.md](TESTING.md) for commands, exact scope, and known automation gaps.
 
-Clean install, install-over-production, foreground/background, process death, permission grant/deny/permanent deny, disabled location services, offline, slow network, provider failure, stale cache, locale/RTL, theme, font scale, screen reader, phone, tablet, iPhone, and iPad.
+## Runtime and product protections
 
-## Performance budgets
+- Cached database flows are observed before network refresh.
+- Primary current/hourly data commits before history and air-quality enrichment.
+- Provider responses with no complete required hourly row do not replace usable cached data.
+- Foreground refreshes are bounded and deduplicated; platform schedulers control background cadence.
+- Weather and forecast-snapshot retention is bounded.
+- Insight thresholds and hazard exclusions are explicit and deterministic.
+- Coordinates cross the privacy boundary only after two-decimal coarsening.
 
-- Startup does not wait for history sync.
-- Cached weather renders before network refresh.
-- Foreground weather advances from the cached hourly timeline immediately on resume and refreshes
-  from the provider every 15 minutes while the app is active.
-- Android schedules constrained 30-minute WorkManager refreshes for the widget and Wear OS;
-  iOS registers a 30-minute-earliest Background App Refresh request for WidgetKit and watchOS.
-  Both operating systems retain final control of exact background execution time.
-- Timeline avoids per-frame allocations and unnecessary recomposition.
-- Historical and snapshot maintenance run after primary current/hourly work.
+## Accessibility, adaptive, and RTL evidence
 
-Measured release and simulator evidence is maintained in [PERFORMANCE.md](PERFORMANCE.md). The current Android R8 checkpoint has a 218 ms median cached cold activity start and an 18 ms p90 scripted timeline frame time on the API 36 emulator.
+The shared UI provides semantic labels/roles/selected state for timeline hours, reflows unit/theme/hour details at increased font scale, constrains content width, and uses expanded-width composition. Arabic mirrors surrounding layout while the chronological timeline is explicitly left-to-right.
 
-## RTL and accessibility evidence
+The dated [QA matrix](QA_MATRIX.md) records emulator/simulator and TalkBack evidence. Physical VoiceOver gestures/audio and paired watch/device behavior remain release gates; simulator compilation does not close them.
 
-- Arabic was exercised on the non-Play API 36 `Nimbo_API_36` Android emulator and an iPhone 16 Pro / iOS 18.5 Simulator. On both platforms surrounding content follows RTL while the chronological timeline remains left-to-right by product decision.
-- Timeline hours are individually focusable buttons with localized time, condition, temperature, feels-like, precipitation, wind, and selected state. The timeline is not exposed only as decorative pixels.
-- A real TalkBack service was enabled on API 36. Focus traversed into the hourly timeline, scrolled it to 15:00, and activated that hour; the selected detail card updated accordingly.
-- Android 160% and 200% font-scale passes remained vertically scrollable. iOS `accessibility-extra-large` found and drove a header-collapse fix; the corrected layout was retested with Increase Contrast enabled.
-- iOS Simulator accessibility inspection exposes each hourly entry as a button with the full localized summary and selected state. The installed iOS 18.1 Simulator runtime does not expose VoiceOver itself, so VoiceOver gesture/audio testing remains a physical/TestFlight release gate.
+## Performance evidence
 
-Simulator evidence does not replace final TalkBack/VoiceOver testing on release-signed builds and real devices. Those checks remain required in the release QA matrix.
+[PERFORMANCE.md](PERFORMANCE.md) records the measured environment, method, and limitations for the August 10 checkpoint. Those numbers are not generalized device or adoption claims. New measurements should preserve environment and method details and should not replace the checkpoint silently.
+
+## Known gaps
+
+- No direct state-holder unit tests.
+- No automated Compose UI or screenshot-golden suite.
+- No physical-device performance runner in CI.
+- No end-to-end live-provider test, by design; unit tests avoid depending on an external service.
+- Physical VoiceOver and paired watch handoff remain manual.
+
+These gaps are suitable contribution areas, but they should be addressed because they reduce regression risk—not to manufacture activity or inflate a test count.

@@ -2,6 +2,8 @@
 
 Effective date: August 10, 2026
 
+Last reviewed against the implementation and provider terms: August 16, 2026
+
 Nimbo is published by GANIKHODJAYEV KHASAN ASKAROVICH, YATT. The app has no
 account, advertising, analytics, crash-reporting SDK, or background location.
 
