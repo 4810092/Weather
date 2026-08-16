@@ -95,9 +95,11 @@ Limitations: all human maintenance and PR authorship is currently by one person;
 
 ## Current form mechanics
 
-The current official form is <https://openai.com/form/codex-for-oss/>. It has one role radio selection rather than a free-text role description. API credits from the $1 million Codex Open Source Fund and conditional Codex Security access are requested in this same form; OpenAI does not publish a separate Fund form, an amount field, or a per-project maximum on the current official program page.
+The current Codex for Open Source form is <https://openai.com/form/codex-for-oss/>. It has one role radio selection rather than a free-text role description, optional interest selections for conditional Codex Security access and API credits, a required OpenAI Organization ID, and three fields with 500-character limits.
 
-Select **Primary maintainer**, **Codex Security**, and **API credits for my project**. The Organization ID is account-specific and must not be committed here.
+The separate Codex Open Source Fund form is <https://openai.com/form/codex-open-source-fund/>. Its official page describes a $1 million initiative with grants of up to $25,000 in API credits. It requests applicant details, project identity and description, collaborators, and planned credit use; it does not request a dollar amount or OpenAI Organization ID.
+
+For Codex for Open Source, select **Primary maintainer**, **Codex Security**, and **API credits for my project**. The Organization ID is account-specific and must not be committed here. Submit a distinct, longer application to the Fund form rather than treating the short API-credit field as a Fund application.
 
 ## Suggested form answers
 
