@@ -28,7 +28,13 @@ IOS_LOCALE_DIRECTORIES = {
     "uz": "uz.lproj",
     "zh-rCN": "zh-Hans.lproj",
 }
+ANDROID_SURFACE_ROOTS = (
+    ROOT / "app/src/main/res",
+    ROOT / "wearApp/src/main/res",
+)
+IOS_SURFACE_ROOT = ROOT / "iosApp/NimboSurfaces"
 PLACEHOLDER = re.compile(r"%\d+\$[a-zA-Z]")
+APPLE_STRING_KEY = re.compile(r'^\s*"((?:[^"\\]|\\.)*)"\s*=', re.MULTILINE)
 
 
 def read(path: Path) -> dict[str, tuple[str, set[str]]]:
@@ -88,6 +94,46 @@ def main() -> int:
         ):
             failures.append(f"iOS {locale}: missing localized {permission_key}")
 
+    for root in ANDROID_SURFACE_ROOTS:
+        canonical_surface = read_directory(root / "values")
+        for locale in PRODUCTION_LOCALES:
+            path = root / f"values-{locale}/strings.xml"
+            label = path.relative_to(ROOT)
+            if not path.exists():
+                failures.append(f"Android surface: missing {label}")
+                continue
+            translated = read_directory(path.parent)
+            if translated.keys() != canonical_surface.keys():
+                missing = sorted(canonical_surface.keys() - translated.keys())
+                extra = sorted(translated.keys() - canonical_surface.keys())
+                if missing:
+                    failures.append(f"{label}: missing {', '.join(missing)}")
+                if extra:
+                    failures.append(f"{label}: unknown {', '.join(extra)}")
+            for key in canonical_surface.keys() & translated.keys():
+                if canonical_surface[key] != translated[key]:
+                    failures.append(
+                        f"{label}:{key}: expected type/placeholders "
+                        f"{canonical_surface[key]}, found {translated[key]}"
+                    )
+
+    canonical_apple_path = IOS_SURFACE_ROOT / "en.lproj/Localizable.strings"
+    canonical_apple_keys = set(APPLE_STRING_KEY.findall(canonical_apple_path.read_text()))
+    for locale, directory in IOS_LOCALE_DIRECTORIES.items():
+        path = IOS_SURFACE_ROOT / directory / "Localizable.strings"
+        label = path.relative_to(ROOT)
+        if not path.exists():
+            failures.append(f"Apple surfaces: missing {label}")
+            continue
+        keys = set(APPLE_STRING_KEY.findall(path.read_text()))
+        if keys != canonical_apple_keys:
+            missing = sorted(canonical_apple_keys - keys)
+            extra = sorted(keys - canonical_apple_keys)
+            if missing:
+                failures.append(f"{label}: missing {', '.join(missing)}")
+            if extra:
+                failures.append(f"{label}: unknown {', '.join(extra)}")
+
     if failures:
         print("Localization completeness failed:", file=sys.stderr)
         print("\n".join(f"- {failure}" for failure in failures), file=sys.stderr)
@@ -95,7 +141,7 @@ def main() -> int:
     print(
         f"Localization completeness passed: {len(canonical)} resources × "
         f"{len(PRODUCTION_LOCALES)} production overlays; "
-        f"{len(IOS_LOCALE_DIRECTORIES)} iOS permission localizations."
+        f"{len(IOS_LOCALE_DIRECTORIES)} iOS permission and surface localizations."
     )
     return 0
 

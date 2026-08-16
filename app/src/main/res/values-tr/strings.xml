@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">Güncel hava, bugünün en yüksek ve düşük sıcaklığı, yağış olasılığı ve hava kalitesi</string>
+    <string name="widget_open_nimbo">Nimbo’yu aç</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">Yağış %1$d%%</string>
+    <string name="widget_aqi">HKA %1$d</string>
+</resources>

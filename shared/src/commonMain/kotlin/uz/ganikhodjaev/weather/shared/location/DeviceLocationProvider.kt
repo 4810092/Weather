@@ -10,6 +10,8 @@ internal data class DeviceCoordinates(
     val timezone: String
 )
 
+internal data class DevicePlace(val name: String, val country: String)
+
 internal fun DeviceCoordinates.coarsened(): DeviceCoordinates = copy(
     latitude = latitude.coarseCoordinate(),
     longitude = longitude.coarseCoordinate()
@@ -26,6 +28,8 @@ internal sealed interface DeviceLocationResult {
 
 internal fun interface DeviceLocationProvider {
     suspend fun requestCurrentLocation(): DeviceLocationResult
+
+    suspend fun resolvePlace(coordinates: DeviceCoordinates): DevicePlace? = null
 }
 
 @Composable

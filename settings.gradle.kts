@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "Nimbo"
 include(":app")
 include(":shared")
+include(":wearApp")

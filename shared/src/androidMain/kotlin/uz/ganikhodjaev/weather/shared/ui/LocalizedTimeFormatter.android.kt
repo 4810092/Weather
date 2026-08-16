@@ -8,3 +8,8 @@ internal actual fun formatLocalHour(epochSeconds: Long, timezone: String): Strin
     DateFormat.getTimeInstance(DateFormat.SHORT).apply {
         timeZone = TimeZone.getTimeZone(timezone)
     }.format(Date(epochSeconds * 1_000L))
+
+internal actual fun formatLocalDay(epochSeconds: Long, timezone: String): String =
+    DateFormat.getDateInstance(DateFormat.MEDIUM).apply {
+        timeZone = TimeZone.getTimeZone(timezone)
+    }.format(Date(epochSeconds * 1_000L))

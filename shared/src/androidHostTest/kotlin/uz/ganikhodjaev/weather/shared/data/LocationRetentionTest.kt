@@ -2,7 +2,8 @@ package uz.ganikhodjaev.weather.shared.data
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import kotlin.test.Test
-import kotlin.test.assertNull
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import uz.ganikhodjaev.weather.db.NimboDatabase
@@ -10,7 +11,7 @@ import uz.ganikhodjaev.weather.shared.model.Location
 
 class LocationRetentionTest {
     @Test
-    fun changingPlaceRemovesPreviousLocationAndItsCachedWeather() = runBlocking {
+    fun changingPlaceRetainsPreviousLocationAndItsCachedWeatherUntilDeletion() = runBlocking {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         NimboDatabase.Schema.create(driver)
         val database = NimboDatabase(driver)
@@ -38,7 +39,19 @@ class LocationRetentionTest {
 
             repository.setActiveLocation(next)
 
-            assertNull(database.weatherQueries.selectLocationById(previous.id).executeAsOneOrNull())
+            assertNotNull(
+                database.weatherQueries.selectLocationById(previous.id).executeAsOneOrNull()
+            )
+            assertEquals(2, repository.savedLocations().size)
+            assertTrue(
+                database.weatherQueries.selectTimeline(previous.id, 0, Long.MAX_VALUE)
+                    .executeAsList()
+                    .isNotEmpty()
+            )
+
+            repository.deleteLocation(previous.id)
+
+            assertTrue(repository.savedLocations().none { it.id == previous.id })
             assertTrue(
                 database.weatherQueries.selectTimeline(previous.id, 0, Long.MAX_VALUE)
                     .executeAsList()

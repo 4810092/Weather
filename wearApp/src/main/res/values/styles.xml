@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Nimbo.Wear" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/weather_background</item>
+        <item name="android:colorAccent">@color/weather_accent</item>
+    </style>
+</resources>

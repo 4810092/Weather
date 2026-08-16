@@ -9,9 +9,11 @@ import kotlinx.cinterop.useContents
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.datetime.TimeZone
+import platform.CoreLocation.CLGeocoder
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.CoreLocation.CLPlacemark
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
 import platform.CoreLocation.kCLAuthorizationStatusDenied
@@ -61,6 +63,9 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
             }
         } ?: DeviceLocationResult.Failed("A current location wasn't available in time.")
 
+    override suspend fun resolvePlace(coordinates: DeviceCoordinates): DevicePlace? =
+        reverseGeocode(coordinates)
+
     private fun authorizationChanged(manager: CLLocationManager) {
         if (continuation == null) return
         when (manager.authorizationStatus) {
@@ -104,6 +109,29 @@ private class IosDeviceLocationProvider : DeviceLocationProvider {
         continuation = null
     }
 }
+
+@OptIn(ExperimentalForeignApi::class)
+private suspend fun reverseGeocode(coordinates: DeviceCoordinates): DevicePlace? =
+    suspendCancellableCoroutine { continuation ->
+        val geocoder = CLGeocoder()
+        val location = CLLocation(
+            latitude = coordinates.latitude,
+            longitude = coordinates.longitude
+        )
+        continuation.invokeOnCancellation { geocoder.cancelGeocode() }
+        geocoder.reverseGeocodeLocation(location) { placemarks, _ ->
+            if (!continuation.isActive) return@reverseGeocodeLocation
+            val placemark = placemarks?.firstOrNull() as? CLPlacemark
+            val name = sequenceOf(
+                placemark?.locality,
+                placemark?.subAdministrativeArea,
+                placemark?.administrativeArea
+            ).firstOrNull { !it.isNullOrBlank() }.orEmpty()
+            val place = DevicePlace(name = name, country = placemark?.country.orEmpty())
+                .takeIf { it.name.isNotBlank() || it.country.isNotBlank() }
+            continuation.resume(place)
+        }
+    }
 
 @OptIn(ExperimentalForeignApi::class)
 private class LocationDelegate(

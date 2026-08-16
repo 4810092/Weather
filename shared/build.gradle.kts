@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.android.driver)
+            implementation(libs.play.review)
+            implementation(libs.play.services.wearable)
         }
         getByName("androidHostTest").dependencies {
             implementation(libs.sqldelight.sqlite.driver)

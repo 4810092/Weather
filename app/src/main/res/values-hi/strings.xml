@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">वर्तमान मौसम, आज का अधिकतम और न्यूनतम तापमान, बारिश की संभावना और वायु गुणवत्ता</string>
+    <string name="widget_open_nimbo">Nimbo खोलें</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">बारिश %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

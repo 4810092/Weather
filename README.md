@@ -1,6 +1,6 @@
 # Nimbo
 
-Nimbo is a Kotlin Multiplatform weather app for Android and iOS. Its main idea is simple: future weather is easier to understand when it is compared with weather you recently felt. Alongside the hourly forecast, Nimbo shows yesterday comparisons, recent context, and a deterministic Best Time Outside recommendation.
+Nimbo is a Kotlin Multiplatform weather app for Android and iOS. Its main idea is simple: future weather is easier to understand when it is compared with weather you recently felt. Alongside the hourly forecast, Nimbo shows yesterday comparisons, recent context, a deterministic Best Time Outside recommendation, a 10-day outlook, air quality, and up to ten saved places.
 
 The app is offline-first. SQLDelight is the UI source of truth; network refreshes write normalized weather data to the local database before the interface observes an update. No account, ads, analytics, or background location are included.
 
@@ -18,12 +18,18 @@ Android debug build:
 ./gradlew :app:assembleDebug
 ```
 
+Wear OS companion build:
+
+```sh
+./gradlew :wearApp:assembleDebug
+```
+
 iOS Simulator build:
 
 ```sh
 xcodebuild \
   -project iosApp/Nimbo.xcodeproj \
-  -scheme Nimbo \
+  -scheme NimboSimulator \
   -sdk iphonesimulator \
   -destination 'generic/platform=iOS Simulator' \
   CODE_SIGNING_ALLOWED=NO build
@@ -37,7 +43,7 @@ python3 scripts/check_repository.py
 python3 scripts/check_store_metadata.py
 python3 scripts/check_store_assets.py
 ./gradlew ktlintCheck :shared:allTests :shared:testAndroidHostTest \
-  :shared:verifySqlDelightMigration :app:bundleRelease
+  :shared:verifySqlDelightMigration :app:bundleRelease :wearApp:bundleRelease
 ```
 
 ## Screenshots
@@ -49,8 +55,9 @@ python3 scripts/check_store_assets.py
 ## Project map
 
 - `shared/` — shared domain, data, SQLDelight, Compose UI, resources, and tests
-- `app/` — Android application shell
-- `iosApp/` — iOS application shell and Xcode project
+- `app/` — Android application shell and home-screen widget
+- `wearApp/` — Wear OS companion
+- `iosApp/` — iOS/iPadOS shell, WidgetKit extension, and watchOS companion
 - `docs/` — product, architecture, privacy, quality, release, and ADR documentation
 
 See [Architecture](docs/ARCHITECTURE.md), [Localization](docs/LOCALIZATION.md), [Privacy](docs/PRIVACY.md), and [Contributing](CONTRIBUTING.md).

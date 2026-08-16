@@ -14,7 +14,10 @@ private const val LIGHT_BACKGROUND = 0xFFF3F7FC.toInt()
 private const val DARK_BACKGROUND = 0xFF101820.toInt()
 
 internal actual fun createThemePreferenceStore(context: PlatformContext): ThemePreferenceStore {
-    val preferences = context.activity.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val preferences = context.applicationContext.getSharedPreferences(
+        PREFERENCES_NAME,
+        Context.MODE_PRIVATE
+    )
     return object : ThemePreferenceStore {
         override fun read(): ThemePreference = ThemePreference.fromStoredValue(
             preferences.getString(THEME_PREFERENCE_KEY, null)
@@ -33,7 +36,7 @@ internal actual fun ApplyPlatformThemeAppearance(
     darkTheme: Boolean
 ) {
     SideEffect {
-        val window = context.activity.window
+        val window = context.requireActivity().window
         window.setBackgroundDrawable(
             ColorDrawable(if (darkTheme) DARK_BACKGROUND else LIGHT_BACKGROUND)
         )

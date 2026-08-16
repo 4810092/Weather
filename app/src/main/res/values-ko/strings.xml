@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nimbo</string>
+    <string name="widget_description">현재 날씨, 오늘의 최고·최저 기온, 강수 확률 및 대기질</string>
+    <string name="widget_open_nimbo">Nimbo 열기</string>
+    <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
+    <string name="widget_rain">강수 %1$d%%</string>
+    <string name="widget_aqi">AQI %1$d</string>
+</resources>

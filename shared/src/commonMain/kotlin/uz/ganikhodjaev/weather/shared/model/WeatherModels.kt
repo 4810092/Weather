@@ -23,11 +23,41 @@ data class WeatherHour(
     val fetchedAtEpochSeconds: Long
 )
 
+data class DailyForecast(
+    val epochSeconds: Long,
+    val weatherCode: Int,
+    val temperatureMaxC: Double,
+    val temperatureMinC: Double,
+    val apparentTemperatureMaxC: Double,
+    val apparentTemperatureMinC: Double,
+    val precipitationProbabilityMax: Int,
+    val precipitationMm: Double,
+    val windMaxKph: Double,
+    val gustMaxKph: Double,
+    val uvIndexMax: Double,
+    val sunriseEpochSeconds: Long,
+    val sunsetEpochSeconds: Long,
+    val fetchedAtEpochSeconds: Long
+)
+
+data class AirQualityHour(
+    val epochSeconds: Long,
+    val usAqi: Int?,
+    val pm25: Double?,
+    val pm10: Double?,
+    val dust: Double?,
+    val ozone: Double?,
+    val nitrogenDioxide: Double?,
+    val fetchedAtEpochSeconds: Long
+)
+
 data class WeatherSnapshot(
     val location: Location,
     val current: WeatherHour,
     val timeline: List<WeatherHour>,
     val recentHistory: List<WeatherHour> = emptyList(),
+    val dailyForecast: List<DailyForecast> = emptyList(),
+    val airQuality: List<AirQualityHour> = emptyList(),
     val fetchedAtEpochSeconds: Long,
     val isStale: Boolean
 )

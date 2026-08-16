@@ -1,5 +1,9 @@
 import UIKit
+@preconcurrency import BackgroundTasks
 import NimboShared
+import WidgetKit
+@preconcurrency import WatchConnectivity
+import StoreKit
 
 private let nimboBackgroundColor = UIColor { traits in
     if traits.userInterfaceStyle == .dark {
@@ -9,6 +13,20 @@ private let nimboBackgroundColor = UIColor { traits in
 }
 
 private let nimboThemePreferenceKey = "theme_preference"
+private let weatherRefreshTaskIdentifier = "uz.ganikhodjaev.weather.refresh"
+
+private final class BackgroundRefreshState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var expired = false
+
+    func markExpired() {
+        lock.withLock { expired = true }
+    }
+
+    func isExpired() -> Bool {
+        lock.withLock { expired }
+    }
+}
 
 private func storedInterfaceStyle() -> UIUserInterfaceStyle {
     switch UserDefaults.standard.string(forKey: nimboThemePreferenceKey) {
@@ -22,13 +40,53 @@ private func storedInterfaceStyle() -> UIUserInterfaceStyle {
 }
 
 @main
-final class AppDelegate: UIResponder, UIApplicationDelegate {
+@MainActor
+final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var window: UIWindow?
+    private var weatherObserver: NSObjectProtocol?
+    private var reviewObserver: NSObjectProtocol?
+    private let backgroundUpdater = BackgroundWeatherUpdater(platformContext: PlatformContext())
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: weatherRefreshTaskIdentifier,
+            using: nil
+        ) { [weak self] task in
+            guard let refreshTask = task as? BGAppRefreshTask else {
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self?.handleBackgroundRefresh(refreshTask)
+        }
+        if WCSession.isSupported() {
+            let session = WCSession.default
+            session.delegate = self
+            session.activate()
+        }
+        weatherObserver = NotificationCenter.default.addObserver(
+            forName: Notification.Name("NimboWeatherDidUpdate"),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.weatherDidUpdate()
+            }
+        }
+        reviewObserver = NotificationCenter.default.addObserver(
+            forName: Notification.Name("NimboReviewMilestone"),
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                    return
+                }
+                SKStoreReviewController.requestReview(in: scene)
+            }
+        }
         let window = UIWindow(frame: UIScreen.main.bounds)
         let rootViewController = MainViewControllerKt.MainViewController()
         let interfaceStyle = storedInterfaceStyle()
@@ -40,5 +98,74 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
         self.window = window
         return true
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        scheduleBackgroundRefresh()
+    }
+
+    private func scheduleBackgroundRefresh() {
+        let request = BGAppRefreshTaskRequest(identifier: weatherRefreshTaskIdentifier)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60)
+        try? BGTaskScheduler.shared.submit(request)
+    }
+
+    private func handleBackgroundRefresh(_ task: BGAppRefreshTask) {
+        scheduleBackgroundRefresh()
+        let state = BackgroundRefreshState()
+        task.expirationHandler = { state.markExpired() }
+        backgroundUpdater.refresh { result, _ in
+            task.setTaskCompleted(success: !state.isExpired() && (result?.boolValue ?? false))
+        }
+    }
+
+    private func weatherDidUpdate() {
+        WidgetCenter.shared.reloadAllTimelines()
+        guard WCSession.isSupported() else { return }
+        let defaults = UserDefaults(suiteName: "group.uz.ganikhodjaev.weather")
+        let context: [String: Any] = [
+            "location": defaults?.string(forKey: "location") ?? "",
+            "temperature_c": defaults?.integer(forKey: "temperature_c") ?? 0,
+            "temperature_unit": defaults?.string(forKey: "temperature_unit") ?? "°C",
+            "weather_code": defaults?.integer(forKey: "weather_code") ?? -1,
+            "rain_chance": defaults?.integer(forKey: "rain_chance") ?? 0,
+            "aqi": defaults?.integer(forKey: "aqi") ?? -1,
+            "has_daily_range": defaults?.bool(forKey: "has_daily_range") ?? false,
+            "temperature_max": defaults?.integer(forKey: "temperature_max") ?? 0,
+            "temperature_min": defaults?.integer(forKey: "temperature_min") ?? 0,
+            "updated_at": defaults?.integer(forKey: "updated_at") ?? 0
+        ]
+        try? WCSession.default.updateApplicationContext(context)
+    }
+
+    nonisolated func session(
+        _ session: WCSession,
+        activationDidCompleteWith activationState: WCSessionActivationState,
+        error: Error?
+    ) {
+        if activationState == .activated {
+            Task { @MainActor [weak self] in
+                self?.weatherDidUpdate()
+            }
+        }
+    }
+
+    nonisolated func sessionDidBecomeInactive(_ session: WCSession) {}
+
+    nonisolated func sessionDidDeactivate(_ session: WCSession) {
+        session.activate()
+    }
+
+    nonisolated func sessionWatchStateDidChange(_ session: WCSession) {
+        Task { @MainActor [weak self] in
+            self?.weatherDidUpdate()
+        }
+    }
+
+    nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
+        guard session.isReachable else { return }
+        Task { @MainActor [weak self] in
+            self?.weatherDidUpdate()
+        }
     }
 }

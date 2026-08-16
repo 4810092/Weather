@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="widget_background">#F3F7FC</color>
+    <color name="widget_primary">#17212B</color>
+    <color name="widget_secondary">#40566E</color>
+    <color name="widget_tertiary">#5B6B7C</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

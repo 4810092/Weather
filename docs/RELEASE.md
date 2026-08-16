@@ -112,6 +112,19 @@ staged percentage cannot produce a meaningful risk sample. Managed publishing
 is off, so an approved change will roll out automatically. The only validation
 warning is the non-blocking native-debug-symbol recommendation.
 
+Google Play made `Nimbo 1.0.0 (4)` available in Production at 14:32
+Asia/Tashkent on August 10, 2026, across 177 countries. The localized city
+search, resolved current-location city name, and rounded timeline interaction
+update was then built as `Nimbo 1.0.1 (5)`. Its upload-signed AAB has SHA-256
+`42f3d107c6a7e71c6895f13e34822604ac35632f774a86d9a75196769ac1f581`
+and the accepted upload certificate documented above. Play accepted the new
+Production release with English and Russian release notes and a requested 100%
+rollout across all target countries. At 23:14 Asia/Tashkent, the Publishing
+overview reported the change under review; the automated common-issues check
+will pass it to Google review when complete. Managed publishing remains off,
+and the only validation warning remains the non-blocking native-debug-symbol
+recommendation.
+
 As of 2026-08-31, Google Play updates must target Android 16 / API 36. Nimbo targets API 36 from its first release candidate.
 
 ## iOS prerequisites
@@ -166,6 +179,20 @@ data. App Store version 1.0 build 1 was submitted at 14:18 Asia/Tashkent on
 August 10, 2026. Submission
 `1e305187-129c-466b-bc74-3347254eaea1` is `Waiting for Review`; manual release is
 selected for the first version.
+
+The same localized-location and timeline update was archived as iOS 1.0 build
+2. During verification, the hard-coded bundle version values in `Info.plist`
+were replaced with `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION`, making
+the Xcode project settings the source of truth. The final distribution-signed
+IPA has SHA-256
+`3988430bd6fd85e84f830dbd24ff020059e5ebcb4de6fc160a0042fed58eaf2d`;
+deep codesign validation passed, and the embedded profile again has
+`beta-reports-active=true` and `get-task-allow=false`. Xcode uploaded build 2 at
+23:01 Asia/Tashkent. The obsolete build 1 review submission was canceled,
+build 1 was removed from version 1.0, and build 2 was attached with export
+compliance recorded as no encryption. Submission
+`d44f3a55-ae31-4a17-9195-371ba9efa478` was sent at 23:14 Asia/Tashkent and is
+`Waiting for Review`. Manual release remains selected.
 
 ## Credentials
 

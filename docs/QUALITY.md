@@ -2,7 +2,7 @@
 
 ## Automated gates
 
-The August 10 release gate executes 36 shared/host test cases with zero failures,
+The August 12 release gate executes 38 shared/host test cases with zero failures,
 in addition to compile, static, localization, metadata, asset, and repository
 checks.
 
@@ -13,7 +13,7 @@ checks.
 - SQLDelight migration parity is also checked against the committed versioned schema by `verifySqlDelightMigration`; both checks run from a clean build in CI.
 - State-holder tests for onboarding, permission, cached/offline, refresh, retry, and location changes.
 - Android and iOS compilation on pull requests; release builds on release candidates.
-- Store metadata covers 13 locales; store artwork and 13 production screenshots
+- Store metadata covers 13 locales; store artwork and 63 production screenshots
   are validated for expected dimensions and formats in CI.
 - Critical UI flows and screenshot coverage for light, dark, Arabic RTL, large text, phone, and tablet when the selected tooling is stable on both targets.
 
@@ -25,6 +25,11 @@ Clean install, install-over-production, foreground/background, process death, pe
 
 - Startup does not wait for history sync.
 - Cached weather renders before network refresh.
+- Foreground weather advances from the cached hourly timeline immediately on resume and refreshes
+  from the provider every 15 minutes while the app is active.
+- Android schedules constrained 30-minute WorkManager refreshes for the widget and Wear OS;
+  iOS registers a 30-minute-earliest Background App Refresh request for WidgetKit and watchOS.
+  Both operating systems retain final control of exact background execution time.
 - Timeline avoids per-frame allocations and unnecessary recomposition.
 - Historical and snapshot maintenance run after primary current/hourly work.
 

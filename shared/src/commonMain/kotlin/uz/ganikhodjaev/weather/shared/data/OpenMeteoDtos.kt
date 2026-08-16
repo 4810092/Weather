@@ -9,7 +9,8 @@ internal data class ForecastResponse(
     val longitude: Double,
     val timezone: String,
     @SerialName("utc_offset_seconds") val utcOffsetSeconds: Int,
-    val hourly: HourlyResponse
+    val hourly: HourlyResponse,
+    val daily: DailyResponse = DailyResponse()
 )
 
 @Serializable
@@ -24,6 +25,38 @@ internal data class HourlyResponse(
     @SerialName("wind_gusts_10m") val windGusts: List<Double?>,
     @SerialName("relative_humidity_2m") val humidity: List<Int>,
     @SerialName("uv_index") val uvIndex: List<Double?>
+)
+
+@Serializable
+internal data class DailyResponse(
+    val time: List<Long> = emptyList(),
+    @SerialName("weather_code") val weatherCode: List<Int> = emptyList(),
+    @SerialName("temperature_2m_max") val temperatureMax: List<Double> = emptyList(),
+    @SerialName("temperature_2m_min") val temperatureMin: List<Double> = emptyList(),
+    @SerialName("apparent_temperature_max") val apparentTemperatureMax: List<Double> = emptyList(),
+    @SerialName("apparent_temperature_min") val apparentTemperatureMin: List<Double> = emptyList(),
+    @SerialName("precipitation_probability_max")
+    val precipitationProbabilityMax: List<Int?> = emptyList(),
+    @SerialName("precipitation_sum") val precipitationSum: List<Double?> = emptyList(),
+    @SerialName("wind_speed_10m_max") val windSpeedMax: List<Double> = emptyList(),
+    @SerialName("wind_gusts_10m_max") val windGustsMax: List<Double?> = emptyList(),
+    @SerialName("uv_index_max") val uvIndexMax: List<Double?> = emptyList(),
+    val sunrise: List<Long> = emptyList(),
+    val sunset: List<Long> = emptyList()
+)
+
+@Serializable
+internal data class AirQualityResponse(val hourly: AirQualityHourlyResponse)
+
+@Serializable
+internal data class AirQualityHourlyResponse(
+    val time: List<Long>,
+    @SerialName("us_aqi") val usAqi: List<Int?>,
+    @SerialName("pm2_5") val pm25: List<Double?>,
+    val pm10: List<Double?>,
+    val dust: List<Double?>,
+    val ozone: List<Double?>,
+    @SerialName("nitrogen_dioxide") val nitrogenDioxide: List<Double?>
 )
 
 @Serializable

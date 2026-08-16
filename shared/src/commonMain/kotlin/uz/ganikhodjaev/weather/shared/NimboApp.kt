@@ -18,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
+import kotlinx.coroutines.delay
 import uz.ganikhodjaev.weather.shared.location.rememberDeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.model.ThemePreference
 import uz.ganikhodjaev.weather.shared.presentation.WeatherStateHolder
+import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 import uz.ganikhodjaev.weather.shared.ui.NimboTheme
 import uz.ganikhodjaev.weather.shared.ui.WeatherScreen
 import uz.ganikhodjaev.weather.shared.ui.createThemePreferenceStore
@@ -40,6 +42,8 @@ fun NimboApp(platformContext: PlatformContext) {
         WeatherStateHolder(container.weatherRepository, locationProvider, automaticUnits, scope)
     }
     val state by stateHolder.state.collectAsState()
+    val isForeground by rememberAppIsForeground(platformContext)
+    val searchLanguage = Locale.current.language.lowercase()
     val layoutDirection = if (Locale.current.language in RTL_LANGUAGES) {
         LayoutDirection.Rtl
     } else {
@@ -48,6 +52,21 @@ fun NimboApp(platformContext: PlatformContext) {
 
     LaunchedEffect(stateHolder) {
         stateHolder.start()
+    }
+
+    LaunchedEffect(stateHolder, isForeground) {
+        if (!isForeground) return@LaunchedEffect
+        stateHolder.refresh()
+        while (true) {
+            delay(FOREGROUND_REFRESH_INTERVAL_MILLIS)
+            stateHolder.refresh()
+        }
+    }
+
+    LaunchedEffect(state) {
+        (state as? WeatherUiState.Content)?.let { content ->
+            publishWeatherSnapshot(platformContext, content.weather, content.displayUnits)
+        }
     }
 
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
@@ -66,12 +85,16 @@ fun NimboApp(platformContext: PlatformContext) {
                     WeatherScreen(
                         state = state,
                         onRetry = stateHolder::refresh,
-                        onSearchQueryChanged = stateHolder::updateSearchQuery,
+                        onSearchQueryChanged = { query ->
+                            stateHolder.updateSearchQuery(query, searchLanguage)
+                        },
                         onLocationSelected = stateHolder::chooseLocation,
+                        onLocationDeleted = stateHolder::deleteSavedLocation,
                         onUseDeviceLocation = stateHolder::useDeviceLocation,
                         onChangeLocation = stateHolder::showLocationPicker,
                         onCancelLocationChange = stateHolder::cancelLocationPicker,
                         onUnitPreferenceChanged = stateHolder::setUnitPreference,
+                        onShareText = { text -> shareText(platformContext, text) },
                         themePreference = themePreference,
                         onThemePreferenceChanged = { preference: ThemePreference ->
                             themePreferenceStore.write(preference)
@@ -85,3 +108,4 @@ fun NimboApp(platformContext: PlatformContext) {
 }
 
 private val RTL_LANGUAGES = setOf("ar", "fa", "he", "ur")
+private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 15 * 60 * 1_000L

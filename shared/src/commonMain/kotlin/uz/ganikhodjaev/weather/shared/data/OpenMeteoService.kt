@@ -55,14 +55,55 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
                     "uv_index"
                 ).joinToString(",")
             )
+            parameter(
+                "daily",
+                listOf(
+                    "weather_code",
+                    "temperature_2m_max",
+                    "temperature_2m_min",
+                    "apparent_temperature_max",
+                    "apparent_temperature_min",
+                    "precipitation_probability_max",
+                    "precipitation_sum",
+                    "wind_speed_10m_max",
+                    "wind_gusts_10m_max",
+                    "uv_index_max",
+                    "sunrise",
+                    "sunset"
+                ).joinToString(",")
+            )
+        }.body()
+
+    suspend fun airQuality(location: Location): AirQualityResponse =
+        client.get("https://air-quality-api.open-meteo.com/v1/air-quality") {
+            parameter("latitude", location.latitude)
+            parameter("longitude", location.longitude)
+            parameter("timezone", "auto")
+            parameter("timeformat", "unixtime")
+            parameter("forecast_days", 5)
+            parameter(
+                "hourly",
+                listOf("us_aqi", "pm2_5", "pm10", "dust", "ozone", "nitrogen_dioxide")
+                    .joinToString(",")
+            )
         }.body()
 
     suspend fun searchCities(query: String, language: String): List<Location> {
-        if (query.trim().length < 2) return emptyList()
+        val normalizedQuery = query.trim()
+        if (normalizedQuery.length < 2) return emptyList()
+        val normalizedLanguage = language.trim().lowercase().ifBlank { ENGLISH_LANGUAGE }
+        val localizedResults = requestCities(normalizedQuery, normalizedLanguage)
+        if (localizedResults.isNotEmpty() || normalizedLanguage == ENGLISH_LANGUAGE) {
+            return localizedResults
+        }
+        return requestCities(normalizedQuery, ENGLISH_LANGUAGE)
+    }
+
+    private suspend fun requestCities(query: String, language: String): List<Location> {
         val response: GeocodingResponse = client.get(
             "https://geocoding-api.open-meteo.com/v1/search"
         ) {
-            parameter("name", query.trim())
+            parameter("name", query)
             parameter("count", 8)
             parameter("language", language)
             parameter("format", "json")
@@ -77,5 +118,9 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
                 timezone = result.timezone
             )
         }
+    }
+
+    private companion object {
+        const val ENGLISH_LANGUAGE = "en"
     }
 }
