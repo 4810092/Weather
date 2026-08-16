@@ -2,7 +2,7 @@
 
 Internal maintainer document. This is a dated, evidence-backed application worksheet—not public adoption marketing. Refresh all GitHub counts and store status immediately before submitting the [OpenAI Codex for Open Source form](https://openai.com/form/codex-for-oss/).
 
-Snapshot date: 2026-08-16 (Asia/Tashkent). Repository metrics below were collected through GitHub CLI/API before opening the OSS-readiness pull request.
+Snapshot date: 2026-08-16 (Asia/Tashkent). Repository metrics below were collected through GitHub CLI/API after opening OSS-readiness pull request #8.
 
 ## Repository
 
@@ -30,7 +30,7 @@ That role is supported by the repository owner, the first commit, Git shortlog, 
 | Forks | 0 | GitHub repository API |
 | Watchers | 0 | GitHub repository API |
 | Contributors | 1 (`4810092`) | GitHub contributors API |
-| Pull requests | 7 total; all merged; all maintainer-authored | GitHub PR list, all states |
+| Pull requests | 8 total; 7 merged and OSS-readiness PR #8 open; all maintainer-authored | GitHub PR list, all states |
 | Issues | 0 issues (PRs excluded) | GitHub issue list, all states |
 | Tags | 3: one legacy checkpoint and two RC tags | GitHub tags API / Git refs |
 | GitHub Releases | 2; both existing RC tags; both marked prerelease | GitHub releases API |
