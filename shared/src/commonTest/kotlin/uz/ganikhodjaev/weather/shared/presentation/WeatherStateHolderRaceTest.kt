@@ -1,5 +1,6 @@
 package uz.ganikhodjaev.weather.shared.presentation
 
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
@@ -27,6 +29,11 @@ import uz.ganikhodjaev.weather.shared.onboarding.OnboardingState
 import uz.ganikhodjaev.weather.shared.onboarding.OnboardingStateStore
 
 class WeatherStateHolderRaceTest {
+    @BeforeTest
+    fun resetAutomaticRefreshCoordinator() = runBlocking {
+        AutomaticRefreshCoordinator.resetAttemptHistoryForTests()
+    }
+
     @Test
     fun staleNonCooperativeRefreshCannotReplaceTheLatestForecastOrReviewCandidate() = runBlocking {
         val repository = ControllableWeatherDataSource()

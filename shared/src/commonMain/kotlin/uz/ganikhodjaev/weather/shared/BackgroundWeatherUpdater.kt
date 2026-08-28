@@ -4,6 +4,7 @@ import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ResponseException
+import kotlin.time.Clock
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
+import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.resolve
 import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
@@ -86,10 +88,56 @@ internal fun startCancellableBackgroundRefresh(
 
 internal suspend fun refreshBackgroundWeather(
     repository: WeatherDataSource,
+    nowEpochSeconds: Long? = null,
+    currentEpochSeconds: () -> Long = { Clock.System.now().epochSeconds },
     publishSnapshot: suspend (WeatherSnapshot) -> Unit
 ): BackgroundRefreshOutcome {
     val location = repository.activeLocation()
         ?: return BackgroundRefreshOutcome.NothingToRefresh
+    return AutomaticRefreshCoordinator.withLocationLock(location.id) {
+        refreshBackgroundWeatherForLocation(
+            repository = repository,
+            location = location,
+            nowEpochSeconds = nowEpochSeconds ?: currentEpochSeconds(),
+            publishSnapshot = publishSnapshot
+        )
+    }
+}
+
+private suspend fun refreshBackgroundWeatherForLocation(
+    repository: WeatherDataSource,
+    location: Location,
+    nowEpochSeconds: Long,
+    publishSnapshot: suspend (WeatherSnapshot) -> Unit
+): BackgroundRefreshOutcome {
+    val cachedSnapshot = try {
+        repository.observe(location).first()
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (error: Throwable) {
+        return classifyBackgroundRefreshFailure(error)
+    }
+    if (cachedSnapshot != null && !cachedSnapshot.isAutomaticRefreshDue(nowEpochSeconds)) {
+        return try {
+            publishSnapshot(cachedSnapshot)
+            BackgroundRefreshOutcome.NothingToRefresh
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            classifyBackgroundRefreshFailure(error)
+        }
+    }
+    if (!AutomaticRefreshCoordinator.claimAutomaticAttempt(location.id, nowEpochSeconds)) {
+        if (cachedSnapshot == null) return BackgroundRefreshOutcome.NothingToRefresh
+        return try {
+            publishSnapshot(cachedSnapshot)
+            BackgroundRefreshOutcome.NothingToRefresh
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            classifyBackgroundRefreshFailure(error)
+        }
+    }
     val primaryOutcome = try {
         repository.refreshPrimary(location)
         BackgroundRefreshOutcome.Updated

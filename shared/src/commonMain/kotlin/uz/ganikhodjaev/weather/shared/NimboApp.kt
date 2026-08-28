@@ -66,10 +66,10 @@ fun NimboApp(platformContext: PlatformContext) {
 
     LaunchedEffect(stateHolder, isForeground) {
         if (!isForeground) return@LaunchedEffect
-        stateHolder.refresh()
+        stateHolder.refreshIfNeeded()
         while (true) {
-            delay(FOREGROUND_REFRESH_INTERVAL_MILLIS)
-            stateHolder.refresh()
+            delay(FOREGROUND_REFRESH_CHECK_INTERVAL_MILLIS)
+            stateHolder.refreshIfNeeded()
         }
     }
 
@@ -128,4 +128,4 @@ fun NimboApp(platformContext: PlatformContext) {
 }
 
 private val RTL_LANGUAGES = setOf("ar", "fa", "he", "ur")
-private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 15 * 60 * 1_000L
+private const val FOREGROUND_REFRESH_CHECK_INTERVAL_MILLIS = 15 * 60 * 1_000L

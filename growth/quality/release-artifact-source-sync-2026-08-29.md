@@ -43,6 +43,12 @@ inherited QA claim is recorded.
 - A later current-source signing readiness pass confirmed compatible Apple
   profiles and visible identities, but both the full archive and an isolated
   watch archive failed at `codesign`; neither produced an xcarchive.
+- The provider-capacity change passes shared Android-host and iOS Simulator
+  tests, Kotlin formatting, SQLDelight migration verification, Android phone
+  and Wear release bundle builds, and unsigned iOS/watchOS Release simulator
+  builds. These checks do not create signed artifacts or physical-device proof.
+- The earlier API 25 debug/source smoke is now historical because it predates
+  the provider-throttling and cross-path single-flight changes.
 
 ## Preserved historical candidates
 

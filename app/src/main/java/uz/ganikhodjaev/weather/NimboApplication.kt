@@ -27,7 +27,7 @@ class NimboApplication : Application() {
     }
 
     private companion object {
-        const val BACKGROUND_REFRESH_INTERVAL_MINUTES = 30L
+        const val BACKGROUND_REFRESH_INTERVAL_MINUTES = 60L
         const val BACKGROUND_REFRESH_WORK_NAME = "nimbo_weather_refresh"
     }
 }

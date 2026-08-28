@@ -53,6 +53,10 @@ search result slices for all five generic queries. A bounded absence means only
   identifiers, or analytics parameters.
 - Android background retry for transient failures, with permanent and no-work
   outcomes kept distinct.
+- Automatic provider refreshes are cache-gated to one hour per location across
+  foreground activation, foreground checks, Android/iOS background work, and
+  failed attempts. Cross-path requests coalesce per process; manual refresh and
+  a first uncached location remain immediate.
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.

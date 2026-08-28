@@ -1,9 +1,14 @@
-# Android current-source physical smoke — 2026-08-29
+# Android pre-provider-throttle physical smoke — 2026-08-29
+
+Status: **HISTORICAL**. Later on 2026-08-29, automatic-refresh throttling and
+cross-path single-flight coordination changed shared runtime source. This smoke
+remains valid for the exact debug APK hash below, but it does not establish a
+physical pass for the current worktree or a later commit.
 
 ## Verdict
 
-**PASS within the bounded debug/source scope** on a physical General Mobile
-4G Dual running Android 7.1.1 / API 25. The current phone identity `1.1.0 (8)`
+**PASS within the bounded historical debug/source scope** on a physical General
+Mobile 4G Dual running Android 7.1.1 / API 25. The then-current phone identity `1.1.0 (8)`
 completed clean onboarding, quick-city selection, a live Tashkent forecast, a
 saved-place cold start without network access, cached-weather fallback, and
 process-stability checks.

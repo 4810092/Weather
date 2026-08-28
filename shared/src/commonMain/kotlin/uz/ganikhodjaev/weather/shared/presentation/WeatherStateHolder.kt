@@ -9,12 +9,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
+import uz.ganikhodjaev.weather.shared.isAutomaticRefreshDue
 import uz.ganikhodjaev.weather.shared.location.DeviceCoordinates
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
@@ -75,7 +78,10 @@ internal class WeatherStateHolder(
     private val locationProvider: DeviceLocationProvider,
     private val automaticUnitSystem: UnitSystem,
     private val onboardingStateStore: OnboardingStateStore,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val currentEpochSeconds: () -> Long = {
+        kotlin.time.Clock.System.now().epochSeconds
+    }
 ) {
     private val mutableState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
     val state: StateFlow<WeatherUiState> = mutableState.asStateFlow()
@@ -219,6 +225,23 @@ internal class WeatherStateHolder(
     }
 
     fun refresh() {
+        launchRefresh(forceRefresh = true, nowEpochSeconds = null)
+    }
+
+    fun refreshIfNeeded(nowEpochSeconds: Long? = null) {
+        val freshnessCheckEpochSeconds = nowEpochSeconds ?: currentEpochSeconds()
+        when (val current = mutableState.value) {
+            is WeatherUiState.Content -> {
+                if (!current.weather.isAutomaticRefreshDue(freshnessCheckEpochSeconds)) return
+            }
+            is WeatherUiState.EmptyError -> activeLocation?.id ?: return
+            WeatherUiState.Loading,
+            is WeatherUiState.ChooseLocation -> return
+        }
+        launchRefresh(forceRefresh = false, nowEpochSeconds = nowEpochSeconds)
+    }
+
+    private fun launchRefresh(forceRefresh: Boolean, nowEpochSeconds: Long?) {
         if (refreshJob?.isActive == true) return
         if (mutableState.value is WeatherUiState.Loading ||
             mutableState.value is WeatherUiState.ChooseLocation
@@ -227,7 +250,9 @@ internal class WeatherStateHolder(
         }
         activeLocation?.let { location ->
             val generation = activationGeneration
-            refreshJob = scope.launch { refreshInternal(location, generation) }
+            refreshJob = scope.launch {
+                refreshInternal(location, generation, forceRefresh, nowEpochSeconds)
+            }
         }
     }
 
@@ -312,7 +337,12 @@ internal class WeatherStateHolder(
                     )
                 }
             }
-            refreshInternal(location, generation)
+            refreshInternal(
+                location,
+                generation,
+                forceRefresh = false,
+                nowEpochSeconds = null
+            )
             awaitCancellation()
         }
     }
@@ -362,8 +392,50 @@ internal class WeatherStateHolder(
         }
     }
 
-    private suspend fun refreshInternal(location: Location, generation: Long) {
+    private suspend fun refreshInternal(
+        location: Location,
+        generation: Long,
+        forceRefresh: Boolean,
+        nowEpochSeconds: Long?
+    ) {
+        AutomaticRefreshCoordinator.withLocationLock(location.id) {
+            refreshInternalSingleFlight(
+                location,
+                generation,
+                forceRefresh = forceRefresh,
+                nowEpochSeconds = nowEpochSeconds ?: currentEpochSeconds()
+            )
+        }
+    }
+
+    private suspend fun refreshInternalSingleFlight(
+        location: Location,
+        generation: Long,
+        forceRefresh: Boolean,
+        nowEpochSeconds: Long
+    ) {
         if (!isCurrentActivation(generation, location)) return
+        if (!forceRefresh) {
+            val cachedSnapshot = try {
+                repository.observe(location).first()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Throwable) {
+                logFailure("cached weather freshness check", error)
+                return
+            }
+            val refreshDue = cachedSnapshot?.isAutomaticRefreshDue(
+                nowEpochSeconds
+            ) ?: true
+            if (!refreshDue) return
+            if (!AutomaticRefreshCoordinator.claimAutomaticAttempt(
+                    location.id,
+                    nowEpochSeconds
+                )
+            ) {
+                return
+            }
+        }
         val gate = refreshGate
         if (gate.generation != generation || !gate.mutex.tryLock()) return
         try {
@@ -376,6 +448,9 @@ internal class WeatherStateHolder(
                 )
             }
             try {
+                if (forceRefresh) {
+                    AutomaticRefreshCoordinator.recordAttempt(location.id, nowEpochSeconds)
+                }
                 val successfulForecastId = repository.refreshPrimary(location)
                 if (!isCurrentActivation(generation, location)) return
                 pendingSuccessfulForecast = PendingSuccessfulForecast(

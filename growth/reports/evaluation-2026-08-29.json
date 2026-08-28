@@ -163,7 +163,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Current phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live Tashkent weather, cached offline cold start, and stability, but it still has no upload-signed current artifact or matching release-certificate physical result. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required."
+        "reason": "An earlier same-day phone 1.1.0 (8) debug/source snapshot passed bounded API 25 onboarding, live weather, cached offline cold start, and stability checks. Subsequent provider-throttling and cross-path single-flight changes have no matching physical result, and there is still no upload-signed current artifact or release-certificate physical pass. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required."
       },
       {
         "id": "ios_physical_smoke",
