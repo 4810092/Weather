@@ -2,21 +2,30 @@
 
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
-cross-platform state is [Nimbo 1.0.2 release candidate](RELEASE_CANDIDATE.md):
-Android phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026.
-A live console recheck on August 28 found iOS 1.0.1 (4) `Ready for Distribution`
-and Wear OS 1.0.2 (1000007) active in Production in 177 countries. The new
-product and store work is an unuploaded
-[growth implementation candidate](GROWTH_RELEASE.md). Store consoles remain the
-authority for live status.
+public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
+OS 1.0.2 (1000007). The next coordinated candidate is 1.1.0: phone 7, Wear
+1000008, and Apple build 5. Signed Android artifacts are locally validated; the
+phone universal APK passed physical API 25 clean/live/cold-start and was
+removed. Nothing in 1.1.0 has been uploaded or published. Store consoles remain
+the authority for live status.
 
 ## Version identity
 
 - Product name: Nimbo.
 - Android application ID: `uz.ganikhodjaev.weather` — never change.
 - iOS bundle ID: `uz.ganikhodjaev.weather`.
-- Android Nimbo 1.0 must use a version code greater than the highest code already accepted by Google Play (legacy repository code is 2).
+- Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
+
+## Nimbo 1.1.0 internal candidate — 2026-08-28
+
+The coordinated candidate uses Android phone `1.1.0 (7)`, Wear OS `1.1.0
+(1000008)`, and Apple `1.1.0 (5)`. The phone and Wear AABs are upload-signed,
+Bundletool-validated, and retained outside the repository; a universal phone APK
+passed bounded physical API 25 release smoke. See the [growth checkpoint](GROWTH_RELEASE.md)
+and [signed Android artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md).
+This section records local readiness only: no 1.1.0 store upload, review,
+approval, rollout, or public availability is claimed.
 
 ## App Store 1.0.1 submission — 2026-08-23
 

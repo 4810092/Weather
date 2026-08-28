@@ -12,15 +12,15 @@
     },
     "android_physical_smoke": {
       "status": "partial",
-      "reason": "The final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and a physical API 25 General Mobile, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete."
+      "reason": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, exact APK/signing identity, and cleanup. Earlier debug evidence covers share, large text, TalkBack, search, and a successful scheduled cache refresh; exact signed phone accessibility/share/offline coverage plus physical tablet, widget, and Wear OS remain incomplete."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "reason": "A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build."
     },
     "open_policy_issues": {
-      "status": "unknown",
-      "reason": "Mutable store-console policy state requires a current console read."
+      "status": "pass",
+      "reason": "Read-only 2026-08-28 console check found no open App Store review/compliance action and Google Play Policy status explicitly reported no issues; see growth/quality/store-policy-console-2026-08-28.md."
     }
   },
   "scale_status": "hold",

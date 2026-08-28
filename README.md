@@ -8,7 +8,8 @@
 
 Nimbo is a production Kotlin Multiplatform weather application for Android and iOS. It is also an inspectable reference codebase for shared Compose Multiplatform UI, SQLDelight-backed offline data, deterministic weather insights, localization and RTL, adaptive layouts, accessibility, and real mobile release constraints.
 
-**Website:** [nimbo.uz](https://nimbo.uz/)
+**Website:** `nimbo.uz` is configured on GitHub Pages, but public DNS/TLS
+activation is pending; see the [domain launch state](growth/quality/domain-launch-2026-08-28.md).
 
 This repository contains an application, not a framework or reusable weather SDK. The value is in studying a complete product and its trade-offs: platform shells, shared UI and state, provider normalization, database migrations, widgets and watch companions, privacy boundaries, CI, store metadata, and release evidence all live together.
 
@@ -172,14 +173,14 @@ Arabic uses RTL layout, while the chronological forecast row is explicitly LTR s
 
 Nimbo has no account, ads, analytics, crash-reporting SDK, or background location permission. Optional device coordinates are reduced to two decimals before local storage, provider requests, or system reverse geocoding. City queries and reduced coordinates are sent to Open-Meteo over HTTPS; cached places/weather remain on-device, with a compact snapshot shared to widgets and a paired watch.
 
-Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](store/privacy-declarations.md), and [provider terms/attribution notes](docs/PROVIDERS.md). A commercial or monetized deployment must not use Open-Meteo’s free non-commercial endpoint.
+Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](store/privacy-declarations.md), and [provider terms/attribution notes](docs/PROVIDERS.md). Open-Meteo's Free API is non-commercial, and its [current terms](https://open-meteo.com/en/terms) list promotional activities as commercial use. Nimbo public promotion remains paused pending written provider clearance or an approved customer/self-hosted endpoint.
 
 ## Platforms and release state
 
 - Android phone/tablet `1.0.2` (`versionCode 6`) was rechecked as active in Google Play Production in 177 countries on August 28, 2026.
 - iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. One iOS 1.0.1 crash remains unsymbolicated, so acquisition scaling is blocked.
 - Wear OS `1.0.2` (`versionCode 1000007`) was rechecked as active in Google Play Production in 177 countries on August 28. Physical paired-device smoke is still pending.
-- The new onboarding/review/share/retry changes are an unuploaded growth candidate, not evidence that any current public binary contains them. See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md) and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
+- The coordinated `1.1.0` candidate is not uploaded or public. Signed Android phone/Wear artifacts are locally validated; the signed phone APK passed bounded physical API 25 clean/live/cold-start. Accessibility/share evidence belongs to the preceding debug artifact, and Apple 1.1.0 upload availability is not claimed. See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md) and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

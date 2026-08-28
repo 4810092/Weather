@@ -1,0 +1,421 @@
+--------- beginning of main
+08-28 23:15:36.445  1214  1426 I Netd    : Destroyed 1 sockets on fec0::5054:ff:fe12:3456 in 0.0 ms
+08-28 23:15:36.523  3577  3577 W ip      : type=1400 audit(0.0:8): avc: denied { nlmsg_write } for scontext=u:r:shell:s0 tcontext=u:r:shell:s0 tclass=netlink_route_socket permissive=0
+08-28 23:15:36.630  3582  3582 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:15:36.631  3582  3582 D AndroidRuntime: CheckJNI is OFF
+08-28 23:15:36.631  3582  3582 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:36.640  3582  3582 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:15:36.645  3582  3582 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:15:36.645  3582  3582 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:15:36.646  3582  3582 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:15:36.648  3582  3582 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+--------- beginning of system
+08-28 23:15:36.649  1408  2020 I ActivityManager: Force stopping uz.ganikhodjaev.weather appid=10075 user=0: from pid 3582
+08-28 23:15:36.649  1408  2020 I ActivityManager: Killing 3494:uz.ganikhodjaev.weather/u0a75 (adj 0): stop uz.ganikhodjaev.weather
+08-28 23:15:36.650  1408  2020 D ActivityManager: cleanUpApplicationRecord -- 3494
+08-28 23:15:36.650  1408  2020 W ActivityManager: Force removing ActivityRecord{fe069e3 u0 uz.ganikhodjaev.weather/.MainActivity t18}: app died, no saved state
+08-28 23:15:36.653  1408  2020 I WindowManager: Destroying surface Surface(name=uz.ganikhodjaev.weather/uz.ganikhodjaev.weather.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.removeLocked:1456 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2484 com.android.server.wm.WindowManagerService.removeWindowLocked:2442 com.android.server.wm.WindowManagerService.removeWindowLocked:2311 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326
+08-28 23:15:36.656  3582  3582 D AndroidRuntime: Shutting down VM
+08-28 23:15:36.657  1691  1691 D CarrierSvcBindHelper: No carrier app for: 0
+08-28 23:15:36.683  1408  1434 W InputMethodManagerService: Got RemoteException sending setActive(false) notification to pid 3494 uid 10075
+08-28 23:15:36.695  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:15:36.700  1408  2355 D GraphicsStats: Buffer count: 2
+08-28 23:15:36.750  3592  3592 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:15:36.751  3592  3592 D AndroidRuntime: CheckJNI is OFF
+08-28 23:15:36.751  3592  3592 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:36.758  3592  3592 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:15:36.764  3592  3592 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:15:36.764  3592  3592 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:15:36.764  3592  3592 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:15:36.766  3592  3592 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+08-28 23:15:36.768  1408  1712 I ActivityManager: START u0 {flg=0x10000000 cmp=uz.ganikhodjaev.weather/.MainActivity} from uid 2000 on display 0
+08-28 23:15:36.770  3592  3592 D AndroidRuntime: Shutting down VM
+08-28 23:15:36.773  3602  3602 I art     : Late-enabling -Xcheck:jni
+08-28 23:15:36.780  1408  1684 I ActivityManager: Start proc 3602:uz.ganikhodjaev.weather/u0a75 for activity uz.ganikhodjaev.weather/.MainActivity
+08-28 23:15:36.795   918   941 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:15:36.812  3602  3602 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+08-28 23:15:36.819  3602  3602 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+08-28 23:15:36.819  3602  3602 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+08-28 23:15:36.819  3602  3619 D WM-ForceStopRunnable: The default process name was not specified.
+08-28 23:15:36.819  3602  3619 D WM-ForceStopRunnable: Performing cleanup operations.
+08-28 23:15:36.826  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:15:36.836  3602  3622 D WM-GreedyScheduler: Cancelling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1d
+08-28 23:15:36.842   918   941 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:15:36.843  3602  3622 D WM-SystemJobScheduler: Scheduling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1dJob ID 3
+08-28 23:15:36.845  3602  3602 D         : HostConnection::get() New Host Connection established 0x73945fad00, tid 3602
+08-28 23:15:36.847  3602  3622 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+08-28 23:15:36.873  3602  3602 W System.err: SLF4J(W): No SLF4J providers were found.
+08-28 23:15:36.873  3602  3602 W System.err: SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+08-28 23:15:36.873  3602  3602 W System.err: SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+08-28 23:15:36.894   918   938 D         : HostConnection::get() New Host Connection established 0x7bcda1b780, tid 938
+08-28 23:15:36.894  3602  3623 D         : HostConnection::get() New Host Connection established 0x73945fafa0, tid 3623
+08-28 23:15:36.895  3602  3623 I OpenGLRenderer: Initialized EGL, version 1.4
+08-28 23:15:36.895  3602  3623 D OpenGLRenderer: Swap behavior 1
+08-28 23:15:36.895  3602  3623 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+08-28 23:15:36.895  3602  3623 D OpenGLRenderer: Swap behavior 0
+08-28 23:15:36.896  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:36.896  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:36.896  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:36.896  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:36.896  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:36.896  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:36.897  3602  3623 D EGL_emulation: eglCreateContext: 0x739d87ba40: maj 3 min 1 rcv 4
+08-28 23:15:36.898  3602  3623 D EGL_emulation: eglMakeCurrent: 0x739d87ba40: ver 3 1 (tinfo 0x739458fb60)
+08-28 23:15:36.898  3602  3623 E eglCodecCommon: glUtilsParamSize: unknow param 0x000082da
+08-28 23:15:36.898  3602  3623 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+08-28 23:15:36.898  3602  3623 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+08-28 23:15:36.905  3602  3607 I art     : Do partial code cache collection, code=28KB, data=29KB
+08-28 23:15:36.905  3602  3607 I art     : After code cache collection, code=27KB, data=29KB
+08-28 23:15:36.905  3602  3607 I art     : Increasing code cache capacity to 128KB
+08-28 23:15:36.911  3602  3624 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+08-28 23:15:36.917  3602  3623 D EGL_emulation: eglMakeCurrent: 0x739d87ba40: ver 3 1 (tinfo 0x739458fb60)
+08-28 23:15:36.929  1408  1443 I ActivityManager: Displayed uz.ganikhodjaev.weather/.MainActivity: +159ms
+08-28 23:15:36.952  3602  3607 I art     : Do partial code cache collection, code=56KB, data=60KB
+08-28 23:15:36.952  3602  3607 I art     : After code cache collection, code=56KB, data=60KB
+08-28 23:15:36.952  3602  3607 I art     : Increasing code cache capacity to 256KB
+08-28 23:15:36.983  3602  3607 I art     : Do full code cache collection, code=121KB, data=122KB
+08-28 23:15:36.983  3602  3607 I art     : After code cache collection, code=92KB, data=73KB
+08-28 23:15:36.997  3602  3607 I art     : Do partial code cache collection, code=110KB, data=103KB
+08-28 23:15:36.997  3602  3607 I art     : After code cache collection, code=110KB, data=103KB
+08-28 23:15:36.997  3602  3607 I art     : Increasing code cache capacity to 512KB
+08-28 23:15:37.045  3602  3607 I art     : Do full code cache collection, code=228KB, data=240KB
+08-28 23:15:37.045  3602  3607 I art     : After code cache collection, code=177KB, data=154KB
+08-28 23:15:37.065  3602  3607 I art     : Do partial code cache collection, code=202KB, data=207KB
+08-28 23:15:37.065  3602  3607 I art     : After code cache collection, code=199KB, data=205KB
+08-28 23:15:37.065  3602  3607 I art     : Increasing code cache capacity to 1024KB
+08-28 23:15:37.125  1408  1443 I WindowManager: Destroying surface Surface(name=Starting uz.ganikhodjaev.weather) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704
+08-28 23:15:37.145  3602  3607 I art     : Compiler allocated 6MB to compile int com.google.android.gms.internal.wearable.zzeo.zze(java.lang.Object)
+08-28 23:15:37.149  1671  1671 I Wear_Controller: Wear requires a companion app to be installed.
+08-28 23:15:37.149  1671  1671 I WearableService: onCreate: Wearable Services not starting. Wear is not available on this device.
+08-28 23:15:37.152  1671  2503 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:15:37.153  3602  3607 I art     : Compiler allocated 5MB to compile void com.google.android.gms.internal.wearable.zzeo.zzf(java.lang.Object, com.google.android.gms.internal.wearable.zzfx)
+08-28 23:15:37.281  3602  3607 I art     : Compiler allocated 5MB to compile boolean androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.recordInvalidation(java.util.Set)
+08-28 23:15:37.545  2037  2101 W OpenGLRenderer: Incorrectly called buildLayer on View: ShortcutAndWidgetContainer, destroying layer...
+08-28 23:15:37.562  1408  1684 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4463 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903
+08-28 23:15:41.030  3602  3602 I System.out: Nimbo weather refresh failed: UnknownHostException
+08-28 23:15:41.056  1671  2503 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:15:41.065  1671  2503 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:15:42.097  3602  3639 D ProfileInstaller: Installing profile for uz.ganikhodjaev.weather
+08-28 23:15:43.894  3640  3640 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:15:43.895  3640  3640 D AndroidRuntime: CheckJNI is OFF
+08-28 23:15:43.895  3640  3640 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:43.903  3640  3640 D ICU     : No timezone override file found: /data/local/tmp/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:15:43.909  3640  3640 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:15:43.909  3640  3640 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:15:43.909  3640  3640 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:15:43.911  3640  3640 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+08-28 23:15:44.965  3640  3640 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9529; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-59, 1434 - -5, 1497); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text: ☀; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:15:44.965  3640  3640 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9586; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-36, 1581 - -27, 1623); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text:  ; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:15:44.978  3602  3607 I art     : Do full code cache collection, code=447KB, data=470KB
+08-28 23:15:44.978  3602  3607 I art     : After code cache collection, code=410KB, data=369KB
+08-28 23:15:45.004  3640  3640 W AccessibilityNodeInfoDumper: Fetch time: 41ms
+08-28 23:15:45.005  1408  1712 W WindowManager: Attempted to remove non-existing token: android.os.Binder@21c321b
+08-28 23:15:45.007  3640  3640 D AndroidRuntime: Shutting down VM
+08-28 23:15:45.061   918  1206 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:15:45.062  3654  3654 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:45.062   918  1206 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:15:45.063  3654  3654 D         : HostConnection::get() New Host Connection established 0x74d562d4e0, tid 3654
+08-28 23:15:45.064   918   918 E EGL_emulation: tid 918: eglCreateSyncKHR(1989): error 0x3004 (EGL_BAD_ATTRIBUTE)
+08-28 23:15:45.207  1408  1457 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.drive.ApiService.RESET_AFTER_BOOT flg=0x4 cmp=com.google.android.gms/.drive.api.ApiService (has extras) } U=0: not found
+08-28 23:15:45.209  1948  3659 I Vision  : Requesting optional module download of ocr.
+08-28 23:15:45.209  1948  3659 I Vision  : Exceeded maximum feature download tries for ocr
+08-28 23:15:45.209  1948  3659 W Vision  : Request of optional module download of ocr failed.
+08-28 23:15:45.209  1948  3659 I Vision  : Checking for download completion for 131000 -- ocr
+08-28 23:15:55.217  1948  3661 I Vision  : Requesting optional module download of ocr.
+08-28 23:15:55.222  1948  3661 I Vision  : Checking for download completion for 141013 -- ocr
+08-28 23:15:55.223  1948  3661 I ChimeraConfigurator: Starting update, reason: 4 urgentFeatures: vision.ocr:-1
+08-28 23:15:55.223  1948  3661 I ChmraDebugLogger: [80] null
+08-28 23:15:58.543  3665  3665 W ip      : type=1400 audit(0.0:9): avc: denied { nlmsg_write } for scontext=u:r:shell:s0 tcontext=u:r:shell:s0 tclass=netlink_route_socket permissive=0
+08-28 23:15:58.649  3670  3670 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:15:58.650  3670  3670 D AndroidRuntime: CheckJNI is OFF
+08-28 23:15:58.650  3670  3670 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:58.658  3670  3670 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:15:58.661  3670  3670 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:15:58.661  3670  3670 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:15:58.661  3670  3670 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:15:58.663  3670  3670 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+08-28 23:15:58.664  1408  1679 I ActivityManager: Force stopping uz.ganikhodjaev.weather appid=10075 user=0: from pid 3670
+08-28 23:15:58.664  1408  1679 I ActivityManager: Killing 3602:uz.ganikhodjaev.weather/u0a75 (adj 0): stop uz.ganikhodjaev.weather
+08-28 23:15:58.664  1408  1679 D ActivityManager: cleanUpApplicationRecord -- 3602
+08-28 23:15:58.666  1408  1679 W ActivityManager: Force removing ActivityRecord{54c36b1 u0 uz.ganikhodjaev.weather/.MainActivity t19}: app died, no saved state
+08-28 23:15:58.667  1408  1679 I WindowManager: Destroying surface Surface(name=uz.ganikhodjaev.weather/uz.ganikhodjaev.weather.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.removeLocked:1456 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2484 com.android.server.wm.WindowManagerService.removeWindowLocked:2442 com.android.server.wm.WindowManagerService.removeWindowLocked:2311 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326
+08-28 23:15:58.669  3670  3670 D AndroidRuntime: Shutting down VM
+08-28 23:15:58.671  1691  1691 D CarrierSvcBindHelper: No carrier app for: 0
+08-28 23:15:58.697  1408  1434 W InputMethodManagerService: Got RemoteException sending setActive(false) notification to pid 3602 uid 10075
+08-28 23:15:58.699  1408  2355 D GraphicsStats: Buffer count: 2
+08-28 23:15:58.713  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:15:58.752  3680  3680 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:15:58.752  3680  3680 D AndroidRuntime: CheckJNI is OFF
+08-28 23:15:58.752  3680  3680 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:15:58.758  3680  3680 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:15:58.765  3680  3680 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:15:58.765  3680  3680 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:15:58.765  3680  3680 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:15:58.767  3680  3680 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+08-28 23:15:58.768  1408  1434 I ActivityManager: START u0 {flg=0x10000000 cmp=uz.ganikhodjaev.weather/.MainActivity} from uid 2000 on display 0
+08-28 23:15:58.770  3680  3680 D AndroidRuntime: Shutting down VM
+08-28 23:15:58.772  3690  3690 I art     : Late-enabling -Xcheck:jni
+08-28 23:15:58.781  1408  1434 I ActivityManager: Start proc 3690:uz.ganikhodjaev.weather/u0a75 for activity uz.ganikhodjaev.weather/.MainActivity
+08-28 23:15:58.797   918  1206 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:15:58.806  3690  3690 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+08-28 23:15:58.811  3690  3690 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+08-28 23:15:58.811  3690  3690 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+08-28 23:15:58.812  3690  3706 D WM-ForceStopRunnable: The default process name was not specified.
+08-28 23:15:58.812  3690  3706 D WM-ForceStopRunnable: Performing cleanup operations.
+08-28 23:15:58.817  3690  3706 D WM-ForceStopRunnable: Application was force-stopped, rescheduling.
+08-28 23:15:58.823   918  1206 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:15:58.823  3690  3706 D WM-SystemJobScheduler: Scheduling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1dJob ID 3
+08-28 23:15:58.824  3690  3690 D         : HostConnection::get() New Host Connection established 0x73945fad00, tid 3690
+08-28 23:15:58.827  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:15:58.833  3690  3710 D WM-GreedyScheduler: Cancelling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1d
+08-28 23:15:58.838  3690  3710 D WM-SystemJobScheduler: Scheduling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1dJob ID 4
+08-28 23:15:58.843  3690  3710 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+08-28 23:15:58.846  3690  3690 W System.err: SLF4J(W): No SLF4J providers were found.
+08-28 23:15:58.846  3690  3690 W System.err: SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+08-28 23:15:58.846  3690  3690 W System.err: SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+08-28 23:15:58.879  3690  3708 D         : HostConnection::get() New Host Connection established 0x73970321e0, tid 3708
+08-28 23:15:58.880  3690  3708 I OpenGLRenderer: Initialized EGL, version 1.4
+08-28 23:15:58.880  3690  3708 D OpenGLRenderer: Swap behavior 1
+08-28 23:15:58.880  3690  3708 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+08-28 23:15:58.880  3690  3708 D OpenGLRenderer: Swap behavior 0
+08-28 23:15:58.882  3690  3708 D EGL_emulation: eglCreateContext: 0x7397035aa0: maj 3 min 1 rcv 4
+08-28 23:15:58.883  3690  3708 D EGL_emulation: eglMakeCurrent: 0x7397035aa0: ver 3 1 (tinfo 0x739700c540)
+08-28 23:15:58.884  3690  3708 E eglCodecCommon: glUtilsParamSize: unknow param 0x000082da
+08-28 23:15:58.884  3690  3708 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+08-28 23:15:58.884  3690  3708 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+08-28 23:15:58.889  3690  3695 I art     : Do partial code cache collection, code=28KB, data=29KB
+08-28 23:15:58.889  3690  3695 I art     : After code cache collection, code=27KB, data=28KB
+08-28 23:15:58.889  3690  3695 I art     : Increasing code cache capacity to 128KB
+08-28 23:15:58.895  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:58.895  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:58.895  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:58.895  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:58.895  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:15:58.895  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:15:58.898  3690  3712 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+08-28 23:15:58.900  3690  3708 D EGL_emulation: eglMakeCurrent: 0x7397035aa0: ver 3 1 (tinfo 0x739700c540)
+08-28 23:15:58.913  1408  1443 I ActivityManager: Displayed uz.ganikhodjaev.weather/.MainActivity: +143ms
+08-28 23:15:58.935  3690  3695 I art     : Do partial code cache collection, code=57KB, data=60KB
+08-28 23:15:58.935  3690  3695 I art     : After code cache collection, code=57KB, data=60KB
+08-28 23:15:58.935  3690  3695 I art     : Increasing code cache capacity to 256KB
+08-28 23:15:58.965  3690  3695 I art     : Do full code cache collection, code=123KB, data=122KB
+08-28 23:15:58.965  3690  3695 I art     : After code cache collection, code=93KB, data=74KB
+08-28 23:15:58.974  3690  3695 I art     : Do partial code cache collection, code=107KB, data=98KB
+08-28 23:15:58.974  3690  3695 I art     : After code cache collection, code=107KB, data=98KB
+08-28 23:15:58.974  3690  3695 I art     : Increasing code cache capacity to 512KB
+08-28 23:15:59.019  3690  3695 I art     : Do full code cache collection, code=225KB, data=239KB
+08-28 23:15:59.019  3690  3695 I art     : After code cache collection, code=183KB, data=160KB
+08-28 23:15:59.036  3690  3695 I art     : Do partial code cache collection, code=206KB, data=212KB
+08-28 23:15:59.036  3690  3695 I art     : After code cache collection, code=196KB, data=203KB
+08-28 23:15:59.036  3690  3695 I art     : Increasing code cache capacity to 1024KB
+08-28 23:15:59.108  1408  1443 I WindowManager: Destroying surface Surface(name=Starting uz.ganikhodjaev.weather) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704
+08-28 23:15:59.110  1671  1671 I Wear_Controller: Wear requires a companion app to be installed.
+08-28 23:15:59.110  1671  1671 I WearableService: onCreate: Wearable Services not starting. Wear is not available on this device.
+08-28 23:15:59.113  1671  2329 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:15:59.116  3690  3695 I art     : Compiler allocated 6MB to compile int com.google.android.gms.internal.wearable.zzeo.zze(java.lang.Object)
+08-28 23:15:59.121  3690  3695 I art     : Compiler allocated 5MB to compile void com.google.android.gms.internal.wearable.zzeo.zzf(java.lang.Object, com.google.android.gms.internal.wearable.zzfx)
+08-28 23:15:59.247  3690  3695 I art     : Compiler allocated 5MB to compile boolean androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.recordInvalidation(java.util.Set)
+08-28 23:15:59.547  2037  2101 W OpenGLRenderer: Incorrectly called buildLayer on View: ShortcutAndWidgetContainer, destroying layer...
+08-28 23:15:59.561  1408  2020 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4463 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903
+08-28 23:16:03.147  3690  3690 I System.out: Nimbo weather refresh failed: UnknownHostException
+08-28 23:16:03.176  1671  2329 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:16:03.184  1671  2329 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:16:04.690  3690  3726 D ProfileInstaller: Installing profile for uz.ganikhodjaev.weather
+08-28 23:16:05.232  1948  3728 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:05.232  1948  3728 I Vision  : Checking for download completion for 151023 -- ocr
+08-28 23:16:05.237  1671  2154 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ads.jams.NegotiationService started execution. cause:4 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.240  1671  2334 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ads.jams.NegotiationService finished executing. cause:4 result: 1 elapsed_millis: 6 uptime_millis: 6 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.241  1671  2334 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.telephonyspam.sync.SpamListSyncTaskService started execution. cause:4 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.246  1671  2154 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.auth.account.be.legacy.AuthCronService started execution. cause:5 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.247  1948  2376 I TelephonySpam: TelephonySpamChimeraService - Running Telephony Spam Chimera Service
+08-28 23:16:05.249  1948  2376 I TelephonySpam: TelephonySpamChimeraService - Cleaning SIP Header local table of old entries
+08-28 23:16:05.249  1948  2376 I TelephonySpam: SpamListSync - Call spam module disabled. Skipping cleaning cache sip header table.
+08-28 23:16:05.249  1948  2376 I TelephonySpam: TelephonySpamChimeraService - Syncing Call Spam List
+08-28 23:16:05.249  1948  2376 I TelephonySpam: SpamListSync - SpamListSyncChimeraService.syncSpamList called with tag: telephonyspam.SpamListSyncOneOffTask, extras: Bundle[{SpamList Type=0, Action=1.0}]
+08-28 23:16:05.249  1948  2376 I TelephonySpam: SpamListSync - Call spam module disabled. Skipping spam list syncing.
+08-28 23:16:05.250  1671  2163 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.telephonyspam.sync.SpamListSyncTaskService finished executing. cause:4 result: 1 elapsed_millis: 12 uptime_millis: 12 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.267  1671  2334 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService started execution. cause:5 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.269  1671  2163 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService finished executing. cause:5 result: 1 elapsed_millis: 10 uptime_millis: 10 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.276  1671  2334 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService started execution. cause:5 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:05.301  1671  2334 E CCTUploader: Clearcut transport failed to make network request. Use 2 milliseconds.
+08-28 23:16:05.304  1671  3734 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService finished executing. cause:5 result: 2 elapsed_millis: 32 uptime_millis: 32 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:08.857  3737  3737 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:16:08.858  3737  3737 D AndroidRuntime: CheckJNI is OFF
+08-28 23:16:08.858  3737  3737 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:16:08.865  3737  3737 D ICU     : No timezone override file found: /data/local/tmp/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:16:08.876  3737  3737 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:16:08.876  3737  3737 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:16:08.876  3737  3737 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:16:08.877  3737  3737 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+08-28 23:16:09.914  3737  3737 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@952e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-59, 1434 - -5, 1497); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text: ☀; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:16:09.914  3737  3737 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@958b; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-36, 1581 - -27, 1623); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text:  ; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:16:09.936  3737  3737 W AccessibilityNodeInfoDumper: Fetch time: 23ms
+08-28 23:16:09.936  3690  3695 I art     : Do full code cache collection, code=447KB, data=468KB
+08-28 23:16:09.937  1408  1506 W WindowManager: Attempted to remove non-existing token: android.os.Binder@2ec4f89
+08-28 23:16:09.937  3690  3695 I art     : After code cache collection, code=410KB, data=369KB
+08-28 23:16:09.939  3737  3737 D AndroidRuntime: Shutting down VM
+08-28 23:16:09.995   918   938 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:16:09.995  3751  3751 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:16:09.996   918   938 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:16:09.997  3751  3751 D         : HostConnection::get() New Host Connection established 0x78a982d4e0, tid 3751
+08-28 23:16:09.999   918   918 E EGL_emulation: tid 918: eglCreateSyncKHR(1989): error 0x3004 (EGL_BAD_ATTRIBUTE)
+08-28 23:16:15.250  1948  3760 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:15.251  1948  3760 I Vision  : Checking for download completion for 161041 -- ocr
+08-28 23:16:25.262  1948  3781 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:25.262  1948  3781 I Vision  : Checking for download completion for 171053 -- ocr
+08-28 23:16:35.269  1948  3785 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:35.270  1948  3785 I Vision  : Checking for download completion for 181061 -- ocr
+08-28 23:16:35.289  1671  2150 W MessengerIpcClient: Timing out request: 1
+08-28 23:16:35.292  1671  2158 W GLSUser : [AppCertManager] Failed to get security token.
+08-28 23:16:35.292  1671  2158 W GLSUser : java.io.IOException: SERVICE_NOT_AVAILABLE
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at adiw.b(:com.google.android.gms@202414019@20.24.14 (040400-319035315):19)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at adiw.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):18)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at adiw.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):11)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at hwy.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):17)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at hww.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):45)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at hwr.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):0)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at hwu.a(:com.google.android.gms@202414019@20.24.14 (040400-319035315):10)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at gbi.call(:com.google.android.gms@202414019@20.24.14 (040400-319035315):0)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at soy.b(:com.google.android.gms@202414019@20.24.14 (040400-319035315):12)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at soy.run(:com.google.android.gms@202414019@20.24.14 (040400-319035315):7)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1133)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:607)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at sux.run(:com.google.android.gms@202414019@20.24.14 (040400-319035315):0)
+08-28 23:16:35.292  1671  2158 W GLSUser : 	at java.lang.Thread.run(Thread.java:761)
+08-28 23:16:35.299  1671  2158 I Auth    : [ReflectiveChannelBinder] Successfully bound channel!
+08-28 23:16:35.303  1671  2158 W GLSUser : [AppCertManager] IOException while requesting key:
+08-28 23:16:35.306  1671  3734 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.auth.account.be.legacy.AuthCronService finished executing. cause:5 result: 3 elapsed_millis: 30063 uptime_millis: 30063 exec_start_elapsed_seconds: 141 [CONTEXT service_id=218 ]
+08-28 23:16:38.643  3787  3787 W ip      : type=1400 audit(0.0:10): avc: denied { search } for name="net" dev="vdc" ino=66 scontext=u:r:shell:s0 tcontext=u:object_r:net_data_file:s0 tclass=dir permissive=0
+08-28 23:16:38.643  3787  3787 W ip      : type=1400 audit(0.0:11): avc: denied { search } for name="net" dev="vdc" ino=66 scontext=u:r:shell:s0 tcontext=u:object_r:net_data_file:s0 tclass=dir permissive=0
+08-28 23:16:45.273  1948  3800 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:45.273  1948  3800 I Vision  : Exceeded maximum feature download tries for ocr
+08-28 23:16:45.273  1948  3800 W Vision  : Request of optional module download of ocr failed.
+08-28 23:16:45.273  1948  3800 I Vision  : Checking for download completion for 191064 -- ocr
+08-28 23:16:52.223  3814  3814 W ip      : type=1400 audit(0.0:12): avc: denied { search } for name="net" dev="vdc" ino=66 scontext=u:r:shell:s0 tcontext=u:object_r:net_data_file:s0 tclass=dir permissive=0
+08-28 23:16:52.223  3814  3814 W ip      : type=1400 audit(0.0:13): avc: denied { search } for name="net" dev="vdc" ino=66 scontext=u:r:shell:s0 tcontext=u:object_r:net_data_file:s0 tclass=dir permissive=0
+08-28 23:16:55.290  1948  3821 I Vision  : Requesting optional module download of ocr.
+08-28 23:16:55.294  1948  3821 I Vision  : Checking for download completion for 201085 -- ocr
+08-28 23:16:55.296  1948  3821 I ChimeraConfigurator: Starting update, reason: 4 urgentFeatures: vision.ocr:-1
+08-28 23:16:55.296  1948  3821 I ChmraDebugLogger: [80] null
+08-28 23:17:03.436  3822  3822 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:17:03.437  3822  3822 D AndroidRuntime: CheckJNI is OFF
+08-28 23:17:03.437  3822  3822 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:17:03.444  3822  3822 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:17:03.448  3822  3822 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:17:03.448  3822  3822 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:17:03.448  3822  3822 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:17:03.450  3822  3822 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+08-28 23:17:03.451  1408  1506 I ActivityManager: Force stopping uz.ganikhodjaev.weather appid=10075 user=0: from pid 3822
+08-28 23:17:03.451  1408  1506 I ActivityManager: Killing 3690:uz.ganikhodjaev.weather/u0a75 (adj 0): stop uz.ganikhodjaev.weather
+08-28 23:17:03.451  1408  1506 D ActivityManager: cleanUpApplicationRecord -- 3690
+08-28 23:17:03.451  1408  1506 W ActivityManager: Force removing ActivityRecord{516cdd0 u0 uz.ganikhodjaev.weather/.MainActivity t20}: app died, no saved state
+08-28 23:17:03.454  1408  1506 I WindowManager: Destroying surface Surface(name=uz.ganikhodjaev.weather/uz.ganikhodjaev.weather.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.removeLocked:1456 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2484 com.android.server.wm.WindowManagerService.removeWindowLocked:2442 com.android.server.wm.WindowManagerService.removeWindowLocked:2311 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326
+08-28 23:17:03.455  3822  3822 D AndroidRuntime: Shutting down VM
+08-28 23:17:03.457  1691  1691 D CarrierSvcBindHelper: No carrier app for: 0
+08-28 23:17:03.479  1408  2482 D GraphicsStats: Buffer count: 2
+08-28 23:17:03.492  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:17:03.537  3832  3832 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:17:03.538  3832  3832 D AndroidRuntime: CheckJNI is OFF
+08-28 23:17:03.538  3832  3832 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:17:03.546  3832  3832 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:17:03.550  3832  3832 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:17:03.550  3832  3832 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:17:03.550  3832  3832 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:17:03.551  3832  3832 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+08-28 23:17:03.553  1408  2700 I ActivityManager: START u0 {flg=0x10000000 cmp=uz.ganikhodjaev.weather/.MainActivity} from uid 2000 on display 0
+08-28 23:17:03.554  3832  3832 D AndroidRuntime: Shutting down VM
+08-28 23:17:03.556  3842  3842 I art     : Late-enabling -Xcheck:jni
+08-28 23:17:03.567  1408  1506 I ActivityManager: Start proc 3842:uz.ganikhodjaev.weather/u0a75 for activity uz.ganikhodjaev.weather/.MainActivity
+08-28 23:17:03.578   918   938 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:17:03.589  3842  3842 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+08-28 23:17:03.594  3842  3842 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+08-28 23:17:03.594  3842  3842 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+08-28 23:17:03.595  3842  3858 D WM-ForceStopRunnable: The default process name was not specified.
+08-28 23:17:03.595  3842  3858 D WM-ForceStopRunnable: Performing cleanup operations.
+08-28 23:17:03.605   918   986 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:17:03.606  3842  3842 D         : HostConnection::get() New Host Connection established 0x73945fad00, tid 3842
+08-28 23:17:03.611  2037  2101 D EGL_emulation: eglMakeCurrent: 0x7392695de0: ver 3 1 (tinfo 0x73927c9220)
+08-28 23:17:03.614  3842  3862 D WM-GreedyScheduler: Cancelling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1d
+08-28 23:17:03.619  3842  3862 D WM-SystemJobScheduler: Scheduling work ID fd1cb445-4221-4b1d-94fe-d5b493ba3b1dJob ID 5
+08-28 23:17:03.621  3842  3858 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+08-28 23:17:03.632  3842  3842 W System.err: SLF4J(W): No SLF4J providers were found.
+08-28 23:17:03.632  3842  3842 W System.err: SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+08-28 23:17:03.632  3842  3842 W System.err: SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+08-28 23:17:03.663  3842  3861 D         : HostConnection::get() New Host Connection established 0x73945da660, tid 3861
+08-28 23:17:03.665  3842  3861 I OpenGLRenderer: Initialized EGL, version 1.4
+08-28 23:17:03.665  3842  3861 D OpenGLRenderer: Swap behavior 1
+08-28 23:17:03.665  3842  3861 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+08-28 23:17:03.665  3842  3861 D OpenGLRenderer: Swap behavior 0
+08-28 23:17:03.667  3842  3861 D EGL_emulation: eglCreateContext: 0x739d87c4e0: maj 3 min 1 rcv 4
+08-28 23:17:03.668  3842  3861 D EGL_emulation: eglMakeCurrent: 0x739d87c4e0: ver 3 1 (tinfo 0x739262edc0)
+08-28 23:17:03.668  3842  3861 E eglCodecCommon: glUtilsParamSize: unknow param 0x000082da
+08-28 23:17:03.668  3842  3861 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+08-28 23:17:03.668  3842  3861 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+08-28 23:17:03.674  3842  3847 I art     : Do partial code cache collection, code=28KB, data=29KB
+08-28 23:17:03.674  3842  3847 I art     : After code cache collection, code=27KB, data=29KB
+08-28 23:17:03.674  3842  3847 I art     : Increasing code cache capacity to 128KB
+08-28 23:17:03.681  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:17:03.681  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:17:03.681  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:17:03.681  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:17:03.681  1508  1508 W asset   : Asset path /data/app/uz.ganikhodjaev.weather-1/base.apk is neither a directory nor file (type=1).
+08-28 23:17:03.681  1508  1508 W PackageManager: Failure retrieving resources for uz.ganikhodjaev.weather
+08-28 23:17:03.684  3842  3864 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+08-28 23:17:03.684  3842  3861 D EGL_emulation: eglMakeCurrent: 0x739d87c4e0: ver 3 1 (tinfo 0x739262edc0)
+08-28 23:17:03.696  1408  1443 I ActivityManager: Displayed uz.ganikhodjaev.weather/.MainActivity: +141ms
+08-28 23:17:03.705  3842  3847 I art     : Do partial code cache collection, code=55KB, data=60KB
+08-28 23:17:03.705  3842  3847 I art     : After code cache collection, code=55KB, data=60KB
+08-28 23:17:03.705  3842  3847 I art     : Increasing code cache capacity to 256KB
+08-28 23:17:03.734  3842  3847 I art     : Do full code cache collection, code=118KB, data=121KB
+08-28 23:17:03.734  3842  3847 I art     : After code cache collection, code=90KB, data=72KB
+08-28 23:17:03.751  3842  3847 I art     : Do partial code cache collection, code=124KB, data=117KB
+08-28 23:17:03.751  3842  3847 I art     : After code cache collection, code=124KB, data=117KB
+08-28 23:17:03.751  3842  3847 I art     : Increasing code cache capacity to 512KB
+08-28 23:17:03.788  3842  3847 I art     : Do full code cache collection, code=230KB, data=246KB
+08-28 23:17:03.788  3842  3847 I art     : After code cache collection, code=181KB, data=159KB
+08-28 23:17:03.815  3842  3847 I art     : Do partial code cache collection, code=237KB, data=246KB
+08-28 23:17:03.815  3842  3847 I art     : After code cache collection, code=225KB, data=236KB
+08-28 23:17:03.815  3842  3847 I art     : Increasing code cache capacity to 1024KB
+08-28 23:17:03.890  1671  1671 I Wear_Controller: Wear requires a companion app to be installed.
+08-28 23:17:03.890  1671  1671 I WearableService: onCreate: Wearable Services not starting. Wear is not available on this device.
+08-28 23:17:03.891  1408  1443 I WindowManager: Destroying surface Surface(name=Starting uz.ganikhodjaev.weather) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704
+08-28 23:17:03.895  3842  3847 I art     : Compiler allocated 6MB to compile int com.google.android.gms.internal.wearable.zzeo.zze(java.lang.Object)
+08-28 23:17:03.899  1671  1823 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:17:03.901  3842  3847 I art     : Compiler allocated 5MB to compile void com.google.android.gms.internal.wearable.zzeo.zzf(java.lang.Object, com.google.android.gms.internal.wearable.zzfx)
+08-28 23:17:04.032  3842  3847 I art     : Compiler allocated 5MB to compile boolean androidx.compose.runtime.snapshots.SnapshotStateObserver$ObservedScopeMap.recordInvalidation(java.util.Set)
+08-28 23:17:04.179  3842  3847 I art     : Do full code cache collection, code=482KB, data=497KB
+08-28 23:17:04.179  3842  3847 I art     : After code cache collection, code=397KB, data=357KB
+08-28 23:17:04.185  1671  1823 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:17:04.187  1671  1823 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:17:04.301  1671  1823 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:17:04.302  3842  3847 I art     : Do partial code cache collection, code=411KB, data=398KB
+08-28 23:17:04.303  3842  3847 I art     : After code cache collection, code=409KB, data=397KB
+08-28 23:17:04.303  3842  3847 I art     : Increasing code cache capacity to 2MB
+08-28 23:17:04.303  3842  3847 I art     : Compiler allocated 4MB to compile kotlin.Unit androidx.compose.runtime.Recomposer$runRecomposeAndApplyChanges$2.invokeSuspend$lambda$2(androidx.compose.runtime.Recomposer, androidx.collection.MutableScatterSet, androidx.collection.MutableScatterSet, java.util.List, java.util.List, androidx.collection.MutableScatterSet, java.util.List, androidx.collection.MutableScatterSet, java.util.Set, long)
+08-28 23:17:04.328  2037  2101 W OpenGLRenderer: Incorrectly called buildLayer on View: ShortcutAndWidgetContainer, destroying layer...
+08-28 23:17:04.345  1408  1506 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2016 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:882 com.android.server.wm.WindowState.destroyOrSaveSurface:2100 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4463 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903
+08-28 23:17:04.639  1671  1823 W WearableService: onGetService: Wear is not available on this device.
+08-28 23:17:05.307  1948  3883 I Vision  : Requesting optional module download of ocr.
+08-28 23:17:05.307  1948  3883 I Vision  : Checking for download completion for 211098 -- ocr
+08-28 23:17:05.311  1671  1671 W MessengerIpcClient: Received response for unknown request: 1
+08-28 23:17:08.811  3842  3884 D ProfileInstaller: Installing profile for uz.ganikhodjaev.weather
+08-28 23:17:13.631  3885  3885 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+08-28 23:17:13.631  3885  3885 D AndroidRuntime: CheckJNI is OFF
+08-28 23:17:13.631  3885  3885 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:17:13.638  3885  3885 D ICU     : No timezone override file found: /data/local/tmp/misc/zoneinfo/current/icu/icu_tzdata.dat
+08-28 23:17:13.643  3885  3885 E memtrack: Couldn't load memtrack module (No such file or directory)
+08-28 23:17:13.643  3885  3885 E android.os.Debug: failed to load memtrack module: -2
+08-28 23:17:13.644  3885  3885 I Radio-JNI: register_android_hardware_Radio DONE
+08-28 23:17:13.645  3885  3885 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+08-28 23:17:14.673  3885  3885 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9535; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-59, 1307 - -5, 1370); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text: ☀; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:17:14.673  3885  3885 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9592; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(-36, 1454 - -27, 1496); packageName: uz.ganikhodjaev.weather; className: android.widget.TextView; text:  ; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+08-28 23:17:14.690  3885  3885 W AccessibilityNodeInfoDumper: Fetch time: 18ms
+08-28 23:17:14.690  1408  1506 W WindowManager: Attempted to remove non-existing token: android.os.Binder@66c8c7f
+08-28 23:17:14.694  3885  3885 D AndroidRuntime: Shutting down VM
+08-28 23:17:14.697  3842  3847 I art     : Compiler allocated 11MB to compile void androidx.compose.ui.platform.AndroidComposeViewAccessibilityDelegateCompat.populateAccessibilityNodeInfoProperties(int, androidx.core.view.accessibility.AccessibilityNodeInfoCompat, androidx.compose.ui.semantics.SemanticsNode)
+08-28 23:17:14.736   918   986 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+08-28 23:17:14.736  3898  3898 E cutils-trace: Error opening trace file: No such file or directory (2)
+08-28 23:17:14.736   918   986 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8294400
+08-28 23:17:14.737  3898  3898 D         : HostConnection::get() New Host Connection established 0x724902d4e0, tid 3898
+08-28 23:17:14.738   918   918 E EGL_emulation: tid 918: eglCreateSyncKHR(1989): error 0x3004 (EGL_BAD_ATTRIBUTE)

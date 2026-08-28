@@ -24,6 +24,7 @@ and their overview populations are not claimed to be UZ-only.
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
 | Play overview | The 28-day view shows 21 installations, 14 first launches, and 11 MAU. Ratings and Android vitals are suppressed as insufficient data; there are no unpublished Play changes. |
+| Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
 state live under [`growth/`](../growth/README.md). The first fixed public capture
@@ -47,56 +48,72 @@ search result slices for all five generic queries. A bounded absence means only
   identifiers, or analytics parameters.
 - Android background retry for transient failures, with permanent and no-work
   outcomes kept distinct.
+- A coordinated, uploadable growth identity is assigned: Android phone/tablet
+  `1.1.0 (7)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
+  `1.1.0 (5)`. Every number is newer than the corresponding live store build.
+- The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
+  across phone, shared Android, and Wear OS. Release dependency manifests no
+  longer contain Fragment 1.1.0 as the selected version.
+- Phone and Wear `1.1.0` AABs are upload-signed and Bundletool-validated. The
+  signed phone universal APK passed a clean physical API 25 install, live
+  forecast, and cold start; [artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md)
+  is local only and does not imply a store upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
-  remains API 30. The final APK passes localized quick-city/live/cold-start paths
-  on API 24/36 emulators and physical API 25, plus physical city search. Broader
-  denied-location/offline recovery was exercised on the immediately preceding
-  runtime-identical candidate; the signed full matrix remains required.
+  remains API 30. The post-Fragment debug candidate passes API 24 quick-city/
+  live/cold/cache/recovery, API 36 Arabic RTL quick-city/live, and physical API
+  25 core/share/large-text/TalkBack paths. An earlier candidate passed API 36
+  English denied-location/search/cold-start. The signed phone release separately
+  passes physical API 25 clean/live/cold-start. Physical tablet, widget, and
+  paired Wear OS coverage remain required.
 - Metadata schema v2, an Uzbek Google custom listing, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and a new Play feature graphic. Real EN/RU/UZ Android captures now
   prove Best Time, 10-day/AQI, and offline claims; the uncaptured home-screen
   widget story remains excluded.
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
-  source-backed growth dashboard. The GitHub Pages workflow is manual-only and
-  has not been dispatched.
+  source-backed growth dashboard. GitHub Pages is deployed and configured for
+  `nimbo.uz`; future site/dashboard changes on `master` deploy automatically.
+  Public DNS/TLS remain unavailable while the `.uz` registry has not published
+  the registrar's Cloudflare delegation.
 - Daily public rank capture, weekly console import, KPI/guardrail evaluation,
   crash/provider gates, a provider clarification draft, and outreach materials.
   Scripts do not log in, publish, send, purchase, or alter provider endpoints.
-- An active Codex heartbeat runs the public monitor and evaluator daily at
-  06:15; on Mondays it conditionally imports a valid user-supplied seven-day
-  console CSV. The repository's launchd template remains uninstalled so there
-  is no duplicate scheduler.
+- An active Codex heartbeat temporarily runs hourly while checking domain
+  activation, Pages health, and the existing same-day rank snapshot. After the
+  domain is healthy it returns to daily 06:15 operation; on Mondays it
+  conditionally imports a valid supplied seven-day console CSV. The repository's
+  launchd template remains uninstalled so there is no duplicate scheduler.
 
-These changes remain an unnumbered growth release candidate. A marketing
-version/build number and external TestFlight or Play Internal upload should be
-assigned only when an upload is actually authorized, so the checked-in version
-still matches the currently distributed binaries.
+These changes are the versioned `1.1.0` growth release candidate. Repository
+versioning and locally built artifacts do not imply TestFlight, Play Internal,
+review, approval, rollout, or public availability; each external state must be
+recorded only after direct store evidence.
 
-## Gates before any campaign or external build
+## Gates before public acquisition or production rollout
 
 1. Obtain the iOS 1.0.1 crash report from Xcode Organizer/App Store Connect,
    symbolicate it against the retained build-4 archive and dSYM, reproduce where
    possible, fix it, and demonstrate the crash-free-session guardrail. Absence of
    a downloadable report is not a pass.
-2. Send the prepared Open-Meteo clarification only after explicit approval and
-   record an unambiguous written response. Promotion stays paused while the
+2. Send the prepared Open-Meteo clarification through an authenticated sender
+   and record an unambiguous written response. Promotion stays paused while the
    answer is missing. A paid/customer credential must never be embedded in a
    mobile client.
-3. Complete the remaining physical matrix. A General Mobile API 25 passes
-   Android live/search/cold-start and a signed Release passes bounded physical
-   iPad provider/cache/cold-start paths; both QA installs were removed. The
-   required iPhone is paired but DDI-blocked. Denied location, cached/offline
-   content, share output, review-policy eligibility, background retry, large
-   text, TalkBack/VoiceOver, and watch/widget UI still require the versioned RC.
+3. Complete the remaining physical matrix. The signed phone RC passes General
+   Mobile clean/live/cold-start and was removed after QA; earlier debug candidates
+   add search/share/large-text/TalkBack evidence without claiming exact signed
+   coverage. The prior signed iPad QA install was also removed. Exact signed-phone
+   denied-location/cache/share/accessibility, physical tablet/Wear/widget, and
+   the DDI-blocked iPhone matrix remain.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Only after those gates pass should a versioned build be uploaded to
-TestFlight/Play Internal. Production submission, Pages deployment, provider or
-media email, promotional-content submission, and any spend remain separate
-action-time approvals.
+Signed Android artifacts are locally available. Play Internal and TestFlight
+remain bounded QA channels once the relevant platform artifact and authenticated
+upload path are available. Production rollout and public acquisition remain
+fail-closed until the crash, provider, physical-device, and console guardrails
+pass.
 
 ## Operating cadence
 

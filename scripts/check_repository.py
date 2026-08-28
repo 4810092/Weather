@@ -143,14 +143,24 @@ if f"PRODUCT_BUNDLE_IDENTIFIER: {identity}" not in ios:
 
 android_version = re.search(r"versionCode\s*=\s*([\d_]+)", android)
 wear_version = re.search(r"versionCode\s*=\s*([\d_]+)", wear)
-if android_version is None or int(android_version.group(1).replace("_", "")) <= 5:
-    fail("Android release versionCode must be greater than uploaded version 5")
+android_version_name = re.search(r'versionName\s*=\s*"([^"]+)"', android)
+wear_version_name = re.search(r'versionName\s*=\s*"([^"]+)"', wear)
+ios_marketing_version = re.search(r"MARKETING_VERSION:\s*([^\s]+)", ios)
+ios_build_version = re.search(r"CURRENT_PROJECT_VERSION:\s*([\d_]+)", ios)
+if android_version is None or int(android_version.group(1).replace("_", "")) <= 6:
+    fail("Android release versionCode must be greater than published version 6")
 if wear_version is None:
     fail("Wear OS versionCode is missing")
-if int(wear_version.group(1).replace("_", "")) <= 1_000_006:
-    fail("Wear OS versionCode must be newer than rejected version 1000006")
+if int(wear_version.group(1).replace("_", "")) <= 1_000_007:
+    fail("Wear OS versionCode must be greater than published version 1000007")
 if android_version.group(1).replace("_", "") == wear_version.group(1).replace("_", ""):
     fail("Wear OS versionCode must be unique across Play form factors")
+growth_release_versions = {
+    match.group(1) if match is not None else None
+    for match in (android_version_name, wear_version_name, ios_marketing_version)
+}
+if growth_release_versions != {"1.1.0"}:
+    fail("phone, Wear OS, and Apple targets must use coordinated growth version 1.1.0")
 if "implementation(libs.androidx.core.splashscreen)" not in wear:
     fail("Wear OS must use the AndroidX splash screen compatibility library")
 
@@ -164,9 +174,20 @@ if "androidx.core:core-splashscreen" not in version_catalog:
     fail("AndroidX core splash screen dependency is missing from the version catalog")
 if 'coreSplashscreen = "1.2.0"' not in version_catalog:
     fail("Wear OS must use the reviewed AndroidX Core SplashScreen 1.2.0 release")
+if "androidx.fragment:fragment" not in version_catalog:
+    fail("AndroidX Fragment override is missing from the version catalog")
+if 'fragment = "1.9.0"' not in version_catalog:
+    fail("release graphs must use the reviewed AndroidX Fragment 1.9.0 override")
+for module_name, module_gradle in (
+    ("phone", android),
+    ("shared Android", shared_gradle),
+    ("Wear OS", wear),
+):
+    if "implementation(libs.androidx.fragment)" not in module_gradle:
+        fail(f"{module_name} must override the deprecated transitive Fragment SDK")
 
-if "CURRENT_PROJECT_VERSION: 4" not in ios:
-    fail("iOS release build must remain newer than uploaded build 3")
+if ios_build_version is None or int(ios_build_version.group(1).replace("_", "")) <= 4:
+    fail("Apple release build must be greater than published build 4")
 for relative in (
     "iosApp/Nimbo/Info.plist",
     "iosApp/NimboSimulator/Info.plist",

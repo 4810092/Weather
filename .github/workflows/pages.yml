@@ -1,6 +1,14 @@
 name: GitHub Pages
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/pages.yml"
+      - "growth/dashboard/**"
+      - "scripts/build_site.py"
+      - "site/**"
   workflow_dispatch:
 
 permissions:

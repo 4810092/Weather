@@ -2,8 +2,15 @@
 
 ## Verdict
 
-- **API 36: PASS** on the final APK for clean install, localized English onboarding, quick-city Tashkent selection, live forecast, first-forecast tip, and persisted-location cold start. The immediately preceding runtime-identical candidate also passed denied approximate location and ordinary Bukhara search.
-- **API 24: PASS** on the final APK for clean install, localized English onboarding, quick-city Tashkent selection, live forecast, first-forecast tip, and persisted-location cold start. The immediately preceding candidate also passed location-free Bukhara search, a clean-data offline error, non-cancellable `Change place` recovery, and a successful forecast after connectivity returned.
+- **API 36: PASS** on the post-Fragment-fix runtime candidate for a real
+  `ar_EG/ldrtl` configuration, localized Arabic onboarding, quick-city Tashkent
+  selection, live forecast, and mirrored layout. Earlier English paths passed
+  denied approximate location, ordinary Bukhara search, and cold start.
+- **API 24: PASS** on the post-Fragment-fix runtime candidate for clean install,
+  localized English onboarding, Tashkent live forecast, saved-location cold
+  start, cached weather while offline, and fresh recovery after networking
+  returned. The earlier candidate also passed location-free Bukhara search and
+  a clean-data offline recovery path.
 - The first API 24 pass found that the image's 2017 trust store could not validate the current Open-Meteo chain. The release candidate now adds a domain-scoped Android Network Security Configuration for the three exact Open-Meteo API hosts, using system roots plus checked-in official ISRG Root X1/X2 certificates. Cleartext traffic, user-installed roots, broad subdomains, and a global custom trust manager remain disabled.
 - The independent `HttpsURLConnection` probe and system WebView still fail on that old image, as expected: the compatibility trust is intentionally scoped to Nimbo's declared API hosts and does not modify the device trust store.
 
@@ -13,20 +20,22 @@ No physical device result is claimed by this emulator report.
 
 | Field | Value |
 |---|---|
-| APK | `app/build/outputs/apk/debug/app-debug.apk` |
-| SHA-256 | `7cb445efd4e7fbc9454a451ea6ad80ad84f4381fcececac0198cf20071ba5e10` |
-| Size | `16,502,495` bytes |
-| APK timestamp | `2026-08-28T20:44:23+0500` |
+| APK at capture | `app/build/outputs/apk/debug/app-debug.apk` (mutable build path; the tested bytes are identified by SHA-256 below) |
+| SHA-256 | `4fdb6cea767694e3e43233728851ff358ab26f68a166a6cc1f9d6e4c810ac131` |
+| Size | `16,055,300` bytes |
+| APK timestamp | `2026-08-28T22:54:44+0500` |
 | Package | `uz.ganikhodjaev.weather` |
 | Version | `1.0.2 (6)` |
 | SDK declaration | `minSdk=24`, `targetSdk=36` |
-| Git HEAD | `7fd91b8bfef0` plus the current uncommitted growth-release worktree |
-| Comprehensive predecessor | `b940a41c566347031cd0a47aca43b2a82d28fee931b16840fae7a00ff17cbcc9`; replaced only by quick-city localization/resource plumbing |
+| Git HEAD | `4d9492a34328` plus the current growth-release worktree |
+| Comprehensive predecessor | `7cb445efd4e7fbc9454a451ea6ad80ad84f4381fcececac0198cf20071ba5e10`; replaced at runtime by the explicit AndroidX Fragment 1.9.0 override |
 
-The final APK was installed after the TLS, stale-request, transient-retry, and
-quick-city localization fixes. Pulling the API 24 installed `base.apk` and
-hashing the API 36 installed `base.apk` on-device produced the same SHA-256 as
-the host APK above.
+The APK above includes the TLS, stale-request, transient-retry, quick-city
+localization, and AndroidX Fragment 1.9.0 fixes. The path was later rebuilt as
+`1.1.0 (7)` and no longer points to these tested bytes. Signed `1.1.0` artifact
+identity is documented in `android-release-artifacts-2026-08-28.md`; exact
+signed-install evidence is in the physical-device report. This emulator report
+does not claim signed/R8 coverage.
 
 ## Environments
 
@@ -43,10 +52,13 @@ Both AVDs were started without loading or saving snapshots. The AVDs were not wi
 
 | Scenario | Result | Direct evidence |
 |---|---|---|
-| Install final APK | PASS | `adb install -r` returned `Success`; installed APK hash matched the host APK |
-| Clean first launch | PASS, final hash | Onboarding rendered `Find the best time to go outside.` with localized `Tashkent`, `Samarkand`, and `Namangan`, search, and optional approximate location |
-| Select quick city `Tashkent` | PASS, final hash | Persisted `Tashkent, Uzbekistan`; live current conditions, comparison, first-forecast tip, and timeline rendered; no TLS/CertPath/FATAL line |
-| Persisted-location cold start | PASS, final hash | Explicit force-stop/start reopened live Tashkent; `TotalTime: 153 ms` |
+| Install pre-Fragment APK | PASS, hash `7cb445…` | `adb install -r` returned `Success`; installed APK hash matched the host APK at capture |
+| Clean first launch | PASS, pre-Fragment hash `7cb445…` | Onboarding rendered `Find the best time to go outside.` with localized `Tashkent`, `Samarkand`, and `Namangan`, search, and optional approximate location |
+| Select quick city `Tashkent` | PASS, pre-Fragment hash `7cb445…` | Persisted `Tashkent, Uzbekistan`; live current conditions, comparison, first-forecast tip, and timeline rendered; no TLS/CertPath/FATAL line |
+| Persisted-location cold start | PASS, pre-Fragment hash `7cb445…` | Explicit force-stop/start reopened live Tashkent; `TotalTime: 153 ms` |
+| Post-Fragment clean/live/cold path | PASS, debug hash `4fdb6cea…` | Clean English onboarding selected Tashkent, fetched live Open-Meteo weather, and reopened the saved location after force-stop |
+| Post-Fragment offline cache | PASS, debug hash `4fdb6cea…` | With emulator networking disabled, cold start retained the forecast and rendered `Couldn't refresh. Showing saved weather.` |
+| Post-Fragment network recovery | PASS, debug hash `4fdb6cea…` | Restoring networking and refreshing removed the saved-weather warning; no TLS/CertPath/trust-anchor error appeared |
 | Search `Bukhara` without location permission | PASS, predecessor hash | The first result was `Bukhara, Uzbekistan`; selecting it rendered a live 95°F forecast |
 | Clean-data start without connectivity | PASS / handled, predecessor hash | UI rendered `Weather is out of reach`, `Try again`, and `Change place` without a process crash |
 | Use `Change place` while offline | PASS, predecessor hash | The place picker remained available and showed quick cities, saved Toshkent, search, and optional location |
@@ -56,39 +68,47 @@ Both AVDs were started without loading or saving snapshots. The AVDs were not wi
 Screenshots and UI trees:
 
 - [Initial clean onboarding](evidence/android-emulator-2026-08-28/api24-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-onboarding.xml)
-- [Final localized onboarding](evidence/android-emulator-2026-08-28/api24-final-localized-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-onboarding.xml)
-- [Final localized Tashkent forecast](evidence/android-emulator-2026-08-28/api24-final-localized-tashkent.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-tashkent.xml) · [cold-start UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-cold.xml)
-- [Final live Bukhara forecast](evidence/android-emulator-2026-08-28/api24-final-bukhara.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-bukhara.xml)
-- [Final offline error UI tree](evidence/android-emulator-2026-08-28/api24-final-offline-error.xml)
-- [Final offline Change place UI tree](evidence/android-emulator-2026-08-28/api24-final-offline-picker.xml)
-- [Final recovered Toshkent forecast](evidence/android-emulator-2026-08-28/api24-final-recovered.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-recovered.xml)
+- [Pre-Fragment localized onboarding](evidence/android-emulator-2026-08-28/api24-final-localized-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-onboarding.xml)
+- [Pre-Fragment localized Tashkent forecast](evidence/android-emulator-2026-08-28/api24-final-localized-tashkent.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-tashkent.xml) · [cold-start UI tree](evidence/android-emulator-2026-08-28/api24-final-localized-cold.xml)
+- [Pre-Fragment live Bukhara forecast](evidence/android-emulator-2026-08-28/api24-final-bukhara.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-bukhara.xml)
+- [Pre-Fragment offline error UI tree](evidence/android-emulator-2026-08-28/api24-final-offline-error.xml)
+- [Pre-Fragment offline Change place UI tree](evidence/android-emulator-2026-08-28/api24-final-offline-picker.xml)
+- [Pre-Fragment recovered Toshkent forecast](evidence/android-emulator-2026-08-28/api24-final-recovered.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-final-recovered.xml)
+- [Post-Fragment onboarding](evidence/android-emulator-2026-08-28/api24-fragment-localized-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-fragment-localized-onboarding.xml)
+- [Post-Fragment live forecast](evidence/android-emulator-2026-08-28/api24-fragment-tashkent-live.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-fragment-tashkent-live.xml) · [cold start](evidence/android-emulator-2026-08-28/api24-fragment-saved-location-cold-start.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-fragment-saved-location-cold-start.xml)
+- [Post-Fragment cached offline forecast](evidence/android-emulator-2026-08-28/api24-fragment-offline-cached-cold-start.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-fragment-offline-cached-cold-start.xml)
+- [Post-Fragment recovered network](evidence/android-emulator-2026-08-28/api24-fragment-network-recovered.png) · [UI tree](evidence/android-emulator-2026-08-28/api24-fragment-network-recovered.xml) · [filtered log](evidence/android-emulator-2026-08-28/api24-fragment-smoke-logcat.txt)
 
 ### API 36 (`Nimbo_API_36`)
 
 | Scenario | Result | Direct evidence |
 |---|---|---|
-| Install final APK | PASS | `adb install -r` returned `Success`; installed APK hash matched the host APK |
-| Clean first launch | PASS, final hash | Onboarding rendered the value statement, localized `Tashkent`, `Samarkand`, and `Namangan`, city search, and optional approximate location |
-| Select quick city `Tashkent` | PASS, final hash | Live forecast rendered location, current conditions, yesterday comparison, first-forecast tip, and `24 hours before · now · 24 hours ahead` |
-| Cold start with saved location | PASS, final hash | Explicit force-stop/start reported `LaunchState: COLD`, `TotalTime: 688 ms`; content reopened for Tashkent |
+| Install pre-Fragment APK | PASS, hash `7cb445…` | `adb install -r` returned `Success`; installed APK hash matched the host APK at capture |
+| Clean first launch | PASS, pre-Fragment hash `7cb445…` | Onboarding rendered the value statement, localized `Tashkent`, `Samarkand`, and `Namangan`, city search, and optional approximate location |
+| Select quick city `Tashkent` | PASS, pre-Fragment hash `7cb445…` | Live forecast rendered location, current conditions, yesterday comparison, first-forecast tip, and `24 hours before · now · 24 hours ahead` |
+| Cold start with saved location | PASS, pre-Fragment hash `7cb445…` | Explicit force-stop/start reported `LaunchState: COLD`, `TotalTime: 688 ms`; content reopened for Tashkent |
 | Request location | PASS, predecessor hash | Platform prompt explicitly requested approximate location |
 | Deny location | PASS, predecessor hash | Permission remained `granted=false`; app returned to onboarding with `Location access wasn’t granted. Search for a city instead.` |
 | Search `Bukhara` after denial | PASS, predecessor hash | First visible result was `Bukhara, Uzbekistan`; additional country-disambiguated results were displayed |
 | Select `Bukhara, Uzbekistan` | PASS, predecessor hash | Live forecast rendered location, current conditions, yesterday comparison, first-forecast tip, and timeline |
+| Arabic RTL onboarding | PASS, post-Fragment debug hash `4fdb6cea…` | Activity configuration reported `[ar_EG] ldrtl`; localized onboarding was mirrored and readable |
+| Arabic RTL live forecast | PASS, post-Fragment debug hash `4fdb6cea…` | Location and content aligned to the right, controls mirrored to the left, Arabic strings/semantics rendered, and live 28°C weather loaded |
 | Process stability | PASS within this path | No `Process: uz.ganikhodjaev.weather` crash line was present in logcat |
 
 Screenshots and UI trees:
 
 - [Clean onboarding](evidence/android-emulator-2026-08-28/api36-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-onboarding.xml)
-- [Final localized onboarding](evidence/android-emulator-2026-08-28/api36-final-localized-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-onboarding.xml)
-- [Final localized Tashkent forecast](evidence/android-emulator-2026-08-28/api36-final-localized-tashkent.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-tashkent.xml) · [cold-start UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-cold.xml)
+- [Pre-Fragment localized onboarding](evidence/android-emulator-2026-08-28/api36-final-localized-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-onboarding.xml)
+- [Pre-Fragment localized Tashkent forecast](evidence/android-emulator-2026-08-28/api36-final-localized-tashkent.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-tashkent.xml) · [cold-start UI tree](evidence/android-emulator-2026-08-28/api36-final-localized-cold.xml)
 - [Approximate-location prompt](evidence/android-emulator-2026-08-28/api36-location-permission.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-location-permission.xml)
 - [Denied-location fallback](evidence/android-emulator-2026-08-28/api36-location-denied.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-location-denied.xml)
 - [Bukhara search results](evidence/android-emulator-2026-08-28/api36-search-result.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-search-result.xml)
 - [First forecast](evidence/android-emulator-2026-08-28/api36-weather.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-weather.xml)
 - [Persisted-location cold start](evidence/android-emulator-2026-08-28/api36-cold-start.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-cold-start.xml)
-- [Final-APK Bukhara forecast](evidence/android-emulator-2026-08-28/api36-final-weather.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-weather.xml)
-- [Final-APK persisted cold start UI tree](evidence/android-emulator-2026-08-28/api36-final-cold.xml)
+- [Pre-Fragment Bukhara forecast](evidence/android-emulator-2026-08-28/api36-final-weather.png) · [UI tree](evidence/android-emulator-2026-08-28/api36-final-weather.xml)
+- [Pre-Fragment persisted cold start UI tree](evidence/android-emulator-2026-08-28/api36-final-cold.xml)
+- [Arabic RTL onboarding](evidence/android-emulator-2026-08-28-api36-arabic-rtl-onboarding.png) · [UI tree](evidence/android-emulator-2026-08-28-api36-arabic-rtl-onboarding.xml)
+- [Arabic RTL live forecast](evidence/android-emulator-2026-08-28-api36-arabic-rtl-live.png) · [UI tree](evidence/android-emulator-2026-08-28-api36-arabic-rtl-live.xml)
 
 ## API 24 initial TLS finding and scoped resolution
 
@@ -149,7 +169,7 @@ Open-Meteo leaf
 
 The tested API 24 system CA directory had 148 certificates and **no ISRG root**. The API 36 system CA directory had both `ISRG Root X1` and `ISRG Root X2`. These observations distinguish the initial failure from an invalid or expired Open-Meteo certificate.
 
-The fix is declared in `app/src/main/res/xml/network_security_config.xml` and referenced by the application manifest. It trusts the system store everywhere, and adds the official ISRG Root X1/X2 only for `api.open-meteo.com`, `air-quality-api.open-meteo.com`, and `geocoding-api.open-meteo.com`, with `includeSubdomains=false`. `scripts/check_repository.py` parses that policy and verifies the exact DER certificate fingerprints. The final API 24 app paths above succeeded while the independent system probes remained unchanged.
+The fix is declared in `app/src/main/res/xml/network_security_config.xml` and referenced by the application manifest. It trusts the system store everywhere, and adds the official ISRG Root X1/X2 only for `api.open-meteo.com`, `air-quality-api.open-meteo.com`, and `geocoding-api.open-meteo.com`, with `includeSubdomains=false`. `scripts/check_repository.py` parses that policy and verifies the exact DER certificate fingerprints. The post-Fragment API 24 app paths above succeeded while the independent system probes remained unchanged.
 
 ## Exact core commands
 
@@ -174,7 +194,10 @@ CLASSPATH=/data/local/tmp/nimbo-tls-probe/classes.dex app_process /system/bin Tl
 
 ## Remaining boundary
 
-This is emulator evidence only. Physical API 24/36, tablets, RTL, TalkBack, widget, and Wear OS are not claimed by this report. API 24 live weather and recovery are no longer a blocker on the tested image; representative physical-device QA remains a separate release gate.
+This is emulator evidence only. Physical tablets, widget, and Wear OS are not
+claimed by this report. Android physical API 25, large text, TalkBack, and share
+results are documented separately. API 24 live weather/cache recovery and API
+36 RTL are no longer blockers on the tested images.
 
 Both no-snapshot emulators were shut down after evidence capture. The final
 `adb devices -l` contained only the two pre-existing physical devices; the

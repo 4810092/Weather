@@ -12,8 +12,8 @@ android {
         applicationId = "uz.ganikhodjaev.weather"
         minSdk = 24
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.2"
+        versionCode = 7
+        versionName = "1.1.0"
     }
 
     buildFeatures {
@@ -43,6 +43,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.work.runtime)
     implementation(libs.play.services.wearable)
 }

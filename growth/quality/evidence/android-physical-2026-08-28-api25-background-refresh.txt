@@ -1,0 +1,37 @@
+Nimbo Android background refresh — physical API 25 — 2026-08-28
+
+Device: General Mobile 4G Dual (e76fd426), Android 7.1 / API 25
+Package under test: uz.ganikhodjaev.weather 1.0.2 (6), debug runtime candidate
+WorkSpec: 72f3843a-f293-4287-9658-3d708ab62feb, generation 4
+Delegate: uz.ganikhodjaev.weather.WeatherRefreshWorker
+
+The first manual JobScheduler trigger happened before WorkManager's due time and
+was correctly refused without consuming the work:
+
+08-28 23:04:26.142 WM-WorkerWrapper: Delaying execution ... because it is being executed before schedule.
+08-28 23:04:26.148 WM-WorkerWrapper: Status ... is ENQUEUED; not doing any work and rescheduling for later execution
+
+The naturally due run then started with its constraints met and completed:
+
+08-28 23:25:35.234 WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=72f3843a-f293-4287-9658-3d708ab62feb, generation=4)
+08-28 23:25:35.269 WM-WorkerWrapper: Starting work for androidx.work.impl.workers.ConstraintTrackingWorker
+08-28 23:25:35.283 WM-ConstraintTrkngWrkr: Constraints met for delegate uz.ganikhodjaev.weather.WeatherRefreshWorker
+08-28 23:25:38.281 WM-WorkerWrapper: Worker result SUCCESS for Work [ id=72f3843a-f293-4287-9658-3d708ab62feb, tags={ uz.ganikhodjaev.weather.WeatherRefreshWorker } ]
+
+Cache state before the naturally due run:
+
+weather_hour:   rows=408, max fetched_at_epoch_seconds=1787940139
+daily_forecast: rows=17,  max fetched_at_epoch_seconds=1787940139
+air_quality_hour: rows=120, max fetched_at_epoch_seconds=1787940138
+
+Cache state after SUCCESS:
+
+weather_hour:   rows=408, max fetched_at_epoch_seconds=1787941536
+daily_forecast: rows=17,  max fetched_at_epoch_seconds=1787941536
+air_quality_hour: rows=120, max fetched_at_epoch_seconds=1787941536
+max fetched UTC: 2026-08-28 18:25:36
+
+This proves that the scheduled worker both completed and refreshed all three
+local cache families on the tested physical-device path. The later coordinated
+1.1.0 (7) change affects release identity only; this background run is not
+claimed as a signed-release execution.

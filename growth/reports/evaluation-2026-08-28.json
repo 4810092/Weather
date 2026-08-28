@@ -6,7 +6,7 @@
   "latest_weekly_period_end": null,
   "top10_goal": {
     "as_of_snapshot_present": true,
-    "current_config_fingerprint": "bc3f731674620b3a067743bd3783eab07335f26205d771b573e83129eae45a0a",
+    "current_config_fingerprint": "0e01ef38f36f6f478fd8b61acdcc01c6aabb70043777944868882180728bcf36",
     "current_streak_days": 0,
     "max_streak_days": 0,
     "required_days": 7,
@@ -15,7 +15,7 @@
     "first_achieved_config_fingerprint": null
   },
   "rank_improvement": {
-    "config_fingerprint": "bc3f731674620b3a067743bd3783eab07335f26205d771b573e83129eae45a0a",
+    "config_fingerprint": "0e01ef38f36f6f478fd8b61acdcc01c6aabb70043777944868882180728bcf36",
     "comparable_surfaces": [],
     "max_improvement": null,
     "caveat": "Only exact numeric ranks under the current config fingerprint are compared; bounded absences are not assigned a synthetic rank."
@@ -147,7 +147,7 @@
         "required": "pass",
         "actual": "partial",
         "status": "fail",
-        "reason": "The final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and a physical API 25 General Mobile, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete."
+        "reason": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, exact APK/signing identity, and cleanup. Earlier debug evidence covers share, large text, TalkBack, search, and a successful scheduled cache refresh; exact signed phone accessibility/share/offline coverage plus physical tablet, widget, and Wear OS remain incomplete."
       },
       {
         "id": "ios_physical_smoke",
