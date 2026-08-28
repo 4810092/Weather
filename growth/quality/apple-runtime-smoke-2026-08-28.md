@@ -3,8 +3,8 @@
 ## Verdict
 
 - **iOS 18.1 simulator: PASS** for Release build, clean onboarding render, live Bukhara weather from Open-Meteo, persisted-location cold launch, and absence of a captured fatal/error log line.
-- **Physical iPad mini: PASS (bounded)** for local Release signing, install, launch, real forecast/cache population, Widget extension process startup, cold relaunch, and cleanup. Visual interaction, VoiceOver, permission denial, offline recovery, and widget rendering were not proven on the physical device.
-- **Physical iPhone 14 Pro: BLOCKED** before build/install. The paired device is visible with Developer Mode enabled, but CoreDevice reports `connected (no DDI)` and Xcode reports `The developer disk image could not be mounted on this device.` No app was installed or modified on that iPhone.
+- **Physical iPad mini: PASS (bounded) on 1.0.1 (4)** for local Release signing, install, launch, real forecast/cache population, Widget extension process startup, cold relaunch, and cleanup. On 2026-08-29 the exact archived `1.1.0 (5)` candidate also installed and reported the correct identity, but launch was blocked because the iPad was locked; it was immediately removed and is not counted as a runtime pass.
+- **Physical iPhone 14 Pro: BLOCKED** before build/install. The earlier paired session reached `connected (no DDI)` and Xcode could not mount the developer disk image; on the 2026-08-29 recheck the device was unavailable. No app was installed or modified on that iPhone.
 - **iOS 15 runtime: NOT RUN.** The oldest installed simulator runtime is iOS 18.1 and the connected devices run iOS/iPadOS 26.x. The app binary itself declares `minos 15.0`, but that is build evidence, not runtime evidence.
 
 ## Release artifacts
@@ -44,6 +44,20 @@ Evidence:
 - [iOS 18.1 live Bukhara screenshot](evidence/ios-simulator-2026-08-28-ios18.1-bukhara.png)
 - [iOS 18.1 cold-launch screenshot](evidence/ios-simulator-2026-08-28-ios18.1-cold.png)
 
+## Exact Apple 1.1.0 archive installation recheck — 2026-08-29
+
+The available iPad mini's UDID was present in the archive's development
+provisioning profile. The exact archived app at
+`/Users/khasan/work/ganikhodjaev/.nimbo-release/ios/1.1.0-5/Nimbo.xcarchive/Products/Applications/Nimbo.app`
+installed successfully and the device reported bundle `uz.ganikhodjaev.weather`,
+version `1.1.0`, build `5`. The first launch was denied by SpringBoard with
+reason `Locked`; no Nimbo process started, so provider, cache, widget, cold-start,
+or visual behavior is not claimed. The app was immediately uninstalled and a
+follow-up application listing confirmed it was absent.
+
+The raw CoreDevice JSON contains device identifiers and is retained with mode
+`0600` in the private release evidence directory rather than committed.
+
 Computer accessibility could read the Simulator hierarchy but its native pipe
 closed on every click. The QA fixture was therefore used only to exercise the
 post-selection runtime path. It does not count as a permission-denial or city-
@@ -67,9 +81,10 @@ The exact database observation is preserved in
 
 ## Remaining Apple gates
 
-1. Unlock/connect the iPhone so Xcode can mount its Developer Disk Image, then
-   repeat clean install, denied location, city search, live forecast, cached
-   offline recovery, large text, VoiceOver, share, widget, and cold start.
+1. Unlock/connect the iPhone so Xcode can mount its Developer Disk Image, and
+   rerun the exact `1.1.0 (5)` candidate on an unlocked iPad and iPhone for clean
+   launch, denied location, city search, live forecast, cached offline recovery,
+   large text, VoiceOver, share, widget, and cold start.
 2. Run an actual iOS 15 device/runtime smoke or explicitly raise the declared
    deployment floor after a separate product decision.
 3. Re-run the paired Apple Watch/widget UI smoke for any versioned upload.

@@ -16,7 +16,7 @@
     },
     "ios_physical_smoke": {
       "status": "blocked",
-      "reason": "A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build."
+      "reason": "The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI."
     },
     "open_policy_issues": {
       "status": "pass",

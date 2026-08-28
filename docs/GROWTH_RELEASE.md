@@ -109,8 +109,11 @@ recorded only after direct store evidence.
    Mobile clean/live/cold-start, denied-location/manual-search, share,
    large-text, TalkBack, cached-network recovery, and review-prompt paths and was
    removed after QA. A naturally scheduled background refresh passed on the
-   debug candidate. The prior signed iPad QA install was also removed. Physical
-   tablet/Wear/widget and the DDI-blocked iPhone matrix remain.
+   debug candidate. The exact Apple `1.1.0 (5)` archive installed on the iPad
+   but could not launch while the device was locked and was removed; the older
+   bounded `1.0.1 (4)` iPad runtime pass remains separately scoped. Physical
+   Android tablet/Wear/widget and the unavailable, previously DDI-blocked iPhone
+   matrix remain.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.

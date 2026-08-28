@@ -4,7 +4,7 @@
     "version": 1,
     "surface": "dashboard",
     "title": "Nimbo UZ Growth Control Room",
-    "generatedAt": "2026-08-28T19:19:37Z",
+    "generatedAt": "2026-08-28T19:26:17Z",
     "cards": [
       {
         "id": "top10_streak",
@@ -139,7 +139,7 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-28T19:19:37Z",
+    "generatedAt": "2026-08-28T19:26:17Z",
     "status": "partial",
     "datasets": {
       "headline_metrics": [
@@ -189,7 +189,7 @@
         {"gate": "iOS crash gate", "decision": "BLOCKED · obtain report, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.", "next_action": "Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke"},
         {"gate": "Open-Meteo promotion clearance", "decision": "PENDING · send clarification and record the answer", "status": "pending", "evidence": "Clarification email is drafted but has not been sent or answered", "next_action": "Send through an authenticated sender and record an unambiguous written response"},
         {"gate": "Android device smoke", "decision": "PARTIAL · signed API 25 phone matrix passes; tablet/widget/Wear remain", "status": "partial", "evidence": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.", "next_action": "Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact"},
-        {"gate": "iOS physical smoke", "decision": "BLOCKED · iPad bounded pass; mount iPhone DDI", "status": "blocked", "evidence": "A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build.", "next_action": "Unlock and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix"}
+        {"gate": "iOS physical smoke", "decision": "BLOCKED · unlock iPad; reconnect iPhone and mount DDI", "status": "blocked", "evidence": "The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI.", "next_action": "Unlock the iPad and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix"}
       ]
     },
     "accessIssues": [
@@ -248,7 +248,7 @@
         "engine": "postgresql",
         "sql": "SELECT * FROM (VALUES ('2026-08-29',0,7,FALSE,TRUE)) AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)",
         "description": "Loads the evaluated Top-10 streak state for the latest UZ rank day.",
-        "executed_at": "2026-08-28T19:11:58Z",
+        "executed_at": "2026-08-28T19:26:17Z",
         "tables_used": ["inline evaluation values backed by growth/reports/evaluation-2026-08-29.json"],
         "filters": ["Current comparable config fingerprint", "Consecutive complete required goal days through 2026-08-29"],
         "metric_definitions": ["Current streak counts consecutive complete days satisfying both category definitions and the Google generic-query quorum", "A failed required goal day resets the current streak to zero"]
@@ -260,9 +260,9 @@
       "path": "growth/dashboard/gate_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.','Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Clarification email is drafted but has not been sent or answered','Send through an authenticated sender and record an unambiguous written response'),('Android device smoke','partial','Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.','Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact'),('iOS physical smoke','blocked','A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build.','Unlock and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix')) AS gates(gate,status,evidence,next_action)",
+        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.','Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Clarification email is drafted but has not been sent or answered','Send through an authenticated sender and record an unambiguous written response'),('Android device smoke','partial','Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.','Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact'),('iOS physical smoke','blocked','The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI.','Unlock the iPad and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix')) AS gates(gate,status,evidence,next_action)",
         "description": "Loads the fail-closed scale gates and their next evidence-producing action.",
-        "executed_at": "2026-08-28T19:19:37Z",
+        "executed_at": "2026-08-28T19:26:17Z",
         "tables_used": ["inline gate values backed by growth/quality/gates.json"],
         "filters": ["Critical organic-acquisition scale gates"],
         "metric_definitions": ["Only explicit pass permits scaling", "Blocked and pending are not pass"]
