@@ -12,6 +12,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -39,6 +41,204 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def generated_output_paths(manifest: dict) -> list[str]:
+    """Return the complete, deterministic output set declared by the renderer."""
+    paths: list[str] = []
+    platforms = manifest["platforms"]
+    for platform in ("app-store", "google-play"):
+        output_dir = Path(platforms[platform]["output_dir"])
+        for locale in manifest["locales"]:
+            for story in manifest["stories"]:
+                paths.append((output_dir / locale / story["filename"]).as_posix())
+
+    google_platform = platforms["google-play"]
+    paths.extend(
+        feature["output"] for feature in google_platform["feature_graphics"].values()
+    )
+    paths.append(google_platform["legacy_feature_graphic"])
+    return paths
+
+
+def generated_source_paths(manifest: dict) -> list[str]:
+    """Return every checked-in image consumed by the deterministic renderer."""
+    paths = {manifest["platforms"]["google-play"]["feature_graphic_source"]}
+    for platform in ("app-store", "google-play"):
+        platform_data = manifest["platforms"][platform]
+        for locale_data in manifest["locales"].values():
+            paths.add(locale_data["watch_sources"][platform])
+            for story in manifest["stories"]:
+                if platform == "google-play" and story.get("google_source"):
+                    relative = story["google_source"]
+                elif platform == "google-play":
+                    relative = platform_data["phone_source"].format(
+                        source_locale=locale_data["source_locale"],
+                        source_name=story["google_source_name"],
+                    )
+                else:
+                    relative = platform_data["phone_source"].format(
+                        source_locale=locale_data["source_locale"]
+                    )
+                paths.add(relative)
+    return sorted(paths)
+
+
+def _unsafe_relative_path(value: object) -> bool:
+    if not isinstance(value, str) or not value:
+        return True
+    path = Path(value)
+    return path.is_absolute() or ".." in path.parts
+
+
+def validate_source_sha256_contract(
+    manifest: dict,
+    *,
+    root: Path = ROOT,
+    verify_files: bool = True,
+) -> list[str]:
+    """Validate the exact renderer-input set and its immutable byte hashes."""
+    try:
+        expected_paths = generated_source_paths(manifest)
+    except (KeyError, TypeError, ValueError) as error:
+        return [f"generated source set is invalid: {error}"]
+
+    failures: list[str] = []
+    unsafe = sorted(path for path in expected_paths if _unsafe_relative_path(path))
+    if unsafe:
+        failures.append(
+            "creative source paths must stay inside the repository: "
+            + ", ".join(unsafe)
+        )
+
+    contract = manifest.get("source_sha256")
+    if not isinstance(contract, dict):
+        return failures + ["creative manifest source_sha256 must be an object"]
+
+    expected_set = set(expected_paths)
+    contract_set = set(contract)
+    missing = sorted(expected_set - contract_set)
+    unexpected = sorted(contract_set - expected_set)
+    if missing:
+        failures.append(
+            "creative source SHA-256 contract is missing: " + ", ".join(missing)
+        )
+    if unexpected:
+        failures.append(
+            "creative source SHA-256 contract has unexpected paths: "
+            + ", ".join(unexpected)
+        )
+
+    for relative in sorted(expected_set & contract_set):
+        expected_hash = contract[relative]
+        if (
+            not isinstance(expected_hash, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_hash) is None
+        ):
+            failures.append(f"{relative}: invalid expected source SHA-256")
+            continue
+        if not verify_files or _unsafe_relative_path(relative):
+            continue
+        path = root / relative
+        if not path.is_file():
+            failures.append(f"missing creative source {relative}")
+            continue
+        actual_hash = sha256(path)
+        if actual_hash != expected_hash:
+            failures.append(
+                f"{relative}: source SHA-256 drift; expected {expected_hash}, "
+                f"found {actual_hash}"
+            )
+    return failures
+
+
+def validate_output_sha256_contract(
+    manifest: dict,
+    *,
+    root: Path = ROOT,
+    built_outputs: list[Path] | None = None,
+    verify_files: bool = True,
+) -> list[str]:
+    """Validate the exact generated path set and byte hashes, failing closed."""
+    failures: list[str] = []
+    try:
+        expected_paths = generated_output_paths(manifest)
+    except (KeyError, TypeError, ValueError) as error:
+        return [f"generated output set is invalid: {error}"]
+
+    expected_set = set(expected_paths)
+    if len(expected_set) != len(expected_paths):
+        failures.append("generated output set contains duplicate paths")
+    unsafe = sorted(path for path in expected_paths if _unsafe_relative_path(path))
+    if unsafe:
+        failures.append(
+            "creative output paths must stay inside the repository: "
+            + ", ".join(unsafe)
+        )
+
+    contract = manifest.get("output_sha256")
+    if not isinstance(contract, dict):
+        return failures + ["creative manifest output_sha256 must be an object"]
+
+    contract_set = set(contract)
+    missing = sorted(expected_set - contract_set)
+    unexpected = sorted(contract_set - expected_set)
+    if missing:
+        failures.append(
+            "creative output SHA-256 contract is missing: " + ", ".join(missing)
+        )
+    if unexpected:
+        failures.append(
+            "creative output SHA-256 contract has unexpected paths: "
+            + ", ".join(unexpected)
+        )
+
+    if built_outputs is not None:
+        built_relative: list[str] = []
+        for path in built_outputs:
+            try:
+                built_relative.append(
+                    path.resolve().relative_to(root.resolve()).as_posix()
+                )
+            except ValueError:
+                failures.append(
+                    f"renderer produced an output outside the repository: {path}"
+                )
+        built_set = set(built_relative)
+        if len(built_set) != len(built_relative):
+            failures.append("renderer produced duplicate output paths")
+        missing_built = sorted(expected_set - built_set)
+        unexpected_built = sorted(built_set - expected_set)
+        if missing_built:
+            failures.append("renderer did not build: " + ", ".join(missing_built))
+        if unexpected_built:
+            failures.append(
+                "renderer built unexpected outputs: " + ", ".join(unexpected_built)
+            )
+
+    for relative in sorted(expected_set & contract_set):
+        expected_hash = contract[relative]
+        if (
+            not isinstance(expected_hash, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_hash) is None
+        ):
+            failures.append(f"{relative}: invalid expected SHA-256")
+            continue
+        if not verify_files:
+            continue
+        if _unsafe_relative_path(relative):
+            continue
+        path = root / relative
+        if not path.is_file():
+            failures.append(f"missing generated output {relative}")
+            continue
+        actual_hash = sha256(path)
+        if actual_hash != expected_hash:
+            failures.append(
+                f"{relative}: SHA-256 drift; expected {expected_hash}, "
+                f"found {actual_hash}"
+            )
+    return failures
 
 
 def resolve_font(font_spec: dict[str, str]) -> Path:
@@ -286,7 +486,7 @@ def render_creative(
     )
 
     if story.get("watch_overlay"):
-        watch_path = ROOT / platform_data["watch_source"]
+        watch_path = ROOT / locale_data["watch_sources"][platform]
         if not watch_path.is_file():
             raise FileNotFoundError(watch_path)
         watch = Image.open(watch_path).convert("RGB")
@@ -309,8 +509,13 @@ def render_creative(
     return output
 
 
-def render_feature_graphic(manifest: dict, regular_font: Path, bold_font: Path) -> Path:
-    output = ROOT / manifest["platforms"]["google-play"]["feature_graphic"]
+def render_feature_graphic(
+    feature: dict[str, str],
+    icon_source: Path,
+    regular_font: Path,
+    bold_font: Path,
+) -> Path:
+    output = ROOT / feature["output"]
     size = (1024, 500)
     canvas = gradient(size, (4, 18, 47), (10, 48, 77))
     draw = ImageDraw.Draw(canvas)
@@ -324,7 +529,7 @@ def render_feature_graphic(manifest: dict, regular_font: Path, bold_font: Path) 
             width=4,
         )
 
-    master = Image.open(ROOT / "branding/source/nimbo-icon-master.png").convert("RGB")
+    master = Image.open(icon_source).convert("RGB")
     mark = ImageOps.fit(master, (360, 360), method=Image.Resampling.LANCZOS)
     paste_rounded(canvas, mark, (650, 70, 1010, 430), radius=54, shadow_blur=18)
 
@@ -332,10 +537,10 @@ def render_feature_graphic(manifest: dict, regular_font: Path, bold_font: Path) 
     subtitle_font = ImageFont.truetype(bold_font, size=38)
     body_font = ImageFont.truetype(regular_font, size=28)
     draw.text((62, 94), "NIMBO", font=title_font, fill=(247, 251, 255))
-    draw.text((64, 201), "Ob-havo va prognoz", font=subtitle_font, fill=(210, 232, 249))
+    draw.text((64, 201), feature["subtitle"], font=subtitle_font, fill=(210, 232, 249))
     draw.multiline_text(
         (65, 276),
-        "Tashqariga chiqish uchun\neng yaxshi vaqtni toping",
+        feature["body"],
         font=body_font,
         fill=(176, 208, 232),
         spacing=9,
@@ -360,6 +565,18 @@ def main() -> int:
         args.manifest if args.manifest.is_absolute() else ROOT / args.manifest
     )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    source_failures = validate_source_sha256_contract(manifest)
+    if source_failures:
+        print("Creative source contract validation failed:", file=sys.stderr)
+        for failure in source_failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 2
+    contract_failures = validate_output_sha256_contract(manifest, verify_files=False)
+    if contract_failures:
+        print("Creative output contract validation failed:", file=sys.stderr)
+        for failure in contract_failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 2
     expected_pillow = manifest["rendering"]["pillow_version"]
     if __version__ != expected_pillow:
         print(
@@ -385,7 +602,24 @@ def main() -> int:
                         bold_font,
                     )
                 )
-    outputs.append(render_feature_graphic(manifest, regular_font, bold_font))
+    feature_graphics = manifest["platforms"]["google-play"]["feature_graphics"]
+    icon_source = ROOT / manifest["platforms"]["google-play"]["feature_graphic_source"]
+    for feature in feature_graphics.values():
+        outputs.append(
+            render_feature_graphic(feature, icon_source, regular_font, bold_font)
+        )
+    legacy = ROOT / manifest["platforms"]["google-play"]["legacy_feature_graphic"]
+    legacy_locale = manifest["platforms"]["google-play"][
+        "legacy_feature_graphic_locale"
+    ]
+    shutil.copy2(ROOT / feature_graphics[legacy_locale]["output"], legacy)
+    outputs.append(legacy)
+    contract_failures = validate_output_sha256_contract(manifest, built_outputs=outputs)
+    if contract_failures:
+        print("Creative output contract validation failed:", file=sys.stderr)
+        for failure in contract_failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 2
     print(f"Built {len(outputs)} deterministic store assets from production captures.")
     return 0
 

@@ -15,6 +15,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{{CANONICAL_URL}}">
   {{ALTERNATES}}
+  {{STRUCTURED_DATA}}
   <link rel="icon" href="{{ASSET_PREFIX}}/nimbo-icon.png" sizes="any">
   <link rel="stylesheet" href="{{ASSET_PREFIX}}/site.css">
   <script defer src="{{ASSET_PREFIX}}/site.js"></script>
@@ -28,9 +29,9 @@
         <span>Nimbo</span>
       </a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
-        <span></span><span></span><span></span><span class="sr-only">Menu</span>
+        <span></span><span></span><span></span><span class="sr-only">{{MENU_LABEL}}</span>
       </button>
-      <nav id="primary-nav" class="primary-nav" aria-label="Primary" data-nav>
+      <nav id="primary-nav" class="primary-nav" aria-label="{{PRIMARY_NAV_LABEL}}" data-nav>
         {{NAV_LINKS}}
         <details class="language-menu">
           <summary>{{LANGUAGE_LABEL}}</summary>
@@ -51,7 +52,7 @@
         </a>
         <p>{{WEATHER_DATA}}</p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">{{FOOTER_LINKS}}</nav>
+      <nav class="footer-nav" aria-label="{{FOOTER_NAV_LABEL}}">{{FOOTER_LINKS}}</nav>
       <p class="footer-note">{{NO_TRACKING}}</p>
     </div>
   </footer>

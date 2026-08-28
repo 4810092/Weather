@@ -6,9 +6,26 @@ on:
       - master
     paths:
       - ".github/workflows/pages.yml"
+      - "branding/store/nimbo-app-icon-1024.png"
+      - "growth/baseline/**"
+      - "growth/content/**"
       - "growth/dashboard/**"
+      - "growth/data/public-rank/**"
+      - "growth/kpi-framework.json"
+      - "growth/quality/gates.json"
+      - "growth/reports/**"
       - "scripts/build_site.py"
+      - "scripts/check_dashboard_report.py"
+      - "scripts/check_store_assets.py"
+      - "scripts/check_store_metadata.py"
+      - "scripts/growth/tests/test_site_articles.py"
       - "site/**"
+      - "store/assets/google-play/**"
+      - "store/creative-sets/growth-2026-08.json"
+      - "store/metadata.json"
+      - "store/metadata.schema.json"
+      - "store/screenshots/**"
+      - "store/upload-manifest-1.1.0.json"
   workflow_dispatch:
 
 permissions:
@@ -25,9 +42,17 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install site validation dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow==12.2.0
       - uses: actions/configure-pages@v5
       - name: Build and validate localized site
         run: |
+          python3 -m unittest discover -s scripts/growth/tests -p 'test_site_articles.py'
+          python3 scripts/check_store_metadata.py
+          python3 scripts/check_store_assets.py
           python3 scripts/check_dashboard_report.py
           python3 scripts/build_site.py
       - uses: actions/upload-pages-artifact@v4

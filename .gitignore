@@ -18,6 +18,10 @@ build/
 .cxx
 local.properties
 
+# Python local caches
+__pycache__/
+*.py[cod]
+
 # Apple/Xcode local state and generated build products
 DerivedData/
 *.xcuserstate

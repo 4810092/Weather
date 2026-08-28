@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-08-29",
+  "status": "draft-blocked",
+  "campaign": {
+    "market": "UZ",
+    "working_theme": "September heat, UV, autumn temperature changes, and AQI context",
+    "locales": [
+      "uz",
+      "ru",
+      "en"
+    ],
+    "external_actions_performed": []
+  },
+  "scope": {
+    "copy_and_checklists": "prepared-locally",
+    "site_publication": "not-performed",
+    "store_assets": "not-created-by-scope",
+    "video": "not-created-by-scope",
+    "store_console_changes": "not-performed"
+  },
+  "deliverables": [
+    {
+      "path": "growth/featuring/apple-2026-09.md",
+      "platform": "apple",
+      "status": "draft-blocked"
+    },
+    {
+      "path": "growth/featuring/google-2026-09.md",
+      "platform": "google_play",
+      "status": "draft-blocked"
+    },
+    {
+      "path": "growth/content/calendar.csv",
+      "platform": "owned_site",
+      "status": "draft-blocked"
+    },
+    {
+      "path": "growth/content/articles.json",
+      "platform": "owned_site",
+      "status": "draft-blocked"
+    }
+  ],
+  "verified_claims": [
+    {
+      "id": "quick_city_onboarding",
+      "claim": "The 1.1.0 candidate offers Tashkent plus six other major Uzbekistan cities on first run and ordinary city search without mandatory location permission.",
+      "evidence": [
+        "docs/GROWTH_RELEASE.md",
+        "shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/onboarding/OnboardingState.kt",
+        "shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/ui/WeatherScreen.kt"
+      ]
+    },
+    {
+      "id": "weather_context",
+      "claim": "Nimbo presents yesterday/current/future context, a deterministic Best Time Outside recommendation, 10-day UV values, and air-quality context.",
+      "evidence": [
+        "docs/INSIGHT_ENGINE.md",
+        "shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/ui/WeatherScreen.kt"
+      ]
+    },
+    {
+      "id": "privacy_model",
+      "claim": "The reviewed product has no account, advertising, subscription, analytics SDK, or background-location permission; approximate location is optional.",
+      "evidence": [
+        "docs/PRIVACY.md",
+        "growth/outreach/press-facts.md"
+      ]
+    },
+    {
+      "id": "candidate_artifact_boundary",
+      "claim": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are current source identities but have no current upload/distribution-signed artifact or matching release-certificate physical-QA evidence. Phone vc8 has only a bounded API 25 debug/source smoke. Signed phone 1.1.0 (7) and Apple 1.1.0 (5) are historical candidates only, and none is uploaded or public.",
+      "evidence": [
+        "growth/quality/release-artifact-source-sync-2026-08-29.md",
+        "store/upload-manifest-1.1.0.json",
+        "growth/quality/internal-track-upload-2026-08-28.md"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "open_meteo_promotion_clearance",
+      "blocker_type": "operational_gate",
+      "status": "pending",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "ios_crash_gate",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "android_physical_smoke",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "ios_physical_smoke",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "release_artifact_source_sync",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "deliverable.candidate_store_upload",
+      "blocker_type": "deliverable",
+      "status": "blocked",
+      "evidence": "growth/quality/internal-track-upload-2026-08-28.md"
+    },
+    {
+      "id": "domain_activation",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "deliverable.google_promotional_images",
+      "blocker_type": "deliverable",
+      "status": "missing",
+      "evidence": "growth/featuring/google-2026-09.md"
+    }
+  ],
+  "prohibited_claims": [
+    "guaranteed Top-10 or featuring",
+    "number one, most accurate, or official weather",
+    "medical or emergency-safety guidance",
+    "unverified rankings, ratings, reviews, installs, retention, or crash-free performance",
+    "uploaded, submitted, approved, or public 1.1.0 release"
+  ]
+}

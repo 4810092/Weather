@@ -1,8 +1,18 @@
-# iOS crash gate — 2026-08-28
+# iOS crash gate — 2026-08-28, refreshed 2026-08-29
 
 Status: **BLOCKED**. Do not scale public acquisition or send outreach while this gate is blocked.
 
 ## Evidence reviewed
+
+- A fresh authenticated App Store Connect UI review on `2026-08-29` confirmed
+  the same single production crash on `2026-08-25` for app version `1.0.1`.
+  Grouping the crash metric by device type and platform version exposed only
+  suppressed `-` values, so neither dimension can be used as incident evidence.
+- Xcode 26.6 Organizer was opened locally for the Nimbo product. Its Crashes
+  view reports `Error Downloading Crashes List — A developer account is
+  required for downloading crashes list.` The login Keychain is currently
+  locked, and no account/authentication change was attempted. This is an access
+  blocker, not evidence that the crash is absent.
 
 - App Store Connect Analytics' own read-only time-series request was reproduced
   with `adamId=6799886897`, measure `crashes`, daily frequency, and exact app-

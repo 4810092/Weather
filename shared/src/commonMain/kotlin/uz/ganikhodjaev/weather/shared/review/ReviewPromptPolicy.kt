@@ -10,13 +10,24 @@ internal data class ReviewPromptPolicyState(
     val successfulForecastCount: Int = 0,
     val successfulLocalDays: Set<String> = emptySet(),
     val lastCountedForecastId: Long? = null,
-    val successfullyRequestedVersion: String? = null
+    val successfullyRequestedVersions: List<String> = emptyList()
 )
 
 internal data class ReviewPromptPolicyDecision(
     val state: ReviewPromptPolicyState,
     val shouldRequestReview: Boolean
 )
+
+internal interface ReviewPromptPolicyStateStore {
+    fun read(): ReviewPromptPolicyState
+
+    fun write(state: ReviewPromptPolicyState)
+
+    fun persistRequestSuccess(state: ReviewPromptPolicyState): Boolean {
+        write(state)
+        return true
+    }
+}
 
 internal object ReviewPromptPolicy {
     fun recordSuccessfulForecast(
@@ -33,7 +44,7 @@ internal object ReviewPromptPolicy {
         } else {
             ReviewPromptPolicyState(
                 trackedVersion = appVersion,
-                successfullyRequestedVersion = currentState.successfullyRequestedVersion
+                successfullyRequestedVersions = currentState.successfullyRequestedVersions
             )
         }
         val updatedState = if (versionState.lastCountedForecastId == forecastId) {
@@ -55,7 +66,7 @@ internal object ReviewPromptPolicy {
             shouldRequestReview = updatedState.successfulForecastCount >=
                 MINIMUM_SUCCESSFUL_FORECASTS &&
                 updatedState.successfulLocalDays.size >= MINIMUM_DISTINCT_DAYS &&
-                updatedState.successfullyRequestedVersion != appVersion
+                appVersion !in updatedState.successfullyRequestedVersions
         )
     }
 
@@ -63,8 +74,37 @@ internal object ReviewPromptPolicy {
         currentState: ReviewPromptPolicyState,
         appVersion: String
     ): ReviewPromptPolicyState = currentState.copy(
-        successfullyRequestedVersion = appVersion
+        successfullyRequestedVersions = normalizeSuccessfullyRequestedVersions(
+            currentState.successfullyRequestedVersions + appVersion
+        )
     )
+}
+
+internal fun normalizeSuccessfullyRequestedVersions(
+    storedVersions: Iterable<String>,
+    legacyVersion: String? = null
+): List<String> {
+    val ordered = mutableListOf<String>()
+    fun append(version: String?) {
+        if (version.isNullOrBlank()) return
+        ordered.remove(version)
+        ordered += version
+    }
+
+    storedVersions.forEach(::append)
+    append(legacyVersion)
+    return ordered
+}
+
+internal fun persistSuccessfulReviewRequest(
+    stateStore: ReviewPromptPolicyStateStore,
+    appVersion: String
+): Boolean {
+    val updatedState = ReviewPromptPolicy.markRequestSucceeded(
+        currentState = stateStore.read(),
+        appVersion = appVersion
+    )
+    return stateStore.persistRequestSuccess(updatedState)
 }
 
 internal fun currentLocalCalendarDay(): String = Clock.System.now()

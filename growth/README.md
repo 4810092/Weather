@@ -1,6 +1,13 @@
 # Nimbo growth operations
 
-Current verdict (2026-08-28): **HOLD ACQUISITION**. The reproducible public monitor and first snapshot are in place. Android API 24/36 emulator, physical Android API 25, iOS 18.1 simulator, and bounded physical iPad paths pass, but the full signed device matrix does not. The iOS crash report, provider promotion clearance, required iPhone run, and complete console exports are still missing. A build, a public page, or partial device evidence does not close those gates.
+Current verdict (2026-08-29): **HOLD ACQUISITION**. The reproducible public
+monitor and daily snapshots are in place, but the required rank surfaces fail
+and the Top-10 streak is zero. Current phone vc8 and Apple build 6 have only
+unsigned local builds, with no matching hash or physical QA; signed phone vc7
+and Apple build 5 are historical evidence only. The iOS crash diagnostic,
+provider promotion clearance, complete device matrix, registrar activation for
+`nimbo.uz`, and reconciled console exports are still missing. A build, a Pages
+deployment, or historical device evidence does not close those gates.
 
 ## Evidence model
 
@@ -29,10 +36,11 @@ python3 scripts/growth/evaluate_growth.py --replace
 
 The first command writes `growth/data/public-rank/YYYY-MM-DD.json` and returns non-zero when a required source failed; a complete day that misses the rank targets is a valid snapshot and returns zero. It refuses to silently overwrite a day unless `--replace` is provided. The second command writes the current decision record in `growth/reports/`.
 
-The Codex task has an active local heartbeat named `Nimbo UZ rank monitor` at
-06:15 each day. It runs the two commands above; on Mondays it also imports a
-new user-supplied, valid seven-day console CSV when one is present. It never
-logs in or bypasses 2FA. The optional macOS launchd template in
+The Codex task has an active local heartbeat named `Nimbo UZ rank monitor` on a
+temporary hourly cadence while domain activation and release-access blockers
+are unresolved. It refreshes the public rank/evaluation state when needed; on
+Mondays it also imports a new user-supplied, valid seven-day console CSV when
+one is present. It never bypasses authentication or 2FA. The optional macOS launchd template in
 [automation](automation) remains uninstalled, avoiding a duplicate machine
 scheduler.
 

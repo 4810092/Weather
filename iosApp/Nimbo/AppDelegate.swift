@@ -3,7 +3,6 @@ import UIKit
 import NimboShared
 import WidgetKit
 @preconcurrency import WatchConnectivity
-import StoreKit
 
 private let nimboBackgroundColor = UIColor { traits in
     if traits.userInterfaceStyle == .dark {
@@ -15,18 +14,47 @@ private let nimboBackgroundColor = UIColor { traits in
 private let nimboThemePreferenceKey = "theme_preference"
 private let weatherRefreshTaskIdentifier = "uz.ganikhodjaev.weather.refresh"
 private let nimboAppGroup = "group.uz.ganikhodjaev.weather"
-private let reviewedVersionKey = "reviewed_version"
 
 private final class BackgroundRefreshState: @unchecked Sendable {
     private let lock = NSLock()
-    private var expired = false
+    private var completed = false
+    private var refreshHandle: BackgroundRefreshHandle?
 
-    func markExpired() {
-        lock.withLock { expired = true }
+    func install(_ handle: BackgroundRefreshHandle) {
+        let shouldCancel = lock.withLock {
+            guard !completed else { return true }
+            refreshHandle = handle
+            return false
+        }
+        if shouldCancel {
+            handle.cancel()
+        }
     }
 
-    func isExpired() -> Bool {
-        lock.withLock { expired }
+    func expire(task: BGAppRefreshTask) {
+        let result: (shouldComplete: Bool, handle: BackgroundRefreshHandle?) = lock.withLock {
+            guard !completed else { return (false, nil) }
+            completed = true
+            let handle = refreshHandle
+            refreshHandle = nil
+            return (true, handle)
+        }
+        result.handle?.cancel()
+        if result.shouldComplete {
+            task.setTaskCompleted(success: false)
+        }
+    }
+
+    func finish(task: BGAppRefreshTask, success: Bool) {
+        let shouldComplete = lock.withLock {
+            guard !completed else { return false }
+            completed = true
+            refreshHandle = nil
+            return true
+        }
+        if shouldComplete {
+            task.setTaskCompleted(success: success)
+        }
     }
 }
 
@@ -46,7 +74,6 @@ private func storedInterfaceStyle() -> UIUserInterfaceStyle {
 final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var window: UIWindow?
     private var weatherObserver: NSObjectProtocol?
-    private var reviewObserver: NSObjectProtocol?
     private let backgroundUpdater = BackgroundWeatherUpdater(platformContext: PlatformContext())
 
     func application(
@@ -77,24 +104,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 self?.weatherDidUpdate()
             }
         }
-        reviewObserver = NotificationCenter.default.addObserver(
-            forName: Notification.Name("NimboReviewMilestone"),
-            object: nil,
-            queue: .main
-        ) { _ in
-            Task { @MainActor in
-                guard let scene = UIApplication.shared.connectedScenes
-                    .compactMap({ $0 as? UIWindowScene })
-                    .first(where: { $0.activationState == .foregroundActive }),
-                    let version = Bundle.main.object(
-                        forInfoDictionaryKey: "CFBundleShortVersionString"
-                    ) as? String else {
-                    return
-                }
-                SKStoreReviewController.requestReview(in: scene)
-                UserDefaults(suiteName: nimboAppGroup)?.set(version, forKey: reviewedVersionKey)
-            }
-        }
         let window = UIWindow(frame: UIScreen.main.bounds)
         let rootViewController = MainViewControllerKt.MainViewController()
         let interfaceStyle = storedInterfaceStyle()
@@ -121,10 +130,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     private func handleBackgroundRefresh(_ task: BGAppRefreshTask) {
         scheduleBackgroundRefresh()
         let state = BackgroundRefreshState()
-        task.expirationHandler = { state.markExpired() }
-        backgroundUpdater.refresh { result, _ in
-            task.setTaskCompleted(success: !state.isExpired() && (result?.boolValue ?? false))
+        task.expirationHandler = { state.expire(task: task) }
+        let handle = backgroundUpdater.startRefresh { result in
+            state.finish(task: task, success: result.boolValue)
         }
+        state.install(handle)
     }
 
     private func weatherDidUpdate() {

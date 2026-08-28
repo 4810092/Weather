@@ -5,18 +5,25 @@ files contain the bounded reproducible snapshot queries embedded by the
 artifact. `report.html` is generated from that artifact with the packaged Data
 Analytics portable-artifact renderer; it must not be edited by hand.
 
-The snapshot is intentionally `partial`. On 2026-08-29 the full monitored rank
-capture is incomplete because the auxiliary Apple `Toshkent ob-havo` search
-returned only one unique app, below the 10-app completeness floor. All required
-goal surfaces are complete, so the day is correctly recorded as a failed goal
-day with bounded absences and a zero-day streak. Missing raw store exports and
-the missing symbolicated iOS crash report remain explicit access issues rather
-than silently becoming zeroes or passes.
+The dashboard is intentionally `blocked`. On 2026-08-29 the auxiliary Apple
+`Toshkent ob-havo` search returned only one unique app, below the 10-app
+completeness floor, while all required goal surfaces were complete and failed;
+the streak is therefore correctly zero. Current phone vc8 and Apple build 6
+lack signed artifacts and physical QA, the iOS crash lacks a symbolicated
+report, and `nimbo.uz` is still waiting for registrar activation. Missing
+evidence remains explicit rather than silently becoming a zero or pass.
+The dashboard also exposes every critical weekly metric guardrail; all eight
+are currently `unknown`, independently blocking scale. The point-in-time
+`store_policy_console_clearance` operational gate is intentionally distinct
+from the weekly `open_policy_issues` metric.
 
 Refresh order:
 
 1. Run the public rank monitor and import the latest store exports.
 2. Reconcile every numerator, denominator, window, country, device, and version.
 3. Update the bounded SQL and artifact snapshot.
-4. Rebuild `report.html` with the Data Analytics delivery script.
-5. Run the repository checks before a dashboard is published.
+4. Run `python3 scripts/check_dashboard_report.py` to prove every cited SQL/JSON
+   input still matches the artifact.
+5. Rebuild `report.html` with the Data Analytics portable-artifact delivery
+   script.
+6. Run the repository checks again before a dashboard is published.

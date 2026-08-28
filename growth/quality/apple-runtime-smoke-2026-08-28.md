@@ -7,7 +7,7 @@
 - **Physical iPhone 14 Pro: BLOCKED** before build/install. The earlier paired session reached `connected (no DDI)` and Xcode could not mount the developer disk image; on the 2026-08-29 recheck the device was unavailable. No app was installed or modified on that iPhone.
 - **iOS 15 runtime: NOT RUN.** The oldest installed simulator runtime is iOS 18.1 and the connected devices run iOS/iPadOS 26.x. The app binary itself declares `minos 15.0`, but that is build evidence, not runtime evidence.
 
-## Release artifacts
+## Historical release artifacts
 
 | Artifact | Result |
 |---|---|
@@ -19,15 +19,48 @@
 | Main binary deployment target | `LC_BUILD_VERSION minos 15.0`, SDK 26.5 |
 | Local identifier | `uz.ganikhodjaev.weather`, `1.0.1 (4)` |
 
-The growth worktree intentionally remains an unnumbered candidate: its checked-in
-version still matches the distributed build until an external upload is
-authorized. This locally built binary was not uploaded to TestFlight or App
-Store Connect.
+The current source identity is `1.1.0 (6)`. It has an unsigned/ad-hoc simulator
+build only; no distribution-signed build-6 archive exists and nothing from this
+growth update has been uploaded to TestFlight or App Store Connect. The table
+above remains scoped to the historical build-4 device candidate and the
+previous simulator/watch checks.
+
+## Current build-6 simulator recheck — 2026-08-29
+
+The final growth-update source built both `NimboSimulator` and `NimboWatch` in
+Release configuration without signing. A clean install of
+`uz.ganikhodjaev.weather` `1.1.0 (6)` then launched on an iPhone 17 simulator
+running iOS 26.5 and rendered the complete English onboarding surface. The
+simulator executable SHA-256 was
+`4bb8bf2707cd1170b2897d105e2ea9d7b41da25253ead829a809d73ce6099f3a`;
+its signature was ad-hoc and had no TeamIdentifier.
+
+The bounded log window contained no fatal, crash, uncaught-exception, or app
+termination entry. It did contain the expected
+`WCErrorCodeWatchAppNotInstalled`, because the intentionally contributor-safe
+`NimboSimulator` scheme omits the watch companion. This is not counted as a
+paired-watch pass or as physical evidence.
 
 The simulator linker still emits the documented warning that the data-only
 `libicu.icudtl_dat.o` member was built with simulator minOS 18.5 while the app
-links for 15.0. The final app executable records minOS 15.0 and runs on iOS
-18.1, but an actual iOS 15 runtime remains the release gate for that boundary.
+links for 15.0. The exact dependency path is Compose Multiplatform `1.11.1` ->
+Skiko `0.144.6` -> `skiko-iosSimulatorArm64Main-0.144.6.klib` -> bundled
+`libicu.a` -> `libicu.icudtl_dat.o`. `vtool -show-build` reports simulator
+minOS 18.5 for that member; `otool`, `size`, and `nm` show a 6,296,800-byte
+`__const` section, zero-byte `__text`, and no undefined symbols. The matching
+iOS-device member reports minOS 12.0. A clean unsigned Release simulator build
+still emits the warning and succeeds.
+
+The latest stable Skiko artifact available during the 2026-08-29 audit,
+`0.150.1` (Maven SHA-256
+`f6d557c83ce431988913341d1030e188e4ac310cbaca71a2f39cc4ebe370f09f`),
+contains the same simulator minOS 18.5 marker, so there is no verified
+dependency-only upgrade that removes it. The audit did not rewrite the Mach-O
+load command, suppress the warning, or raise the deployment target: each would
+hide or redefine the compatibility boundary rather than prove it. The final app
+executable records minOS 15.0 and runs on iOS 18.1, but **iOS 15 support remains
+NOT VERIFIED and release-blocked** until an actual iOS 15 device/runtime passes,
+or a separate product decision raises the declared deployment floor.
 
 ## iOS 18.1 simulator scenarios
 
@@ -81,10 +114,11 @@ The exact database observation is preserved in
 
 ## Remaining Apple gates
 
-1. Unlock/connect the iPhone so Xcode can mount its Developer Disk Image, and
-   rerun the exact `1.1.0 (5)` candidate on an unlocked iPad and iPhone for clean
-   launch, denied location, city search, live forecast, cached offline recovery,
-   large text, VoiceOver, share, widget, and cold start.
+1. Build and distribution-sign current `1.1.0 (6)`, then unlock/connect the
+   iPhone so Xcode can mount its Developer Disk Image and run that exact artifact
+   on an unlocked iPad and iPhone for clean launch, denied location, city
+   search, live forecast, cached offline recovery, large text, VoiceOver, share,
+   widget, and cold start. Build 5 remains historical evidence only.
 2. Run an actual iOS 15 device/runtime smoke or explicitly raise the declared
    deployment floor after a separate product decision.
 3. Re-run the paired Apple Watch/widget UI smoke for any versioned upload.

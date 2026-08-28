@@ -15,6 +15,7 @@
       "html_lang": "uz",
       "nav": {
         "home": "Bosh sahifa",
+        "guides": "Qo‘llanmalar",
         "press": "Press kit",
         "support": "Yordam",
         "privacy": "Maxfiylik"
@@ -27,7 +28,12 @@
         "language": "Til",
         "weather_data": "Ob-havo ma’lumotlari Open-Meteo tomonidan taqdim etiladi.",
         "no_tracking": "Akkauntsiz · reklamasiz · analitikasiz",
-        "available": "iPhone, iPad, Android, soat va vidjetlarda"
+        "available": "iPhone, iPad, Android, soat va vidjetlarda",
+        "menu": "Menyu",
+        "primary_nav": "Asosiy navigatsiya",
+        "footer_nav": "Pastki navigatsiya",
+        "ios_alt": "Nimbo Weather iPhone’da",
+        "android_alt": "Nimbo Weather Android’da"
       },
       "landing": {
         "title": "Nimbo — tashqariga chiqish uchun eng yaxshi vaqtni toping",
@@ -39,7 +45,7 @@
         "features_title": "Bugungi kunni bir qarashda rejalashtiring",
         "features_intro": "Kerakli ma’lumot bir ekranda, ortiqcha ro‘yxatdan o‘tish va kuzatuvsiz.",
         "features": [
-          {"number": "01", "title": "Tashqariga chiqish uchun eng yaxshi vaqt", "text": "Yaqin soatlardagi harorat, yog‘ingarchilik, shamol va havo sifatidan kelib chiqadigan tushunarli tavsiya."},
+          {"number": "01", "title": "Tashqariga chiqish uchun eng yaxshi vaqt", "text": "Yaqin soatlardagi harorat, yog‘ingarchilik, shamol va UV ko‘rsatkichidan kelib chiqadigan tushunarli tavsiya."},
           {"number": "02", "title": "Kechagi ob-havo bilan solishtiring", "text": "Bugun kechagidan iliqroqmi yoki sovuqroqmi — raqamlarni yodda saqlamasdan biling."},
           {"number": "03", "title": "24 soat oldin · hozir · 24 soat keyin", "text": "Vaqt chizig‘i ob-havo qanday o‘zgargani va qayerga ketayotganini ko‘rsatadi."},
           {"number": "04", "title": "10 kun va havo sifati", "text": "Uzoqroq reja uchun o‘n kunlik prognoz va AQI konteksti."},
@@ -55,7 +61,7 @@
       },
       "press": {
         "title": "Nimbo press kit",
-        "description": "Nimbo Weather haqida tekshiriladigan faktlar, logotip va haqiqiy qurilma tasvirlari.",
+        "description": "Nimbo Weather haqida tekshiriladigan faktlar, logotip va haqiqiy ilova interfeysi tasvirlari.",
         "eyebrow": "OAV va hamjamiyatlar uchun",
         "headline": "Nimbo haqida material tayyorlash uchun hamma narsa",
         "lead": "Nimbo — O‘zbekistonda yaratilgan, kundalik ob-havoni ‘qachon tashqariga chiqish qulay?’ degan savolga aylantiradigan ochiq kodli mobil ilova.",
@@ -72,6 +78,11 @@
         "download_icon": "1024×1024 ikonka",
         "download_ios": "iPhone tasviri",
         "download_android": "Android tasviri",
+        "download_feature": "O‘zbekcha feature graphic",
+        "download_apple_watch": "O‘zbekcha Apple Watch tasviri",
+        "download_wear": "O‘zbekcha Wear OS tasviri",
+        "download_manifest": "Asset manifestini yuklab olish",
+        "download_usage": "Foydalanish qoidalarini yuklab olish",
         "boilerplate_title": "Tayyor qisqa tavsif",
         "boilerplate": "Nimbo Weather foydalanuvchiga kechagi, joriy va kelgusi ob-havoni bitta tushunarli vaqt chizig‘ida ko‘rsatadi hamda yaqin soatlarda tashqariga chiqish uchun qulayroq vaqtni topishga yordam beradi. Ilova akkaunt, reklama yoki kuzatuvchi analitika talab qilmaydi.",
         "contact_title": "Bog‘lanish",
@@ -95,6 +106,18 @@
         "report_button": "Muammo yuborish",
         "discussion_button": "Savol berish"
       },
+      "guides": {
+        "title": "Nimbo ob-havo qo‘llanmalari",
+        "description": "O‘zbekistonda ob-havo, UV va havo sifati bilan kunni rejalashtirish uchun tekshirilgan qisqa qo‘llanmalar.",
+        "eyebrow": "Mavsumiy qo‘llanmalar",
+        "headline": "Prognozni kundalik rejaga aylantiring",
+        "lead": "Rasmiy manbalarga tayangan qisqa materiallar ob-havo ko‘rsatkichlarini tushunishga yordam beradi. Ular tibbiy maslahat yoki aniq mavsumiy prognoz emas.",
+        "read_more": "Qo‘llanmani o‘qish",
+        "sources": "Manbalar",
+        "draft_notice": "Nashr qilish provider va release gate’lari yopilguncha bloklangan.",
+        "back": "Barcha qo‘llanmalar",
+        "app_cta": "Joriy prognozni Nimbo’da ko‘ring"
+      },
       "privacy": {
         "title": "Nimbo maxfiylik siyosati",
         "description": "Nimbo Weather qanday ma’lumotdan foydalanadi va qanday ma’lumotni yig‘maydi.",
@@ -117,7 +140,7 @@
     "ru": {
       "label": "Русский",
       "html_lang": "ru",
-      "nav": {"home": "Главная", "press": "Пресс-кит", "support": "Поддержка", "privacy": "Приватность"},
+      "nav": {"home": "Главная", "guides": "Гайды", "press": "Пресс-кит", "support": "Поддержка", "privacy": "Приватность"},
       "common": {
         "app_store": "Загрузить в App Store",
         "play_store": "Загрузить в Google Play",
@@ -126,7 +149,12 @@
         "language": "Язык",
         "weather_data": "Данные о погоде предоставляет Open-Meteo.",
         "no_tracking": "Без аккаунта · без рекламы · без аналитики",
-        "available": "На iPhone, iPad, Android, часах и виджетах"
+        "available": "На iPhone, iPad, Android, часах и виджетах",
+        "menu": "Меню",
+        "primary_nav": "Основная навигация",
+        "footer_nav": "Навигация в подвале",
+        "ios_alt": "Nimbo Weather на iPhone",
+        "android_alt": "Nimbo Weather на Android"
       },
       "landing": {
         "title": "Nimbo — найдите лучшее время выйти на улицу",
@@ -138,7 +166,7 @@
         "features_title": "Спланируйте день одним взглядом",
         "features_intro": "Важное на одном экране — без регистрации и скрытого отслеживания.",
         "features": [
-          {"number": "01", "title": "Лучшее время выйти на улицу", "text": "Понятная рекомендация с учётом температуры, осадков, ветра и качества воздуха в ближайшие часы."},
+          {"number": "01", "title": "Лучшее время выйти на улицу", "text": "Понятная рекомендация с учётом температуры, осадков, ветра и UV в ближайшие часы."},
           {"number": "02", "title": "Сравните со вчерашней погодой", "text": "Узнайте, теплее или холоднее сегодня, не запоминая вчерашние цифры."},
           {"number": "03", "title": "24 часа назад · сейчас · 24 часа вперёд", "text": "Единая шкала показывает, как погода менялась и куда движется."},
           {"number": "04", "title": "10 дней и качество воздуха", "text": "Десятидневный прогноз и контекст AQI для более дальних планов."},
@@ -171,6 +199,11 @@
         "download_icon": "Иконка 1024×1024",
         "download_ios": "Скриншот iPhone",
         "download_android": "Скриншот Android",
+        "download_feature": "Русский feature graphic",
+        "download_apple_watch": "Скриншот Apple Watch на русском",
+        "download_wear": "Скриншот Wear OS на русском",
+        "download_manifest": "Скачать манифест материалов",
+        "download_usage": "Скачать правила использования",
         "boilerplate_title": "Готовое краткое описание",
         "boilerplate": "Nimbo Weather показывает вчерашнюю, текущую и будущую погоду на одной понятной временной шкале и помогает выбрать более подходящее время для выхода на улицу в ближайшие часы. Приложение не требует аккаунта, не показывает рекламу и не использует отслеживающую аналитику.",
         "contact_title": "Контакт",
@@ -194,6 +227,18 @@
         "report_button": "Создать отчёт",
         "discussion_button": "Задать вопрос"
       },
+      "guides": {
+        "title": "Гайды Nimbo о погоде",
+        "description": "Короткие проверенные гайды для планирования дня с погодой, UV и качеством воздуха в Узбекистане.",
+        "eyebrow": "Сезонные гайды",
+        "headline": "Превратите прогноз в понятный план",
+        "lead": "Короткие материалы на основе официальных источников помогают читать погодные показатели. Это не медицинская рекомендация и не точный сезонный прогноз.",
+        "read_more": "Читать гайд",
+        "sources": "Источники",
+        "draft_notice": "Публикация заблокирована до закрытия provider и release gate’ов.",
+        "back": "Все гайды",
+        "app_cta": "Посмотреть текущий прогноз в Nimbo"
+      },
       "privacy": {
         "title": "Политика приватности Nimbo",
         "description": "Какие данные использует Nimbo Weather и какие данные приложение не собирает.",
@@ -216,7 +261,7 @@
     "en": {
       "label": "English",
       "html_lang": "en",
-      "nav": {"home": "Home", "press": "Press kit", "support": "Support", "privacy": "Privacy"},
+      "nav": {"home": "Home", "guides": "Guides", "press": "Press kit", "support": "Support", "privacy": "Privacy"},
       "common": {
         "app_store": "Download on the App Store",
         "play_store": "Get it on Google Play",
@@ -225,7 +270,12 @@
         "language": "Language",
         "weather_data": "Weather data is provided by Open-Meteo.",
         "no_tracking": "No account · no ads · no analytics",
-        "available": "On iPhone, iPad, Android, watches, and widgets"
+        "available": "On iPhone, iPad, Android, watches, and widgets",
+        "menu": "Menu",
+        "primary_nav": "Primary navigation",
+        "footer_nav": "Footer navigation",
+        "ios_alt": "Nimbo Weather on iPhone",
+        "android_alt": "Nimbo Weather on Android"
       },
       "landing": {
         "title": "Nimbo — find the best time to go outside",
@@ -237,7 +287,7 @@
         "features_title": "Plan today at a glance",
         "features_intro": "The useful context on one screen, without registration or hidden tracking.",
         "features": [
-          {"number": "01", "title": "Best time to go outside", "text": "A clear recommendation using temperature, precipitation, wind, and air quality over the next few hours."},
+          {"number": "01", "title": "Best time to go outside", "text": "A clear recommendation using temperature, precipitation, wind, and UV over the next few hours."},
           {"number": "02", "title": "Compare with yesterday", "text": "See whether today feels warmer or cooler without remembering yesterday’s numbers."},
           {"number": "03", "title": "24 hours ago · now · 24 hours ahead", "text": "One timeline shows where the weather has been and where it is going."},
           {"number": "04", "title": "10 days and air quality", "text": "A ten-day forecast and AQI context for plans further ahead."},
@@ -270,6 +320,11 @@
         "download_icon": "1024×1024 icon",
         "download_ios": "iPhone screenshot",
         "download_android": "Android screenshot",
+        "download_feature": "English feature graphic",
+        "download_apple_watch": "Apple Watch screenshot (English UI)",
+        "download_wear": "Wear OS screenshot (English UI)",
+        "download_manifest": "Download asset manifest",
+        "download_usage": "Download usage notes",
         "boilerplate_title": "Short boilerplate",
         "boilerplate": "Nimbo Weather puts yesterday, now, and the forecast ahead on one clear timeline and helps people identify a more suitable time to go outside over the next few hours. The app requires no account, shows no ads, and uses no tracking analytics.",
         "contact_title": "Contact",
@@ -292,6 +347,18 @@
         "report_text": "The GitHub form safely gathers the platform, version, and reproduction steps needed to investigate.",
         "report_button": "Report an issue",
         "discussion_button": "Ask a question"
+      },
+      "guides": {
+        "title": "Nimbo weather guides",
+        "description": "Short, sourced guides for planning around weather, UV, and air quality in Uzbekistan.",
+        "eyebrow": "Seasonal guides",
+        "headline": "Turn the forecast into a practical plan",
+        "lead": "Short articles based on official sources help explain weather indicators. They are not medical advice or a precise seasonal forecast.",
+        "read_more": "Read the guide",
+        "sources": "Sources",
+        "draft_notice": "Publication is blocked until provider and release gates close.",
+        "back": "All guides",
+        "app_cta": "See the current forecast in Nimbo"
       },
       "privacy": {
         "title": "Nimbo privacy policy",

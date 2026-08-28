@@ -4,14 +4,13 @@ Nimbo combines deterministic tests, repository policy scripts, cross-platform co
 
 ## Automated inventory
 
-As of August 28, 2026, the source tree contains 53 unique `@Test` functions:
-
-- 49 common tests, executed for Android host and iOS Simulator;
-- two Android-host transient/background-failure classification tests;
-- one Android-host location-retention/persistence test;
-- one Android-host released-database migration test.
-
-Running both relevant test tasks produces 102 cross-target test executions. The count is descriptive and should be updated when tests change; coverage quality matters more than preserving the number. The growth-tooling suite adds 24 Python tests and is counted separately.
+The source tree keeps common Kotlin tests, Android-host persistence/migration
+tests, Android app unit tests, and iOS-specific tests in their native source
+sets. Common tests execute for both Android host and iOS Simulator. Use the
+Gradle/JUnit reports from the current commit as the authoritative count instead
+of copying a number into this document. The Python validation suite is likewise
+discovered dynamically with `python3 -m unittest discover -s
+scripts/growth/tests -p 'test_*.py'`; its `Ran N tests` summary is authoritative.
 
 | Area | Current evidence |
 | --- | --- |
@@ -43,6 +42,10 @@ python3 scripts/check_repository.py
 python3 scripts/check_localizations.py
 python3 scripts/check_store_metadata.py
 python3 scripts/check_store_assets.py
+python3 scripts/check_store_previews.py
+python3 scripts/check_dashboard_report.py
+python3 scripts/build_site.py --output build/pages-check
+python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
 git diff --check
 ```
 
@@ -54,6 +57,7 @@ Run the checks that cover your change locally; CI runs the complete pull-request
 ./gradlew clean ktlintCheck \
   :shared:allTests \
   :shared:testAndroidHostTest \
+  :app:testDebugUnitTest \
   :shared:verifySqlDelightMigration \
   :app:assembleDebug \
   :app:bundleRelease \
@@ -65,7 +69,7 @@ The release bundles exercise R8/resource shrinking and lint-vital tasks. They ar
 
 ## Apple gate
 
-The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md) and mirror the two CI builds. `:shared:allTests` also links and runs the iOS Simulator common test binary on macOS.
+The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md) and mirror the two CI builds. The macOS job explicitly runs `:shared:iosSimulatorArm64Test`, then retains its JUnit XML and HTML report for seven days.
 
 ## SQLDelight migrations
 
@@ -93,4 +97,4 @@ Simulator/emulator evidence is useful but does not prove physical-device battery
 
 ## CI behavior
 
-`.github/workflows/ci.yml` runs on every pull request and pushes to `master`, uses read-only repository permissions, cancels superseded runs for the same ref, and applies job timeouts. Android unsigned release bundles are retained for seven days as diagnostic artifacts. The macOS job builds iOS/WidgetKit and watchOS without signing.
+`.github/workflows/ci.yml` runs on every pull request and pushes to `master`, uses read-only repository permissions, cancels superseded runs for the same ref, and applies job timeouts. Android unsigned release bundles and iOS Simulator test results are retained for seven days as diagnostic artifacts. The macOS job also builds iOS/WidgetKit and watchOS without signing.

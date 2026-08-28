@@ -12,7 +12,7 @@ android {
         applicationId = "uz.ganikhodjaev.weather"
         minSdk = 24
         targetSdk = 36
-        versionCode = 7
+        versionCode = 8
         versionName = "1.1.0"
     }
 
@@ -46,4 +46,5 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.work.runtime)
     implementation(libs.play.services.wearable)
+    testImplementation(kotlin("test-junit"))
 }

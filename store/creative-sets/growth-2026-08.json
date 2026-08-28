@@ -1,8 +1,74 @@
 {
   "schema_version": 1,
   "id": "growth-2026-08",
-  "revision": 1,
+  "revision": 4,
   "generated_by": "scripts/build_store_creatives.py",
+  "output_sha256": {
+    "store/assets/google-play/feature-graphic-1024x500.jpg": "e94c2b16dead89ebe512ec77e55c3766d698238427162b3e74047ac21f2362c4",
+    "store/assets/google-play/feature-graphic-en-US-1024x500.jpg": "e94c2b16dead89ebe512ec77e55c3766d698238427162b3e74047ac21f2362c4",
+    "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg": "768eac2539ceb9f2c5bea22a19ab0598a8b8efba6a92a1b22dd1289a283d5bc0",
+    "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg": "a3ef85c4d6518ccaa93848617bef4868164e19eff79ea7160060d56ffef44437",
+    "store/creatives/growth-2026-08/app-store/en-US/01-best-time.png": "7d259180db8de3d58b5ce1be98b97371de50ac76678a8614d9af48b9cc8a073b",
+    "store/creatives/growth-2026-08/app-store/en-US/02-recent-comparison.png": "280592df9c7038be1905e73545a82aa0b552a48cd3bea1351d6454be219ca934",
+    "store/creatives/growth-2026-08/app-store/en-US/03-timeline.png": "5dc4caa66a6b9f11c63a0078b30c51c66c38e49fdbbcaefc0af3406bb32465a1",
+    "store/creatives/growth-2026-08/app-store/en-US/04-details.png": "80a588812d4951b7255122250ddbf1e6f8a9283f2886bc9d23c256403e1a8b95",
+    "store/creatives/growth-2026-08/app-store/en-US/05-offline-privacy.png": "706f30bec429632a087413b7adfad473d4c21b8eb54cd867cbacdf3530f15124",
+    "store/creatives/growth-2026-08/app-store/en-US/06-watch.png": "838b01cb3e60d1dc62107f8108f4b8f0eb5250b169165158e728def8085b1276",
+    "store/creatives/growth-2026-08/app-store/ru-RU/01-best-time.png": "83f9560450f3bf8732604e91cf03989a3e0edd2619bc3d2f9c4d3163e0f1411a",
+    "store/creatives/growth-2026-08/app-store/ru-RU/02-recent-comparison.png": "9158bd2925eb50c3f0cbdb0c9df2ba4fd6ba5dd02496f42f67ca7c76189ac840",
+    "store/creatives/growth-2026-08/app-store/ru-RU/03-timeline.png": "0699243328f1adf5b144cfcaeb02ab699dd44ccb70b19b9321f7cafb9e73a6d3",
+    "store/creatives/growth-2026-08/app-store/ru-RU/04-details.png": "f1e803c5503c1997a63d1093c86550fed805a13a6453ae21cd31de0f5b13e25c",
+    "store/creatives/growth-2026-08/app-store/ru-RU/05-offline-privacy.png": "3f4e84b6a6b5232f66f67e7b0adc1fa1c0a7ef4195a633b28a82397c8cef18f8",
+    "store/creatives/growth-2026-08/app-store/ru-RU/06-watch.png": "f2b099842a5c3592d30bd3d967739111395b849c4586d72d011a1803c35e8653",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/01-best-time.png": "618d054c09da00eeb5d00b557bbf7927b4a11c4a4777bf142ee82b004e779ff2",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/02-recent-comparison.png": "51b4a705eefe186279857a802dd0ae767266bd9b89bbb5b7b5cfc3950e5b9e2c",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/03-timeline.png": "0437a04e264ef6a4cfbd76f1a4c990c06b4caf81699528ad7fe1e735092bdae3",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/04-details.png": "4e6c20f63fe1d2fd21310298b589d2dbf060665e6a9423e76331564c4dacbbe3",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/05-offline-privacy.png": "e86193c63aaa0a35834075ba57d4136acb41911fad48ffe9448225e40d2c1db2",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/06-watch.png": "666a616ce42ac020b4f9c5d8548c8b6a0941a263cd9dd5ec090f505df3907f30",
+    "store/creatives/growth-2026-08/google-play/en-US/01-best-time.png": "784296dad09cc27062d39190f2aa62670b062328845905a47bd836e337561edb",
+    "store/creatives/growth-2026-08/google-play/en-US/02-recent-comparison.png": "153ceef2c0c93bf04891e74f8da22b3be68233923787b8b572e0d1eba6701487",
+    "store/creatives/growth-2026-08/google-play/en-US/03-timeline.png": "91975ce47a16943af69986bbdf35a532f3143e8f85bdaf0f53ee88d40cf41927",
+    "store/creatives/growth-2026-08/google-play/en-US/04-details.png": "b8b652a92806232b3891be5d123b9de991adce125b54fdcace5f2db92119f631",
+    "store/creatives/growth-2026-08/google-play/en-US/05-offline-privacy.png": "abd2ab4808c1a7c1c45f4c09a6e9182ca597f93ec9015b15f2cb8b186992cede",
+    "store/creatives/growth-2026-08/google-play/en-US/06-watch.png": "cbdc4e0672df2559c144c7c6b68d557d74788b253a621bba5350a7325aa0ebbf",
+    "store/creatives/growth-2026-08/google-play/ru-RU/01-best-time.png": "5c87a51acfa7ddd7b89b0c7190387cd077672be925924ece0aa20f02f537fb9d",
+    "store/creatives/growth-2026-08/google-play/ru-RU/02-recent-comparison.png": "6ab6cb1ad4ebdefc2e1e69a69bb728bcb40da2397d472778372611a4aed97331",
+    "store/creatives/growth-2026-08/google-play/ru-RU/03-timeline.png": "b619b7d04c471fa6da553a839551da43f527f585851943a6e28811119989485c",
+    "store/creatives/growth-2026-08/google-play/ru-RU/04-details.png": "a87df24b4441e2614ecf82c5a882268602814839911020ae722dbf1229063d47",
+    "store/creatives/growth-2026-08/google-play/ru-RU/05-offline-privacy.png": "6c46b340380ffb400cf9ac7de24a97fe68625b878f3511097616b8cf44058e9c",
+    "store/creatives/growth-2026-08/google-play/ru-RU/06-watch.png": "91b0e743f4ee23b24c6dac1ad95eaf38aac69677d35cf39e7a8903d3b344eac0",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/01-best-time.png": "5b4ba6ae3793ddf51a5a26a7874eb19882f42897b1f44a5e164b4a54b9384e97",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/02-recent-comparison.png": "cab2803966dfe5e9dc09ba9d9c4397de287bb5f8d157327bea383fe9667507f7",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/03-timeline.png": "879250a251057bad8e5931385c1d07425a9b43ce9099d1ce9765816c02dc88c2",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/04-details.png": "9b614b93a6473cb503f6827851760a8513cba8f62eb2915cb5a13df27484800c",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/05-offline-privacy.png": "43e7d88baac450463429494733cf2ee0952720d078625716d29ee57f67494c10",
+    "store/creatives/growth-2026-08/google-play/uz-UZ/06-watch.png": "60ec3d11324760df8007d3acbf5db88009f204b58571de3212b20b906b79c861"
+  },
+  "source_sha256": {
+    "branding/source/nimbo-icon-master.png": "c3c282f5bf4929d547b6ab4a53ba06d51623f1213a6d52fdf1cab987ace4c878",
+    "store/screenshots/app-store/apple-watch-en/01-current.jpg": "75061f4bc2759d9918bf27c7a86f4cbb3d66297af0911741b85c224735058a4d",
+    "store/screenshots/app-store/apple-watch-ru-RU/01-current.png": "befd7d7939f8b6315e117a0f03a36cbea1041fdc2a15cac15e2d41d7fab1ce76",
+    "store/screenshots/app-store/apple-watch-uz-UZ/01-current.png": "b4ae83a6062d515db9074ba4725bf218b719bf96366cd17a2e79514d4a448baa",
+    "store/screenshots/app-store/iphone-6.9-en/01-current.png": "5346d3b04fb1236f6d21e394daf67cd00b9cca8c7e0411b3f7aeeb3e34b64b0e",
+    "store/screenshots/app-store/iphone-6.9-ru-RU/01-current.png": "b4c1b031f050e52c13172e8bea8f443f5405cb888ac9cc6f8088f34caa97364c",
+    "store/screenshots/app-store/iphone-6.9-uz-UZ/01-current.png": "8bf947f5dc333e500a25b3ed6fb51f61f03ae8a715c1d3bb91243eefb5482377",
+    "store/screenshots/google-play/phone-en/01-current.png": "aad1adc1af3e7f6f357411ef63d0ff3c9e49d96e2df666fc5efef7bfc28ae3ed",
+    "store/screenshots/google-play/phone-en/02-timeline-selected.png": "32367f0f4aeb0769d67941957313d2be71e6d7e53e023fc4cf7c9814d571a2b8",
+    "store/screenshots/google-play/phone-en/03-details.png": "5bc205abe1b6ff7a8d0a7dcbfdd49d950feafdb0ede101a7acf327bb8ba3dea3",
+    "store/screenshots/google-play/phone-en/05-offline-cache.png": "b3cc116117466b6cabb4950dd3f9b8b4e53a9d58ce1881c7289f0aa27ed8a24c",
+    "store/screenshots/google-play/phone-ru-RU/01-current.png": "e1c4be2bfe37bbbadbf8576b10618ee85c7641e1e4561ee2c63c62f9c5343ce7",
+    "store/screenshots/google-play/phone-ru-RU/02-timeline-selected.png": "fdc579be16a136e57aa4ceda6205e5474bf3624d1d47153e1577eca48bc88b92",
+    "store/screenshots/google-play/phone-ru-RU/03-details.png": "f03a314bc6f3c20638ac430e1817770c643a6c3f7b11ec51d8b7030debad4c5c",
+    "store/screenshots/google-play/phone-ru-RU/05-offline-cache.png": "52bc2596eb00fc9ec2ed21e3acdfc9ba5429df69e97b0f184f3442ee2e5bab37",
+    "store/screenshots/google-play/phone-uz-UZ/01-current.png": "d86f020ef20cbcc9957647540085be48b41b5f5aec37e65f7c23384bf654950e",
+    "store/screenshots/google-play/phone-uz-UZ/02-timeline-selected.png": "b57e3931ce9862a88bc905714f7606f1035d981ab44d2ba6f08b9832e7480f99",
+    "store/screenshots/google-play/phone-uz-UZ/03-details.png": "3d409001cc621b71bf27ed52d4416511f9cdcd65b45d567802d3626b4830645e",
+    "store/screenshots/google-play/phone-uz-UZ/05-offline-cache.png": "100c3401acaceb9330777e0c583c0f1fc54bbac470d4d50e2e3c0c1a14049115",
+    "store/screenshots/google-play/wear-os-en/01-current.jpg": "498e3da9b1a8c8dc2641416ddcb1828a40ee42bca0ab1cc0d30d03ef81ea6290",
+    "store/screenshots/google-play/wear-os-ru-RU/01-current.png": "60944c367cfdf41c47226cf3f60dfa8b918827a4674e33db531abb67a03cfc47",
+    "store/screenshots/google-play/wear-os-uz-UZ/01-current.png": "76d79459e88830f2f39000fda34ca1ddd15877eba29bd143fe7a1a07c80c714c"
+  },
   "rendering": {
     "pillow_version": "12.2.0",
     "font_regular": {
@@ -25,8 +91,7 @@
         2868
       ],
       "output_dir": "store/creatives/growth-2026-08/app-store",
-      "phone_source": "store/screenshots/app-store/iphone-6.9-{source_locale}/01-current.png",
-      "watch_source": "store/screenshots/app-store/apple-watch-en/01-current.jpg"
+      "phone_source": "store/screenshots/app-store/iphone-6.9-{source_locale}/01-current.png"
     },
     "google-play": {
       "size": [
@@ -35,13 +100,35 @@
       ],
       "output_dir": "store/creatives/growth-2026-08/google-play",
       "phone_source": "store/screenshots/google-play/phone-{source_locale}/{source_name}",
-      "watch_source": "store/screenshots/google-play/wear-os-en/01-current.jpg",
-      "feature_graphic": "store/assets/google-play/feature-graphic-1024x500.jpg"
+      "feature_graphic_source": "branding/source/nimbo-icon-master.png",
+      "legacy_feature_graphic": "store/assets/google-play/feature-graphic-1024x500.jpg",
+      "legacy_feature_graphic_locale": "en-US",
+      "feature_graphics": {
+        "en-US": {
+          "output": "store/assets/google-play/feature-graphic-en-US-1024x500.jpg",
+          "subtitle": "Weather and forecast",
+          "body": "Find your best time\nto go outside"
+        },
+        "ru-RU": {
+          "output": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg",
+          "subtitle": "Погода и прогноз",
+          "body": "Найдите лучшее время\nвыйти на улицу"
+        },
+        "uz-UZ": {
+          "output": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
+          "subtitle": "Ob-havo va prognoz",
+          "body": "Tashqariga chiqish uchun\neng yaxshi vaqtni toping"
+        }
+      }
     }
   },
   "locales": {
     "en-US": {
       "source_locale": "en",
+      "watch_sources": {
+        "app-store": "store/screenshots/app-store/apple-watch-en/01-current.jpg",
+        "google-play": "store/screenshots/google-play/wear-os-en/01-current.jpg"
+      },
       "captions": {
         "app-store": [
           "Find your best time outside",
@@ -63,6 +150,10 @@
     },
     "ru-RU": {
       "source_locale": "ru-RU",
+      "watch_sources": {
+        "app-store": "store/screenshots/app-store/apple-watch-ru-RU/01-current.png",
+        "google-play": "store/screenshots/google-play/wear-os-ru-RU/01-current.png"
+      },
       "captions": {
         "app-store": [
           "Найдите лучшее время для прогулки",
@@ -84,6 +175,10 @@
     },
     "uz-UZ": {
       "source_locale": "uz-UZ",
+      "watch_sources": {
+        "app-store": "store/screenshots/app-store/apple-watch-uz-UZ/01-current.png",
+        "google-play": "store/screenshots/google-play/wear-os-uz-UZ/01-current.png"
+      },
       "captions": {
         "app-store": [
           "Tashqariga chiqish uchun eng yaxshi vaqtni toping",
@@ -206,7 +301,7 @@
         1.0
       ],
       "watch_overlay": true,
-      "evidence": "The composition uses the checked-in production phone and watch captures without altering their UI."
+      "evidence": "The composition uses checked-in localized production UI captures without altering their UI. Apple RU/UZ watch sources are historical build-5 simulator evidence; Google RU/UZ watch sources are emulator evidence. None establishes current build-6 or physical-watch QA."
     }
   ],
   "excluded_until_captured": [

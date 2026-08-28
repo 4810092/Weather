@@ -142,7 +142,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification."
+        "reason": "Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Xcode Organizer also reports that a developer account is required to download the crash list, so symbolication and root-cause verification remain blocked."
       },
       {
         "id": "open_meteo_promotion_clearance",
@@ -152,18 +152,39 @@
         "reason": "Clarification email is drafted but has not been sent or answered."
       },
       {
+        "id": "release_artifact_source_sync",
+        "required": "pass",
+        "actual": "blocked",
+        "status": "fail",
+        "reason": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities, but the login Keychain is locked and neither current candidate has a signed artifact, immutable hash, or matching physical-QA evidence. Unchanged Wear OS 1.1.0 (1000008) alone remains verified-current."
+      },
+      {
         "id": "android_physical_smoke",
         "required": "pass",
-        "actual": "partial",
+        "actual": "blocked",
         "status": "fail",
-        "reason": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete."
+        "reason": "Current phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live Tashkent weather, cached offline cold start, and stability, but it still has no upload-signed current artifact or matching release-certificate physical result. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required."
       },
       {
         "id": "ios_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI."
+        "reason": "Current Apple 1.1.0 (6) has only an unsigned arm64 simulator build and no distribution-signed archive, artifact hash, or physical result. The build-5 iPad install and build-4 bounded runtime evidence are historical and do not transfer; current iPhone, iPad, widget, and watch coverage remains required."
+      },
+      {
+        "id": "domain_activation",
+        "required": "pass",
+        "actual": "blocked",
+        "status": "fail",
+        "reason": "The registrar surface reports nimbo.uz waiting for activation, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete."
+      },
+      {
+        "id": "store_policy_console_clearance",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Read-only 2026-08-28 console check found no open App Store review/compliance action and Google Play Policy status explicitly reported no issues; see growth/quality/store-policy-console-2026-08-28.md."
       }
     ],
     "metric_guardrails": [

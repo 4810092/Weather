@@ -4,7 +4,7 @@
     "version": 1,
     "surface": "dashboard",
     "title": "Nimbo UZ Growth Control Room",
-    "generatedAt": "2026-08-28T19:26:17Z",
+    "generatedAt": "2026-08-28T21:20:00Z",
     "cards": [
       {
         "id": "top10_streak",
@@ -100,8 +100,8 @@
       },
       {
         "id": "gate_table",
-        "title": "Scale gates",
-        "subtitle": "Organic promotion stays paused while any critical gate is not pass.",
+        "title": "Operational scale gates",
+        "subtitle": "Organic promotion stays paused while any required operational gate is not pass.",
         "dataset": "gate_snapshot",
         "sourceId": "gate_snapshot",
         "columns": [
@@ -109,6 +109,19 @@
           {"field": "decision", "label": "Status and next action", "type": "text"}
         ],
         "defaultSort": {"field": "gate", "direction": "asc"}
+      },
+      {
+        "id": "quality_guardrail_table",
+        "title": "Critical metric guardrails",
+        "subtitle": "Every critical console metric is currently unknown and therefore blocks scale independently of the operational gates.",
+        "dataset": "quality_guardrails",
+        "sourceId": "quality_guardrail_snapshot",
+        "columns": [
+          {"field": "guardrail", "label": "Guardrail", "type": "text"},
+          {"field": "threshold", "label": "Threshold", "type": "text"},
+          {"field": "decision", "label": "Status and next evidence", "type": "text"}
+        ],
+        "defaultSort": {"field": "guardrail", "direction": "asc"}
       }
     ],
     "sources": [
@@ -116,31 +129,33 @@
       {"id": "driver_comparison", "label": "Baseline and target driver comparison", "path": "growth/dashboard/driver_comparison.sql"},
       {"id": "rank_snapshot", "label": "2026-08-29 UZ rank snapshot", "path": "growth/dashboard/rank_snapshot.sql"},
       {"id": "evaluation_snapshot", "label": "2026-08-29 growth evaluation", "path": "growth/reports/evaluation-2026-08-29.json"},
-      {"id": "gate_snapshot", "label": "Fail-closed growth gates", "path": "growth/dashboard/gate_snapshot.sql"}
+      {"id": "gate_snapshot", "label": "Fail-closed operational growth gates", "path": "growth/dashboard/gate_snapshot.sql"},
+      {"id": "quality_guardrail_snapshot", "label": "Fail-closed critical metric guardrails", "path": "growth/dashboard/guardrail_snapshot.sql"}
     ],
     "blocks": [
       {
         "id": "snapshot_context",
         "type": "markdown",
-        "body": "## Current verdict\n\nNimbo is **not ready to scale acquisition**. The August 29 public-rank goal is unmet, the iOS 1.0.1 crash still lacks a symbolicated diagnostic report, and Open-Meteo promotion clearance is not attached. The Play conversion read is above target as reported, but its denominator must be reconciled before it can support a decision."
+        "body": "## Current verdict\n\nNimbo is **not ready to scale acquisition**. The August 29 public-rank goal is unmet; the iOS 1.0.1 crash still lacks a symbolicated diagnostic report; Open-Meteo promotion clearance is not attached; current phone vc8 and Apple build 6 are unsigned and have no matching signed physical QA; nimbo.uz is still waiting for registrar activation; and every critical weekly console guardrail remains unknown. The reported Play conversion is above target, but its denominator must be reconciled before it can support a decision."
       },
       {"id": "headline_strip", "type": "metric-strip", "cardIds": ["top10_streak", "apple_search_rank", "apple_conversion", "play_conversion", "first_launch_rate"]},
       {"id": "driver_gap", "type": "chart", "chartId": "driver_gap_chart", "layout": "full"},
       {"id": "rank_detail", "type": "table", "tableId": "rank_table", "layout": "full"},
       {"id": "baseline_detail", "type": "table", "tableId": "baseline_table", "layout": "full"},
       {"id": "gate_detail", "type": "table", "tableId": "gate_table", "layout": "full"},
+      {"id": "quality_guardrail_detail", "type": "table", "tableId": "quality_guardrail_table", "layout": "full"},
       {
         "id": "operating_rule",
         "type": "markdown",
         "sourceId": "gate_snapshot",
-        "body": "## Operating rule\n\nUnknown quality, provider, or physical-device evidence is never converted into a pass. Store publishing, external outreach, and any spend remain explicit action-time approval steps."
+        "body": "## Operating rule\n\nUnknown quality, provider, release identity, domain, or physical-device evidence is never converted into a pass. External UI side effects remain action-time gated by the execution surface, and the zero-budget boundary remains in force."
       }
     ]
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-28T19:26:17Z",
-    "status": "partial",
+    "generatedAt": "2026-08-28T21:20:00Z",
+    "status": "blocked",
     "datasets": {
       "headline_metrics": [
         {
@@ -177,7 +192,7 @@
         {"metric_label": "App Store · First-time downloads", "platform": "App Store", "metric": "First-time downloads", "value": "5", "evidence_class": "reported_console_readout"},
         {"metric_label": "App Store · Conversion rate", "platform": "App Store", "metric": "Conversion rate", "value": "4.05%", "evidence_class": "reported_console_readout"},
         {"metric_label": "App Store · Ratings", "platform": "App Store", "metric": "Ratings", "value": "0", "evidence_class": "reported_console_readout"},
-        {"metric_label": "App Store · Crashes", "platform": "App Store", "metric": "Crashes", "value": "1", "evidence_class": "live_console_2026-08-28"},
+        {"metric_label": "App Store · Crashes", "platform": "App Store", "metric": "Crashes", "value": "1", "evidence_class": "live_console_2026-08-29"},
         {"metric_label": "Google Play · Impressions", "platform": "Google Play", "metric": "Impressions", "value": "779", "evidence_class": "reported_console_readout"},
         {"metric_label": "Google Play · Installations", "platform": "Google Play", "metric": "Installations", "value": "21", "evidence_class": "live_console_2026-08-28"},
         {"metric_label": "Google Play · First launches", "platform": "Google Play", "metric": "First launches", "value": "14", "evidence_class": "live_console_2026-08-28"},
@@ -186,15 +201,31 @@
         {"metric_label": "Google Play · Ratings", "platform": "Google Play", "metric": "Ratings", "value": "1", "evidence_class": "reported_console_readout"}
       ],
       "gate_snapshot": [
-        {"gate": "iOS crash gate", "decision": "BLOCKED · obtain report, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.", "next_action": "Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke"},
-        {"gate": "Open-Meteo promotion clearance", "decision": "PENDING · send clarification and record the answer", "status": "pending", "evidence": "Clarification email is drafted but has not been sent or answered", "next_action": "Send through an authenticated sender and record an unambiguous written response"},
-        {"gate": "Android device smoke", "decision": "PARTIAL · signed API 25 phone matrix passes; tablet/widget/Wear remain", "status": "partial", "evidence": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.", "next_action": "Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact"},
-        {"gate": "iOS physical smoke", "decision": "BLOCKED · unlock iPad; reconnect iPhone and mount DDI", "status": "blocked", "evidence": "The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI.", "next_action": "Unlock the iPad and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix"}
+        {"gate_id": "ios_crash_gate", "gate": "iOS crash gate", "decision": "BLOCKED · restore diagnostic access, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Xcode Organizer also reports that a developer account is required to download the crash list, so symbolication and root-cause verification remain blocked.", "next_action": "Restore Organizer developer-account access or obtain the diagnostic report, then symbolicate, reproduce, fix, and re-smoke"},
+        {"gate_id": "open_meteo_promotion_clearance", "gate": "Open-Meteo promotion clearance", "decision": "PENDING · send clarification and record the answer", "status": "pending", "evidence": "Clarification email is drafted but has not been sent or answered.", "next_action": "Send through an authenticated sender and record an unambiguous written response"},
+        {"gate_id": "release_artifact_source_sync", "gate": "Release artifact source sync", "decision": "BLOCKED · sign and hash current vc8/build 6", "status": "blocked", "evidence": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities, but the login Keychain is locked and neither current candidate has a signed artifact, immutable hash, or matching physical-QA evidence. Unchanged Wear OS 1.1.0 (1000008) alone remains verified-current.", "next_action": "Unlock the Keychain, create new signed vc8 and build-6 artifacts without overwriting history, verify identities and hashes, then record exact evidence"},
+        {"gate_id": "android_physical_smoke", "gate": "Android device smoke", "decision": "BLOCKED · current signed vc8 and physical matrix missing", "status": "blocked", "evidence": "Current phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live Tashkent weather, cached offline cold start, and stability, but it still has no upload-signed current artifact or matching release-certificate physical result. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required.", "next_action": "Sign and verify phone vc8, then run the exact signed artifact on phone and tablet plus widget and paired Wear OS paths"},
+        {"gate_id": "ios_physical_smoke", "gate": "iOS physical smoke", "decision": "BLOCKED · signed build 6 and physical matrix missing", "status": "blocked", "evidence": "Current Apple 1.1.0 (6) has only an unsigned arm64 simulator build and no distribution-signed archive, artifact hash, or physical result. The build-5 iPad install and build-4 bounded runtime evidence are historical and do not transfer; current iPhone, iPad, widget, and watch coverage remains required.", "next_action": "Archive and distribution-sign build 6, then run the exact artifact on iPhone and iPad plus widget and paired watch paths"},
+        {"gate_id": "domain_activation", "gate": "Domain activation", "decision": "BLOCKED · registrar activation and registry delegation missing", "status": "blocked", "evidence": "The registrar surface reports nimbo.uz waiting for activation, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete.", "next_action": "Complete registrar activation, then verify registry delegation, publish the reviewed Cloudflare DNS records, and wait for valid HTTPS"},
+        {"gate_id": "store_policy_console_clearance", "gate": "Store policy console clearance", "decision": "PASS · no open policy action in the 2026-08-28 read-only check", "status": "pass", "evidence": "Read-only 2026-08-28 console check found no open App Store review/compliance action and Google Play Policy status explicitly reported no issues; see growth/quality/store-policy-console-2026-08-28.md.", "next_action": "Re-check both store policy surfaces with the next weekly UZ console evidence window"}
+      ],
+      "quality_guardrails": [
+        {"guardrail_id": "ios_crash_free_sessions_pct", "guardrail": "iOS crash-free sessions", "status": "unknown", "critical": true, "threshold": "≥ 99.8%", "unknown_policy": "block_scale", "decision": "UNKNOWN · attach the source-defined App Store crash-free-session metric", "next_action": "Attach the source-defined App Store crash-free-session metric for the same UZ evidence window"},
+        {"guardrail_id": "android_user_perceived_crash_rate_pct", "guardrail": "Android user-perceived crash rate", "status": "unknown", "critical": true, "threshold": "< 1.09%", "unknown_policy": "block_scale", "decision": "UNKNOWN · import the Play Console UZ crash rate", "next_action": "Import the Play Console UZ user-perceived crash rate for the same seven complete days"},
+        {"guardrail_id": "android_user_perceived_anr_rate_pct", "guardrail": "Android user-perceived ANR rate", "status": "unknown", "critical": true, "threshold": "< 0.47%", "unknown_policy": "block_scale", "decision": "UNKNOWN · import the Play Console UZ ANR rate", "next_action": "Import the Play Console UZ user-perceived ANR rate for the same seven complete days"},
+        {"guardrail_id": "android_phone_model_crash_rate_pct", "guardrail": "Android phone-model crash rate", "status": "unknown", "critical": true, "threshold": "< 8%", "unknown_policy": "review_required", "decision": "UNKNOWN · import and review concrete phone-model evidence", "next_action": "Import decision-eligible concrete phone-model crash evidence and review the worst observed model"},
+        {"guardrail_id": "android_phone_model_anr_rate_pct", "guardrail": "Android phone-model ANR rate", "status": "unknown", "critical": true, "threshold": "< 8%", "unknown_policy": "review_required", "decision": "UNKNOWN · import and review concrete phone-model evidence", "next_action": "Import decision-eligible concrete phone-model ANR evidence and review the worst observed model"},
+        {"guardrail_id": "wear_model_crash_rate_pct", "guardrail": "Wear OS model crash rate", "status": "unknown", "critical": true, "threshold": "< 4%", "unknown_policy": "review_required", "decision": "UNKNOWN · import and review concrete Wear OS evidence", "next_action": "Import decision-eligible concrete Wear OS model crash evidence and review the worst observed model"},
+        {"guardrail_id": "wear_model_anr_rate_pct", "guardrail": "Wear OS model ANR rate", "status": "unknown", "critical": true, "threshold": "< 5%", "unknown_policy": "review_required", "decision": "UNKNOWN · import and review concrete Wear OS evidence", "next_action": "Import decision-eligible concrete Wear OS model ANR evidence and review the worst observed model"},
+        {"guardrail_id": "open_policy_issues", "guardrail": "Weekly store policy issues", "status": "unknown", "critical": true, "threshold": "= 0", "unknown_policy": "block_scale", "decision": "UNKNOWN · import weekly Apple and Google policy counts", "next_action": "Import Apple and Google policy-issue counts for the same weekly UZ evidence window"}
       ]
     },
     "accessIssues": [
       {"id": "raw_store_exports_missing", "dataset": "baseline", "message": "Raw App Store Connect and Play Console exports with country, source, device, version, and denominator definitions are not attached."},
-      {"id": "ios_crash_report_missing", "dataset": "gates", "message": "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, but exposes no stack trace at this traffic level; no Organizer diagnostic exists locally."}
+      {"id": "ios_crash_report_missing", "dataset": "gates", "message": "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, but exposes no stack trace at this traffic level; Xcode Organizer reports that a developer account is required to download the crash list."},
+      {"id": "release_artifact_source_sync_missing", "dataset": "gates", "message": "Current Android phone vc8 and Apple build 6 have no signed artifacts, immutable hashes, or matching physical-QA evidence while the login Keychain is locked."},
+      {"id": "domain_activation_pending", "dataset": "gates", "message": "nimbo.uz is waiting for registrar activation and is registry-level NXDOMAIN; public DNS and TLS evidence cannot exist yet."},
+      {"id": "critical_metric_guardrails_missing", "dataset": "quality_guardrails", "message": "All eight critical console guardrails lack decision-eligible weekly evidence; unknown remains blocking even though the separate 2026-08-28 operational policy-console check passed."}
     ]
   },
   "sources": [
@@ -204,7 +235,7 @@
       "path": "growth/dashboard/baseline_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('App Store','Impressions','206','reported_console_readout'),('App Store','First-time downloads','5','reported_console_readout'),('App Store','Conversion rate','4.05%','reported_console_readout'),('App Store','Ratings','0','reported_console_readout'),('App Store','Crashes','1','live_console_2026-08-28'),('Google Play','Impressions','779','reported_console_readout'),('Google Play','Installations','21','live_console_2026-08-28'),('Google Play','First launches','14','live_console_2026-08-28'),('Google Play','Monthly active users','11','live_console_2026-08-28'),('Google Play','Conversion rate','40.82%','reported_console_readout'),('Google Play','Ratings','1','reported_console_readout')) AS baseline(platform,metric,value,evidence_class)",
+        "sql": "SELECT * FROM (VALUES ('App Store','Impressions','206','reported_console_readout'),('App Store','First-time downloads','5','reported_console_readout'),('App Store','Conversion rate','4.05%','reported_console_readout'),('App Store','Ratings','0','reported_console_readout'),('App Store','Crashes','1','live_console_2026-08-29'),('Google Play','Impressions','779','reported_console_readout'),('Google Play','Installations','21','live_console_2026-08-28'),('Google Play','First launches','14','live_console_2026-08-28'),('Google Play','Monthly active users','11','live_console_2026-08-28'),('Google Play','Conversion rate','40.82%','reported_console_readout'),('Google Play','Ratings','1','reported_console_readout')) AS baseline(platform,metric,value,evidence_class)",
         "description": "Loads the bounded, versioned baseline while preserving reported console definitions.",
         "executed_at": "2026-08-28T13:47:00Z",
         "tables_used": ["inline baseline values backed by growth/baseline/2026-08-28.json"],
@@ -234,7 +265,7 @@
         "engine": "postgresql",
         "sql": "SELECT * FROM (VALUES ('App Store UZ search','all','weather','81',10,'fixed_public_capture'),('App Store UZ Weather chart','official','category','>100',10,'fixed_public_capture'),('Google Play UZ Weather category','uz-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','ru-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','en-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ generic-query quorum','2-of-3 profiles','five configured queries','0 qualifying queries',2,'fixed_logged_out_capture')) AS ranks(surface,profile,query,observed_rank,target_rank,evidence_class)",
         "description": "Loads the complete required goal surfaces from the fixed public-rank capture while preserving bounded absences; one auxiliary Apple query is incomplete.",
-        "executed_at": "2026-08-28T19:11:03Z",
+        "executed_at": "2026-08-28T20:30:17Z",
         "tables_used": ["inline rank values backed by growth/data/public-rank/2026-08-29.json"],
         "filters": ["Snapshot date 2026-08-29", "Storefront UZ", "Google logged-out profiles uz-UZ, ru-UZ, en-UZ", "capture_complete=false because auxiliary Apple Toshkent ob-havo search is below completeness floor", "evaluation.complete=true for all required goal surfaces"],
         "metric_definitions": ["Top-10 means rank at most 10", "A >N result is a bounded absence, not a synthetic rank", "Google generic success requires Top-10 on at least two of three profiles for at least two queries"]
@@ -248,7 +279,7 @@
         "engine": "postgresql",
         "sql": "SELECT * FROM (VALUES ('2026-08-29',0,7,FALSE,TRUE)) AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)",
         "description": "Loads the evaluated Top-10 streak state for the latest UZ rank day.",
-        "executed_at": "2026-08-28T19:26:17Z",
+        "executed_at": "2026-08-28T21:20:00Z",
         "tables_used": ["inline evaluation values backed by growth/reports/evaluation-2026-08-29.json"],
         "filters": ["Current comparable config fingerprint", "Consecutive complete required goal days through 2026-08-29"],
         "metric_definitions": ["Current streak counts consecutive complete days satisfying both category definitions and the Google generic-query quorum", "A failed required goal day resets the current streak to zero"]
@@ -256,16 +287,30 @@
     },
     {
       "id": "gate_snapshot",
-      "label": "Fail-closed growth gates",
+      "label": "Fail-closed operational growth gates",
       "path": "growth/dashboard/gate_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.','Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Clarification email is drafted but has not been sent or answered','Send through an authenticated sender and record an unambiguous written response'),('Android device smoke','partial','Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.','Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact'),('iOS physical smoke','blocked','The exact Apple 1.1.0 (5) archive installed on a physical iPad but launch was blocked by the device lock and the app was removed; the earlier 1.0.1 (4) Release passed bounded physical iPad provider/cache/widget/cold-launch paths. The required iPhone is currently unavailable; its previous connection had no mountable DDI.','Unlock the iPad and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix')) AS gates(gate,status,evidence,next_action)",
+        "sql": "SELECT * FROM (VALUES ('ios_crash_gate','iOS crash gate','blocked','Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Xcode Organizer also reports that a developer account is required to download the crash list, so symbolication and root-cause verification remain blocked.','Restore Organizer developer-account access or obtain the diagnostic report, then symbolicate, reproduce, fix, and re-smoke'),('open_meteo_promotion_clearance','Open-Meteo promotion clearance','pending','Clarification email is drafted but has not been sent or answered.','Send through an authenticated sender and record an unambiguous written response'),('release_artifact_source_sync','Release artifact source sync','blocked','Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities, but the login Keychain is locked and neither current candidate has a signed artifact, immutable hash, or matching physical-QA evidence. Unchanged Wear OS 1.1.0 (1000008) alone remains verified-current.','Unlock the Keychain, create new signed vc8 and build-6 artifacts without overwriting history, verify identities and hashes, then record exact evidence'),('android_physical_smoke','Android device smoke','blocked','Current phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live Tashkent weather, cached offline cold start, and stability, but it still has no upload-signed current artifact or matching release-certificate physical result. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required.','Sign and verify phone vc8, then run the exact signed artifact on phone and tablet plus widget and paired Wear OS paths'),('ios_physical_smoke','iOS physical smoke','blocked','Current Apple 1.1.0 (6) has only an unsigned arm64 simulator build and no distribution-signed archive, artifact hash, or physical result. The build-5 iPad install and build-4 bounded runtime evidence are historical and do not transfer; current iPhone, iPad, widget, and watch coverage remains required.','Archive and distribution-sign build 6, then run the exact artifact on iPhone and iPad plus widget and paired watch paths'),('domain_activation','Domain activation','blocked','The registrar surface reports nimbo.uz waiting for activation, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete.','Complete registrar activation, then verify registry delegation, publish the reviewed Cloudflare DNS records, and wait for valid HTTPS'),('store_policy_console_clearance','Store policy console clearance','pass','Read-only 2026-08-28 console check found no open App Store review/compliance action and Google Play Policy status explicitly reported no issues; see growth/quality/store-policy-console-2026-08-28.md.','Re-check both store policy surfaces with the next weekly UZ console evidence window')) AS gates(gate_id,gate,status,evidence,next_action)",
         "description": "Loads the fail-closed scale gates and their next evidence-producing action.",
-        "executed_at": "2026-08-28T19:26:17Z",
+        "executed_at": "2026-08-28T21:20:00Z",
         "tables_used": ["inline gate values backed by growth/quality/gates.json"],
-        "filters": ["Critical organic-acquisition scale gates"],
+        "filters": ["Every gate registered with blocks_publication=true"],
         "metric_definitions": ["Only explicit pass permits scaling", "Blocked and pending are not pass"]
+      }
+    },
+    {
+      "id": "quality_guardrail_snapshot",
+      "label": "Fail-closed critical metric guardrails",
+      "path": "growth/dashboard/guardrail_snapshot.sql",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('ios_crash_free_sessions_pct','iOS crash-free sessions','unknown',TRUE,'>= 99.8%','block_scale','Attach the source-defined App Store crash-free-session metric for the same UZ evidence window'),('android_user_perceived_crash_rate_pct','Android user-perceived crash rate','unknown',TRUE,'< 1.09%','block_scale','Import the Play Console UZ user-perceived crash rate for the same seven complete days'),('android_user_perceived_anr_rate_pct','Android user-perceived ANR rate','unknown',TRUE,'< 0.47%','block_scale','Import the Play Console UZ user-perceived ANR rate for the same seven complete days'),('android_phone_model_crash_rate_pct','Android phone-model crash rate','unknown',TRUE,'< 8%','review_required','Import decision-eligible concrete phone-model crash evidence and review the worst observed model'),('android_phone_model_anr_rate_pct','Android phone-model ANR rate','unknown',TRUE,'< 8%','review_required','Import decision-eligible concrete phone-model ANR evidence and review the worst observed model'),('wear_model_crash_rate_pct','Wear OS model crash rate','unknown',TRUE,'< 4%','review_required','Import decision-eligible concrete Wear OS model crash evidence and review the worst observed model'),('wear_model_anr_rate_pct','Wear OS model ANR rate','unknown',TRUE,'< 5%','review_required','Import decision-eligible concrete Wear OS model ANR evidence and review the worst observed model'),('open_policy_issues','Weekly store policy issues','unknown',TRUE,'= 0','block_scale','Import Apple and Google policy-issue counts for the same weekly UZ evidence window')) AS guardrails(guardrail_id,guardrail,status,critical,threshold,unknown_policy,next_action)",
+        "description": "Loads every critical weekly metric guardrail and keeps missing evidence explicitly unknown.",
+        "executed_at": "2026-08-28T21:20:00Z",
+        "tables_used": ["inline guardrail values backed by growth/reports/evaluation-2026-08-29.json and growth/kpi-framework.json"],
+        "filters": ["Critical metric guardrails only"],
+        "metric_definitions": ["Unknown follows each guardrail's configured unknown_policy", "The weekly open_policy_issues metric is distinct from the point-in-time store_policy_console_clearance operational gate"]
       }
     }
   ]

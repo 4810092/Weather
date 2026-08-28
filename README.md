@@ -153,15 +153,23 @@ python3 scripts/check_repository.py
 python3 scripts/check_localizations.py
 python3 scripts/check_store_metadata.py
 python3 scripts/check_store_assets.py
+python3 scripts/check_store_previews.py
+python3 scripts/check_dashboard_report.py
+python3 scripts/build_site.py --output build/pages-check
+python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
 ./gradlew clean ktlintCheck \
   :shared:allTests \
   :shared:testAndroidHostTest \
+  :shared:iosSimulatorArm64Test \
+  :app:testDebugUnitTest \
   :shared:verifySqlDelightMigration \
   :app:bundleRelease \
   :wearApp:bundleRelease
 ```
 
-There are 53 unique automated test functions in the current tree: 49 common tests run for Android host and iOS Simulator, plus four Android-host persistence, migration, and platform-failure tests. See [Testing](docs/TESTING.md) for scope and known gaps.
+Test counts are discovered from the current tree and reported by Gradle/JUnit
+and Python unittest rather than copied into this page. See
+[Testing](docs/TESTING.md) for source sets, commands, scope, and known gaps.
 
 ## Localization and accessibility
 
@@ -180,7 +188,14 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 - Android phone/tablet `1.0.2` (`versionCode 6`) was rechecked as active in Google Play Production in 177 countries on August 28, 2026.
 - iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. One iOS 1.0.1 crash remains unsymbolicated, so acquisition scaling is blocked.
 - Wear OS `1.0.2` (`versionCode 1000007`) was rechecked as active in Google Play Production in 177 countries on August 28. Physical paired-device smoke is still pending.
-- The coordinated `1.1.0` candidate is not uploaded or public. Signed Android phone/Wear artifacts and the Apple app/widget/watch IPA are locally validated; the exact signed phone APK passed physical API 25 clean/live/cold-start, denied-location/manual-search, share, 150% text, TalkBack, cached-network recovery, and contextual review-prompt paths. See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md) and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
+- The coordinated `1.1.0` source identities are Android phone 8, Wear 1000008,
+  and Apple build 6; nothing is uploaded or public. Only the unchanged signed
+  Wear artifact remains source-current. Signed phone vc7 and Apple build 5,
+  including the vc7 API 25 physical matrix, are preserved historical evidence
+  and do not establish signing or QA for current phone vc8 or Apple build 6.
+  See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md), the
+  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-29.md),
+  and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

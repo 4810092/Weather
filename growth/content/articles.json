@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "september-heat-uv",
+      "slug": "september-heat-uv",
+      "status": "draft-blocked",
+      "target_month": "2026-09",
+      "published_on": null,
+      "source_urls": [
+        "https://www.who.int/news-room/questions-and-answers/item/radiation-the-ultraviolet-%28uv%29-index",
+        "https://github.com/4810092/Weather/blob/master/docs/INSIGHT_ENGINE.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Sentabr issig‘i va UV: tashqariga chiqish vaqtini qanday tanlash",
+          "description": "Harorat, UV va kun davomida o‘zgaradigan ob-havoni birga ko‘rib, tashqaridagi ishlarni rejalashtirish uchun sodda qo‘llanma.",
+          "eyebrow": "Mavsumiy qo‘llanma · Sentabr",
+          "headline": "Issiq kunda faqat hozirgi haroratga qaramang",
+          "lead": "Bir lahzadagi raqam butun kunni tushuntirmaydi. Nimbo joriy holat, oldingi va keyingi soatlar hamda UV kontekstini bir joyda ko‘rsatib, rejangizga mosroq vaqtni solishtirishga yordam beradi.",
+          "sections": [
+            {
+              "title": "Bir raqam emas, kun yo‘nalishini ko‘ring",
+              "text": "Avval joriy va his qilinadigan haroratni tekshiring, so‘ng 24 soatlik vaqt chizig‘ida keyingi soatlar qanday o‘zgarishini ko‘ring. O‘n kunlik kartalarda har bir kun uchun maksimal UV ham ko‘rsatiladi. Bu ma’lumotlar biror soatni mutlaq xavfsiz deb e’lon qilmaydi; ular variantlarni bir xil ekranda solishtirish uchun kontekstdir."
+            },
+            {
+              "title": "UV indeksi nimani anglatadi",
+              "text": "Jahon sog‘liqni saqlash tashkiloti UV indeksini ultrabinafsha nurlanish darajasining o‘lchovi deb tushuntiradi: indeks oshgani sari teri va ko‘zga zarar yetishi ehtimoli ortadi va zarar yuz berishi uchun kamroq vaqt talab qilinadi. Himoya choralariga oid rasmiy tavsiyalar uchun WHO manbasini oching; Nimbo shaxsiy tibbiy maslahat bermaydi."
+            },
+            {
+              "title": "Best Time Outside qanday ishlaydi",
+              "text": "Nimbo qolgan mahalliy kun ichidagi uzluksiz ikki soatlik oynalarni his qilinadigan harorat, yog‘ingarchilik, shamol va UV bo‘yicha deterministik tarzda baholaydi. Belgilangan xavf chegarasidan o‘tgan oynalar chiqarib tashlanadi; mos oyna bo‘lmasa, tavsiya o‘rniga xavf omillari ko‘rsatiladi. Bu tushuntiriladigan rejalashtirish signali, kafolat emas."
+            },
+            {
+              "title": "Chiqishdan oldin yangilang",
+              "text": "Prognozni yangilang va uning vaqt tamg‘asini tekshiring. Internet bo‘lmasa, Nimbo oxirgi saqlangan prognozni ko‘rsatishi mumkin — uni yangi o‘lchov deb qabul qilmang. Keskin yoki xavfli sharoitlarda mahalliy rasmiy ogohlantirishlar va sog‘liq bo‘yicha vakolatli manbalarga amal qiling."
+            }
+          ],
+          "disclaimer": "Nimbo umumiy ob-havo rejalashtirish kontekstini beradi. U tibbiy maslahat, favqulodda vaziyat ogohlantirishi, aniq mahalliy o‘lchov yoki xavfsizlik kafolati emas; prognozlar o‘zgarishi mumkin.",
+          "cta_title": "Bugungi oynalarni solishtiring",
+          "cta_text": "Nimbo’da shaharingizni tanlang va harorat, UV hamda keyingi soatlarni bitta vaqt chizig‘ida ko‘ring."
+        },
+        "ru": {
+          "title": "Сентябрьская жара и UV: как выбрать время для выхода",
+          "description": "Простая схема планирования дел на улице с учётом температуры, UV и изменений погоды в течение дня.",
+          "eyebrow": "Сезонный гид · Сентябрь",
+          "headline": "В жаркий день смотрите не только на температуру сейчас",
+          "lead": "Одно текущее значение не описывает весь день. Nimbo собирает текущие условия, предыдущие и следующие часы и контекст UV, чтобы можно было сравнить время для своих планов.",
+          "sections": [
+            {
+              "title": "Смотрите направление дня, а не одну цифру",
+              "text": "Сначала проверьте текущую и ощущаемую температуру, затем посмотрите на 24-часовой шкале, как меняются следующие часы. В карточках десятидневного прогноза указан максимальный UV для каждого дня. Эти данные не объявляют какой-либо час абсолютно безопасным: это контекст для сравнения вариантов на одном экране."
+            },
+            {
+              "title": "Что означает UV-индекс",
+              "text": "Всемирная организация здравоохранения определяет UV-индекс как показатель уровня ультрафиолетового излучения: чем он выше, тем больше потенциальный вред для кожи и глаз и тем меньше времени может потребоваться для его возникновения. За официальными мерами защиты обращайтесь к материалу WHO; Nimbo не даёт персональных медицинских рекомендаций."
+            },
+            {
+              "title": "Как работает Best Time Outside",
+              "text": "Nimbo детерминированно оценивает оставшиеся в местном дне непрерывные двухчасовые окна по ощущаемой температуре, осадкам, ветру и UV. Окна с заданными пороговыми опасностями исключаются; если подходящего окна нет, приложение показывает факторы риска вместо рекомендации. Это объяснимый сигнал для планирования, а не гарантия."
+            },
+            {
+              "title": "Обновите данные перед выходом",
+              "text": "Обновите прогноз и проверьте время данных. Без интернета Nimbo может показывать последний сохранённый прогноз — не принимайте его за новое измерение. При резких или опасных условиях следуйте местным официальным предупреждениям и рекомендациям компетентных источников по здоровью."
+            }
+          ],
+          "disclaimer": "Nimbo даёт общий контекст для планирования по погоде. Это не медицинская рекомендация, не экстренное предупреждение, не точное локальное измерение и не гарантия безопасности; прогноз может меняться.",
+          "cta_title": "Сравните часы сегодня",
+          "cta_text": "Выберите свой город в Nimbo и посмотрите температуру, UV и следующие часы на одной временной шкале."
+        },
+        "en": {
+          "title": "September heat and UV: choosing a time to go outside",
+          "description": "A simple way to plan outdoor tasks using temperature, UV, and the way conditions change through the day.",
+          "eyebrow": "Seasonal guide · September",
+          "headline": "On a hot day, look beyond the temperature right now",
+          "lead": "One current value cannot describe the whole day. Nimbo brings current conditions, earlier and upcoming hours, and UV context together so you can compare times for your plans.",
+          "sections": [
+            {
+              "title": "Read the direction of the day, not one number",
+              "text": "Start with current and apparent temperature, then use the 24-hour timeline to see how the next hours change. The 10-day cards show the maximum UV value for each day. These values do not declare any hour absolutely safe; they are context for comparing options on the same screen."
+            },
+            {
+              "title": "What the UV index means",
+              "text": "The World Health Organization describes the UV index as a measure of ultraviolet radiation: as the index rises, the potential for skin and eye damage increases and less time may be needed for harm to occur. Use WHO's material for official protection advice; Nimbo does not provide personal medical advice."
+            },
+            {
+              "title": "How Best Time Outside works",
+              "text": "Nimbo deterministically scores complete two-hour windows left in the location's local day using apparent temperature, precipitation, wind, and UV. Windows that cross defined hazard thresholds are excluded; when none remains, the app reports hazard factors instead of a recommendation. This is an explainable planning signal, not a guarantee."
+            },
+            {
+              "title": "Refresh before you leave",
+              "text": "Refresh the forecast and check its timestamp. When offline, Nimbo may show the last saved forecast; do not treat it as a new measurement. For severe or dangerous conditions, follow local official alerts and guidance from competent health authorities."
+            }
+          ],
+          "disclaimer": "Nimbo provides general weather-planning context. It is not medical advice, an emergency alert, an exact local measurement, or a safety guarantee; forecasts can change.",
+          "cta_title": "Compare today's windows",
+          "cta_text": "Choose your city in Nimbo and view temperature, UV, and the next hours on one timeline."
+        }
+      }
+    },
+    {
+      "id": "autumn-swings-aqi",
+      "slug": "autumn-swings-aqi",
+      "status": "draft-blocked",
+      "target_month": "2026-09",
+      "published_on": null,
+      "source_urls": [
+        "https://www.who.int/news-room/questions-and-answers/item/who-global-air-quality-guidelines",
+        "https://open-meteo.com/en/docs/air-quality-api",
+        "https://github.com/4810092/Weather/blob/master/docs/INSIGHT_ENGINE.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Kuzgi o‘zgarishlar va AQI: kunni kontekst bilan rejalashtiring",
+          "description": "Kechagi ob-havo, keyingi soatlar va AQI prognozini birga ko‘rib, kuzgi kunni rejalashtirish uchun amaliy qo‘llanma.",
+          "eyebrow": "Mavsumiy qo‘llanma · Erta kuz",
+          "headline": "Harorat o‘zgarsa, kecha va keyingi soatlar kontekst beradi",
+          "lead": "Bugungi raqamni kechagi xotira bilan taxmin qilish o‘rniga, bir xil mahalliy vaqtdagi taqqoslash, oldindagi soatlar va havo sifati prognozini alohida signallar sifatida ko‘ring.",
+          "sections": [
+            {
+              "title": "Bugunni kechagi bir xil vaqt bilan solishtiring",
+              "text": "Nimbo joriy soatni taxminan 24 soat oldingi eng yaqin mavjud soat bilan solishtiradi. Yetarli tarix bo‘lmasa, ilova taqqoslashni o‘ylab topmaydi. Natija kiyim yoki kun tartibi bo‘yicha yakuniy ko‘rsatma emas, balki tanish boshlang‘ich nuqtadir."
+            },
+            {
+              "title": "Keyingi o‘zgarishni vaqt chizig‘ida toping",
+              "text": "24 soatlik vaqt chizig‘i va keyingi 12 soatdagi sezilarli yog‘in yoki his qilinadigan harorat o‘zgarishi haqidagi signal bugungi reja uchun qisqa ufq beradi. O‘n kunlik prognoz esa keyingi kunlarni ko‘rishga yordam beradi, lekin uzoqroq ufqdagi noaniqlik yo‘qolmaydi."
+            },
+            {
+              "title": "AQI — alohida prognoz konteksti",
+              "text": "Nimbo Open-Meteo’dan AQI va ifloslantiruvchi moddalar prognozi kontekstini oladi. Open-Meteo bu ma’lumotni 11 km aniqlikdagi prognoz sifatida tavsiflaydi; bu siz turgan joydagi sensor o‘lchovi emas. WHO havo sifati qo‘llanmalari alohida ifloslantiruvchilar va o‘rtacha davrlar uchun sog‘liqka asoslangan tavsiyalardir; ularni bitta AQI raqami bilan tenglashtirmang."
+            },
+            {
+              "title": "Signallarni birlashtiring, lekin cheklovlarni saqlang",
+              "text": "Harorat taqqoslashini, yog‘in va shamol prognozini hamda AQI kontekstini yonma-yon ko‘ring. Ma’lumot vaqti va internet holatini tekshiring. Havo sifati yoki sog‘liq bo‘yicha shaxsiy qaror kerak bo‘lsa, mahalliy rasmiy manba va malakali tibbiy mutaxassis tavsiyasiga murojaat qiling."
+            }
+          ],
+          "disclaimer": "AQI va ob-havo qiymatlari prognoz kontekstidir, shaxsiy ekspozitsiya o‘lchovi yoki tibbiy tashxis emas. Nimbo favqulodda ogohlantirish va xavfsizlik kafolatini bermaydi.",
+          "cta_title": "Kechani, hozirni va oldindagi soatlarni ko‘ring",
+          "cta_text": "Nimbo’da shaharingizni oching, kecha bilan taqqoslang va AQI kontekstini alohida tekshiring."
+        },
+        "ru": {
+          "title": "Осенние перепады и AQI: планируйте день с контекстом",
+          "description": "Практический способ планировать осенний день, сопоставляя вчерашнюю погоду, следующие часы и прогноз AQI.",
+          "eyebrow": "Сезонный гид · Ранняя осень",
+          "headline": "Когда температура меняется, помогают вчера и следующие часы",
+          "lead": "Не заменяйте данные памятью о вчерашнем дне: рассматривайте сравнение на то же местное время, ближайшие часы и прогноз качества воздуха как отдельные сигналы.",
+          "sections": [
+            {
+              "title": "Сравните сегодня со вчера в то же время",
+              "text": "Nimbo сопоставляет текущий час с ближайшим доступным часом примерно 24 часа назад. Если истории недостаточно, приложение не придумывает сравнение. Результат — знакомая отправная точка, а не окончательное указание по одежде или распорядку дня."
+            },
+            {
+              "title": "Найдите следующее изменение на временной шкале",
+              "text": "24-часовая шкала и сигнал о заметных осадках или изменении ощущаемой температуры в следующие 12 часов дают короткий горизонт для сегодняшнего плана. Десятидневный прогноз помогает посмотреть дальше, но не устраняет неопределённость более дальнего прогноза."
+            },
+            {
+              "title": "AQI — отдельный прогнозный контекст",
+              "text": "Nimbo получает у Open-Meteo прогнозный контекст AQI и загрязняющих веществ. Open-Meteo описывает эти данные как прогноз с разрешением 11 км, а не показание датчика в вашей точке. Рекомендации WHO по качеству воздуха относятся к отдельным загрязнителям и периодам усреднения; их нельзя приравнивать к одному числу AQI."
+            },
+            {
+              "title": "Соберите сигналы вместе, сохраняя ограничения",
+              "text": "Смотрите рядом сравнение температуры, прогноз осадков и ветра и контекст AQI. Проверяйте время данных и подключение. Если требуется личное решение о здоровье или качестве воздуха, используйте местные официальные источники и рекомендации квалифицированного медицинского специалиста."
+            }
+          ],
+          "disclaimer": "AQI и погодные значения — прогнозный контекст, а не измерение личного воздействия и не медицинский диагноз. Nimbo не заменяет экстренные предупреждения и не гарантирует безопасность.",
+          "cta_title": "Посмотрите вчера, сейчас и следующие часы",
+          "cta_text": "Откройте свой город в Nimbo, сравните со вчерашним днём и отдельно проверьте контекст AQI."
+        },
+        "en": {
+          "title": "Autumn swings and AQI: plan the day with context",
+          "description": "A practical way to plan an autumn day by comparing yesterday's weather, the next hours, and forecast AQI context.",
+          "eyebrow": "Seasonal guide · Early autumn",
+          "headline": "When temperature changes, yesterday and the next hours add context",
+          "lead": "Instead of replacing data with a memory of yesterday, treat the same-local-time comparison, upcoming hours, and air-quality forecast as separate signals.",
+          "sections": [
+            {
+              "title": "Compare today with the same time yesterday",
+              "text": "Nimbo compares the current hour with the nearest available hour about 24 hours earlier. When there is not enough history, the app does not invent a comparison. The result is a familiar starting point, not a final instruction about clothing or your schedule."
+            },
+            {
+              "title": "Find the next change on the timeline",
+              "text": "The 24-hour timeline and a signal for meaningful precipitation or apparent-temperature change over the next 12 hours provide a short horizon for today's plan. The 10-day forecast helps you look farther ahead, but it does not remove uncertainty from a longer-range forecast."
+            },
+            {
+              "title": "AQI is separate forecast context",
+              "text": "Nimbo obtains forecast AQI and pollutant context from Open-Meteo. Open-Meteo describes these data as an 11 km-resolution forecast, not a sensor reading at your exact position. WHO air-quality guidelines are health-based recommendations for individual pollutants and averaging periods; they are not the same thing as one AQI number."
+            },
+            {
+              "title": "Combine the signals while keeping their limits",
+              "text": "View the temperature comparison, precipitation and wind forecast, and AQI context side by side. Check the data timestamp and connection state. When you need a personal health or air-quality decision, use local official sources and advice from a qualified health professional."
+            }
+          ],
+          "disclaimer": "AQI and weather values are forecast context, not a personal-exposure measurement or medical diagnosis. Nimbo does not replace emergency alerts or guarantee safety.",
+          "cta_title": "See yesterday, now, and the hours ahead",
+          "cta_text": "Open your city in Nimbo, compare it with yesterday, and check AQI context separately."
+        }
+      }
+    }
+  ]
+}

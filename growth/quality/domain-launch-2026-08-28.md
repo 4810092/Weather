@@ -1,33 +1,61 @@
-# `nimbo.uz` launch state — 2026-08-28
+# `nimbo.uz` launch state — 2026-08-28, refreshed 2026-08-29
 
-Status: **origin deployed; public domain not yet reachable**.
+Status: **BLOCKED — registrar activation is incomplete; public domain and TLS
+are not available**.
 
 ## Completed
 
-- GitHub Pages deployment run
-  [`33200161273`](https://github.com/4810092/Weather/actions/runs/33200161273)
-  completed successfully.
+- GitHub Pages deployment `6147270106` for commit
+  `584f47a83637ce3587ce980a69f392b84a57656b` completed successfully.
 - The repository Pages configuration uses the workflow build type and accepts
   `nimbo.uz` as its custom domain.
 - The generated site uses `https://nimbo.uz` as the canonical origin for the
   Uzbek, Russian, and English landing, privacy, support, and press routes.
-- The registrar control panel contains the Cloudflare-assigned nameservers
-  `jose.ns.cloudflare.com` and `sharon.ns.cloudflare.com`.
+- The registrar-facing record contains the Cloudflare-assigned nameservers
+  `jose.ns.cloudflare.com` and `sharon.ns.cloudflare.com`; this is not proof of
+  registry delegation.
+- A direct HTTP request to the GitHub Pages edge with `Host: nimbo.uz` returned
+  HTTP `200` with the expected site. This proves that the Pages origin can route
+  the custom host, but it does not prove public DNS or HTTPS reachability.
 - The existing `nimbo-uz-rank-monitor` heartbeat temporarily runs hourly and
   performs read-only registry delegation, public DNS, Pages health, HTTP/TLS,
   and canonical checks alongside rank evaluation.
 
 ## Current external blocker
 
-At `2026-08-28 23:35 +05:00`, public `NS`, `A`, and `AAAA` lookups returned no
-records. An authoritative `dig +trace NS nimbo.uz` reached the `.uz` registry
-and returned authenticated NSEC3 negative proof: the registry had not yet
-published delegation for `nimbo.uz`. The registrar UI reported the domain as
-`Activating`; Cloudflare therefore remained pending.
+At `2026-08-29 01:34 +05:00`, the public Webname status page reported
+`Активацияни кутиш` (waiting for activation). The `.uz` WHOIS response reported
+status `EXPIRED`, with both creation and expiration dates set to `28-Aug-2026`.
+It also listed registrar `Arsenal-D` and the intended Cloudflare nameservers.
 
-GitHub's Pages API also still returned HTTP `202` for domain health and
-`https_enforced=false`. Those states are expected until DNS is visible and a
-certificate can be issued. Public reachability and HTTPS are not claimed.
+A read-only recheck at `2026-08-29 02:26 +05:00` returned the same WHOIS
+status, DNSSEC-authenticated registry `NXDOMAIN`, no public `A`/`AAAA` answer,
+and no resolvable HTTPS endpoint.
+
+Registry lookup, direct queries to authoritative `.uz` nameservers, and public
+recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
+`nimbo.uz`. The registry has therefore not published a delegation. The
+nameservers shown in the registrar-facing record are not publicly effective,
+and this is not an ordinary Cloudflare propagation delay.
+
+TLS for `nimbo.uz` is not provisioned. The successful GitHub Pages deployment
+and direct edge-host HTTP `200` are origin-only evidence; public reachability
+and HTTPS remain unclaimed.
+
+## Fail-closed activation gate
+
+Do not announce or promote `nimbo.uz` as live until all of the following are
+complete and independently verified:
+
+1. Complete the registrar activation flow, including any outstanding payment
+   or identity/contact verification required by Webname/Arsenal-D.
+2. Confirm that WHOIS no longer reports `EXPIRED` or waiting for activation and
+   that the `.uz` registry publishes delegation to the intended Cloudflare
+   nameservers.
+3. Add and verify the Cloudflare DNS records below, then confirm public `NS`,
+   `A`, `AAAA`, and `www` resolution from independent recursive resolvers.
+4. Wait for GitHub Pages certificate issuance, enable HTTPS, and verify the
+   apex, `www`, redirects, canonical URLs, and every localized route over TLS.
 
 ## DNS records required after activation
 
@@ -46,6 +74,5 @@ TLS:
 | AAAA | `@` | `2606:50c0:8003::153` |
 | CNAME | `www` | `4810092.github.io` |
 
-After propagation, the release check must enable Pages HTTPS, verify apex and
-`www` redirects over HTTPS, verify every localized route, and then return the
-heartbeat from hourly monitoring to its normal daily schedule.
+After all gates pass, return the heartbeat from hourly monitoring to its normal
+daily schedule.

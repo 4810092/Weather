@@ -1,10 +1,10 @@
 {
   "$schema": "./metadata.schema.json",
   "schema_version": 2,
-  "metadata_revision": "2026-08-28",
+  "metadata_revision": "2026-08-29",
   "product": {
     "id": "nimbo",
-    "release": "1.0",
+    "release": "1.1.0",
     "urls": {
       "marketing": "https://nimbo.uz/",
       "support": "https://nimbo.uz/support/",
@@ -119,7 +119,7 @@
   },
   "creative_sets": {
     "growth-2026-08": {
-      "revision": 1,
+      "revision": 4,
       "manifest": "store/creative-sets/growth-2026-08.json",
       "platforms": [
         "app-store",

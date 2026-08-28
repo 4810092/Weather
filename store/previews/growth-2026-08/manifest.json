@@ -1,0 +1,113 @@
+{
+  "schema_version": 3,
+  "id": "growth-2026-08",
+  "status": "capture-blocked",
+  "duration_seconds": 20,
+  "storyboard": "store/previews/growth-2026-08/storyboard.md",
+  "candidate_identity": {
+    "apple": {
+      "version": "1.1.0",
+      "build": "6"
+    },
+    "google": {
+      "version": "1.1.0",
+      "version_code": 8
+    }
+  },
+  "blocking_gates": [
+    "android_physical_smoke",
+    "ios_crash_gate",
+    "ios_physical_smoke",
+    "open_meteo_promotion_clearance",
+    "release_artifact_source_sync"
+  ],
+  "clips": [
+    {
+      "sequence": 1,
+      "start_ms": 0,
+      "end_ms": 5000,
+      "action": "Fresh onboarding; select Toshkent without requesting location"
+    },
+    {
+      "sequence": 2,
+      "start_ms": 5000,
+      "end_ms": 10000,
+      "action": "Forecast appears; show the yesterday comparison"
+    },
+    {
+      "sequence": 3,
+      "start_ms": 10000,
+      "end_ms": 15000,
+      "action": "Scroll the genuine 24-hours-ago, now, and 24-hours-ahead timeline"
+    },
+    {
+      "sequence": 4,
+      "start_ms": 15000,
+      "end_ms": 20000,
+      "action": "Cold-launch the verified cached forecast while offline"
+    }
+  ],
+  "locales": {
+    "en-US": {
+      "captions": "store/previews/growth-2026-08/captions-en-US.srt",
+      "apple_master": {
+        "file": "store/previews/growth-2026-08/nimbo-apple-en-US.mov",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      },
+      "google_master": {
+        "file": "store/previews/growth-2026-08/nimbo-google-en-US.mp4",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      }
+    },
+    "ru-RU": {
+      "captions": "store/previews/growth-2026-08/captions-ru-RU.srt",
+      "apple_master": {
+        "file": "store/previews/growth-2026-08/nimbo-apple-ru-RU.mov",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      },
+      "google_master": {
+        "file": "store/previews/growth-2026-08/nimbo-google-ru-RU.mp4",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      }
+    },
+    "uz-UZ": {
+      "captions": "store/previews/growth-2026-08/captions-uz-UZ.srt",
+      "apple_master": {
+        "file": "store/previews/growth-2026-08/nimbo-apple-uz-UZ.mov",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      },
+      "google_master": {
+        "file": "store/previews/growth-2026-08/nimbo-google-uz-UZ.mp4",
+        "sha256": null,
+        "source_recording_sha256": null,
+        "capture_evidence": null
+      }
+    }
+  },
+  "export_contract": {
+    "apple": {
+      "width": 886,
+      "height": 1920,
+      "video_codec": "h264",
+      "max_fps": 30,
+      "min_duration_seconds": 15,
+      "max_duration_seconds": 30
+    },
+    "google": {
+      "orientation": "portrait",
+      "video_codec": "h264",
+      "max_fps": 30
+    }
+  },
+  "boundary": "Final files must contain genuine same-platform app footage. Static screenshot animation is forbidden. No preview is upload-ready while status is capture-blocked."
+}

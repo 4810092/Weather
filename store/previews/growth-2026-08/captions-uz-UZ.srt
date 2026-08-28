@@ -1,0 +1,15 @@
+1
+00:00:00,000 --> 00:00:05,000
+Tashqariga chiqish uchun eng yaxshi vaqtni toping
+
+2
+00:00:05,000 --> 00:00:10,000
+Hozirgi ob-havoni kechagi bilan solishtiring
+
+3
+00:00:10,000 --> 00:00:15,000
+24 soat oldin · hozir · 24 soat keyin
+
+4
+00:00:15,000 --> 00:00:20,000
+So‘nggi prognoz oflayn ham mavjud

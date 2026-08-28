@@ -8,7 +8,7 @@ FROM (
     ('App Store', 'First-time downloads', '5', 'reported_console_readout'),
     ('App Store', 'Conversion rate', '4.05%', 'reported_console_readout'),
     ('App Store', 'Ratings', '0', 'reported_console_readout'),
-    ('App Store', 'Crashes', '1', 'live_console_2026-08-28'),
+    ('App Store', 'Crashes', '1', 'live_console_2026-08-29'),
     ('Google Play', 'Impressions', '779', 'reported_console_readout'),
     ('Google Play', 'Installations', '21', 'live_console_2026-08-28'),
     ('Google Play', 'First launches', '14', 'live_console_2026-08-28'),

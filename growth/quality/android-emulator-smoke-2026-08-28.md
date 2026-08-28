@@ -31,11 +31,13 @@ No physical device result is claimed by this emulator report.
 | Comprehensive predecessor | `7cb445efd4e7fbc9454a451ea6ad80ad84f4381fcececac0198cf20071ba5e10`; replaced at runtime by the explicit AndroidX Fragment 1.9.0 override |
 
 The APK above includes the TLS, stale-request, transient-retry, quick-city
-localization, and AndroidX Fragment 1.9.0 fixes. The path was later rebuilt as
-`1.1.0 (7)` and no longer points to these tested bytes. Signed `1.1.0` artifact
-identity is documented in `android-release-artifacts-2026-08-28.md`; exact
-signed-install evidence is in the physical-device report. This emulator report
-does not claim signed/R8 coverage.
+localization, and AndroidX Fragment 1.9.0 fixes. The path was later rebuilt and
+signed as historical `1.1.0 (7)` and now builds current source identity
+`1.1.0 (8)`; it no longer points to any of those bytes. Historical signed
+artifact identity is documented in `android-release-artifacts-2026-08-28.md`,
+and its exact signed-install evidence is in the physical-device report. This
+emulator report proves neither current vc8 signing/R8 coverage nor current
+physical QA.
 
 ## Environments
 

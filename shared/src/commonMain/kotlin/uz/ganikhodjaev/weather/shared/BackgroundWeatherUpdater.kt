@@ -5,8 +5,16 @@ import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
+import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
+import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.resolve
 import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
 
@@ -20,47 +28,17 @@ enum class BackgroundRefreshOutcome {
 class BackgroundWeatherUpdater(platformContext: PlatformContext) {
     private val context = platformContext
     private val repository = NimboContainer(platformContext).weatherRepository
+    private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    suspend fun refreshOutcome(): BackgroundRefreshOutcome {
-        val location = repository.activeLocation()
-            ?: return BackgroundRefreshOutcome.NothingToRefresh
-        val primaryOutcome = try {
-            repository.refreshPrimary(location)
-            BackgroundRefreshOutcome.Updated
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (error: Throwable) {
-            classifyBackgroundRefreshFailure(error)
+    suspend fun refreshOutcome(): BackgroundRefreshOutcome =
+        refreshBackgroundWeather(repository) { snapshot ->
+            val units = repository.unitPreference().resolve(automaticUnitSystem())
+            publishWeatherSnapshot(
+                platformContext = context,
+                snapshot = snapshot,
+                displayUnits = units
+            )
         }
-
-        if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
-            try {
-                repository.refreshAirQuality(location)
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Throwable) {
-                // Air quality is optional; a successful primary forecast remains useful.
-            }
-        }
-
-        try {
-            repository.observe(location).first()?.let { snapshot ->
-                val units = repository.unitPreference().resolve(automaticUnitSystem())
-                publishWeatherSnapshot(
-                    platformContext = context,
-                    snapshot = snapshot,
-                    displayUnits = units
-                )
-            }
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (error: Throwable) {
-            if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
-                return classifyBackgroundRefreshFailure(error)
-            }
-        }
-        return primaryOutcome
-    }
 
     suspend fun refresh(): Boolean = when (refreshOutcome()) {
         BackgroundRefreshOutcome.Updated,
@@ -68,6 +46,81 @@ class BackgroundWeatherUpdater(platformContext: PlatformContext) {
         BackgroundRefreshOutcome.TransientFailure,
         BackgroundRefreshOutcome.PermanentFailure -> false
     }
+
+    fun startRefresh(onComplete: (Boolean) -> Unit): BackgroundRefreshHandle =
+        startCancellableBackgroundRefresh(
+            scope = refreshScope,
+            refresh = ::refresh,
+            onComplete = onComplete
+        )
+}
+
+class BackgroundRefreshHandle internal constructor(private val job: Job) {
+    fun cancel() {
+        job.cancel()
+    }
+
+    internal suspend fun join() {
+        job.join()
+    }
+}
+
+internal fun startCancellableBackgroundRefresh(
+    scope: CoroutineScope,
+    refresh: suspend () -> Boolean,
+    onComplete: (Boolean) -> Unit
+): BackgroundRefreshHandle {
+    val job = scope.launch {
+        val succeeded = try {
+            refresh()
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Throwable) {
+            false
+        }
+        coroutineContext.ensureActive()
+        onComplete(succeeded)
+    }
+    return BackgroundRefreshHandle(job)
+}
+
+internal suspend fun refreshBackgroundWeather(
+    repository: WeatherDataSource,
+    publishSnapshot: suspend (WeatherSnapshot) -> Unit
+): BackgroundRefreshOutcome {
+    val location = repository.activeLocation()
+        ?: return BackgroundRefreshOutcome.NothingToRefresh
+    val primaryOutcome = try {
+        repository.refreshPrimary(location)
+        BackgroundRefreshOutcome.Updated
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (error: Throwable) {
+        classifyBackgroundRefreshFailure(error)
+    }
+
+    if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
+        try {
+            repository.refreshAirQuality(location)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Throwable) {
+            // Air quality is optional; a successful primary forecast remains useful.
+        }
+    }
+
+    try {
+        repository.observe(location).first()?.let { snapshot ->
+            publishSnapshot(snapshot)
+        }
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (error: Throwable) {
+        if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
+            return classifyBackgroundRefreshFailure(error)
+        }
+    }
+    return primaryOutcome
 }
 
 internal fun classifyBackgroundRefreshFailure(error: Throwable): BackgroundRefreshOutcome = when {

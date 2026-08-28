@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -68,6 +69,9 @@ EXPECTED_PUBLIC_URLS = {
     "privacy": "https://nimbo.uz/privacy/",
 }
 EXPECTED_SCHEMA_ID = "https://nimbo.uz/schemas/store-metadata-v2.json"
+SEMANTIC_VERSION = re.compile(r"^\d+\.\d+\.\d+$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
+ARTIFACT_NAMES = {"android_phone", "wear_os", "apple"}
 
 
 def is_https_url(value: object) -> bool:
@@ -102,6 +106,215 @@ def validate_text_fields(
             failures.append(f"{owner}:{field}: {len(value)} > {limits[field]}")
 
 
+def read_source_integer(
+    relative_path: str,
+    pattern: str,
+    owner: str,
+    failures: list[str],
+) -> int | None:
+    content = (ROOT / relative_path).read_text(encoding="utf-8")
+    match = re.search(pattern, content)
+    if match is None:
+        failures.append(f"{owner}: source identity could not be read")
+        return None
+    return int(match.group(1).replace("_", ""))
+
+
+def require_evidence_path(value: object, owner: str, failures: list[str]) -> None:
+    if not isinstance(value, str) or not (ROOT / value).is_file():
+        failures.append(f"{owner}: evidence file is missing")
+
+
+def validate_upload_artifacts(
+    upload_manifest: object,
+    product_release: str,
+    failures: list[str],
+) -> None:
+    if not isinstance(upload_manifest, dict):
+        failures.append("upload manifest must be an object")
+        return
+    artifacts = upload_manifest.get("artifacts")
+    if not isinstance(artifacts, dict) or set(artifacts) != ARTIFACT_NAMES:
+        failures.append(
+            "upload manifest artifacts must contain exactly android_phone, "
+            "wear_os, and apple"
+        )
+        return
+
+    source_identities = {
+        "android_phone": read_source_integer(
+            "app/build.gradle.kts",
+            r"versionCode\s*=\s*([\d_]+)",
+            "android_phone",
+            failures,
+        ),
+        "wear_os": read_source_integer(
+            "wearApp/build.gradle.kts",
+            r"versionCode\s*=\s*([\d_]+)",
+            "wear_os",
+            failures,
+        ),
+        "apple": read_source_integer(
+            "iosApp/project.yml",
+            r"CURRENT_PROJECT_VERSION:\s*([\d_]+)",
+            "apple",
+            failures,
+        ),
+    }
+    apple_build = source_identities["apple"]
+    project_versions = {
+        int(value)
+        for value in re.findall(
+            r"CURRENT_PROJECT_VERSION = (\d+);",
+            (ROOT / "iosApp/Nimbo.xcodeproj/project.pbxproj").read_text(
+                encoding="utf-8"
+            ),
+        )
+    }
+    if apple_build is not None and project_versions != {apple_build}:
+        failures.append(
+            "Apple generated project build identity differs from iosApp/project.yml"
+        )
+
+    identity_fields = {
+        "android_phone": "version_code",
+        "wear_os": "version_code",
+        "apple": "build",
+    }
+    expected_filenames = {
+        "android_phone": (
+            f"nimbo-phone-{product_release}-vc{source_identities['android_phone']}.aab"
+        ),
+        "wear_os": (
+            f"nimbo-wear-{product_release}-vc{source_identities['wear_os']}.aab"
+        ),
+        "apple": "Nimbo.ipa",
+    }
+    common_fields = {
+        "filename",
+        "source_sync",
+        "sha256",
+        "signing_evidence",
+        "physical_qa_evidence",
+        "source_sync_evidence",
+        "historical_candidate",
+    }
+
+    for artifact_name in sorted(ARTIFACT_NAMES):
+        artifact = artifacts[artifact_name]
+        identity_field = identity_fields[artifact_name]
+        owner = f"upload manifest artifact {artifact_name}"
+        expected_fields = common_fields | {identity_field}
+        if not isinstance(artifact, dict) or set(artifact) != expected_fields:
+            failures.append(f"{owner}: expected exactly {sorted(expected_fields)}")
+            continue
+        expected_identity = source_identities[artifact_name]
+        if artifact[identity_field] != expected_identity:
+            failures.append(
+                f"{owner}: declared {identity_field} {artifact[identity_field]!r} "
+                f"differs from source {expected_identity!r}"
+            )
+        if artifact["filename"] != expected_filenames[artifact_name]:
+            failures.append(
+                f"{owner}: filename does not match the declared source identity"
+            )
+        require_evidence_path(
+            artifact["source_sync_evidence"],
+            f"{owner}.source_sync_evidence",
+            failures,
+        )
+
+        source_sync = artifact["source_sync"]
+        if source_sync == "blocked":
+            for field in ("sha256", "signing_evidence", "physical_qa_evidence"):
+                if artifact[field] is not None:
+                    failures.append(f"{owner}: blocked artifact must keep {field} null")
+            historical = artifact["historical_candidate"]
+            historical_fields = {
+                "status",
+                "filename",
+                identity_field,
+                "sha256",
+                "signing_evidence",
+                "physical_qa_evidence",
+            }
+            if not isinstance(historical, dict) or set(historical) != historical_fields:
+                failures.append(
+                    f"{owner}: blocked artifact requires one exact historical candidate"
+                )
+                continue
+            if historical["status"] != "historical-superseded":
+                failures.append(
+                    f"{owner}: historical candidate must be marked superseded"
+                )
+            historical_identity = historical[identity_field]
+            if (
+                not isinstance(historical_identity, int)
+                or expected_identity is None
+                or historical_identity >= expected_identity
+            ):
+                failures.append(
+                    f"{owner}: historical identity must precede current source"
+                )
+            historical_sha = historical["sha256"]
+            if not isinstance(historical_sha, str) or not SHA256.fullmatch(
+                historical_sha
+            ):
+                failures.append(f"{owner}: historical SHA-256 is invalid")
+            require_evidence_path(
+                historical["signing_evidence"],
+                f"{owner}.historical.signing_evidence",
+                failures,
+            )
+            signing_evidence = historical["signing_evidence"]
+            if (
+                isinstance(signing_evidence, str)
+                and isinstance(historical_sha, str)
+                and (ROOT / signing_evidence).is_file()
+                and historical_sha
+                not in (ROOT / signing_evidence).read_text(encoding="utf-8")
+            ):
+                failures.append(
+                    f"{owner}: historical SHA-256 is absent from signing evidence"
+                )
+            require_evidence_path(
+                historical["physical_qa_evidence"],
+                f"{owner}.historical.physical_qa_evidence",
+                failures,
+            )
+        elif source_sync == "verified-current":
+            artifact_sha = artifact["sha256"]
+            if not isinstance(artifact_sha, str) or not SHA256.fullmatch(artifact_sha):
+                failures.append(f"{owner}: verified-current SHA-256 is invalid")
+            require_evidence_path(
+                artifact["signing_evidence"],
+                f"{owner}.signing_evidence",
+                failures,
+            )
+            signing_evidence = artifact["signing_evidence"]
+            if (
+                isinstance(signing_evidence, str)
+                and isinstance(artifact_sha, str)
+                and (ROOT / signing_evidence).is_file()
+                and artifact_sha
+                not in (ROOT / signing_evidence).read_text(encoding="utf-8")
+            ):
+                failures.append(f"{owner}: SHA-256 is absent from signing evidence")
+            physical_evidence = artifact["physical_qa_evidence"]
+            if physical_evidence is not None:
+                require_evidence_path(
+                    physical_evidence,
+                    f"{owner}.physical_qa_evidence",
+                    failures,
+                )
+            if artifact["historical_candidate"] is not None:
+                failures.append(
+                    f"{owner}: verified-current artifact cannot carry a replacement"
+                )
+        else:
+            failures.append(f"{owner}: invalid source_sync {source_sync!r}")
+
+
 def main() -> int:
     metadata_path = ROOT / "store/metadata.json"
     schema_path = ROOT / "store/metadata.schema.json"
@@ -133,6 +346,35 @@ def main() -> int:
     if set(product) != {"id", "release", "urls"}:
         failures.append("product must contain exactly id, release, and urls")
     product_urls = product.get("urls", {}) if isinstance(product, dict) else {}
+    product_release = product.get("release") if isinstance(product, dict) else None
+    if not isinstance(product_release, str) or not SEMANTIC_VERSION.fullmatch(
+        product_release
+    ):
+        failures.append("product.release must be a three-part semantic version")
+    else:
+        version_sources = {
+            "Android phone": (
+                ROOT / "app/build.gradle.kts",
+                r'versionName\s*=\s*"([^"]+)"',
+            ),
+            "Wear OS": (
+                ROOT / "wearApp/build.gradle.kts",
+                r'versionName\s*=\s*"([^"]+)"',
+            ),
+            "Apple": (
+                ROOT / "iosApp/project.yml",
+                r"MARKETING_VERSION:\s*([^\s]+)",
+            ),
+        }
+        for platform, (path, pattern) in version_sources.items():
+            match = re.search(pattern, path.read_text(encoding="utf-8"))
+            if match is None:
+                failures.append(f"{platform}: release version could not be read")
+            elif match.group(1) != product_release:
+                failures.append(
+                    f"{platform}: {match.group(1)!r} differs from "
+                    f"product.release {product_release!r}"
+                )
     if set(product_urls) != {"marketing", "support", "privacy"}:
         failures.append(
             "product.urls must contain exactly marketing, support, and privacy"
@@ -398,13 +640,90 @@ def main() -> int:
     if not cpp.get("keyword_targets"):
         failures.append("App Store UZ custom product page requires keyword targets")
 
+    upload_manifest_path = ROOT / f"store/upload-manifest-{product_release}.json"
+    if not isinstance(product_release, str) or not upload_manifest_path.is_file():
+        failures.append(
+            f"missing resolved upload manifest {upload_manifest_path.relative_to(ROOT)}"
+        )
+    else:
+        upload_manifest = json.loads(upload_manifest_path.read_text(encoding="utf-8"))
+        if upload_manifest.get("release") != product_release:
+            failures.append("upload manifest release differs from product.release")
+        if upload_manifest.get("status") != "draft-blocked":
+            failures.append("upload manifest must remain draft-blocked before upload")
+        if upload_manifest.get("metadata") != "store/metadata.json":
+            failures.append("upload manifest must reference store/metadata.json")
+        validate_upload_artifacts(upload_manifest, product_release, failures)
+        payloads = upload_manifest.get("listing_payloads", [])
+        payload_ids = {
+            payload.get("listing_id")
+            for payload in payloads
+            if isinstance(payload, dict)
+        }
+        if payload_ids != set(listing_by_id):
+            failures.append("upload manifest must resolve every listing exactly once")
+        for payload in payloads:
+            if not isinstance(payload, dict):
+                failures.append("upload manifest listing payload must be an object")
+                continue
+            listing = listing_by_id.get(payload.get("listing_id"), {})
+            if set(payload.get("store_locales", [])) != set(
+                listing.get("localization_refs", [])
+            ):
+                failures.append(
+                    f"upload manifest {payload.get('listing_id')}: locale mapping differs"
+                )
+            for key in ("asset_root", "growth_creatives", "feature_graphic"):
+                path = payload.get(key)
+                if path is not None and not (ROOT / path).exists():
+                    failures.append(
+                        f"upload manifest {payload.get('listing_id')}: missing {key} {path}"
+                    )
+            feature_graphics = payload.get("feature_graphics", {})
+            if not isinstance(feature_graphics, dict):
+                failures.append(
+                    f"upload manifest {payload.get('listing_id')}: invalid feature map"
+                )
+            else:
+                for locale, path in feature_graphics.items():
+                    if locale not in payload.get("store_locales", []):
+                        failures.append(
+                            f"upload manifest {payload.get('listing_id')}: "
+                            f"feature locale {locale} is not mapped"
+                        )
+                    if not isinstance(path, str) or not (ROOT / path).is_file():
+                        failures.append(
+                            f"upload manifest {payload.get('listing_id')}: "
+                            f"missing feature graphic {path}"
+                        )
+        payload_by_id = {
+            payload["listing_id"]: payload
+            for payload in payloads
+            if isinstance(payload, dict) and payload.get("listing_id") in listing_by_id
+        }
+        play_default = payload_by_id.get("google-play-default", {})
+        if play_default.get("feature_graphic") != (
+            "store/assets/google-play/feature-graphic-en-US-1024x500.jpg"
+        ):
+            failures.append(
+                "Google Play default upload must use the en-US feature graphic"
+            )
+        play_uz = payload_by_id.get("google-play-uz-custom-listing", {})
+        if play_uz.get("feature_graphics") != {
+            "uz-UZ": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
+            "ru-RU": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg",
+        }:
+            failures.append(
+                "Google Play UZ upload must map the UZ and RU feature graphics"
+            )
     if failures:
         print("Store metadata check failed:", file=sys.stderr)
         print("\n".join(f"- {failure}" for failure in failures), file=sys.stderr)
         return 1
     print(
         f"Store metadata passed: schema v2, {len(localizations)} locales, "
-        f"{len(listings)} listings, {len(creative_sets)} creative set."
+        f"{len(listings)} listings, {len(creative_sets)} creative set, "
+        f"release {product_release} upload manifest."
     )
     return 0
 

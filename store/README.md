@@ -9,13 +9,23 @@ input and nothing here is published automatically.
 `metadata.schema.json`). It separates reusable locale copy from platform and
 storefront listings, Custom Store Listing / Custom Product Page drafts,
 creative-set references, experiment gates, and marketing/support/privacy URLs.
+Its `product.release` identifies the coordinated candidate described by the
+repository, not the currently public store versions; the validator requires it
+to match the Android, Wear OS, and Apple source versions.
+`upload-manifest-1.1.0.json` resolves each store surface to its exact locale,
+metadata, creative, and artifact source-sync state. It intentionally remains
+`draft-blocked`: current phone vc8 and Apple build 6 have null hashes, signing,
+and physical-QA evidence until new source-synced artifacts exist. The older
+signed phone vc7 and Apple build 5 bytes are retained only as historical
+candidates; unchanged Wear `1000008` remains verified-current. This is a
+preflight inventory, not evidence of a console upload.
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.
 
 ## Required image formats
 
-- Google Play icon: 512 × 512, 32-bit PNG, at most 1 MB.
+- Google Play icon: 512 × 512, 32-bit PNG with alpha, at most 1 MB.
 - Google Play feature graphic: 1024 × 500, JPEG or 24-bit PNG without alpha.
 - Google Play screenshots: 2–8 per device type; large-screen images are 1080–7680
   px and 16:9 or 9:16.
@@ -73,14 +83,31 @@ Rebuild with the pinned Pillow/font renderer:
 python3 scripts/build_store_creatives.py
 ```
 
+The current renderer is intentionally pinned to the exact macOS Arial and Arial
+Bold byte hashes recorded in the manifest. Those proprietary system fonts are
+not vendored, so Ubuntu CI validates the exact 22 source hashes and 40 output
+hashes instead of attempting a non-equivalent re-render. A local rebuild must
+run on a machine with the pinned font bytes and Pillow version; any mismatch
+fails before assets are accepted.
+
 The command creates 36 opaque PNG creatives under
-`store/creatives/growth-2026-08/` and refreshes the 1024 × 500 Uzbek Google Play
-feature graphic. Re-running it with identical inputs produces identical files;
-renderer or font drift stops the build.
+`store/creatives/growth-2026-08/`, three localized 1024 × 500 Google Play
+feature graphics for EN/RU/UZ, and an EN alias for the global default listing.
+Re-running it with identical inputs produces identical bytes; renderer or font
+drift stops the build. The manifest also hashes the exact set of 22 phone,
+watch, and feature-graphic source images, so stale generated artwork cannot
+pass after an input capture changes. Story six uses locale-matched watch captures; RU/UZ
+sources are real simulator/emulator evidence. The Apple captures remain scoped
+to historical build 5 and do not establish current build-6 or physical-watch
+QA.
 
 `scripts/check_store_metadata.py` validates schema version, locale coverage,
 platform/storefront relationships, approved UZ/RU copy, text limits, experiment
-gates, creative references, and HTTPS support URLs. `scripts/check_store_assets.py`
+gates, creative references, HTTPS support URLs, exact source identities, and
+fail-closed artifact state. A blocked current artifact cannot carry a SHA,
+signing evidence, or physical-QA evidence. `scripts/check_store_assets.py`
 validates source provenance, six-story locale coverage, expected files,
-dimensions, formats, opacity, and the fail-closed claim exclusions. Device frames
-must not obscure the app.
+dimensions, formats, per-surface alpha rules, and the fail-closed claim
+exclusions. The Google Play icon must retain its required alpha channel;
+feature graphics, screenshots, and captioned creatives must remain opaque.
+Device frames must not obscure the app.

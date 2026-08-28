@@ -5,8 +5,12 @@ This file records public product and repository checkpoints supported by source 
 ## Unreleased
 
 - Fix the Wear OS review blockers by using a pure-black app background and a
-  policy-sized branded launch icon, and advance the Wear OS build to version
-  code 1000007.
+  policy-sized branded launch icon.
+- Prepare the Nimbo 1.1.0 source identities as Android phone version code 8,
+  Wear OS version code 1000008, and Apple build 6.
+- Keep the coordinated release fail-closed: the current phone and Apple source
+  identities have no signed, source-synced artifacts or matching physical QA,
+  while phone version code 7 and Apple build 5 are historical candidates only.
 - Improve open-source onboarding, architecture/reference documentation, contributor workflows, dependency updates, CI hardening, and security reporting.
 - Add GitHub prerelease objects for the existing `v1.0.0-rc.1` and `v1.0.0-rc.2` tags without changing tag history.
 

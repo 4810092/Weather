@@ -228,6 +228,50 @@ class GrowthEvaluationTest(unittest.TestCase):
         result = evaluate_guardrails(weekly, framework, gates)
         self.assertTrue(result["critical_quality_gates_pass"])
 
+    def test_scale_gate_framework_matches_operational_gate_registry(self) -> None:
+        gate_registry = load_json(GROWTH_ROOT / "quality/gates.json")["gates"]
+        configured_gate_ids = [
+            requirement["id"] for requirement in self.framework["scale_gates"]
+        ]
+        self.assertEqual(len(configured_gate_ids), len(set(configured_gate_ids)))
+        self.assertEqual(set(configured_gate_ids), set(gate_registry))
+        self.assertTrue(
+            all(
+                gate.get("blocks_publication") is True
+                for gate in gate_registry.values()
+            )
+        )
+
+    def test_source_sync_and_domain_gates_fail_closed(self) -> None:
+        weekly = import_csv(
+            FIXTURES / "weekly_metrics.csv",
+            load_json(GROWTH_ROOT / "metric-catalog.json"),
+        )
+        passing_gates = {
+            "gates": {
+                requirement["id"]: {"status": "pass"}
+                for requirement in self.framework["scale_gates"]
+            }
+        }
+        for gate_id in (
+            "release_artifact_source_sync",
+            "domain_activation",
+            "store_policy_console_clearance",
+        ):
+            with self.subTest(gate_id=gate_id):
+                gates = copy.deepcopy(passing_gates)
+                gates["gates"][gate_id] = {
+                    "status": "blocked",
+                    "reason": "test blocker",
+                }
+                result = evaluate_guardrails(weekly, self.framework, gates)
+                self.assertFalse(result["critical_quality_gates_pass"])
+                gate_result = next(
+                    item for item in result["scale_gates"] if item["id"] == gate_id
+                )
+                self.assertEqual(gate_result["actual"], "blocked")
+                self.assertEqual(gate_result["status"], "fail")
+
     def test_guardrails_ignore_aggregate_model_vitals(self) -> None:
         weekly = import_csv(
             FIXTURES / "weekly_metrics.csv",

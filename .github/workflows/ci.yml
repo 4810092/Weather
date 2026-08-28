@@ -32,6 +32,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Install Python validation dependencies
         run: python3 -m pip install --disable-pip-version-check Pillow==12.2.0
+      - name: Ensure media validation tools
+        run: |
+          if ! command -v ffprobe >/dev/null || ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends ffmpeg
+          fi
+          ffprobe -version
+          ffmpeg -version
       - name: Compile and test growth tooling
         run: |
           python3 -m compileall -q scripts
@@ -42,14 +50,17 @@ jobs:
           python3 scripts/check_localizations.py
           python3 scripts/check_store_metadata.py
           python3 scripts/check_store_assets.py
+          python3 scripts/check_store_previews.py
           python3 scripts/check_dashboard_report.py
           python3 scripts/build_site.py --output build/pages-ci
+          python3 scripts/build_site.py --output build/pages-drafts-ci --include-drafts
           git diff --check
       - name: Static analysis, tests, migrations, and Android release build
         run: >-
           ./gradlew ktlintCheck
           :shared:allTests
           :shared:testAndroidHostTest
+          :app:testDebugUnitTest
           :shared:verifySqlDelightMigration
           :app:bundleRelease
           :wearApp:bundleRelease
@@ -78,6 +89,17 @@ jobs:
           distribution: temurin
           java-version: "21"
       - uses: gradle/actions/setup-gradle@v6
+      - name: Run shared iOS Simulator tests
+        run: ./gradlew :shared:iosSimulatorArm64Test
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ios-simulator-test-results
+          path: |
+            shared/build/test-results/iosSimulatorArm64Test
+            shared/build/reports/tests/iosSimulatorArm64Test
+          if-no-files-found: warn
+          retention-days: 7
       - name: Build iOS application without signing
         run: |
           xcodebuild \

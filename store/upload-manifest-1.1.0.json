@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "release": "1.1.0",
+  "prepared_on": "2026-08-29",
+  "status": "draft-blocked",
+  "metadata": "store/metadata.json",
+  "creative_manifest": "store/creative-sets/growth-2026-08.json",
+  "artifacts": {
+    "android_phone": {
+      "filename": "nimbo-phone-1.1.0-vc8.aab",
+      "version_code": 8,
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "nimbo-phone-1.1.0-vc7.aab",
+        "version_code": 7,
+        "sha256": "e476a124c33854873add9061140f68f1720ff098202b52e7758038bb50f5a77c",
+        "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+        "physical_qa_evidence": "growth/quality/android-physical-smoke-2026-08-28.md"
+      }
+    },
+    "wear_os": {
+      "filename": "nimbo-wear-1.1.0-vc1000008.aab",
+      "version_code": 1000008,
+      "source_sync": "verified-current",
+      "sha256": "ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6",
+      "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "historical_candidate": null
+    },
+    "apple": {
+      "filename": "Nimbo.ipa",
+      "build": 6,
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "Nimbo.ipa",
+        "build": 5,
+        "sha256": "b36f8fddb225cd616e3833de6037b6434486ec3cbb9ed06f5cc8deb0627ed4dc",
+        "signing_evidence": "growth/quality/apple-release-artifacts-2026-08-28.md",
+        "physical_qa_evidence": "growth/quality/apple-runtime-smoke-2026-08-28.md"
+      }
+    }
+  },
+  "listing_payloads": [
+    {
+      "listing_id": "app-store-default",
+      "store_locales": [
+        "en-US",
+        "ru-RU",
+        "ar",
+        "es-ES",
+        "fr-FR",
+        "de-DE",
+        "pt-PT",
+        "zh-CN",
+        "ja-JP",
+        "ko-KR",
+        "hi-IN",
+        "tr-TR"
+      ],
+      "asset_root": "store/screenshots/app-store",
+      "growth_creatives": "store/creatives/growth-2026-08/app-store"
+    },
+    {
+      "listing_id": "app-store-uz-custom-product-page",
+      "store_locales": [
+        "en-US",
+        "ru-RU"
+      ],
+      "audience_locale": "uz-UZ",
+      "store_locale_fallback": "en-US",
+      "asset_root": "store/creatives/growth-2026-08/app-store/uz-UZ"
+    },
+    {
+      "listing_id": "google-play-default",
+      "store_locales": [
+        "en-US",
+        "ru-RU",
+        "ar",
+        "es-ES",
+        "fr-FR",
+        "de-DE",
+        "pt-PT",
+        "zh-CN",
+        "ja-JP",
+        "ko-KR",
+        "hi-IN",
+        "tr-TR"
+      ],
+      "asset_root": "store/screenshots/google-play",
+      "growth_creatives": "store/creatives/growth-2026-08/google-play",
+      "feature_graphic": "store/assets/google-play/feature-graphic-en-US-1024x500.jpg"
+    },
+    {
+      "listing_id": "google-play-uz-custom-listing",
+      "store_locales": [
+        "uz-UZ",
+        "ru-RU"
+      ],
+      "asset_root": "store/creatives/growth-2026-08/google-play",
+      "feature_graphics": {
+        "uz-UZ": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
+        "ru-RU": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg"
+      }
+    }
+  ],
+  "blocking_gates": [
+    "Open-Meteo promotion clearance",
+    "iOS crash diagnosis",
+    "source-synced signed Android phone 1.1.0 (8) artifact and physical smoke",
+    "source-synced signed Apple 1.1.0 (6) artifact and physical runtime matrix",
+    "physical tablet, widget, and Wear OS smoke",
+    "authenticated App Store Connect and Google Play upload paths",
+    "public nimbo.uz DNS and TLS"
+  ],
+  "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."
+}

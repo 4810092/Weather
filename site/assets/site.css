@@ -275,9 +275,17 @@ h1 {
 
 .asset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
 .asset-card { overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: white; text-decoration: none; }
-.asset-preview { height: 190px; display: grid; place-items: center; padding: 18px; background: var(--soft); }
+.asset-preview { overflow: hidden; height: 190px; display: grid; place-items: center; padding: 18px; background: var(--soft); }
 .asset-preview img { max-height: 100%; width: auto; border-radius: 12px; }
-.asset-label { display: block; padding: 14px; font-size: .85rem; font-weight: 760; }
+.asset-label { position: relative; z-index: 1; display: block; min-height: 60px; padding: 14px; background: white; font-size: .85rem; font-weight: 760; }
+
+.guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.guide-card { display: flex; min-height: 320px; flex-direction: column; padding: 32px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: linear-gradient(150deg, #fff, #f4f8fb); }
+.guide-card h2 { margin: 13px 0 16px; font-size: clamp(1.65rem, 3vw, 2.35rem); line-height: 1.08; letter-spacing: -.035em; }
+.guide-card > p:not(.guide-kicker, .guide-status) { margin: 0; color: var(--muted); }
+.guide-card .button { align-self: flex-start; margin-top: auto; }
+.guide-kicker { margin: 0; color: var(--accent-dark); font-size: .78rem; font-weight: 820; letter-spacing: .1em; text-transform: uppercase; }
+.guide-status { margin: 18px 0 0; padding: 10px 12px; border: 1px solid rgba(243, 186, 98, .55); border-radius: 12px; color: #6b4a16; background: rgba(255, 244, 224, .82); font-size: .84rem; font-weight: 680; }
 
 .site-footer { padding: 50px 0; border-top: 1px solid var(--line); background: #ebf2f7; }
 .footer-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px 64px; align-items: start; }
@@ -295,6 +303,7 @@ h1 {
   .hero-copy { max-width: 760px; }
   .device-stage { max-width: 600px; width: 100%; margin-inline: auto; }
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .guide-grid { grid-template-columns: 1fr; }
   .content-grid { grid-template-columns: 1fr; }
   .aside-card { position: static; }
 }

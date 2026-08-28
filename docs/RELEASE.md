@@ -3,11 +3,12 @@
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
-OS 1.0.2 (1000007). The next coordinated candidate is 1.1.0: phone 7, Wear
-1000008, and Apple build 5. Signed Android artifacts are locally validated; the
-phone universal APK passed an expanded physical API 25 signed-release matrix
-and was removed. Nothing in 1.1.0 has been uploaded or published. Store
-consoles remain the authority for live status.
+OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
+Wear 1000008, and Apple build 6. Only the unchanged Wear artifact is
+source-current. Signed phone 7 and Apple build 5 are preserved as historical
+candidates; their hashes, signing, and QA do not transfer to current phone 8 or
+Apple build 6. Nothing in 1.1.0 has been uploaded or published. Store consoles
+remain the authority for live status.
 
 ## Version identity
 
@@ -17,9 +18,20 @@ consoles remain the authority for live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 internal candidate — 2026-08-28
+## Nimbo 1.1.0 source-sync correction — 2026-08-29
 
-The coordinated candidate uses Android phone `1.1.0 (7)`, Wear OS `1.1.0
+Review-prompt and background-refresh hardening landed after the retained phone
+vc7 and Apple build-5 artifacts were produced. The current source identities
+are therefore phone `1.1.0 (8)` and Apple `1.1.0 (6)`; both remain blocked with
+null current SHA, signing evidence, and physical-QA evidence until rebuilt and
+tested. Wear OS source is unchanged at `1.1.0 (1000008)` and its retained signed
+AAB remains source-current. The exact boundary and preserved historical hashes
+are recorded in the [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
+and [upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Nimbo 1.1.0 historical internal checkpoint — 2026-08-28
+
+At this historical checkpoint the coordinated candidate used Android phone `1.1.0 (7)`, Wear OS `1.1.0
 (1000008)`, and Apple `1.1.0 (5)`. The phone and Wear AABs are upload-signed,
 Bundletool-validated, and retained outside the repository; a universal phone APK
 passed physical API 25 clean/live/cold-start, denied-location/manual-search,

@@ -146,11 +146,23 @@
       "required_status": "pass"
     },
     {
+      "id": "release_artifact_source_sync",
+      "required_status": "pass"
+    },
+    {
       "id": "android_physical_smoke",
       "required_status": "pass"
     },
     {
       "id": "ios_physical_smoke",
+      "required_status": "pass"
+    },
+    {
+      "id": "domain_activation",
+      "required_status": "pass"
+    },
+    {
+      "id": "store_policy_console_clearance",
       "required_status": "pass"
     }
   ],
