@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "app": {
+    "name": "Nimbo Weather",
+    "apple_id": "6799886897",
+    "android_package": "uz.ganikhodjaev.weather"
+  },
+  "market": {
+    "country_code": "UZ",
+    "timezone": "Asia/Tashkent",
+    "apple_genre_id": "6001",
+    "google_category": "WEATHER"
+  },
+  "queries": [
+    {
+      "id": "ob-havo",
+      "term": "ob havo",
+      "branded": false
+    },
+    {
+      "id": "pogoda",
+      "term": "погода",
+      "branded": false
+    },
+    {
+      "id": "weather",
+      "term": "weather",
+      "branded": false
+    },
+    {
+      "id": "toshkent-ob-havo",
+      "term": "Toshkent ob-havo",
+      "branded": false
+    },
+    {
+      "id": "prognoz",
+      "term": "prognoz",
+      "branded": false
+    }
+  ],
+  "google_profiles": [
+    {
+      "id": "uz-UZ",
+      "hl": "uz",
+      "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8"
+    },
+    {
+      "id": "ru-UZ",
+      "hl": "ru",
+      "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8"
+    },
+    {
+      "id": "en-UZ",
+      "hl": "en",
+      "accept_language": "en-UZ,en;q=0.9"
+    }
+  ],
+  "sources": {
+    "apple_weather_chart": "https://itunes.apple.com/uz/rss/topfreeapplications/limit=100/genre=6001/json",
+    "apple_search": "https://itunes.apple.com/search",
+    "google_category": "https://play.google.com/store/apps/category/WEATHER",
+    "google_search": "https://play.google.com/store/search"
+  },
+  "monitor": {
+    "user_agent": "NimboGrowthMonitor/1.0 (+https://nimbo.uz/)",
+    "google_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 NimboGrowthMonitor/1.0",
+    "request_timeout_seconds": 25,
+    "request_retries": 2,
+    "request_delay_seconds": 0.25,
+    "apple_search_limit": 200,
+    "google_capture_limit": 50,
+    "top_slice_size": 10
+  }
+}

@@ -1,0 +1,33 @@
+week_start,week_end,platform,storefront,source_scope,device,app_version,metric,value,unit,source_ref,source_as_of,notes
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_unique_impressions,600,count,App Store Connect > Analytics > Acquisition,2026-08-31,UZ summary
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_conversion_rate_pct,14,percent,App Store Connect > Analytics > Acquisition,2026-08-31,console value
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_installations,100,count,App Store Connect > Analytics > Usage,2026-08-31,opt-in population
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_first_launches,85,count,Reviewed first-launch source,2026-08-31,same population as installations
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_d7_eligible,100,count,App Store Connect > Retention,2026-08-31,eligible cohort
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_d7_retained,25,count,App Store Connect > Retention,2026-08-31,day 7
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_average_daily_active_devices_30d,30,count,App Store Connect > Usage,2026-08-31,complete 30-day average
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_active_devices_30d,100,count,App Store Connect > Usage,2026-08-31,same 30-day population
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_ratings_count,25,count,App Store storefront UZ,2026-08-31,point in time
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_average_rating,4.7,rating_5,App Store storefront UZ,2026-08-31,point in time
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_sessions,1000,count,App Store Connect > Usage,2026-08-31,opt-in population
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_crashes,1,count,App Store Connect > Usage,2026-08-31,opt-in population
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,ios_crash_free_sessions_pct,99.9,percent,Reviewed crash-free-session source,2026-08-31,direct metric
+2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_policy_issues,0,count,App Store Connect > Policy and Review,2026-08-31,current state
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_store_listing_visitors,600,count,Play Console > Store performance,2026-08-31,UZ summary
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_unique_user_install_clicks,240,count,Play Console > Store performance,2026-08-31,same dimensions as visitors
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_store_listing_ctr_pct,40,percent,Play Console > Store performance,2026-08-31,console value
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_installations,100,count,Play Console > Statistics,2026-08-31,new installations
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_first_launches,90,count,Play Console > Statistics,2026-08-31,same population as installations
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_d7_eligible,100,count,Play Console > Retention,2026-08-31,eligible cohort
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_d7_retained,25,count,Play Console > Retention,2026-08-31,day 7
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_average_daily_active_users_30d,25,count,Play Console > Statistics,2026-08-31,complete 30-day average
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_monthly_active_users,100,count,Play Console > Statistics,2026-08-31,same 30-day population
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_ratings_count,30,count,Google Play storefront UZ,2026-08-31,point in time
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_average_rating,4.8,rating_5,Google Play storefront UZ,2026-08-31,point in time
+2026-08-24,2026-08-30,google,UZ,summary,all,all,android_user_perceived_crash_rate_pct,0.3,percent,Play Console > Android vitals,2026-08-31,last 28 days
+2026-08-24,2026-08-30,google,UZ,summary,all,all,android_user_perceived_anr_rate_pct,0.1,percent,Play Console > Android vitals,2026-08-31,last 28 days
+2026-08-24,2026-08-30,google,UZ,device,Pixel 8,all,android_phone_model_crash_rate_pct,1,percent,Play Console > Android vitals > Devices,2026-08-31,observed phone model
+2026-08-24,2026-08-30,google,UZ,device,Pixel 8,all,android_phone_model_anr_rate_pct,1,percent,Play Console > Android vitals > Devices,2026-08-31,observed phone model
+2026-08-24,2026-08-30,google,UZ,device,Pixel Watch 3,all,wear_model_crash_rate_pct,1,percent,Play Console > Android vitals > Wear devices,2026-08-31,observed watch model
+2026-08-24,2026-08-30,google,UZ,device,Pixel Watch 3,all,wear_model_anr_rate_pct,1,percent,Play Console > Android vitals > Wear devices,2026-08-31,observed watch model
+2026-08-24,2026-08-30,google,UZ,summary,all,all,google_policy_issues,0,count,Play Console > Policy status,2026-08-31,current state

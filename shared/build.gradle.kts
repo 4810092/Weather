@@ -14,7 +14,7 @@ kotlin {
     android {
         namespace = "uz.ganikhodjaev.weather.shared"
         compileSdk = 36
-        minSdk = 26
+        minSdk = 24
         experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)

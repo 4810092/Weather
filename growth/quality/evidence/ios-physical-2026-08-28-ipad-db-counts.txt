@@ -1,0 +1,14 @@
+Device: iPad mini (5th generation), iPadOS 26.6
+Bundle: uz.ganikhodjaev.weather 1.0.1 (4), locally signed Release candidate
+Fixture: active Bukhara location inserted into this fresh QA installation
+Observation after 12 seconds of foreground execution:
+location|1
+weather_hour|408
+daily_forecast|17
+air_quality_hour|120
+forecast_snapshot|48
+
+The database directory was copied back from the terminated physical-device
+process with devicectl and queried locally with SQLite, including its WAL.
+The QA app had not existed on the device before the run and was uninstalled
+after the cold-launch check.

@@ -4,6 +4,18 @@
   <string name="cancel">रद्द करें</string>
   <string name="onboarding_title">मौसम जो जाना-पहचाना लगे।</string>
   <string name="onboarding_body">कोई स्थान चुनें और अगले 24 घंटों को हाल में महसूस किए गए मौसम के साथ देखें।</string>
+  <string name="quick_places">उज़्बेकिस्तान के लोकप्रिय शहर</string>
+  <string name="quick_city_tashkent">ताशकंद</string>
+  <string name="quick_city_samarkand">समरकंद</string>
+  <string name="quick_city_namangan">नमंगन</string>
+  <string name="quick_city_andijan">अंदिजान</string>
+  <string name="quick_city_fergana">फ़रगना</string>
+  <string name="quick_city_bukhara">बुखारा</string>
+  <string name="quick_city_nukus">नुकुस</string>
+  <string name="quick_country_uzbekistan">उज़्बेकिस्तान</string>
+  <string name="first_forecast_tip_title">आपका पूर्वानुमान तैयार है</string>
+  <string name="first_forecast_tip_body">और शहर सहेजने के लिए स्थान बदलें का उपयोग करें या मौसम तुरंत देखने के लिए Nimbo विजेट जोड़ें।</string>
+  <string name="got_it">समझ गया</string>
   <string name="search_city">शहर खोजें</string>
   <string name="current_location">वर्तमान स्थान</string>
   <string name="change_later">इसे बाद में बदला जा सकता है।</string>
@@ -18,6 +30,7 @@
   <string name="change_place">स्थान बदलें</string>
   <string name="share_weather">मौसम साझा करें</string>
   <string name="share_weather_text">%1$s: %2$d°, बारिश की संभावना %3$d%% — Nimbo</string>
+  <string name="share_store_cta">अपनी अगली सैर के लिए Nimbo पाएँ:</string>
   <string name="theme">थीम</string>
   <string name="theme_description">डिवाइस की थीम इस्तेमाल करें या खुद चुनें।</string>
   <string name="theme_system">सिस्टम</string>

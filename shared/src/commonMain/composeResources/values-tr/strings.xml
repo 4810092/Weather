@@ -4,6 +4,18 @@
   <string name="cancel">İptal</string>
   <string name="onboarding_title">Tanıdık hissettiren hava durumu.</string>
   <string name="onboarding_body">Yakın zamanda hissettiğiniz havayla birlikte önünüzdeki 24 saati görmek için bir yer seçin.</string>
+  <string name="quick_places">Özbekistan’daki popüler şehirler</string>
+  <string name="quick_city_tashkent">Taşkent</string>
+  <string name="quick_city_samarkand">Semerkant</string>
+  <string name="quick_city_namangan">Namangan</string>
+  <string name="quick_city_andijan">Andican</string>
+  <string name="quick_city_fergana">Fergana</string>
+  <string name="quick_city_bukhara">Buhara</string>
+  <string name="quick_city_nukus">Nukus</string>
+  <string name="quick_country_uzbekistan">Özbekistan</string>
+  <string name="first_forecast_tip_title">Tahmininiz hazır</string>
+  <string name="first_forecast_tip_body">Daha fazla şehir kaydetmek için Yeri değiştir’i kullanın veya hava durumunu bir bakışta görmek için Nimbo widget’ını ekleyin.</string>
+  <string name="got_it">Anladım</string>
   <string name="search_city">Şehir ara</string>
   <string name="current_location">Mevcut konum</string>
   <string name="change_later">Bunu daha sonra değiştirebilirsiniz.</string>
@@ -18,6 +30,7 @@
   <string name="change_place">Yeri değiştir</string>
   <string name="share_weather">Hava durumunu paylaş</string>
   <string name="share_weather_text">%1$s: %2$d°, yağmur olasılığı %3$d%% — Nimbo</string>
+  <string name="share_store_cta">Bir sonraki yürüyüşünüz için Nimbo’yu indirin:</string>
   <string name="theme">Tema</string>
   <string name="theme_description">Cihaz temasını kullanın veya kendiniz seçin.</string>
   <string name="theme_system">Sistem</string>

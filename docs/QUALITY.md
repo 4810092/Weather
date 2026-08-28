@@ -7,9 +7,9 @@ Nimbo’s quality evidence has four layers: deterministic shared tests, actual S
 - Repository policy and simple secret-pattern checks for tracked files.
 - Local Markdown-link validation.
 - Complete resource/type/placeholder parity for 13 app languages and all widget/watch/permission surfaces.
-- Store metadata limits and 63 expected production-image dimensions/formats.
+- Store metadata limits and 105 expected production-image dimensions/formats.
 - ktlint for Kotlin and Gradle Kotlin scripts.
-- 30 unique automated test functions: 28 common and two Android-host persistence/migration tests.
+- 53 unique Kotlin test functions: 49 common and four Android-host platform, persistence, and migration tests; plus 24 growth-tooling Python tests.
 - SQLDelight numbered-migration/schema verification plus a released-v1 SQLite fixture migration.
 - R8/resource-shrunk Android phone/tablet and Wear OS bundles.
 - Unsigned Release builds for iOS/WidgetKit and watchOS.
@@ -38,7 +38,6 @@ The dated [QA matrix](QA_MATRIX.md) records emulator/simulator and TalkBack evid
 
 ## Known gaps
 
-- No direct state-holder unit tests.
 - No automated Compose UI or screenshot-golden suite.
 - No physical-device performance runner in CI.
 - No end-to-end live-provider test, by design; unit tests avoid depending on an external service.

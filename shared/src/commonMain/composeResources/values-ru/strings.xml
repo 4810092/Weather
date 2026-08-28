@@ -2,8 +2,20 @@
 <resources>
   <string name="brand">Nimbo</string>
   <string name="cancel">Отмена</string>
-  <string name="onboarding_title">Погода, которую легко почувствовать.</string>
-  <string name="onboarding_body">Выберите место, чтобы увидеть ближайшие 24 часа рядом с погодой, которую вы недавно ощущали.</string>
+  <string name="onboarding_title">Найдите лучшее время для прогулки.</string>
+  <string name="onboarding_body">Сразу выберите город Узбекистана, найдите любое место или используйте приблизительную геопозицию — только если захотите.</string>
+  <string name="quick_places">Популярные города Узбекистана</string>
+  <string name="quick_city_tashkent">Ташкент</string>
+  <string name="quick_city_samarkand">Самарканд</string>
+  <string name="quick_city_namangan">Наманган</string>
+  <string name="quick_city_andijan">Андижан</string>
+  <string name="quick_city_fergana">Фергана</string>
+  <string name="quick_city_bukhara">Бухара</string>
+  <string name="quick_city_nukus">Нукус</string>
+  <string name="quick_country_uzbekistan">Узбекистан</string>
+  <string name="first_forecast_tip_title">Прогноз готов</string>
+  <string name="first_forecast_tip_body">Через «Сменить место» можно сохранить другие города, а виджет Nimbo покажет погоду одним взглядом.</string>
+  <string name="got_it">Понятно</string>
   <string name="search_city">Найти город</string>
   <string name="current_location">Текущее местоположение</string>
   <string name="change_later">Это можно изменить позже.</string>
@@ -18,6 +30,7 @@
   <string name="change_place">Сменить место</string>
   <string name="share_weather">Поделиться погодой</string>
   <string name="share_weather_text">%1$s: %2$d°, вероятность дождя %3$d%% — Nimbo</string>
+  <string name="share_store_cta">Скачайте Nimbo для следующей прогулки:</string>
   <string name="theme">Тема</string>
   <string name="theme_description">Использовать тему устройства или выбрать вручную.</string>
   <string name="theme_system">Системная</string>

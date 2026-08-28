@@ -1,0 +1,254 @@
+{
+  "surface": "dashboard",
+  "manifest": {
+    "version": 1,
+    "surface": "dashboard",
+    "title": "Nimbo UZ Growth Control Room",
+    "generatedAt": "2026-08-28T15:57:01Z",
+    "cards": [
+      {
+        "id": "top10_streak",
+        "dataset": "headline_metrics",
+        "sourceId": "rank_snapshot",
+        "description": "Complete consecutive days meeting both store rank definitions. An unknown or failed surface breaks the streak.",
+        "metrics": [
+          {"label": "Top-10 streak", "field": "top10_streak_days", "format": "number"},
+          {"label": "Target", "field": "top10_streak_target", "format": "number"}
+        ]
+      },
+      {
+        "id": "apple_search_rank",
+        "dataset": "headline_metrics",
+        "sourceId": "rank_snapshot",
+        "description": "Exact position in the fixed 2026-08-28 UZ App Store public search response for the non-branded query weather.",
+        "metrics": [
+          {"label": "Apple weather rank", "field": "apple_weather_rank", "format": "number"},
+          {"label": "Target", "field": "rank_target", "format": "number"}
+        ]
+      },
+      {
+        "id": "apple_conversion",
+        "dataset": "headline_metrics",
+        "sourceId": "baseline_snapshot",
+        "description": "App Store Connect reported conversion. The 15% target is evaluated only after at least 500 eligible impressions.",
+        "metrics": [
+          {"label": "Apple conversion", "field": "apple_conversion", "format": "percent"},
+          {"label": "Target", "field": "apple_conversion_target", "format": "percent"}
+        ]
+      },
+      {
+        "id": "play_conversion",
+        "dataset": "headline_metrics",
+        "sourceId": "baseline_snapshot",
+        "description": "Reported Play conversion. The source numerator and denominator are not attached, so this is not yet a reconciled KPI.",
+        "metrics": [
+          {"label": "Play conversion", "field": "play_conversion", "format": "percent"},
+          {"label": "Target", "field": "play_conversion_target", "format": "percent"}
+        ]
+      },
+      {
+        "id": "first_launch_rate",
+        "dataset": "headline_metrics",
+        "sourceId": "baseline_snapshot",
+        "description": "Directional calculation: 14 reported first launches divided by 21 reported installations. Populations and windows still require reconciliation.",
+        "metrics": [
+          {"label": "First launch / install", "field": "first_launch_rate", "format": "percent"},
+          {"label": "Target", "field": "first_launch_target", "format": "percent"}
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "driver_gap_chart",
+        "title": "Baseline versus 6-month driver targets",
+        "subtitle": "Play conversion and first-launch rate are directional until denominators are reconciled.",
+        "type": "bar",
+        "dataset": "driver_comparison",
+        "sourceId": "driver_comparison",
+        "valueFormat": "percent",
+        "encodings": {
+          "x": {"field": "metric", "type": "nominal", "label": "Driver"},
+          "y": {"field": "rate", "type": "quantitative", "label": "Rate", "format": "percent"},
+          "color": {"field": "series", "type": "nominal", "label": "Series"}
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "rank_table",
+        "title": "UZ rank evidence",
+        "subtitle": "The complete fixed capture fails every required category surface and the generic-query quorum.",
+        "dataset": "rank_snapshot",
+        "sourceId": "rank_snapshot",
+        "columns": [
+          {"field": "check", "label": "Rank check", "type": "text"},
+          {"field": "result", "label": "Result", "type": "text"}
+        ]
+      },
+      {
+        "id": "baseline_table",
+        "title": "Store baseline",
+        "subtitle": "Snapshot values preserve the source definitions and are not forced into a common denominator.",
+        "dataset": "platform_baseline",
+        "sourceId": "baseline_snapshot",
+        "columns": [
+          {"field": "metric_label", "label": "Metric", "type": "text"},
+          {"field": "value", "label": "Value", "type": "text"}
+        ]
+      },
+      {
+        "id": "gate_table",
+        "title": "Scale gates",
+        "subtitle": "Organic promotion stays paused while any critical gate is not pass.",
+        "dataset": "gate_snapshot",
+        "sourceId": "gate_snapshot",
+        "columns": [
+          {"field": "gate", "label": "Gate", "type": "text"},
+          {"field": "decision", "label": "Status and next action", "type": "text"}
+        ]
+      }
+    ],
+    "sources": [
+      {"id": "baseline_snapshot", "label": "Versioned store-console baseline", "path": "growth/dashboard/baseline_snapshot.sql"},
+      {"id": "driver_comparison", "label": "Baseline and target driver comparison", "path": "growth/dashboard/driver_comparison.sql"},
+      {"id": "rank_snapshot", "label": "2026-08-28 UZ rank snapshot", "path": "growth/dashboard/rank_snapshot.sql"},
+      {"id": "gate_snapshot", "label": "Fail-closed growth gates", "path": "growth/dashboard/gate_snapshot.sql"}
+    ],
+    "blocks": [
+      {
+        "id": "snapshot_context",
+        "type": "markdown",
+        "body": "## Baseline verdict\n\nNimbo is **not ready to scale acquisition**. The public-rank goal is unmet, the iOS 1.0.1 crash still lacks a symbolicated diagnostic report, and Open-Meteo promotion clearance is not attached. The Play conversion read is above target as reported, but its denominator must be reconciled before it can support a decision."
+      },
+      {"id": "headline_strip", "type": "metric-strip", "cardIds": ["top10_streak", "apple_search_rank", "apple_conversion", "play_conversion", "first_launch_rate"]},
+      {"id": "driver_gap", "type": "chart", "chartId": "driver_gap_chart", "layout": "full"},
+      {"id": "rank_detail", "type": "table", "tableId": "rank_table", "layout": "full"},
+      {"id": "baseline_detail", "type": "table", "tableId": "baseline_table", "layout": "full"},
+      {"id": "gate_detail", "type": "table", "tableId": "gate_table", "layout": "full"},
+      {
+        "id": "operating_rule",
+        "type": "markdown",
+        "sourceId": "gate_snapshot",
+        "body": "## Operating rule\n\nUnknown quality, provider, or physical-device evidence is never converted into a pass. Store publishing, external outreach, and any spend remain explicit action-time approval steps."
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-28T15:57:01Z",
+    "status": "partial",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "top10_streak_days": 0,
+          "top10_streak_target": 7,
+          "apple_weather_rank": 81,
+          "rank_target": 10,
+          "apple_conversion": 0.0405,
+          "apple_conversion_target": 0.15,
+          "play_conversion": 0.4082,
+          "play_conversion_target": 0.35,
+          "first_launch_rate": 0.6667,
+          "first_launch_target": 0.8
+        }
+      ],
+      "driver_comparison": [
+        {"metric": "Apple conversion", "series": "Baseline", "rate": 0.0405},
+        {"metric": "Apple conversion", "series": "Target", "rate": 0.15},
+        {"metric": "Play conversion", "series": "Baseline", "rate": 0.4082},
+        {"metric": "Play conversion", "series": "Target", "rate": 0.35},
+        {"metric": "First launch / install", "series": "Baseline", "rate": 0.6667},
+        {"metric": "First launch / install", "series": "Target", "rate": 0.8}
+      ],
+      "rank_snapshot": [
+        {"check": "App Store search · weather", "result": "81 · target ≤10", "surface": "App Store UZ search", "profile": "all", "query": "weather", "observed_rank": "81", "target_rank": 10, "evidence_class": "fixed_public_capture"},
+        {"check": "App Store · Weather chart", "result": ">100 · target ≤10", "surface": "App Store UZ Weather chart", "profile": "official", "query": "category", "observed_rank": ">100", "target_rank": 10, "evidence_class": "fixed_public_capture"},
+        {"check": "Google category · uz-UZ", "result": ">30 · target ≤10", "surface": "Google Play UZ Weather category", "profile": "uz-UZ", "query": "category", "observed_rank": ">30", "target_rank": 10, "evidence_class": "fixed_logged_out_capture"},
+        {"check": "Google category · ru-UZ", "result": ">30 · target ≤10", "surface": "Google Play UZ Weather category", "profile": "ru-UZ", "query": "category", "observed_rank": ">30", "target_rank": 10, "evidence_class": "fixed_logged_out_capture"},
+        {"check": "Google category · en-UZ", "result": ">30 · target ≤10", "surface": "Google Play UZ Weather category", "profile": "en-UZ", "query": "category", "observed_rank": ">30", "target_rank": 10, "evidence_class": "fixed_logged_out_capture"},
+        {"check": "Google generic-query quorum", "result": "0/5 qualify · target ≥2", "surface": "Google Play UZ generic-query quorum", "profile": "2-of-3 profiles", "query": "five configured queries", "observed_rank": "0 qualifying queries", "target_rank": 2, "evidence_class": "fixed_logged_out_capture"}
+      ],
+      "platform_baseline": [
+        {"metric_label": "App Store · Impressions", "platform": "App Store", "metric": "Impressions", "value": "206", "evidence_class": "reported_console_readout"},
+        {"metric_label": "App Store · First-time downloads", "platform": "App Store", "metric": "First-time downloads", "value": "5", "evidence_class": "reported_console_readout"},
+        {"metric_label": "App Store · Conversion rate", "platform": "App Store", "metric": "Conversion rate", "value": "4.05%", "evidence_class": "reported_console_readout"},
+        {"metric_label": "App Store · Ratings", "platform": "App Store", "metric": "Ratings", "value": "0", "evidence_class": "reported_console_readout"},
+        {"metric_label": "App Store · Crashes", "platform": "App Store", "metric": "Crashes", "value": "1", "evidence_class": "live_console_2026-08-28"},
+        {"metric_label": "Google Play · Impressions", "platform": "Google Play", "metric": "Impressions", "value": "779", "evidence_class": "reported_console_readout"},
+        {"metric_label": "Google Play · Installations", "platform": "Google Play", "metric": "Installations", "value": "21", "evidence_class": "live_console_2026-08-28"},
+        {"metric_label": "Google Play · First launches", "platform": "Google Play", "metric": "First launches", "value": "14", "evidence_class": "live_console_2026-08-28"},
+        {"metric_label": "Google Play · Monthly active users", "platform": "Google Play", "metric": "Monthly active users", "value": "11", "evidence_class": "live_console_2026-08-28"},
+        {"metric_label": "Google Play · Conversion rate", "platform": "Google Play", "metric": "Conversion rate", "value": "40.82%", "evidence_class": "reported_console_readout"},
+        {"metric_label": "Google Play · Ratings", "platform": "Google Play", "metric": "Ratings", "value": "1", "evidence_class": "reported_console_readout"}
+      ],
+      "gate_snapshot": [
+        {"gate": "iOS crash gate", "decision": "BLOCKED · obtain report, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "1 crash on iOS 1.0.1 on 2026-08-25; no stack trace available", "next_action": "Obtain the Organizer/diagnostic report, symbolicate, reproduce, fix, and re-smoke"},
+        {"gate": "Open-Meteo promotion clearance", "decision": "PENDING · obtain written clearance or license", "status": "pending", "evidence": "Free endpoint is documented for non-commercial use; no written promotion clearance attached", "next_action": "Obtain written clearance or approve a separately costed licensed endpoint"},
+        {"gate": "Android device smoke", "decision": "PARTIAL · API 24/36 emulator and physical API 25 paths pass", "status": "partial", "evidence": "Final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and physical API 25, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete", "next_action": "Run the versioned signed RC on the remaining tablet, share, background, and accessibility matrix"},
+        {"gate": "iOS physical smoke", "decision": "BLOCKED · iPad bounded pass; mount iPhone DDI", "status": "blocked", "evidence": "Release passed iOS 18.1 simulator and bounded physical iPad live-provider/cold-launch paths; the required iPhone is connected without a mountable Developer Disk Image", "next_action": "Unlock/reconnect the iPhone, mount DDI, then run denied-location, search, offline, share, VoiceOver, widget, and cold-start paths"}
+      ]
+    },
+    "accessIssues": [
+      {"id": "raw_store_exports_missing", "dataset": "baseline", "message": "Raw App Store Connect and Play Console exports with country, source, device, version, and denominator definitions are not attached."},
+      {"id": "ios_crash_report_missing", "dataset": "gates", "message": "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, but exposes no stack trace at this traffic level; no Organizer diagnostic exists locally."}
+    ]
+  },
+  "sources": [
+    {
+      "id": "baseline_snapshot",
+      "label": "Versioned store-console baseline",
+      "path": "growth/dashboard/baseline_snapshot.sql",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('App Store','Impressions','206','reported_console_readout'),('App Store','First-time downloads','5','reported_console_readout'),('App Store','Conversion rate','4.05%','reported_console_readout'),('App Store','Ratings','0','reported_console_readout'),('App Store','Crashes','1','live_console_2026-08-28'),('Google Play','Impressions','779','reported_console_readout'),('Google Play','Installations','21','live_console_2026-08-28'),('Google Play','First launches','14','live_console_2026-08-28'),('Google Play','Monthly active users','11','live_console_2026-08-28'),('Google Play','Conversion rate','40.82%','reported_console_readout'),('Google Play','Ratings','1','reported_console_readout')) AS baseline(platform,metric,value,evidence_class)",
+        "description": "Loads the bounded, versioned baseline while preserving reported console definitions.",
+        "executed_at": "2026-08-28T13:47:00Z",
+        "tables_used": ["inline baseline values backed by growth/baseline/2026-08-28.json"],
+        "filters": ["Snapshot date 2026-08-28", "No cross-platform denominator coercion"],
+        "metric_definitions": ["Apple conversion is the App Store Connect reported value", "Play conversion is the reported Play value and remains unreconciled", "First launch rate is 14 / 21 and is directional only"]
+      }
+    },
+    {
+      "id": "driver_comparison",
+      "label": "Baseline and target driver comparison",
+      "path": "growth/dashboard/driver_comparison.sql",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('Apple conversion','Baseline',0.0405),('Apple conversion','Target',0.1500),('Play conversion','Baseline',0.4082),('Play conversion','Target',0.3500),('First launch / install','Baseline',0.6667),('First launch / install','Target',0.8000)) AS drivers(metric,series,rate)",
+        "description": "Builds the reviewed baseline-versus-target driver comparison.",
+        "executed_at": "2026-08-28T13:47:00Z",
+        "tables_used": ["inline driver values backed by growth/kpi-framework.json"],
+        "filters": ["Only percentage drivers with an observed baseline"],
+        "metric_definitions": ["Rates are decimal fractions", "Apple target applies after 500 eligible impressions", "Play target applies after 500 store visitors"]
+      }
+    },
+    {
+      "id": "rank_snapshot",
+      "label": "2026-08-28 UZ rank snapshot",
+      "path": "growth/dashboard/rank_snapshot.sql",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('App Store UZ search','all','weather','81',10,'fixed_public_capture'),('App Store UZ Weather chart','official','category','>100',10,'fixed_public_capture'),('Google Play UZ Weather category','uz-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','ru-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','en-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ generic-query quorum','2-of-3 profiles','five configured queries','0 qualifying queries',2,'fixed_logged_out_capture')) AS ranks(surface,profile,query,observed_rank,target_rank,evidence_class)",
+        "description": "Loads the complete fixed public-rank capture while preserving bounded absences.",
+        "executed_at": "2026-08-28T13:54:52Z",
+        "tables_used": ["inline rank values backed by growth/data/public-rank/2026-08-28.json"],
+        "filters": ["Storefront UZ", "Google logged-out profiles uz-UZ, ru-UZ, en-UZ"],
+        "metric_definitions": ["Top-10 means rank at most 10", "A >N result is a bounded absence, not a synthetic rank", "Google generic success requires Top-10 on at least two of three profiles for at least two queries"]
+      }
+    },
+    {
+      "id": "gate_snapshot",
+      "label": "Fail-closed growth gates",
+      "path": "growth/dashboard/gate_snapshot.sql",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','1 crash on iOS 1.0.1 on 2026-08-25; no stack trace available','Obtain the Organizer/diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Free endpoint is documented for non-commercial use; no written promotion clearance attached','Obtain written clearance or approve a separately costed licensed endpoint'),('Android device smoke','partial','Final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and physical API 25, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete','Run the versioned signed RC on the remaining tablet, share, background, and accessibility matrix'),('iOS physical smoke','blocked','Release passed iOS 18.1 simulator and bounded physical iPad live-provider/cold-launch paths; the required iPhone is connected without a mountable Developer Disk Image','Unlock/reconnect the iPhone, mount DDI, then run denied-location, search, offline, share, VoiceOver, widget, and cold-start paths')) AS gates(gate,status,evidence,next_action)",
+        "description": "Loads the fail-closed scale gates and their next evidence-producing action.",
+        "executed_at": "2026-08-28T15:57:01Z",
+        "tables_used": ["inline gate values backed by growth/quality/gates.json"],
+        "filters": ["Critical organic-acquisition scale gates"],
+        "metric_definitions": ["Only explicit pass permits scaling", "Blocked and pending are not pass"]
+      }
+    }
+  ]
+}

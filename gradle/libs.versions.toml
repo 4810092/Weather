@@ -13,6 +13,7 @@ ktlintGradle = "14.2.0"
 playServicesWearable = "20.0.1"
 playReview = "2.0.2"
 workManager = "2.11.2"
+desugarJdkLibs = "2.0.3"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -34,6 +35,7 @@ sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", versi
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 play-review = { module = "com.google.android.play:review", version.ref = "playReview" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workManager" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,5 @@
 package uz.ganikhodjaev.weather.shared
 
-import platform.Foundation.NSBundle
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSUserDefaults
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
@@ -9,8 +8,7 @@ import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 internal actual fun publishWeatherSnapshot(
     platformContext: PlatformContext,
     snapshot: WeatherSnapshot,
-    displayUnits: DisplayUnits,
-    allowReview: Boolean
+    displayUnits: DisplayUnits
 ) {
     val defaults = NSUserDefaults(suiteName = APP_GROUP)
     val airQuality = snapshot.airQuality.minByOrNull {
@@ -47,31 +45,10 @@ internal actual fun publishWeatherSnapshot(
         defaults.removeObjectForKey("temperature_min")
     }
     defaults.setInteger(snapshot.fetchedAtEpochSeconds, forKey = "updated_at")
-    if (allowReview) maybeRequestReview(defaults, snapshot.fetchedAtEpochSeconds)
     NSNotificationCenter.defaultCenter.postNotificationName(
         aName = "NimboWeatherDidUpdate",
         `object` = null
     )
 }
 
-private fun maybeRequestReview(defaults: NSUserDefaults, fetchedAt: Long) {
-    if (defaults.integerForKey("last_counted_refresh") == fetchedAt) return
-    val completedRefreshes = defaults.integerForKey("completed_refreshes") + 1
-    val version = NSBundle.mainBundle.objectForInfoDictionaryKey(
-        "CFBundleShortVersionString"
-    ) as? String ?: ""
-    defaults.setInteger(fetchedAt, forKey = "last_counted_refresh")
-    defaults.setInteger(completedRefreshes, forKey = "completed_refreshes")
-    if (completedRefreshes >= REVIEW_MILESTONE &&
-        defaults.stringForKey("reviewed_version") != version
-    ) {
-        defaults.setObject(version, forKey = "reviewed_version")
-        NSNotificationCenter.defaultCenter.postNotificationName(
-            aName = "NimboReviewMilestone",
-            `object` = null
-        )
-    }
-}
-
 private const val APP_GROUP = "group.uz.ganikhodjaev.weather"
-private const val REVIEW_MILESTONE = 4L

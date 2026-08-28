@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "baseline_date": "2026-08-28",
+  "checkpoint_90_day": "2026-11-26",
+  "target_date": "2027-02-28",
+  "primary_goal": {
+    "id": "uz_top_10_both_stores_7d",
+    "required_consecutive_complete_days": 7,
+    "daily_requirements": {
+      "apple_weather_chart_rank_lte": 10,
+      "google_weather_category_rank_lte": 10,
+      "google_required_profiles": [
+        "uz-UZ",
+        "ru-UZ",
+        "en-UZ"
+      ],
+      "minimum_unique_observed_apps": 10,
+      "generic_query_rank_lte": 10,
+      "generic_queries_required": 2,
+      "generic_query_profile_quorum": 2
+    },
+    "missing_or_failed_surface_policy": "unknown_breaks_streak"
+  },
+  "drivers": [
+    {
+      "id": "apple_conversion_rate_pct",
+      "operator": ">=",
+      "target": 15.0,
+      "minimum_denominator_metric": "apple_unique_impressions",
+      "minimum_denominator": 500,
+      "definition": "Apple total downloads and pre-orders divided by unique device impressions for the same period and scope."
+    },
+    {
+      "id": "google_store_listing_ctr_pct",
+      "operator": ">=",
+      "target": 35.0,
+      "minimum_denominator_metric": "google_store_listing_visitors",
+      "minimum_denominator": 500,
+      "definition": "Google unique user install clicks divided by store-listing visitors for the same period and scope."
+    },
+    {
+      "id": "first_launch_rate_pct",
+      "operator": ">=",
+      "target": 80.0,
+      "definition": "Unique first launches divided by completed new installations for the same platform, period, and scope. Do not mix downloads, clicks, and installations."
+    },
+    {
+      "id": "d7_retention_pct",
+      "operator": ">=",
+      "target": 20.0,
+      "definition": "New users or devices returning on day 7 divided by the matching day-7-eligible cohort. Preserve each store's population definition."
+    },
+    {
+      "id": "dau_mau_pct",
+      "operator": ">=",
+      "target": 20.0,
+      "definition": "Average daily active users or devices over the last 30 complete days divided by monthly active users or devices for the same population."
+    },
+    {
+      "id": "ratings_count",
+      "operator": ">=",
+      "target": 25,
+      "per_platform": true
+    },
+    {
+      "id": "average_rating",
+      "operator": ">=",
+      "target": 4.6,
+      "per_platform": true
+    }
+  ],
+  "guardrails": [
+    {
+      "id": "ios_crash_free_sessions_pct",
+      "operator": ">=",
+      "threshold": 99.8,
+      "critical": true,
+      "unknown_policy": "block_scale",
+      "note": "Requires a direct, source-defined crash-free-session metric. One minus crashes divided by sessions is not equivalent."
+    },
+    {
+      "id": "android_user_perceived_crash_rate_pct",
+      "operator": "<",
+      "threshold": 1.09,
+      "critical": true,
+      "unknown_policy": "block_scale"
+    },
+    {
+      "id": "android_user_perceived_anr_rate_pct",
+      "operator": "<",
+      "threshold": 0.47,
+      "critical": true,
+      "unknown_policy": "block_scale"
+    },
+    {
+      "id": "android_phone_model_crash_rate_pct",
+      "operator": "<",
+      "threshold": 8.0,
+      "critical": true,
+      "unknown_policy": "review_required"
+    },
+    {
+      "id": "android_phone_model_anr_rate_pct",
+      "operator": "<",
+      "threshold": 8.0,
+      "critical": true,
+      "unknown_policy": "review_required"
+    },
+    {
+      "id": "wear_model_crash_rate_pct",
+      "operator": "<",
+      "threshold": 4.0,
+      "critical": true,
+      "unknown_policy": "review_required"
+    },
+    {
+      "id": "wear_model_anr_rate_pct",
+      "operator": "<",
+      "threshold": 5.0,
+      "critical": true,
+      "unknown_policy": "review_required"
+    },
+    {
+      "id": "user_loss_rate_pct",
+      "operator": "<",
+      "threshold": 5.0,
+      "critical": false,
+      "unknown_policy": "report_unknown",
+      "note": "Only compare periods that use the same console population and denominator definition."
+    },
+    {
+      "id": "open_policy_issues",
+      "operator": "==",
+      "threshold": 0,
+      "critical": true,
+      "unknown_policy": "block_scale"
+    }
+  ],
+  "scale_gates": [
+    {
+      "id": "ios_crash_gate",
+      "required_status": "pass"
+    },
+    {
+      "id": "open_meteo_promotion_clearance",
+      "required_status": "pass"
+    },
+    {
+      "id": "android_physical_smoke",
+      "required_status": "pass"
+    },
+    {
+      "id": "ios_physical_smoke",
+      "required_status": "pass"
+    }
+  ],
+  "experiment_gate": {
+    "minimum_weekly_store_visitors": 500,
+    "one_element_at_a_time": true,
+    "apply_only_platform_confirmed_winner": true
+  },
+  "decision_thresholds": {
+    "comparable_rank_improvement_positions": 20
+  },
+  "decision_rules_90_day": [
+    {
+      "priority": 1,
+      "when": "any_critical_scale_gate_not_pass",
+      "decision": "hold_acquisition_and_fix_gate"
+    },
+    {
+      "priority": 2,
+      "when": "sufficient_data_and_any_conversion_or_retention_driver_below_target",
+      "decision": "iterate_product_and_store_listing"
+    },
+    {
+      "priority": 3,
+      "when": "quality_gates_pass_and_comparable_rank_improvement_gte_configured_threshold",
+      "decision": "continue_organic_program"
+    },
+    {
+      "priority": 4,
+      "when": "quality_gates_pass_and_comparable_rank_improvement_lt_configured_threshold",
+      "decision": "prepare_paid_pilot_and_provider_cost_only_no_spend"
+    },
+    {
+      "priority": 5,
+      "when": "insufficient_or_noncomparable_data",
+      "decision": "continue_measurement_no_paid_decision"
+    }
+  ]
+}

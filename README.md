@@ -8,6 +8,8 @@
 
 Nimbo is a production Kotlin Multiplatform weather application for Android and iOS. It is also an inspectable reference codebase for shared Compose Multiplatform UI, SQLDelight-backed offline data, deterministic weather insights, localization and RTL, adaptive layouts, accessibility, and real mobile release constraints.
 
+**Website:** [nimbo.uz](https://nimbo.uz/)
+
 This repository contains an application, not a framework or reusable weather SDK. The value is in studying a complete product and its trade-offs: platform shells, shared UI and state, provider normalization, database migrations, widgets and watch companions, privacy boundaries, CI, store metadata, and release evidence all live together.
 
 **Stack:** Kotlin Multiplatform, Compose Multiplatform, Coroutines/StateFlow, Ktor, kotlinx.serialization, kotlinx-datetime, SQLDelight, Android/WorkManager, UIKit/SwiftUI/WidgetKit, watchOS, and Wear OS.
@@ -91,6 +93,8 @@ shared/    KMP data/domain/presentation code, Compose UI, resources, SQL, and te
 iosApp/    iOS/iPadOS shell, WidgetKit extension, watchOS app, and Xcode project
 wearApp/   Wear OS companion application
 store/     Versioned store copy, privacy declarations, artwork, and screenshots
+growth/    Versioned baseline, rank monitor, KPI gates, reports, and outreach drafts
+site/      Uzbek/Russian/English landing, press, support, and privacy source
 docs/      Architecture, ADRs, privacy, quality, and release evidence
 scripts/   Repository, localization, metadata, and asset validation
 ```
@@ -156,7 +160,7 @@ python3 scripts/check_store_assets.py
   :wearApp:bundleRelease
 ```
 
-There are 30 unique automated test functions in the current tree: 28 common tests run for Android host and iOS Simulator, plus two Android-host persistence/migration tests. See [Testing](docs/TESTING.md) for scope and known gaps.
+There are 53 unique automated test functions in the current tree: 49 common tests run for Android host and iOS Simulator, plus four Android-host persistence, migration, and platform-failure tests. See [Testing](docs/TESTING.md) for scope and known gaps.
 
 ## Localization and accessibility
 
@@ -172,9 +176,10 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 
 ## Platforms and release state
 
-- Android phone/tablet `1.0.2` (`versionCode 6`) is recorded in the release journal as a completed production rollout on August 13, 2026.
-- iOS/iPadOS `1.0` build 3 is recorded as an external TestFlight build. This repository does **not** claim a public App Store production release.
-- Wear OS `1.0.2` build 1000006 was rejected for background/splash quality requirements; upload-signed hotfix 1000007 is locally validated, published to the internal Wear track, and under Google review for Production. watchOS remains included with the unchanged Apple build. See [release candidate status](docs/RELEASE_CANDIDATE.md) for the dated record.
+- Android phone/tablet `1.0.2` (`versionCode 6`) was rechecked as active in Google Play Production in 177 countries on August 28, 2026.
+- iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. One iOS 1.0.1 crash remains unsymbolicated, so acquisition scaling is blocked.
+- Wear OS `1.0.2` (`versionCode 1000007`) was rechecked as active in Google Play Production in 177 countries on August 28. Physical paired-device smoke is still pending.
+- The new onboarding/review/share/retry changes are an unuploaded growth candidate, not evidence that any current public binary contains them. See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md) and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

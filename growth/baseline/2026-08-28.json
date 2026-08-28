@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-08-28",
+  "recorded_at": "2026-08-28T18:38:55+05:00",
+  "timezone": "Asia/Tashkent",
+  "evidence_class": "reported_values_plus_read_only_console_recheck",
+  "provenance": {
+    "source": "User-provided values in the approved growth plan plus a read-only App Store Connect and Play Console recheck on 2026-08-28",
+    "raw_exports_attached": false,
+    "live_console_rechecked_in_this_snapshot": true,
+    "storefront_scope": "not_provided_for_overview_values",
+    "country_breakdown_available": false,
+    "source_breakdown_available": false,
+    "device_breakdown_available": false,
+    "version_breakdown_available": false
+  },
+  "platforms": {
+    "apple": {
+      "metrics": {
+        "reported_impressions": 206,
+        "first_time_downloads": 5,
+        "product_page_views": 5,
+        "redownloads": 1,
+        "updates": 3,
+        "reported_conversion_rate_pct": 4.05,
+        "ratings_count": 0,
+        "reported_crashes": 1
+      },
+      "crash_evidence": {
+        "date": "2026-08-25",
+        "app_version_filter": "1.0.1",
+        "device_breakdown": "insufficient_data",
+        "stack_trace_available": false
+      },
+      "release_state": {
+        "version": "1.0.1",
+        "build": "4",
+        "status": "Ready for Distribution",
+        "apple_watch_included": true,
+        "verified_on": "2026-08-28"
+      },
+      "search_observations": [
+        {
+          "query": "weather",
+          "storefront": "UZ",
+          "rank": 81,
+          "approximate": true,
+          "surface": "public Apple search result order",
+          "note": "The approved plan described the rank as approximately 81. The automated monitor establishes its own exact comparable series."
+        }
+      ]
+    },
+    "google": {
+      "metrics": {
+        "reported_impressions": 779,
+        "installations": 21,
+        "first_launches": 14,
+        "monthly_active_users": 11,
+        "reported_conversion_rate_pct": 40.82,
+        "reported_ratings_count_from_plan": 1,
+        "console_ratings_status": "insufficient_data",
+        "android_vitals_status": "insufficient_data",
+        "public_install_badge_lower_bound": 10
+      },
+      "release_state": {
+        "phone": {
+          "version": "1.0.2",
+          "version_code": 6,
+          "production_status": "active",
+          "countries": 177,
+          "version_specific_installations": 4
+        },
+        "wear": {
+          "version": "1.0.2",
+          "version_code": 1000007,
+          "production_status": "active",
+          "active_since": "2026-08-27T19:43:00+05:00",
+          "countries": 177
+        },
+        "unpublished_changes": false,
+        "verified_on": "2026-08-28"
+      }
+    }
+  },
+  "reproducibility_checks": [
+    {
+      "id": "apple_first_downloads_over_reported_impressions",
+      "value_pct": 2.43,
+      "matches_reported_conversion": false,
+      "interpretation": "Not a contradiction: Apple's conversion rate uses total downloads and pre-orders divided by unique device impressions, while the supplied values are first-time downloads and unqualified impressions. The missing numerator and denominator must be imported before comparison."
+    },
+    {
+      "id": "google_installations_over_reported_impressions",
+      "value_pct": 2.7,
+      "matches_reported_conversion": false,
+      "interpretation": "The supplied 40.82% has no attached denominator or report definition and is preserved only as reported."
+    },
+    {
+      "id": "google_first_launches_over_installations",
+      "value_pct": 66.67,
+      "matches_target": false,
+      "target_pct": 80.0,
+      "interpretation": "Directional only until installation and first-launch populations and date windows are confirmed comparable."
+    }
+  ],
+  "known_gaps": [
+    "No raw App Store Connect or Play Console export is attached; the recheck is a read-only console observation.",
+    "Country, acquisition source, device, and app-version breakdowns are absent.",
+    "The reported conversion rates cannot be reproduced from the supplied counts.",
+    "D7 retention, DAU/MAU denominator, ratings average, iOS sessions, and user-loss rate are missing; Play ratings/vitals are suppressed as insufficient data.",
+    "The single iOS 1.0.1 crash on 2026-08-25 has no local crash report or stack trace; its device breakdown is suppressed as insufficient data."
+  ]
+}

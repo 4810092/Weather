@@ -3,15 +3,29 @@
 
 from __future__ import annotations
 
-import struct
+import json
 import sys
 from pathlib import Path
 
+from PIL import Image
+
 ROOT = Path(__file__).resolve().parents[1]
+CREATIVE_MANIFEST = ROOT / "store/creative-sets/growth-2026-08.json"
 
 STORE_LOCALES = (
-    "en", "ru-RU", "ar", "es-ES", "fr-FR", "de-DE", "pt-PT",
-    "zh-CN", "ja-JP", "ko-KR", "hi-IN", "tr-TR", "uz-UZ",
+    "en",
+    "ru-RU",
+    "ar",
+    "es-ES",
+    "fr-FR",
+    "de-DE",
+    "pt-PT",
+    "zh-CN",
+    "ja-JP",
+    "ko-KR",
+    "hi-IN",
+    "tr-TR",
+    "uz-UZ",
 )
 
 EXPECTED = {
@@ -22,42 +36,28 @@ EXPECTED = {
 }
 
 for locale in STORE_LOCALES:
-    EXPECTED[
-        f"store/screenshots/app-store/iphone-6.9-{locale}/01-current.png"
-    ] = ((1320, 2868), "PNG")
-    EXPECTED[
-        f"store/screenshots/app-store/ipad-13-{locale}/01-current.png"
-    ] = ((2064, 2752), "PNG")
+    EXPECTED[f"store/screenshots/app-store/iphone-6.9-{locale}/01-current.png"] = (
+        (1320, 2868),
+        "PNG",
+    )
+    EXPECTED[f"store/screenshots/app-store/ipad-13-{locale}/01-current.png"] = (
+        (2064, 2752),
+        "PNG",
+    )
 
 
 def inspect_image(path: Path) -> tuple[tuple[int, int], str, bool]:
-    data = path.read_bytes()
-    if data.startswith(b"\x89PNG\r\n\x1a\n"):
-        if data[12:16] != b"IHDR":
-            raise ValueError("missing PNG IHDR")
-        width, height, _, color_type, _, _, _ = struct.unpack(">IIBBBBB", data[16:29])
-        return (width, height), "PNG", color_type in {4, 6}
-    if data.startswith(b"\xff\xd8"):
-        offset = 2
-        while offset + 9 < len(data):
-            if data[offset] != 0xFF:
-                offset += 1
-                continue
-            marker = data[offset + 1]
-            offset += 2
-            if marker in {0xD8, 0xD9} or 0xD0 <= marker <= 0xD7:
-                continue
-            length = struct.unpack(">H", data[offset : offset + 2])[0]
-            size_markers = {
-                0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
-                0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF,
-            }
-            if marker in size_markers:
-                height, width = struct.unpack(">HH", data[offset + 3 : offset + 7])
-                return (width, height), "JPEG", False
-            offset += length
-        raise ValueError("missing JPEG size marker")
-    raise ValueError("unsupported image format")
+    try:
+        with Image.open(path) as image:
+            image.verify()
+        with Image.open(path) as image:
+            image.load()
+            image_format = image.format or ""
+            has_alpha = "A" in image.getbands() or "transparency" in image.info
+            return image.size, image_format, has_alpha
+    except (Image.DecompressionBombError, OSError, SyntaxError, ValueError) as error:
+        raise ValueError(f"image decode/verification failed: {error}") from error
+
 
 for index, name in enumerate(
     (
@@ -74,10 +74,16 @@ for index, name in enumerate(
 for locale in STORE_LOCALES:
     if locale == "en":
         continue
-    for name in ("01-current.png", "02-timeline-selected.png"):
-        EXPECTED[
-            f"store/screenshots/google-play/phone-{locale}/{name}"
-        ] = ((1080, 1920), "PNG")
+    names = ["01-current.png", "02-timeline-selected.png"]
+    if locale in {"ru-RU", "uz-UZ"}:
+        names.extend(
+            ["03-details.png", "04-settings-privacy.png", "05-offline-cache.png"]
+        )
+    for name in names:
+        EXPECTED[f"store/screenshots/google-play/phone-{locale}/{name}"] = (
+            (1080, 1920),
+            "PNG",
+        )
 
 for name in (
     "01-overview.png",
@@ -88,8 +94,108 @@ for name in (
     EXPECTED[f"store/screenshots/google-play/tablet-en/{name}"] = ((2560, 1440), "PNG")
 
 
-def main() -> int:
+def load_creative_manifest() -> tuple[dict, list[str]]:
     failures: list[str] = []
+    try:
+        manifest = json.loads(CREATIVE_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return {}, [f"creative manifest: {error}"]
+    if manifest.get("schema_version") != 1:
+        failures.append("creative manifest schema_version must be 1")
+    if manifest.get("generated_by") != "scripts/build_store_creatives.py":
+        failures.append("creative manifest must name the deterministic renderer")
+    platforms = manifest.get("platforms", {})
+    if set(platforms) != {"app-store", "google-play"}:
+        failures.append("creative manifest must cover App Store and Google Play")
+    locales = manifest.get("locales", {})
+    if set(locales) != {"en-US", "ru-RU", "uz-UZ"}:
+        failures.append("creative manifest must cover en-US, ru-RU, and uz-UZ")
+    stories = manifest.get("stories", [])
+    if [story.get("sequence") for story in stories] != list(range(1, 7)):
+        failures.append("creative manifest must contain exactly six ordered stories")
+    filenames = [story.get("filename") for story in stories]
+    if len(set(filenames)) != 6 or any(
+        not str(name).endswith(".png") for name in filenames
+    ):
+        failures.append("creative story filenames must be six unique PNG names")
+    if set(manifest.get("excluded_until_captured", [])) != {
+        "home-screen widgets"
+    }:
+        failures.append("uncaptured product surfaces must remain explicitly excluded")
+
+    for locale, locale_data in locales.items():
+        captions = locale_data.get("captions", {})
+        for platform in ("app-store", "google-play"):
+            values = captions.get(platform, [])
+            if len(values) != 6 or any(
+                not isinstance(value, str) or not value.strip() for value in values
+            ):
+                failures.append(f"{locale}/{platform}: expected six non-empty captions")
+            lowered = " ".join(values).lower()
+            unsupported_claims = ["home-screen widget", "виджет", "vidjet"]
+            if platform == "app-store":
+                unsupported_claims.extend(
+                    [
+                        "10-day",
+                        "air quality",
+                        "качество воздуха",
+                        "10 kunlik",
+                        "havo sifati",
+                    ]
+                )
+            for unsupported in unsupported_claims:
+                if unsupported in lowered:
+                    failures.append(
+                        f"{locale}/{platform}: uncaptured claim {unsupported!r}"
+                    )
+
+    source_paths: set[str] = set()
+    for platform, platform_data in platforms.items():
+        watch_source = platform_data.get("watch_source")
+        if watch_source:
+            source_paths.add(watch_source)
+        for locale_data in locales.values():
+            for story in stories:
+                if platform == "google-play" and story.get("google_source"):
+                    failures.append(
+                        f"{story.get('id', 'unknown')}: fixed Google source is not "
+                        "allowed for a localized creative set"
+                    )
+                    source_paths.add(story["google_source"])
+                elif platform == "google-play":
+                    source_paths.add(
+                        platform_data["phone_source"].format(
+                            source_locale=locale_data["source_locale"],
+                            source_name=story["google_source_name"],
+                        )
+                    )
+                else:
+                    source_paths.add(
+                        platform_data["phone_source"].format(
+                            source_locale=locale_data["source_locale"]
+                        )
+                    )
+    for relative in source_paths:
+        if not relative.startswith("store/screenshots/"):
+            failures.append(
+                f"creative source is not a production screenshot: {relative}"
+            )
+        elif not (ROOT / relative).is_file():
+            failures.append(f"missing creative source {relative}")
+    return manifest, failures
+
+
+def main() -> int:
+    manifest, failures = load_creative_manifest()
+    if manifest:
+        for platform, platform_data in manifest["platforms"].items():
+            size = tuple(platform_data["size"])
+            for locale in manifest["locales"]:
+                for story in manifest["stories"]:
+                    relative = (
+                        Path(platform_data["output_dir"]) / locale / story["filename"]
+                    ).as_posix()
+                    EXPECTED[relative] = (size, "PNG")
     for relative, (size, image_format) in EXPECTED.items():
         path = ROOT / relative
         if not path.exists():
@@ -108,6 +214,8 @@ def main() -> int:
             )
         if has_alpha and "/assets/" in relative:
             failures.append(f"{relative}: alpha channel is not allowed")
+        if has_alpha and "/creatives/" in relative:
+            failures.append(f"{relative}: store creative must be opaque")
 
     screenshot_root = ROOT / "store/screenshots"
     unexpected = sorted(
@@ -117,6 +225,15 @@ def main() -> int:
     )
     if unexpected:
         failures.append(f"unvalidated screenshots: {', '.join(unexpected)}")
+
+    creative_root = ROOT / "store/creatives"
+    unexpected_creatives = sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in creative_root.rglob("*")
+        if path.is_file() and path.relative_to(ROOT).as_posix() not in EXPECTED
+    )
+    if unexpected_creatives:
+        failures.append(f"unvalidated creatives: {', '.join(unexpected_creatives)}")
 
     if failures:
         print("Store asset validation failed:", file=sys.stderr)

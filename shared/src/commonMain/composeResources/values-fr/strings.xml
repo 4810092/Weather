@@ -4,6 +4,18 @@
   <string name="cancel">Annuler</string>
   <string name="onboarding_title">Une météo qui vous parle.</string>
   <string name="onboarding_body">Choisissez un lieu pour voir les prochaines 24 heures à côté du temps que vous avez récemment ressenti.</string>
+  <string name="quick_places">Villes populaires d’Ouzbékistan</string>
+  <string name="quick_city_tashkent">Tachkent</string>
+  <string name="quick_city_samarkand">Samarcande</string>
+  <string name="quick_city_namangan">Namangan</string>
+  <string name="quick_city_andijan">Andijan</string>
+  <string name="quick_city_fergana">Ferghana</string>
+  <string name="quick_city_bukhara">Boukhara</string>
+  <string name="quick_city_nukus">Noukous</string>
+  <string name="quick_country_uzbekistan">Ouzbékistan</string>
+  <string name="first_forecast_tip_title">Vos prévisions sont prêtes</string>
+  <string name="first_forecast_tip_body">Utilisez Changer de lieu pour enregistrer d’autres villes, ou ajoutez le widget Nimbo pour voir la météo en un coup d’œil.</string>
+  <string name="got_it">Compris</string>
   <string name="search_city">Rechercher une ville</string>
   <string name="current_location">Position actuelle</string>
   <string name="change_later">Vous pourrez modifier ce choix plus tard.</string>
@@ -18,6 +30,7 @@
   <string name="change_place">Changer de lieu</string>
   <string name="share_weather">Partager la météo</string>
   <string name="share_weather_text">%1$s : %2$d°, %3$d%% de risque de pluie — Nimbo</string>
+  <string name="share_store_cta">Téléchargez Nimbo pour votre prochaine sortie :</string>
   <string name="theme">Thème</string>
   <string name="theme_description">Utilisez l’apparence de l’appareil ou choisissez-en une.</string>
   <string name="theme_system">Système</string>

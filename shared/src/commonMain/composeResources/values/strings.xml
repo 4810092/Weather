@@ -1,8 +1,20 @@
 <resources>
     <string name="brand">Nimbo</string>
     <string name="cancel">Cancel</string>
-    <string name="onboarding_title">Weather that feels familiar.</string>
-    <string name="onboarding_body">Choose a place to see the next 24 hours alongside weather you’ve just experienced.</string>
+    <string name="onboarding_title">Find the best time to go outside.</string>
+    <string name="onboarding_body">Choose an Uzbekistan city instantly, search anywhere, or use your approximate location only if you want to.</string>
+    <string name="quick_places">Popular cities in Uzbekistan</string>
+    <string name="quick_city_tashkent">Tashkent</string>
+    <string name="quick_city_samarkand">Samarkand</string>
+    <string name="quick_city_namangan">Namangan</string>
+    <string name="quick_city_andijan">Andijan</string>
+    <string name="quick_city_fergana">Fergana</string>
+    <string name="quick_city_bukhara">Bukhara</string>
+    <string name="quick_city_nukus">Nukus</string>
+    <string name="quick_country_uzbekistan">Uzbekistan</string>
+    <string name="first_forecast_tip_title">Your forecast is ready</string>
+    <string name="first_forecast_tip_body">Use Change place to save more cities, or add the Nimbo widget for weather at a glance.</string>
+    <string name="got_it">Got it</string>
     <string name="search_city">Search for a city</string>
     <string name="current_location">Current location</string>
     <string name="change_later">You can change this later.</string>
@@ -17,6 +29,7 @@
     <string name="change_place">Change place</string>
     <string name="share_weather">Share weather</string>
     <string name="share_weather_text">%1$s: %2$d°, %3$d%% chance of rain — Nimbo</string>
+    <string name="share_store_cta">Get Nimbo for your next walk:</string>
     <string name="theme">Theme</string>
     <string name="theme_description">Follow the device appearance or choose one.</string>
     <string name="theme_system">System</string>

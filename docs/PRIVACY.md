@@ -2,7 +2,9 @@
 
 Effective date: August 10, 2026
 
-Last reviewed against the implementation and provider terms: August 16, 2026
+Last reviewed against the implementation and provider terms: August 28, 2026
+
+Canonical public policy: [nimbo.uz/privacy](https://nimbo.uz/privacy/)
 
 Nimbo is published by GANIKHODJAYEV KHASAN ASKAROVICH, YATT. The app has no
 account, advertising, analytics, crash-reporting SDK, or background location.
@@ -42,9 +44,12 @@ location in the background.
 
 ## Tracking and sharing
 
-Nimbo can open the platform-owned App Store or Google Play review prompt after
-several successful updates. Any review a user chooses to submit is handled by the
-store under Apple’s or Google’s terms; Nimbo does not receive or store review text.
+Nimbo can open the platform-owned App Store or Google Play review prompt only
+after at least three successful foreground forecasts on two different local days
+and while useful forecast content is visible. A completed platform request is
+recorded at most once per app version; a request that cannot be launched remains
+eligible for retry. Any review a user chooses to submit is handled by the store
+under Apple’s or Google’s terms; Nimbo does not receive or store review text.
 
 Nimbo does not sell data, build advertising profiles, or track users across apps
 or websites. Open-Meteo processes approximate location and city-search requests

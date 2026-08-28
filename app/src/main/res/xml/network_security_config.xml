@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!--
+      API 24 images can predate the ISRG roots used by Open-Meteo's current
+      Let's Encrypt chain. Keep the additional public roots limited to the
+      three provider hosts Nimbo calls; every other host uses system trust only.
+    -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">api.open-meteo.com</domain>
+        <domain includeSubdomains="false">air-quality-api.open-meteo.com</domain>
+        <domain includeSubdomains="false">geocoding-api.open-meteo.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/isrg_root_x1" />
+            <certificates src="@raw/isrg_root_x2" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

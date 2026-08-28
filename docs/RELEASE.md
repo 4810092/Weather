@@ -2,13 +2,13 @@
 
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
-cross-platform state is [Nimbo 1.0.2 release candidate](RELEASE_CANDIDATE.md): Android
-phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026; iOS 1.0.1
-(4) was submitted to App Review on August 23 with automatic release after approval;
-Google rejected Wear OS 1.0.2 (1000006) on August 20 for WO-V13/WO-V15, and
-source hotfix 1000007
-is locally validated, upload-signed, published to the internal Wear track, and under
-Google review for Production. Store consoles remain the authority for live status.
+cross-platform state is [Nimbo 1.0.2 release candidate](RELEASE_CANDIDATE.md):
+Android phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026.
+A live console recheck on August 28 found iOS 1.0.1 (4) `Ready for Distribution`
+and Wear OS 1.0.2 (1000007) active in Production in 177 countries. The new
+product and store work is an unuploaded
+[growth implementation candidate](GROWTH_RELEASE.md). Store consoles remain the
+authority for live status.
 
 ## Version identity
 

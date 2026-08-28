@@ -3,15 +3,13 @@ package uz.ganikhodjaev.weather.shared
 import android.content.Intent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import com.google.android.play.core.review.ReviewManagerFactory
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 
 internal actual fun publishWeatherSnapshot(
     platformContext: PlatformContext,
     snapshot: WeatherSnapshot,
-    displayUnits: DisplayUnits,
-    allowReview: Boolean
+    displayUnits: DisplayUnits
 ) {
     val context = platformContext.applicationContext
     val airQuality = snapshot.airQuality.minByOrNull {
@@ -56,38 +54,9 @@ internal actual fun publishWeatherSnapshot(
     }.asPutDataRequest().setUrgent()
     Wearable.getDataClient(context).putDataItem(watchRequest)
 
-    if (allowReview) maybeRequestReview(platformContext, snapshot.fetchedAtEpochSeconds)
-
     context.sendBroadcast(
         Intent(ACTION_WIDGET_DATA_CHANGED).setPackage(context.packageName)
     )
-}
-
-private fun maybeRequestReview(platformContext: PlatformContext, fetchedAt: Long) {
-    val activity = platformContext.requireActivity()
-    val context = platformContext.applicationContext
-    val preferences = context.getSharedPreferences(PREFERENCES_NAME, 0)
-    if (preferences.getLong(KEY_LAST_COUNTED_REFRESH, -1L) == fetchedAt) return
-    val completedRefreshes = preferences.getInt(KEY_COMPLETED_REFRESHES, 0) + 1
-    val version = runCatching {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionName
-    }.getOrNull().orEmpty()
-    preferences.edit()
-        .putLong(KEY_LAST_COUNTED_REFRESH, fetchedAt)
-        .putInt(KEY_COMPLETED_REFRESHES, completedRefreshes)
-        .apply()
-    if (completedRefreshes < REVIEW_MILESTONE ||
-        preferences.getString(KEY_REVIEWED_VERSION, "") == version
-    ) {
-        return
-    }
-    preferences.edit().putString(KEY_REVIEWED_VERSION, version).apply()
-    val manager = ReviewManagerFactory.create(activity)
-    manager.requestReviewFlow().addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            manager.launchReviewFlow(activity, task.result)
-        }
-    }
 }
 
 private const val PREFERENCES_NAME = "nimbo_surface_weather"
@@ -101,10 +70,6 @@ private const val KEY_HAS_DAILY_RANGE = "has_daily_range"
 private const val KEY_TEMPERATURE_MAX = "temperature_max"
 private const val KEY_TEMPERATURE_MIN = "temperature_min"
 private const val KEY_UPDATED_AT = "updated_at"
-private const val KEY_LAST_COUNTED_REFRESH = "last_counted_refresh"
-private const val KEY_COMPLETED_REFRESHES = "completed_refreshes"
-private const val KEY_REVIEWED_VERSION = "reviewed_version"
-private const val REVIEW_MILESTONE = 4
 private const val WEATHER_DATA_PATH = "/nimbo/weather"
 private const val ACTION_WIDGET_DATA_CHANGED =
     "uz.ganikhodjaev.weather.action.WIDGET_DATA_CHANGED"

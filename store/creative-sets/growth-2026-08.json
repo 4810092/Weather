@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "id": "growth-2026-08",
+  "revision": 1,
+  "generated_by": "scripts/build_store_creatives.py",
+  "rendering": {
+    "pillow_version": "12.2.0",
+    "font_regular": {
+      "filename": "Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    "font_bold": {
+      "filename": "Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+    },
+    "background_top": "#dceeff",
+    "background_bottom": "#fff6e7",
+    "foreground": "#10202d",
+    "accent": "#326b89"
+  },
+  "platforms": {
+    "app-store": {
+      "size": [
+        1320,
+        2868
+      ],
+      "output_dir": "store/creatives/growth-2026-08/app-store",
+      "phone_source": "store/screenshots/app-store/iphone-6.9-{source_locale}/01-current.png",
+      "watch_source": "store/screenshots/app-store/apple-watch-en/01-current.jpg"
+    },
+    "google-play": {
+      "size": [
+        1080,
+        1920
+      ],
+      "output_dir": "store/creatives/growth-2026-08/google-play",
+      "phone_source": "store/screenshots/google-play/phone-{source_locale}/{source_name}",
+      "watch_source": "store/screenshots/google-play/wear-os-en/01-current.jpg",
+      "feature_graphic": "store/assets/google-play/feature-graphic-1024x500.jpg"
+    }
+  },
+  "locales": {
+    "en-US": {
+      "source_locale": "en",
+      "captions": {
+        "app-store": [
+          "Find your best time outside",
+          "Compare with weather you already felt",
+          "24 hours back. Now. 24 hours ahead.",
+          "Weather details at a glance",
+          "No account. No ads. No analytics.",
+          "Weather on iPhone and Apple Watch"
+        ],
+        "google-play": [
+          "Find your best time outside",
+          "Compare with weather you already felt",
+          "24 hours back. Now. 24 hours ahead.",
+          "10 days and air quality",
+          "Keep the last forecast when offline",
+          "Weather on your phone and wrist"
+        ]
+      }
+    },
+    "ru-RU": {
+      "source_locale": "ru-RU",
+      "captions": {
+        "app-store": [
+          "Найдите лучшее время для прогулки",
+          "Сравните с погодой, которую уже чувствовали",
+          "24 часа назад. Сейчас. 24 часа вперёд.",
+          "Детали погоды — одним взглядом",
+          "Без аккаунта, рекламы и аналитики",
+          "Погода на iPhone и Apple Watch"
+        ],
+        "google-play": [
+          "Найдите лучшее время для прогулки",
+          "Сравните с погодой, которую уже чувствовали",
+          "24 часа назад. Сейчас. 24 часа вперёд.",
+          "10 дней и качество воздуха",
+          "Последний прогноз доступен офлайн",
+          "Погода на телефоне и часах"
+        ]
+      }
+    },
+    "uz-UZ": {
+      "source_locale": "uz-UZ",
+      "captions": {
+        "app-store": [
+          "Tashqariga chiqish uchun eng yaxshi vaqtni toping",
+          "Yaqinda his qilgan ob-havo bilan solishtiring",
+          "24 soat oldin. Hozir. 24 soat keyin.",
+          "Ob-havo tafsilotlari — bir qarashda",
+          "Hisob, reklama va tahlilsiz",
+          "Ob-havo iPhone va Apple Watch’da"
+        ],
+        "google-play": [
+          "Tashqariga chiqish uchun eng yaxshi vaqtni toping",
+          "Yaqinda his qilgan ob-havo bilan solishtiring",
+          "24 soat oldin. Hozir. 24 soat keyin.",
+          "10 kunlik prognoz va havo sifati",
+          "Oxirgi prognoz oflayn ham mavjud",
+          "Ob-havo telefon va soatda"
+        ]
+      }
+    }
+  },
+  "stories": [
+    {
+      "sequence": 1,
+      "id": "best-time",
+      "filename": "01-best-time.png",
+      "google_source_name": "03-details.png",
+      "google_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "evidence": "The production UI visibly contains the Best time to go outside card."
+    },
+    {
+      "sequence": 2,
+      "id": "recent-comparison",
+      "filename": "02-recent-comparison.png",
+      "google_source_name": "01-current.png",
+      "google_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "evidence": "The production UI visibly compares current conditions with yesterday."
+    },
+    {
+      "sequence": 3,
+      "id": "timeline",
+      "filename": "03-timeline.png",
+      "google_source_name": "02-timeline-selected.png",
+      "google_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "evidence": "The production UI visibly labels its timeline as 24 hours before, now, and 24 hours ahead."
+    },
+    {
+      "sequence": 4,
+      "id": "details",
+      "filename": "04-details.png",
+      "google_source_name": "03-details.png",
+      "google_focus": [
+        0.5,
+        0.65,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "evidence": "The localized Android release-candidate captures visibly show the 10-day forecast and air-quality card; App Store captions remain generic until matching Apple captures exist."
+    },
+    {
+      "sequence": 5,
+      "id": "offline-privacy",
+      "filename": "05-offline-privacy.png",
+      "google_source_name": "05-offline-cache.png",
+      "google_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "evidence": "The Android capture visibly reports a saved forecast; the no-account, no-ads, no-analytics Apple claim matches the audited store privacy declaration."
+    },
+    {
+      "sequence": 6,
+      "id": "watch",
+      "filename": "06-watch.png",
+      "google_source_name": "01-current.png",
+      "google_focus": [
+        0.5,
+        0.45,
+        1.0
+      ],
+      "app_store_focus": [
+        0.5,
+        0.45,
+        1.0
+      ],
+      "watch_overlay": true,
+      "evidence": "The composition uses the checked-in production phone and watch captures without altering their UI."
+    }
+  ],
+  "excluded_until_captured": [
+    "home-screen widgets"
+  ]
+}

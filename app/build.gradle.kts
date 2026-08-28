@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "uz.ganikhodjaev.weather"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 36
         versionCode = 6
         versionName = "1.0.2"
@@ -33,12 +33,14 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.work.runtime)

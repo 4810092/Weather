@@ -4,6 +4,18 @@
   <string name="cancel">キャンセル</string>
   <string name="onboarding_title">体感でわかる天気。</string>
   <string name="onboarding_body">場所を選ぶと、今後24時間の天気を最近体感した天気と並べて確認できます。</string>
+  <string name="quick_places">ウズベキスタンの人気都市</string>
+  <string name="quick_city_tashkent">タシュケント</string>
+  <string name="quick_city_samarkand">サマルカンド</string>
+  <string name="quick_city_namangan">ナマンガン</string>
+  <string name="quick_city_andijan">アンディジャン</string>
+  <string name="quick_city_fergana">フェルガナ</string>
+  <string name="quick_city_bukhara">ブハラ</string>
+  <string name="quick_city_nukus">ヌクス</string>
+  <string name="quick_country_uzbekistan">ウズベキスタン</string>
+  <string name="first_forecast_tip_title">予報の準備ができました</string>
+  <string name="first_forecast_tip_body">「場所を変更」で都市を追加保存するか、Nimboウィジェットで天気をひと目で確認できます。</string>
+  <string name="got_it">了解</string>
   <string name="search_city">都市を検索</string>
   <string name="current_location">現在地</string>
   <string name="change_later">後で変更できます。</string>
@@ -18,6 +30,7 @@
   <string name="change_place">場所を変更</string>
   <string name="share_weather">天気を共有</string>
   <string name="share_weather_text">%1$s：%2$d°、降水確率%3$d%% — Nimbo</string>
+  <string name="share_store_cta">次のお出かけにNimboをどうぞ：</string>
   <string name="theme">テーマ</string>
   <string name="theme_description">デバイスの外観を使用するか選択します。</string>
   <string name="theme_system">システム</string>

@@ -16,13 +16,39 @@ import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 
+internal interface WeatherDataSource {
+    fun activeLocation(): Location?
+
+    fun savedLocations(): List<Location>
+
+    fun observe(location: Location): Flow<WeatherSnapshot?>
+
+    suspend fun refreshPrimary(location: Location): Long
+
+    suspend fun refreshAirQuality(location: Location)
+
+    suspend fun refreshHistory(location: Location)
+
+    suspend fun searchCities(query: String, language: String): List<Location>
+
+    suspend fun setActiveLocation(location: Location)
+
+    fun deleteLocation(locationId: String)
+
+    fun updateLocationDetails(location: Location)
+
+    fun unitPreference(): UnitPreference
+
+    fun setUnitPreference(preference: UnitPreference)
+}
+
 internal class WeatherRepository(
     private val database: NimboDatabase,
     private val service: OpenMeteoService
-) {
+) : WeatherDataSource {
     private val queries = database.weatherQueries
 
-    fun activeLocation(): Location? {
+    override fun activeLocation(): Location? {
         val stored = queries.selectActiveLocation().executeAsOneOrNull()
         return stored?.let {
             Location(
@@ -36,7 +62,7 @@ internal class WeatherRepository(
         }
     }
 
-    fun savedLocations(): List<Location> = queries.selectAllLocations {
+    override fun savedLocations(): List<Location> = queries.selectAllLocations {
             id,
             name,
             country,
@@ -48,7 +74,7 @@ internal class WeatherRepository(
         Location(id, name, country, latitude, longitude, timezone)
     }.executeAsList()
 
-    fun observe(location: Location): Flow<WeatherSnapshot?> {
+    override fun observe(location: Location): Flow<WeatherSnapshot?> {
         val now = Clock.System.now().epochSeconds
         val timelineFlow = queries.selectTimeline(
             location_id = location.id,
@@ -160,12 +186,12 @@ internal class WeatherRepository(
         }
     }
 
-    suspend fun refreshPrimary(location: Location) {
+    override suspend fun refreshPrimary(location: Location): Long {
         val response = service.forecast(location, pastDays = 1, forecastDays = 10)
-        persistResponse(location, response, recordForecast = true)
+        return persistResponse(location, response, recordForecast = true)
     }
 
-    suspend fun refreshAirQuality(location: Location) {
+    override suspend fun refreshAirQuality(location: Location) {
         val fetchedAt = Clock.System.now().epochSeconds
         val rows = service.airQuality(location).toAirQualityRows(fetchedAt)
         database.transaction {
@@ -186,7 +212,7 @@ internal class WeatherRepository(
         }
     }
 
-    suspend fun refreshHistory(location: Location) {
+    override suspend fun refreshHistory(location: Location) {
         val response = service.forecast(location, pastDays = 7, forecastDays = 1)
         persistResponse(location, response, recordForecast = false)
     }
@@ -195,7 +221,7 @@ internal class WeatherRepository(
         location: Location,
         response: ForecastResponse,
         recordForecast: Boolean
-    ) {
+    ): Long {
         val fetchedAt = Clock.System.now().epochSeconds
         val rows = response.toWeatherRows(fetchedAt)
         require(rows.isNotEmpty()) { "Provider response contained no usable hourly weather rows" }
@@ -262,12 +288,13 @@ internal class WeatherRepository(
             )
             queries.deleteOldForecastSnapshots(fetchedAt - SNAPSHOT_RETENTION_SECONDS)
         }
+        return fetchedAt
     }
 
-    suspend fun searchCities(query: String, language: String): List<Location> =
+    override suspend fun searchCities(query: String, language: String): List<Location> =
         service.searchCities(query, language)
 
-    suspend fun setActiveLocation(location: Location) {
+    override suspend fun setActiveLocation(location: Location) {
         val alreadySaved = queries.selectLocationById(location.id).executeAsOneOrNull() != null
         database.transaction {
             queries.deactivateLocations()
@@ -298,7 +325,7 @@ internal class WeatherRepository(
         }
     }
 
-    fun deleteLocation(locationId: String) {
+    override fun deleteLocation(locationId: String) {
         database.transaction {
             queries.deleteWeatherForLocation(locationId)
             queries.deleteDailyForecastForLocation(locationId)
@@ -307,7 +334,7 @@ internal class WeatherRepository(
         }
     }
 
-    fun updateLocationDetails(location: Location) {
+    override fun updateLocationDetails(location: Location) {
         queries.updateLocationDetails(
             name = location.name,
             country = location.country,
@@ -315,12 +342,12 @@ internal class WeatherRepository(
         )
     }
 
-    fun unitPreference(): UnitPreference = queries.selectSetting(UNIT_PREFERENCE_KEY)
+    override fun unitPreference(): UnitPreference = queries.selectSetting(UNIT_PREFERENCE_KEY)
         .executeAsOneOrNull()
         ?.let { stored -> UnitPreference.entries.firstOrNull { it.name == stored } }
         ?: UnitPreference.Automatic
 
-    fun setUnitPreference(preference: UnitPreference) {
+    override fun setUnitPreference(preference: UnitPreference) {
         queries.upsertSetting(UNIT_PREFERENCE_KEY, preference.name)
     }
 

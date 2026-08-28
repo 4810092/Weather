@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import pathlib
 import re
+import hashlib
+import ssl
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -47,6 +49,19 @@ SECRET_MARKERS = (
     re.compile(rb"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
     re.compile(rb"(?i)(?:api[_-]?key|client[_-]?secret)\s*[:=]\s*[\"'][^\"']{12,}"),
 )
+OPEN_METEO_ANDROID_DOMAINS = {
+    "api.open-meteo.com",
+    "air-quality-api.open-meteo.com",
+    "geocoding-api.open-meteo.com",
+}
+ANDROID_TRUST_ANCHOR_FINGERPRINTS = {
+    "app/src/main/res/raw/isrg_root_x1.crt": (
+        "96bcec06264976f37460779acf28c5a7cfe8a3c0aae11a8ffcee05c0bddf08c6"
+    ),
+    "app/src/main/res/raw/isrg_root_x2.crt": (
+        "69729b8e15a86efc177a57afb7171dfc64add28c2fca8cf1507e34453ccb1470"
+    ),
+}
 
 
 def fail(message: str) -> None:
@@ -58,10 +73,16 @@ for relative in REQUIRED:
     if not (ROOT / relative).is_file():
         fail(f"missing {relative}")
 
-tracked = subprocess.check_output(
-    ["git", "ls-files", "-z"], cwd=ROOT
-).decode().split("\0")
-for relative in filter(None, tracked):
+repository_paths = list(
+    filter(
+        None,
+        subprocess.check_output(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            cwd=ROOT,
+        ).decode().split("\0"),
+    )
+)
+for relative in repository_paths:
     path = ROOT / relative
     lowered = relative.lower()
     if lowered.endswith(FORBIDDEN_SUFFIXES):
@@ -73,7 +94,7 @@ for relative in filter(None, tracked):
         fail(f"possible embedded secret in {relative}")
 
 markdown_link = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
-for relative in filter(None, tracked):
+for relative in repository_paths:
     path = ROOT / relative
     if path.suffix.lower() != ".md" or not path.is_file():
         continue
@@ -111,6 +132,12 @@ ios = (ROOT / "iosApp/project.yml").read_text()
 identity = "uz.ganikhodjaev.weather"
 if f'applicationId = "{identity}"' not in android:
     fail("Android production applicationId changed")
+if "minSdk = 24" not in android:
+    fail("Android phone/tablet minimum API must remain 24")
+if "isCoreLibraryDesugaringEnabled = true" not in android:
+    fail("Android API 24 support requires core library desugaring")
+if "coreLibraryDesugaring(libs.desugar.jdk.libs)" not in android:
+    fail("Android API 24 support requires the desugar_jdk_libs dependency")
 if f"PRODUCT_BUNDLE_IDENTIFIER: {identity}" not in ios:
     fail("iOS production bundle identifier changed")
 
@@ -128,6 +155,11 @@ if "implementation(libs.androidx.core.splashscreen)" not in wear:
     fail("Wear OS must use the AndroidX splash screen compatibility library")
 
 version_catalog = (ROOT / "gradle/libs.versions.toml").read_text()
+shared_gradle = (ROOT / "shared/build.gradle.kts").read_text()
+if "minSdk = 24" not in shared_gradle:
+    fail("shared Android minimum API must remain 24")
+if "com.android.tools:desugar_jdk_libs" not in version_catalog:
+    fail("desugar_jdk_libs is missing from the version catalog")
 if "androidx.core:core-splashscreen" not in version_catalog:
     fail("AndroidX core splash screen dependency is missing from the version catalog")
 if 'coreSplashscreen = "1.2.0"' not in version_catalog:
@@ -152,6 +184,59 @@ for bundle_id in (f"{identity}.widget", f"{identity}.watchkitapp"):
 manifest = ET.parse(ROOT / "app/src/main/AndroidManifest.xml").getroot()
 android_name = "{http://schemas.android.com/apk/res/android}name"
 android_required = "{http://schemas.android.com/apk/res/android}required"
+android_network_security_config = (
+    "{http://schemas.android.com/apk/res/android}networkSecurityConfig"
+)
+android_uses_cleartext_traffic = (
+    "{http://schemas.android.com/apk/res/android}usesCleartextTraffic"
+)
+application = manifest.find("application")
+if application is None:
+    fail("Android application manifest entry is missing")
+if application.get(android_network_security_config) != "@xml/network_security_config":
+    fail("Android API 24 provider trust policy is not attached to the application")
+if application.get(android_uses_cleartext_traffic) != "false":
+    fail("Android application must reject cleartext traffic")
+
+network_security = ET.parse(
+    ROOT / "app/src/main/res/xml/network_security_config.xml"
+).getroot()
+domain_configs = network_security.findall("domain-config")
+if len(domain_configs) != 1:
+    fail("Android provider trust policy must contain exactly one scoped domain config")
+provider_config = domain_configs[0]
+configured_domains = {
+    (domain.text or "").strip()
+    for domain in provider_config.findall("domain")
+}
+if configured_domains != OPEN_METEO_ANDROID_DOMAINS:
+    fail("Android provider trust policy domains changed")
+if any(domain.get("includeSubdomains") != "false" for domain in provider_config.findall("domain")):
+    fail("Android provider trust policy must not include arbitrary subdomains")
+if any(
+    element.get("cleartextTrafficPermitted") != "false"
+    for element in [network_security.find("base-config"), provider_config]
+    if element is not None
+):
+    fail("Android network security policy must reject cleartext traffic")
+anchor_sources = {
+    certificate.get("src")
+    for certificate in provider_config.findall("./trust-anchors/certificates")
+}
+if anchor_sources != {"system", "@raw/isrg_root_x1", "@raw/isrg_root_x2"}:
+    fail("Android provider trust anchors changed")
+if network_security.findall(".//certificates[@src='user']"):
+    fail("Android production trust policy must not trust user-installed certificates")
+for relative, expected_fingerprint in ANDROID_TRUST_ANCHOR_FINGERPRINTS.items():
+    pem = (ROOT / relative).read_text(encoding="ascii")
+    try:
+        der = ssl.PEM_cert_to_DER_cert(pem)
+    except ValueError as error:
+        fail(f"invalid public trust anchor {relative}: {error}")
+    actual_fingerprint = hashlib.sha256(der).hexdigest()
+    if actual_fingerprint != expected_fingerprint:
+        fail(f"public trust anchor fingerprint changed: {relative}")
+
 location_feature = next(
     (
         feature
@@ -303,4 +388,4 @@ canonical = (ROOT / "shared/src/commonMain/composeResources/values/strings.xml")
 if "Open-Meteo" not in canonical or "GeoNames" not in canonical:
     fail("in-app provider attribution is missing")
 
-print(f"Repository checks passed for {len(tracked) - 1} tracked paths.")
+print(f"Repository checks passed for {len(repository_paths)} source paths.")

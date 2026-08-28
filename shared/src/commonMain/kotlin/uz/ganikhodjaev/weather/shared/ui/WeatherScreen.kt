@@ -83,6 +83,7 @@ import uz.ganikhodjaev.weather.shared.domain.UpcomingInsight
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsightEngine
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsights
 import uz.ganikhodjaev.weather.shared.domain.localDateDaysAgo
+import uz.ganikhodjaev.weather.shared.formatShareMessage
 import uz.ganikhodjaev.weather.shared.model.AirQualityHour
 import uz.ganikhodjaev.weather.shared.model.DailyForecast
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
@@ -93,6 +94,8 @@ import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.weatherCondition
+import uz.ganikhodjaev.weather.shared.onboarding.UzbekistanQuickCity
+import uz.ganikhodjaev.weather.shared.onboarding.UzbekistanQuickLocation
 import uz.ganikhodjaev.weather.shared.presentation.UiMessage
 import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 import uz.ganikhodjaev.weather.shared.resources.*
@@ -110,6 +113,8 @@ internal fun WeatherScreen(
     onCancelLocationChange: () -> Unit,
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
+    storeUrl: String,
+    onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
@@ -123,13 +128,19 @@ internal fun WeatherScreen(
             onUseDeviceLocation = onUseDeviceLocation,
             onCancel = onCancelLocationChange
         )
-        is WeatherUiState.EmptyError -> ErrorScreen(state.message.localized(), onRetry)
+        is WeatherUiState.EmptyError -> ErrorScreen(
+            message = state.message.localized(),
+            onRetry = onRetry,
+            onChangeLocation = onChangeLocation
+        )
         is WeatherUiState.Content -> WeatherContent(
             state,
             onRetry,
             onChangeLocation,
             onUnitPreferenceChanged,
             onShareText,
+            storeUrl,
+            onDismissFirstForecastTip,
             themePreference,
             onThemePreferenceChanged
         )
@@ -212,7 +223,13 @@ private fun ChooseLocationScreen(
                 }
                 Spacer(Modifier.height(18.dp))
                 Text(
-                    text = stringResource(Res.string.onboarding_title),
+                    text = stringResource(
+                        if (state.isOnboarding) {
+                            Res.string.onboarding_title
+                        } else {
+                            Res.string.change_place
+                        }
+                    ),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -223,6 +240,29 @@ private fun ChooseLocationScreen(
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(Modifier.height(28.dp))
+                if (state.quickLocations.isNotEmpty()) {
+                    Text(
+                        text = stringResource(Res.string.quick_places),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 2.dp)
+                    ) {
+                        items(
+                            count = state.quickLocations.size,
+                            key = { state.quickLocations[it].id }
+                        ) { index ->
+                            val location = state.quickLocations[index].localized()
+                            OutlinedButton(onClick = { onLocationSelected(location) }) {
+                                Text(location.name)
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(20.dp))
+                }
                 if (state.savedLocations.isNotEmpty()) {
                     Text(
                         text = stringResource(Res.string.saved_places),
@@ -355,6 +395,23 @@ private fun ChooseLocationScreen(
 }
 
 @Composable
+private fun UzbekistanQuickLocation.localized(): Location {
+    val name = when (city) {
+        UzbekistanQuickCity.Tashkent -> stringResource(Res.string.quick_city_tashkent)
+        UzbekistanQuickCity.Samarkand -> stringResource(Res.string.quick_city_samarkand)
+        UzbekistanQuickCity.Namangan -> stringResource(Res.string.quick_city_namangan)
+        UzbekistanQuickCity.Andijan -> stringResource(Res.string.quick_city_andijan)
+        UzbekistanQuickCity.Fergana -> stringResource(Res.string.quick_city_fergana)
+        UzbekistanQuickCity.Bukhara -> stringResource(Res.string.quick_city_bukhara)
+        UzbekistanQuickCity.Nukus -> stringResource(Res.string.quick_city_nukus)
+    }
+    return localized(
+        name = name,
+        country = stringResource(Res.string.quick_country_uzbekistan)
+    )
+}
+
+@Composable
 private fun LoadingScreen() {
     val loadingDescription = stringResource(Res.string.loading_weather)
     Box(
@@ -368,7 +425,7 @@ private fun LoadingScreen() {
 }
 
 @Composable
-private fun ErrorScreen(message: String, onRetry: () -> Unit) {
+private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -397,6 +454,10 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
                 )
                 Spacer(Modifier.height(24.dp))
                 Button(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(onClick = onChangeLocation) {
+                    Text(stringResource(Res.string.change_place))
+                }
             }
         }
     }
@@ -409,6 +470,8 @@ private fun WeatherContent(
     onChangeLocation: () -> Unit,
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
+    storeUrl: String,
+    onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
@@ -417,11 +480,16 @@ private fun WeatherContent(
     val condition = weatherCondition(weather.current.weatherCode)
     val background = LocalNimboThemeTokens.current.ambience(condition)
     val insights = remember(weather) { WeatherInsightEngine().evaluate(weather) }
-    val shareMessage = stringResource(
+    val weatherShareSummary = stringResource(
         Res.string.share_weather_text,
         weather.location.name.ifBlank { stringResource(Res.string.current_location) },
         state.displayUnits.temperature(weather.current.temperatureC),
         weather.current.precipitationProbability
+    )
+    val shareMessage = formatShareMessage(
+        weatherSummary = weatherShareSummary,
+        storeCallToAction = stringResource(Res.string.share_store_cta),
+        storeUrl = storeUrl
     )
     val outside = remember(weather) {
         BestTimeOutsideEngine().evaluate(
@@ -465,6 +533,12 @@ private fun WeatherContent(
                 CenteredSection(horizontalPadding) {
                     CurrentSummary(state = state, condition = condition, insights = insights)
                 }
+                if (state.showFirstForecastTip) {
+                    Spacer(Modifier.height(20.dp))
+                    CenteredSection(horizontalPadding) {
+                        FirstForecastTip(onDismissFirstForecastTip)
+                    }
+                }
                 Spacer(Modifier.height(32.dp))
                 WeatherDetails(
                     state = state,
@@ -494,7 +568,7 @@ private fun WeatherContent(
                         )
                         TextButton(
                             onClick = {
-                                uriHandler.openUri("https://github.com/4810092/Weather")
+                                uriHandler.openUri("https://nimbo.uz/")
                             }
                         ) {
                             Text(stringResource(Res.string.about_nimbo))
@@ -502,7 +576,7 @@ private fun WeatherContent(
                         TextButton(
                             onClick = {
                                 uriHandler.openUri(
-                                    "https://github.com/4810092/Weather/blob/master/docs/PRIVACY.md"
+                                    "https://nimbo.uz/privacy/"
                                 )
                             }
                         ) {
@@ -520,6 +594,35 @@ private fun WeatherContent(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FirstForecastTip(onDismiss: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.88f))
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    ) {
+        Text(
+            text = stringResource(Res.string.first_forecast_tip_title),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(Res.string.first_forecast_tip_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary
+        )
+        TextButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text(stringResource(Res.string.got_it))
         }
     }
 }

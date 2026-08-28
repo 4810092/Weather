@@ -4,13 +4,14 @@ Nimbo combines deterministic tests, repository policy scripts, cross-platform co
 
 ## Automated inventory
 
-As of August 16, 2026, the source tree contains 30 unique `@Test` functions:
+As of August 28, 2026, the source tree contains 53 unique `@Test` functions:
 
-- 28 common tests, executed for Android host and iOS Simulator;
+- 49 common tests, executed for Android host and iOS Simulator;
+- two Android-host transient/background-failure classification tests;
 - one Android-host location-retention/persistence test;
 - one Android-host released-database migration test.
 
-Running both relevant test tasks produces 58 cross-target test executions. The count is descriptive and should be updated when tests change; coverage quality matters more than preserving the number.
+Running both relevant test tasks produces 102 cross-target test executions. The count is descriptive and should be updated when tests change; coverage quality matters more than preserving the number. The growth-tooling suite adds 24 Python tests and is counted separately.
 
 | Area | Current evidence |
 | --- | --- |
@@ -19,9 +20,10 @@ Running both relevant test tasks produces 58 cross-target test executions. The c
 | Time | IANA timezone conversion, spring/fall DST, local-day boundaries, ±24-hour timeline selection. |
 | Privacy boundary | Positive and negative coordinates rounded symmetrically before use. |
 | Presentation helpers | Unit preference/conversion, theme preference parsing, dark color contrast. |
+| Growth paths | First-run state and UZ quick cities, denied/disabled/unavailable location outcomes, review retry/once-per-version rules, canonical share links, transient background retry classification, and stale activation/refresh race rejection. |
 | Persistence | Saved-location/cache retention with the SQLite driver; released v1 fixture migration and retained data. |
 
-The current tree does not contain direct `WeatherStateHolder` tests, Compose UI automation tests, screenshot-golden tests, or end-to-end live-provider tests. Those are known gaps; [QUALITY.md](QUALITY.md) and [QA_MATRIX.md](QA_MATRIX.md) distinguish manual evidence from automation.
+The current tree contains direct `WeatherStateHolder` race tests, but it does not contain Compose UI automation tests, screenshot-golden tests, or end-to-end live-provider tests. Those are known gaps; [QUALITY.md](QUALITY.md) and [QA_MATRIX.md](QA_MATRIX.md) distinguish manual evidence from automation.
 
 ## Fast contributor checks
 

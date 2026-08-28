@@ -1,7 +1,7 @@
-# Store privacy declarations — Nimbo 1.0
+# Store privacy declarations — Nimbo
 
 Reviewed against the Android manifest, iOS Info.plist/privacy manifest, Ktor
-endpoints, SQLDelight schema, and dependency graph on August 10, 2026.
+endpoints, SQLDelight schema, and dependency graph on August 28, 2026.
 
 ## Source-of-truth behavior
 
@@ -14,7 +14,7 @@ endpoints, SQLDelight schema, and dependency graph on August 10, 2026.
 | Provider retention | Open-Meteo states that API logs may include IP, URL, coordinates, and are deleted after 90 days. |
 | Accounts/identifiers | No account, advertising ID, vendor ID, installation ID, or custom identifier. |
 | Analytics/ads/crashes | No analytics, advertising, attribution, telemetry, or crash-reporting SDK. |
-| Store reviews | After four distinct successful updates, Nimbo may invoke the platform-owned in-app review prompt once per version. Review content is handled by the store and is not stored by Nimbo. |
+| Store reviews | After at least three successful foreground forecasts on two different local calendar days, Nimbo may invoke the platform-owned in-app review prompt after useful forecast content is visible. A completed platform request is recorded at most once per app version; a request that cannot be launched remains eligible for retry. Review content is handled by the store and is not stored by Nimbo. |
 | Tracking | None. |
 
 ## Google Play Data safety answers
@@ -58,8 +58,8 @@ as off-device transmission retained beyond real-time servicing; Open-Meteo's
 
 ## Required policy URLs
 
-- Privacy: `https://github.com/4810092/Weather/blob/master/docs/PRIVACY.md`
-- Support: `https://github.com/4810092/Weather/issues`
+- Privacy: `https://nimbo.uz/privacy/`
+- Support: `https://nimbo.uz/support/`
 
 The public privacy URL is also reachable from inside Nimbo. Re-audit this document
 before any provider, endpoint, dependency, permission, or telemetry change.

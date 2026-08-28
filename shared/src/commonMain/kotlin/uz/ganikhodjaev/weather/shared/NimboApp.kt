@@ -21,8 +21,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import kotlinx.coroutines.delay
 import uz.ganikhodjaev.weather.shared.location.rememberDeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.model.ThemePreference
+import uz.ganikhodjaev.weather.shared.onboarding.createOnboardingStateStore
 import uz.ganikhodjaev.weather.shared.presentation.WeatherStateHolder
 import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
+import uz.ganikhodjaev.weather.shared.review.considerReviewPrompt
 import uz.ganikhodjaev.weather.shared.ui.NimboTheme
 import uz.ganikhodjaev.weather.shared.ui.WeatherScreen
 import uz.ganikhodjaev.weather.shared.ui.createThemePreferenceStore
@@ -32,6 +34,8 @@ import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
 fun NimboApp(platformContext: PlatformContext) {
     val container = remember { NimboContainer(platformContext) }
     val themePreferenceStore = remember { createThemePreferenceStore(platformContext) }
+    val onboardingStateStore = remember { createOnboardingStateStore(platformContext) }
+    val storeLinkProvider = remember { createStoreLinkProvider(platformContext) }
     var themePreference by remember {
         mutableStateOf(themePreferenceStore.read())
     }
@@ -39,7 +43,13 @@ fun NimboApp(platformContext: PlatformContext) {
     val automaticUnits = remember { automaticUnitSystem() }
     val scope = rememberCoroutineScope()
     val stateHolder = remember(locationProvider) {
-        WeatherStateHolder(container.weatherRepository, locationProvider, automaticUnits, scope)
+        WeatherStateHolder(
+            container.weatherRepository,
+            locationProvider,
+            automaticUnits,
+            onboardingStateStore,
+            scope
+        )
     }
     val state by stateHolder.state.collectAsState()
     val isForeground by rememberAppIsForeground(platformContext)
@@ -69,6 +79,14 @@ fun NimboApp(platformContext: PlatformContext) {
         }
     }
 
+    val reviewEligibleForecastId = (state as? WeatherUiState.Content)
+        ?.reviewEligibleForecastId
+    LaunchedEffect(reviewEligibleForecastId, isForeground) {
+        if (isForeground && reviewEligibleForecastId != null) {
+            considerReviewPrompt(platformContext, reviewEligibleForecastId)
+        }
+    }
+
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         NimboTheme(
             preference = themePreference,
@@ -95,6 +113,8 @@ fun NimboApp(platformContext: PlatformContext) {
                         onCancelLocationChange = stateHolder::cancelLocationPicker,
                         onUnitPreferenceChanged = stateHolder::setUnitPreference,
                         onShareText = { text -> shareText(platformContext, text) },
+                        storeUrl = storeLinkProvider.storeUrl,
+                        onDismissFirstForecastTip = stateHolder::dismissFirstForecastTip,
                         themePreference = themePreference,
                         onThemePreferenceChanged = { preference: ThemePreference ->
                             themePreferenceStore.write(preference)

@@ -1,0 +1,9 @@
+{
+  "resultCount": 4,
+  "results": [
+    {"trackId": 111, "trackName": "Weather One", "sellerName": "Vendor One"},
+    {"trackId": 222, "trackName": "Weather Two", "sellerName": "Vendor Two"},
+    {"trackId": 6799886897, "trackName": "Nimbo Weather", "sellerName": "Nimbo"},
+    {"trackId": 111, "trackName": "Duplicate Weather One", "sellerName": "Vendor One"}
+  ]
+}

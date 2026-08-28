@@ -1,0 +1,316 @@
+{
+  "site": {
+    "name": "Nimbo Weather",
+    "base_url": "https://nimbo.uz",
+    "app_store_url": "https://apps.apple.com/uz/app/nimbo-weather/id6799886897",
+    "play_store_url": "https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather&hl=uz&gl=UZ",
+    "github_url": "https://github.com/4810092/Weather",
+    "issues_url": "https://github.com/4810092/Weather/issues/new/choose",
+    "discussions_url": "https://github.com/4810092/Weather/discussions",
+    "security_url": "https://github.com/4810092/Weather/security/advisories/new"
+  },
+  "locales": {
+    "uz": {
+      "label": "O‘zbekcha",
+      "html_lang": "uz",
+      "nav": {
+        "home": "Bosh sahifa",
+        "press": "Press kit",
+        "support": "Yordam",
+        "privacy": "Maxfiylik"
+      },
+      "common": {
+        "app_store": "App Store’dan yuklab oling",
+        "play_store": "Google Play’dan yuklab oling",
+        "source": "Ochiq kod",
+        "growth_dashboard": "O‘sish dashboardi",
+        "language": "Til",
+        "weather_data": "Ob-havo ma’lumotlari Open-Meteo tomonidan taqdim etiladi.",
+        "no_tracking": "Akkauntsiz · reklamasiz · analitikasiz",
+        "available": "iPhone, iPad, Android, soat va vidjetlarda"
+      },
+      "landing": {
+        "title": "Nimbo — tashqariga chiqish uchun eng yaxshi vaqtni toping",
+        "description": "Toshkent va O‘zbekiston shaharlari uchun tushunarli ob-havo: kecha, hozir va keyingi 24 soat bitta vaqt chizig‘ida.",
+        "eyebrow": "O‘zbekiston uchun ob-havo",
+        "headline": "Tashqariga chiqish uchun eng yaxshi vaqtni toping.",
+        "lead": "Nimbo prognozni oddiy qarorga aylantiradi: qachon sayr qilish, yugurish yoki ishlarni bitirish qulayroq.",
+        "proof": "Haqiqiy ilova interfeysi. Bo‘rttirilgan va’dalarsiz.",
+        "features_title": "Bugungi kunni bir qarashda rejalashtiring",
+        "features_intro": "Kerakli ma’lumot bir ekranda, ortiqcha ro‘yxatdan o‘tish va kuzatuvsiz.",
+        "features": [
+          {"number": "01", "title": "Tashqariga chiqish uchun eng yaxshi vaqt", "text": "Yaqin soatlardagi harorat, yog‘ingarchilik, shamol va havo sifatidan kelib chiqadigan tushunarli tavsiya."},
+          {"number": "02", "title": "Kechagi ob-havo bilan solishtiring", "text": "Bugun kechagidan iliqroqmi yoki sovuqroqmi — raqamlarni yodda saqlamasdan biling."},
+          {"number": "03", "title": "24 soat oldin · hozir · 24 soat keyin", "text": "Vaqt chizig‘i ob-havo qanday o‘zgargani va qayerga ketayotganini ko‘rsatadi."},
+          {"number": "04", "title": "10 kun va havo sifati", "text": "Uzoqroq reja uchun o‘n kunlik prognoz va AQI konteksti."},
+          {"number": "05", "title": "Oxirgi prognoz oflayn", "text": "Internet vaqtincha yo‘qolsa, so‘nggi saqlangan prognoz ekranda qoladi."},
+          {"number": "06", "title": "Vidjetlar va soat", "text": "Telefonni ochmasdan joriy holatni ko‘ring; Wear OS va Apple Watch ham qo‘llab-quvvatlanadi."}
+        ],
+        "privacy_title": "Ob-havo ilovasi, reklama tarmog‘i emas",
+        "privacy_text": "Nimbo akkaunt yaratmaydi, reklama ko‘rsatmaydi va analitika yoki crash-reporting SDK ishlatmaydi. Joylashuv ixtiyoriy: shaharni oddiy qidiruv orqali ham tanlash mumkin.",
+        "open_title": "Tekshirish mumkin bo‘lgan mahsulot",
+        "open_text": "Kod, maxfiylik chegaralari, testlar va reliz dalillari ochiq repozitoriyda saqlanadi.",
+        "cta_title": "Bugungi ob-havoni tushunarliroq ko‘ring",
+        "cta_text": "Nimbo bepul yuklab olinadi. Reklama, obuna va akkaunt yo‘q."
+      },
+      "press": {
+        "title": "Nimbo press kit",
+        "description": "Nimbo Weather haqida tekshiriladigan faktlar, logotip va haqiqiy qurilma tasvirlari.",
+        "eyebrow": "OAV va hamjamiyatlar uchun",
+        "headline": "Nimbo haqida material tayyorlash uchun hamma narsa",
+        "lead": "Nimbo — O‘zbekistonda yaratilgan, kundalik ob-havoni ‘qachon tashqariga chiqish qulay?’ degan savolga aylantiradigan ochiq kodli mobil ilova.",
+        "facts_title": "Qisqa faktlar",
+        "facts": [
+          "Platformalar: Android, iPhone, iPad, Wear OS va Apple Watch.",
+          "Asosiy imkoniyatlar: joriy ob-havo, soatlik va 10 kunlik prognoz, kecha bilan taqqoslash, AQI, oflayn kesh va vidjetlar.",
+          "Tillar: o‘zbek, rus, ingliz va yana 10 ta lokalizatsiya.",
+          "Biznes modeli: reklama, obuna, akkaunt va analitika SDK’si yo‘q.",
+          "Texnologiya: Kotlin Multiplatform va Compose Multiplatform."
+        ],
+        "assets_title": "Tasdiqlangan materiallar",
+        "assets_text": "Quyidagi fayllar ilovaning haqiqiy interfeysi va rasmiy ikonkasidan olingan. O‘lcham va proporsiyani buzmasdan ishlating.",
+        "download_icon": "1024×1024 ikonka",
+        "download_ios": "iPhone tasviri",
+        "download_android": "Android tasviri",
+        "boilerplate_title": "Tayyor qisqa tavsif",
+        "boilerplate": "Nimbo Weather foydalanuvchiga kechagi, joriy va kelgusi ob-havoni bitta tushunarli vaqt chizig‘ida ko‘rsatadi hamda yaqin soatlarda tashqariga chiqish uchun qulayroq vaqtni topishga yordam beradi. Ilova akkaunt, reklama yoki kuzatuvchi analitika talab qilmaydi.",
+        "contact_title": "Bog‘lanish",
+        "contact_text": "Savol, fakt tekshiruvi yoki intervyu so‘rovi uchun GitHub Discussions’da ochiq murojaat qoldiring. Xavfsizlikka oid ma’lumotni ommaviy yubormang."
+      },
+      "support": {
+        "title": "Nimbo yordami",
+        "description": "Nimbo Weather bo‘yicha yordam, muammo yuborish va tezkor yechimlar.",
+        "eyebrow": "Yordam",
+        "headline": "Nimbo bilan muammo bormi?",
+        "lead": "Ko‘p muammolarni joylashuv ruxsatisiz shahar qidiruvi yoki saqlangan oflayn prognoz yordamida hal qilish mumkin.",
+        "steps_title": "Avval shularni tekshiring",
+        "steps": [
+          "Internet ulanishingizni tekshiring va ekranni yangilang.",
+          "Joylashuv ishlamasa, shahar nomini qidiruvga kiriting — ruxsat majburiy emas.",
+          "Oflayn holatda Nimbo so‘nggi saqlangan prognozni ko‘rsatadi; yangilanish vaqti ekranda yoziladi.",
+          "Muammo davom etsa, ilova versiyasi, qurilma va aniq takrorlash qadamlarini yozib yuboring. Aniq koordinata yoki shaxsiy ma’lumotni qo‘shmang."
+        ],
+        "report_title": "Muammoni yuborish",
+        "report_text": "GitHub’dagi tayyor shakl platforma, versiya va takrorlash qadamlarini xavfsiz yig‘ishga yordam beradi.",
+        "report_button": "Muammo yuborish",
+        "discussion_button": "Savol berish"
+      },
+      "privacy": {
+        "title": "Nimbo maxfiylik siyosati",
+        "description": "Nimbo Weather qanday ma’lumotdan foydalanadi va qanday ma’lumotni yig‘maydi.",
+        "eyebrow": "Maxfiylik",
+        "headline": "Sizning ob-havoyingiz — reklama profili emas",
+        "lead": "Kuchga kirgan sana: 10-avgust 2026. Ushbu sahifa ilovaning amaldagi maxfiylik chegaralarini tushunarli tilda bayon qiladi.",
+        "sections": [
+          {"title": "Nashriyotchi va siyosat doirasi", "text": "Nimbo GANIKHODJAYEV KHASAN ASKAROVICH, YATT tomonidan nashr etiladi. Ilovada akkaunt, reklama, analytics SDK, crash-reporting SDK yoki background location mavjud emas. Bu siyosat 28-avgust 2026 kuni ilova kodi va xizmat ko‘rsatuvchi shartlari bilan qayta tekshirildi."},
+          {"title": "Prognoz va joy nomi uchun ma’lumot", "text": "Joylashuv ixtiyoriy. Siz tanlasangiz, taxminiy koordinatalar saqlash yoki tarmoq so‘rovidan oldin ikki kasr xonasigacha kamaytiriladi va ob-havo olish uchun Open-Meteo’ga HTTPS orqali yuboriladi. Qurilmaning Android yoki iOS reverse-geocoding xizmati shu kamaytirilgan koordinatalardan ko‘rsatiladigan shahar va mamlakatni aniqlashi mumkin; platforma xizmati so‘rovni o‘z shartlari asosida tarmoq orqali qayta ishlashi mumkin. Ruxsat bermasdan shahar qidirish mumkin; qidiruv matni Open-Meteo geokodlash xizmatiga HTTPS orqali yuboriladi. Nimbo joylashuv tarixini yaratmaydi."},
+          {"title": "Open-Meteo qayta ishlashi", "text": "Open-Meteo bepul API server loglarida nosozliklarni aniqlash va suiiste’molning oldini olish uchun IP manzil, so‘ralgan koordinatalar va so‘rov URL’lari bo‘lishi mumkinligini, alohida log fayllari esa 90 kundan keyin o‘chirilishini bildiradi. Nimbo akkaunt ID, reklama ID yoki boshqa foydalanuvchi identifikatorini yubormaydi. Open-Meteo’ning amaldagi shartlari va maxfiylik bayonoti open-meteo.com/en/terms sahifasida mavjud."},
+          {"title": "Qurilmada saqlash va muddatlar", "text": "Nimbo o‘ntagacha tanlangan joy, keshdagi ob-havo va havo sifati, qisqa muddatli prognoz nusxalari, birlik va mavzu sozlamalari hamda yangilash ma’lumotlarini qurilmada saqlaydi. Ob-havo qatorlari ko‘pi bilan o‘tgan 8 va kelgusi 11 kun, prognoz nusxalari 14 kun saqlanadi. Vidjet va ulangan soat uchun identifikatorsiz ixcham joriy ob-havo nusxasi ishlatiladi. Android’da cloud/device backup o‘chirilgan; iOS tizim zaxira nusxasi ilova ma’lumotini Apple sozlamalariga ko‘ra saqlashi mumkin va bu nusxalarni o‘chirish foydalanuvchi tomonidan Apple sozlamalarida boshqariladi."},
+          {"title": "Kuzatuv, ulashish va baholash", "text": "Nimbo ma’lumotni sotmaydi, reklama profili yaratmaydi va boshqa ilova yoki saytlarda sizni kuzatmaydi. Open-Meteo taxminiy joylashuv va shahar qidiruvini faqat natijani qaytarish va API’ni ishlatish uchun qayta ishlaydi. Apple yoki Google’ga tegishli baholash oynasi kamida uchta muvaffaqiyatli foreground prognoz ikki xil mahalliy kunda olinganidan va foydali prognoz ko‘ringanidan keyingina so‘raladi. Muvaffaqiyatli platforma so‘rovi har bir ilova versiyasida ko‘pi bilan bir marta qayd etiladi; Store API oynani ishga tushira olmasa, keyinroq qayta urinish mumkin. Baho matni Nimbo’ga qaytmaydi va ilovada saqlanmaydi."},
+          {"title": "Sizning tanlovingiz va aloqa", "text": "Joylashuv ruxsatidan voz kechib shahar qidiruvidan foydalanishingiz, tanlangan joyni almashtirishingiz, ruxsatni tizim sozlamalarida bekor qilishingiz yoki lokal ma’lumotni o‘chirish uchun ilovani olib tashlashingiz mumkin. Provider logiga oid savol yoki o‘chirish so‘rovi Open-Meteo maxfiylik kontaktiga yuboriladi, chunki Nimbo’da log yozuvini topish uchun akkaunt yoki identifikator yo‘q. Umumiy savol uchun nimbo.uz/support sahifasidan foydalaning; maxfiy xavfsizlik yoki maxfiylik muammosini quyidagi private contact orqali yuboring."}
+        ],
+        "source_text": "Huquqiy va texnik tafsilotlar uchun repozitoriydagi to‘liq, versiyalangan siyosatni ko‘ring.",
+        "source_button": "To‘liq siyosatni ochish",
+        "private_contact_button": "Maxfiy murojaat yuborish"
+      }
+    },
+    "ru": {
+      "label": "Русский",
+      "html_lang": "ru",
+      "nav": {"home": "Главная", "press": "Пресс-кит", "support": "Поддержка", "privacy": "Приватность"},
+      "common": {
+        "app_store": "Загрузить в App Store",
+        "play_store": "Загрузить в Google Play",
+        "source": "Открытый код",
+        "growth_dashboard": "Growth dashboard",
+        "language": "Язык",
+        "weather_data": "Данные о погоде предоставляет Open-Meteo.",
+        "no_tracking": "Без аккаунта · без рекламы · без аналитики",
+        "available": "На iPhone, iPad, Android, часах и виджетах"
+      },
+      "landing": {
+        "title": "Nimbo — найдите лучшее время выйти на улицу",
+        "description": "Понятная погода для Ташкента и городов Узбекистана: вчера, сейчас и следующие 24 часа на одной временной шкале.",
+        "eyebrow": "Погода для Узбекистана",
+        "headline": "Найдите лучшее время выйти на улицу.",
+        "lead": "Nimbo превращает прогноз в простое решение: когда удобнее гулять, бегать или заниматься делами.",
+        "proof": "Настоящий интерфейс приложения. Без неподтверждённых обещаний.",
+        "features_title": "Спланируйте день одним взглядом",
+        "features_intro": "Важное на одном экране — без регистрации и скрытого отслеживания.",
+        "features": [
+          {"number": "01", "title": "Лучшее время выйти на улицу", "text": "Понятная рекомендация с учётом температуры, осадков, ветра и качества воздуха в ближайшие часы."},
+          {"number": "02", "title": "Сравните со вчерашней погодой", "text": "Узнайте, теплее или холоднее сегодня, не запоминая вчерашние цифры."},
+          {"number": "03", "title": "24 часа назад · сейчас · 24 часа вперёд", "text": "Единая шкала показывает, как погода менялась и куда движется."},
+          {"number": "04", "title": "10 дней и качество воздуха", "text": "Десятидневный прогноз и контекст AQI для более дальних планов."},
+          {"number": "05", "title": "Последний прогноз офлайн", "text": "Если интернет временно пропал, последний сохранённый прогноз остаётся доступен."},
+          {"number": "06", "title": "Виджеты и прогноз на часах", "text": "Смотрите текущую погоду без открытия телефона; поддерживаются Wear OS и Apple Watch."}
+        ],
+        "privacy_title": "Погодное приложение, а не рекламная сеть",
+        "privacy_text": "Nimbo не создаёт аккаунт, не показывает рекламу и не подключает SDK аналитики или crash-reporting. Геопозиция необязательна: город можно найти обычным поиском.",
+        "open_title": "Продукт, который можно проверить",
+        "open_text": "Код, границы приватности, тесты и доказательства релизов хранятся в открытом репозитории.",
+        "cta_title": "Посмотрите на сегодняшнюю погоду понятнее",
+        "cta_text": "Nimbo загружается бесплатно. Без рекламы, подписки и аккаунта."
+      },
+      "press": {
+        "title": "Пресс-кит Nimbo",
+        "description": "Проверяемые факты о Nimbo Weather, логотип и настоящие изображения приложения.",
+        "eyebrow": "Для СМИ и сообществ",
+        "headline": "Всё для материала о Nimbo",
+        "lead": "Nimbo — созданное в Узбекистане open-source приложение, которое отвечает на практический вопрос: когда сегодня удобнее выйти на улицу.",
+        "facts_title": "Коротко о продукте",
+        "facts": [
+          "Платформы: Android, iPhone, iPad, Wear OS и Apple Watch.",
+          "Функции: текущая погода, почасовой и 10-дневный прогноз, сравнение со вчера, AQI, офлайн-кэш и виджеты.",
+          "Языки: узбекский, русский, английский и ещё 10 локализаций.",
+          "Модель: без рекламы, подписки, аккаунта и SDK аналитики.",
+          "Технологии: Kotlin Multiplatform и Compose Multiplatform."
+        ],
+        "assets_title": "Проверенные материалы",
+        "assets_text": "Файлы ниже используют настоящий интерфейс и официальную иконку. Не искажайте пропорции и не добавляйте функции, которых нет в приложении.",
+        "download_icon": "Иконка 1024×1024",
+        "download_ios": "Скриншот iPhone",
+        "download_android": "Скриншот Android",
+        "boilerplate_title": "Готовое краткое описание",
+        "boilerplate": "Nimbo Weather показывает вчерашнюю, текущую и будущую погоду на одной понятной временной шкале и помогает выбрать более подходящее время для выхода на улицу в ближайшие часы. Приложение не требует аккаунта, не показывает рекламу и не использует отслеживающую аналитику.",
+        "contact_title": "Контакт",
+        "contact_text": "Для вопроса, фактчекинга или запроса на интервью создайте публичное обращение в GitHub Discussions. Не отправляйте чувствительные сведения публично."
+      },
+      "support": {
+        "title": "Поддержка Nimbo",
+        "description": "Помощь по Nimbo Weather, отправка ошибок и быстрые решения.",
+        "eyebrow": "Поддержка",
+        "headline": "Возникла проблема с Nimbo?",
+        "lead": "Большинство ситуаций можно обойти поиском города без разрешения геопозиции или последним сохранённым прогнозом офлайн.",
+        "steps_title": "Сначала проверьте",
+        "steps": [
+          "Проверьте интернет и обновите экран прогноза.",
+          "Если геопозиция не работает, найдите город по названию — разрешение не обязательно.",
+          "Офлайн Nimbo показывает последний сохранённый прогноз и время его обновления.",
+          "Если проблема осталась, приложите версию, устройство и точные шаги. Не публикуйте координаты и персональные данные."
+        ],
+        "report_title": "Сообщить о проблеме",
+        "report_text": "Готовая форма GitHub поможет безопасно собрать платформу, версию и шаги воспроизведения.",
+        "report_button": "Создать отчёт",
+        "discussion_button": "Задать вопрос"
+      },
+      "privacy": {
+        "title": "Политика приватности Nimbo",
+        "description": "Какие данные использует Nimbo Weather и какие данные приложение не собирает.",
+        "eyebrow": "Приватность",
+        "headline": "Ваша погода — не рекламный профиль",
+        "lead": "Дата вступления в силу: 10 августа 2026 года. Эта страница простым языком описывает текущие границы обработки данных.",
+        "sections": [
+          {"title": "Издатель и область политики", "text": "Nimbo публикует GANIKHODJAYEV KHASAN ASKAROVICH, YATT. В приложении нет аккаунта, рекламы, SDK аналитики, crash-reporting SDK и фоновой геопозиции. Политика сверена с кодом приложения и условиями провайдеров 28 августа 2026 года."},
+          {"title": "Данные для прогноза и названия места", "text": "Геопозиция необязательна. Если вы её выбрали, координаты округляются до двух знаков до хранения или сетевого запроса и передаются Open-Meteo по HTTPS. Системный сервис обратного геокодирования Android или iOS может преобразовать эти координаты в город и страну для отображения; провайдер платформы может обработать запрос по сети на собственных условиях. Без разрешения можно искать город; текст запроса передаётся сервису геокодирования Open-Meteo по HTTPS. Nimbo не создаёт историю местоположений."},
+          {"title": "Обработка Open-Meteo", "text": "Open-Meteo сообщает, что журналы бесплатного API могут содержать IP-адрес, запрошенные координаты и URL запроса для диагностики и предотвращения злоупотреблений; отдельные файлы журналов удаляются через 90 дней. Nimbo не передаёт идентификатор аккаунта, рекламный ID или другой пользовательский идентификатор. Действующие условия и privacy notice Open-Meteo опубликованы на open-meteo.com/en/terms."},
+          {"title": "Хранение на устройстве и сроки", "text": "Nimbo локально хранит до десяти выбранных мест, кэш погоды и качества воздуха, краткосрочные снимки прогноза, единицы, тему и данные обновления. Погодные строки хранятся максимум за 8 прошедших и 11 будущих дней, снимки прогноза — 14 дней. Виджет и связанные часы получают компактный снимок текущей погоды без идентификатора. На Android cloud/device backup отключён; на iOS системная резервная копия может сохранять данные приложения по настройкам Apple, а её удалением пользователь управляет в настройках Apple."},
+          {"title": "Отслеживание, передача и отзывы", "text": "Nimbo не продаёт данные, не строит рекламные профили и не отслеживает пользователя между приложениями или сайтами. Open-Meteo обрабатывает приблизительное местоположение и поисковый запрос только для выдачи результата и работы API. Запрос окна отзыва Apple или Google возможен только после не менее трёх успешных foreground-прогнозов в два разных локальных дня и при видимом полезном прогнозе. Успешный запрос платформы учитывается не чаще одного раза на версию приложения; если Store API не смог открыть окно, попытка остаётся доступной для повтора. Текст отзыва не возвращается в Nimbo и не хранится приложением."},
+          {"title": "Ваш выбор и контакт", "text": "Можно отказаться от геопозиции и искать город вручную, сменить выбранное место, отозвать разрешение в системных настройках или удалить локальные данные вместе с приложением. Вопрос или запрос на удаление provider log нужно направить контакту Open-Meteo: у Nimbo нет аккаунта или идентификатора, по которому можно найти такую запись. Общие вопросы принимаются через nimbo.uz/support; чувствительные сообщения о безопасности или приватности отправляйте через приватный контакт ниже."}
+        ],
+        "source_text": "Юридические и технические детали доступны в полной версионированной политике в репозитории.",
+        "source_button": "Открыть полную политику",
+        "private_contact_button": "Отправить приватное сообщение"
+      }
+    },
+    "en": {
+      "label": "English",
+      "html_lang": "en",
+      "nav": {"home": "Home", "press": "Press kit", "support": "Support", "privacy": "Privacy"},
+      "common": {
+        "app_store": "Download on the App Store",
+        "play_store": "Get it on Google Play",
+        "source": "Open source",
+        "growth_dashboard": "Growth dashboard",
+        "language": "Language",
+        "weather_data": "Weather data is provided by Open-Meteo.",
+        "no_tracking": "No account · no ads · no analytics",
+        "available": "On iPhone, iPad, Android, watches, and widgets"
+      },
+      "landing": {
+        "title": "Nimbo — find the best time to go outside",
+        "description": "Clear weather for Tashkent and cities across Uzbekistan: yesterday, now, and the next 24 hours on one timeline.",
+        "eyebrow": "Weather for Uzbekistan",
+        "headline": "Find the best time to go outside.",
+        "lead": "Nimbo turns a forecast into a simple decision: when it may be more comfortable to walk, run, or get things done.",
+        "proof": "Real application UI. No unverified claims.",
+        "features_title": "Plan today at a glance",
+        "features_intro": "The useful context on one screen, without registration or hidden tracking.",
+        "features": [
+          {"number": "01", "title": "Best time to go outside", "text": "A clear recommendation using temperature, precipitation, wind, and air quality over the next few hours."},
+          {"number": "02", "title": "Compare with yesterday", "text": "See whether today feels warmer or cooler without remembering yesterday’s numbers."},
+          {"number": "03", "title": "24 hours ago · now · 24 hours ahead", "text": "One timeline shows where the weather has been and where it is going."},
+          {"number": "04", "title": "10 days and air quality", "text": "A ten-day forecast and AQI context for plans further ahead."},
+          {"number": "05", "title": "Latest forecast offline", "text": "When the internet drops temporarily, the most recently saved forecast stays available."},
+          {"number": "06", "title": "Widgets and watch forecast", "text": "Check current conditions without opening the phone; Wear OS and Apple Watch are supported."}
+        ],
+        "privacy_title": "A weather app, not an ad network",
+        "privacy_text": "Nimbo creates no account, shows no ads, and includes no analytics or crash-reporting SDK. Location is optional: ordinary city search works without permission.",
+        "open_title": "A product you can inspect",
+        "open_text": "The code, privacy boundaries, tests, and release evidence live in the public repository.",
+        "cta_title": "See today’s weather more clearly",
+        "cta_text": "Nimbo is free to download. No ads, subscription, or account."
+      },
+      "press": {
+        "title": "Nimbo press kit",
+        "description": "Verifiable Nimbo Weather facts, logo, and real application screenshots.",
+        "eyebrow": "For media and communities",
+        "headline": "Everything needed to cover Nimbo",
+        "lead": "Nimbo is an open-source weather app made in Uzbekistan that turns daily weather into a practical question: when is it more comfortable to go outside?",
+        "facts_title": "Product facts",
+        "facts": [
+          "Platforms: Android, iPhone, iPad, Wear OS, and Apple Watch.",
+          "Features: current weather, hourly and 10-day forecasts, yesterday comparison, AQI, offline cache, and widgets.",
+          "Languages: Uzbek, Russian, English, and 10 more localizations.",
+          "Model: no ads, subscription, account, or analytics SDK.",
+          "Technology: Kotlin Multiplatform and Compose Multiplatform."
+        ],
+        "assets_title": "Verified assets",
+        "assets_text": "The files below use the real application interface and official icon. Keep their aspect ratio and do not imply unimplemented functionality.",
+        "download_icon": "1024×1024 icon",
+        "download_ios": "iPhone screenshot",
+        "download_android": "Android screenshot",
+        "boilerplate_title": "Short boilerplate",
+        "boilerplate": "Nimbo Weather puts yesterday, now, and the forecast ahead on one clear timeline and helps people identify a more suitable time to go outside over the next few hours. The app requires no account, shows no ads, and uses no tracking analytics.",
+        "contact_title": "Contact",
+        "contact_text": "For questions, fact checking, or an interview request, start a public GitHub Discussion. Do not post sensitive information publicly."
+      },
+      "support": {
+        "title": "Nimbo support",
+        "description": "Nimbo Weather help, issue reporting, and quick fixes.",
+        "eyebrow": "Support",
+        "headline": "Something wrong with Nimbo?",
+        "lead": "Many situations can be bypassed by searching for a city without location permission or using the most recently saved forecast offline.",
+        "steps_title": "Check these first",
+        "steps": [
+          "Check the internet connection and refresh the forecast screen.",
+          "If location does not work, search by city name — permission is optional.",
+          "Offline, Nimbo shows the last saved forecast and its refresh time.",
+          "If the issue remains, include the app version, device, and exact steps. Do not post precise coordinates or personal data."
+        ],
+        "report_title": "Report a problem",
+        "report_text": "The GitHub form safely gathers the platform, version, and reproduction steps needed to investigate.",
+        "report_button": "Report an issue",
+        "discussion_button": "Ask a question"
+      },
+      "privacy": {
+        "title": "Nimbo privacy policy",
+        "description": "What data Nimbo Weather uses and what the app does not collect.",
+        "eyebrow": "Privacy",
+        "headline": "Your weather is not an advertising profile",
+        "lead": "Effective August 10, 2026. This page explains the current data boundaries in plain language.",
+        "sections": [
+          {"title": "Publisher and scope", "text": "Nimbo is published by GANIKHODJAYEV KHASAN ASKAROVICH, YATT. The app has no account, advertising, analytics SDK, crash-reporting SDK, or background location. This policy was last checked against the app implementation and provider terms on August 28, 2026."},
+          {"title": "Forecast and place-name data", "text": "Location is optional. If chosen, coordinates are reduced to two decimal places before storage or a network request and sent to Open-Meteo over HTTPS. The device’s Android or iOS reverse-geocoding service may turn the reduced coordinates into a displayed city and country; that platform service may process the request over the network under its own terms. City search works without permission; the search text is sent to Open-Meteo’s geocoding service over HTTPS. Nimbo does not maintain a location trail."},
+          {"title": "Open-Meteo processing", "text": "Open-Meteo says Free API logs may contain IP addresses, requested coordinates, and request URLs for troubleshooting and abuse prevention, and that individual log files are deleted after 90 days. Nimbo does not send an account ID, advertising ID, or other user identifier. Open-Meteo’s current terms and privacy notice are at open-meteo.com/en/terms."},
+          {"title": "On-device storage and retention", "text": "Nimbo stores up to ten selected places, cached weather and air quality, short-lived forecast snapshots, unit and theme preferences, and refresh metadata locally. Weather rows are kept for at most 8 days in the past and 11 days in the future; forecast snapshots are kept for 14 days. Widgets and a paired watch receive a compact current-weather copy without an identifier. Cloud/device backup is disabled on Android; on iOS, a system backup may retain app data under the user’s Apple settings, and the user controls removal of those backups in Apple settings."},
+          {"title": "Tracking, sharing, and reviews", "text": "Nimbo does not sell data, build advertising profiles, or track people across apps or websites. Open-Meteo processes approximate location and city-search requests only to return results and operate its API. An Apple- or Google-owned review prompt is requested only after at least three successful foreground forecasts on two different local days and while useful forecast content is visible. A successful platform request is recorded at most once per app version; if the Store API cannot launch, the attempt remains eligible for retry. Review text is not returned to Nimbo or stored by the app."},
+          {"title": "Your choices and contact", "text": "You can decline location and use city search, change the selected place, revoke permission in system settings, or uninstall Nimbo to remove local data. Provider-log questions or deletion requests must go to the Open-Meteo privacy contact because Nimbo has no account or identifier that can locate a log entry. For general Nimbo questions, use nimbo.uz/support; send sensitive security or privacy reports through the private contact below."}
+        ],
+        "source_text": "Read the complete versioned policy in the repository for legal and technical detail.",
+        "source_button": "Open the full policy",
+        "private_contact_button": "Send a private report"
+      }
+    }
+  }
+}

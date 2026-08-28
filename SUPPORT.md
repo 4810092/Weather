@@ -2,6 +2,7 @@
 
 Nimbo is maintained as an application and an open-source KMP reference project.
 
+- Public app support: [nimbo.uz/support](https://nimbo.uz/support/).
 - Use [GitHub Discussions](https://github.com/4810092/Weather/discussions) for setup questions, architecture questions, and ideas that are not yet actionable bugs.
 - Use the [bug report form](https://github.com/4810092/Weather/issues/new?template=bug_report.yml) for reproducible defects.
 - Use the [feature request form](https://github.com/4810092/Weather/issues/new?template=feature_request.yml) for focused proposals.

@@ -6,6 +6,5 @@ import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 internal expect fun publishWeatherSnapshot(
     platformContext: PlatformContext,
     snapshot: WeatherSnapshot,
-    displayUnits: DisplayUnits,
-    allowReview: Boolean = true
+    displayUnits: DisplayUnits
 )

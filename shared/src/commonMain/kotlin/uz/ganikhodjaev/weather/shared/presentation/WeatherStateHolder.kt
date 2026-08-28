@@ -3,13 +3,17 @@ package uz.ganikhodjaev.weather.shared.presentation
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
-import uz.ganikhodjaev.weather.shared.data.WeatherRepository
+import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.location.DeviceCoordinates
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
@@ -21,6 +25,10 @@ import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.UnitSystem
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.resolve
+import uz.ganikhodjaev.weather.shared.onboarding.OnboardingState
+import uz.ganikhodjaev.weather.shared.onboarding.OnboardingStateStore
+import uz.ganikhodjaev.weather.shared.onboarding.UzbekistanQuickLocation
+import uz.ganikhodjaev.weather.shared.onboarding.UzbekistanQuickLocations
 
 internal sealed interface WeatherUiState {
     data object Loading : WeatherUiState
@@ -33,7 +41,9 @@ internal sealed interface WeatherUiState {
         val isSearching: Boolean = false,
         val isLocating: Boolean = false,
         val message: UiMessage? = null,
-        val canCancel: Boolean = false
+        val canCancel: Boolean = false,
+        val isOnboarding: Boolean = false,
+        val quickLocations: List<UzbekistanQuickLocation> = emptyList()
     ) : WeatherUiState
 
     data class Content(
@@ -42,7 +52,9 @@ internal sealed interface WeatherUiState {
         val refreshMessage: UiMessage? = null,
         val unitPreference: UnitPreference,
         val displayUnits: DisplayUnits,
-        val savedLocations: List<Location> = emptyList()
+        val savedLocations: List<Location> = emptyList(),
+        val showFirstForecastTip: Boolean = false,
+        val reviewEligibleForecastId: Long? = null
     ) : WeatherUiState
 
     data class EmptyError(val message: UiMessage) : WeatherUiState
@@ -59,22 +71,30 @@ internal enum class UiMessage {
 }
 
 internal class WeatherStateHolder(
-    private val repository: WeatherRepository,
+    private val repository: WeatherDataSource,
     private val locationProvider: DeviceLocationProvider,
     private val automaticUnitSystem: UnitSystem,
+    private val onboardingStateStore: OnboardingStateStore,
     private val scope: CoroutineScope
 ) {
     private val mutableState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
     val state: StateFlow<WeatherUiState> = mutableState.asStateFlow()
 
     private var started = false
-    private var observationJob: Job? = null
     private var searchJob: Job? = null
     private var placeResolutionJob: Job? = null
+    private var deviceLocationJob: Job? = null
+    private var activationJob: Job? = null
     private var refreshJob: Job? = null
+    private val activationMutex = Mutex()
+    private var activationGeneration = 0L
+    private var refreshGate = RefreshGate(activationGeneration)
+    private var deviceLocationRequestGeneration = 0L
     private var activeLocation: Location? = null
     private var unitPreference = UnitPreference.Automatic
     private var contentBeforeLocationPicker: WeatherUiState.Content? = null
+    private var onboardingState = onboardingStateStore.read()
+    private var pendingSuccessfulForecast: PendingSuccessfulForecast? = null
 
     fun start() {
         if (started) return
@@ -82,9 +102,12 @@ internal class WeatherStateHolder(
         unitPreference = repository.unitPreference()
         val storedLocation = repository.activeLocation()
         if (storedLocation == null) {
-            mutableState.value = WeatherUiState.ChooseLocation()
+            mutableState.value = WeatherUiState.ChooseLocation(
+                isOnboarding = !onboardingState.hasCompletedFirstForecast,
+                quickLocations = UzbekistanQuickLocations.all
+            )
         } else {
-            scope.launch { activate(storedLocation, persist = false) }
+            launchActivation(storedLocation, persist = false)
         }
     }
 
@@ -131,7 +154,8 @@ internal class WeatherStateHolder(
     fun chooseLocation(location: Location) {
         searchJob?.cancel()
         placeResolutionJob?.cancel()
-        scope.launch { activate(location, persist = true) }
+        cancelDeviceLocationRequest()
+        launchActivation(location, persist = true)
     }
 
     fun deleteSavedLocation(location: Location) {
@@ -142,16 +166,17 @@ internal class WeatherStateHolder(
     }
 
     fun showLocationPicker() {
-        val current = mutableState.value as? WeatherUiState.Content ?: return
-        contentBeforeLocationPicker = current
-        mutableState.value = WeatherUiState.ChooseLocation(
+        val current = mutableState.value
+        val picker = current.toLocationPicker(
             savedLocations = repository.savedLocations(),
-            activeLocationId = current.weather.location.id,
-            canCancel = true
-        )
+            activeLocationId = activeLocation?.id
+        ) ?: return
+        contentBeforeLocationPicker = current as? WeatherUiState.Content
+        mutableState.value = picker
     }
 
     fun cancelLocationPicker() {
+        cancelDeviceLocationRequest()
         contentBeforeLocationPicker?.let { mutableState.value = it }
         contentBeforeLocationPicker = null
     }
@@ -159,10 +184,13 @@ internal class WeatherStateHolder(
     fun useDeviceLocation() {
         val current = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         if (current.isLocating) return
+        deviceLocationJob?.cancel()
+        val requestGeneration = ++deviceLocationRequestGeneration
         mutableState.value = current.copy(isLocating = true, message = null)
-        scope.launch {
+        deviceLocationJob = scope.launch {
             when (val result = locationProvider.requestCurrentLocation()) {
                 is DeviceLocationResult.Success -> {
+                    if (!isCurrentDeviceLocationRequest(requestGeneration)) return@launch
                     // Always reduce device coordinates before persistence or network use.
                     // Two decimal places are roughly kilometre-scale and cannot represent
                     // a precise street-level location even when iOS grants Precise Location.
@@ -175,23 +203,17 @@ internal class WeatherStateHolder(
                         longitude = coordinates.longitude,
                         timezone = coordinates.timezone
                     )
-                    repository.setActiveLocation(location)
-                    activeLocation = location
-                    placeResolutionJob?.cancel()
-                    placeResolutionJob = scope.launch {
-                        resolveDevicePlace(location, coordinates)
-                    }
-                    activate(location, persist = false)
+                    launchActivation(
+                        location = location,
+                        persist = true,
+                        deviceCoordinates = coordinates
+                    )
                 }
-                DeviceLocationResult.PermissionDenied -> showLocationMessage(
-                    UiMessage.LocationPermissionDenied
-                )
-                DeviceLocationResult.ServicesDisabled -> showLocationMessage(
-                    UiMessage.LocationServicesDisabled
-                )
-                is DeviceLocationResult.Failed -> showLocationMessage(
-                    UiMessage.LocationUnavailable
-                )
+                else -> {
+                    if (isCurrentDeviceLocationRequest(requestGeneration)) {
+                        showLocationMessage(result.locationFailureMessage())
+                    }
+                }
             }
         }
     }
@@ -204,7 +226,8 @@ internal class WeatherStateHolder(
             return
         }
         activeLocation?.let { location ->
-            refreshJob = scope.launch { refreshInternal(location) }
+            val generation = activationGeneration
+            refreshJob = scope.launch { refreshInternal(location, generation) }
         }
     }
 
@@ -218,28 +241,80 @@ internal class WeatherStateHolder(
         )
     }
 
-    private suspend fun activate(location: Location, persist: Boolean) {
-        if (persist) repository.setActiveLocation(location)
+    fun dismissFirstForecastTip() {
+        val current = mutableState.value as? WeatherUiState.Content ?: return
+        mutableState.value = current.copy(showFirstForecastTip = false)
+    }
+
+    private fun launchActivation(
+        location: Location,
+        persist: Boolean,
+        deviceCoordinates: DeviceCoordinates? = null
+    ) {
+        val generation = ++activationGeneration
+        refreshGate = RefreshGate(generation)
+        activationJob?.cancel()
+        refreshJob?.cancel()
+        refreshJob = null
+        placeResolutionJob?.cancel()
+        placeResolutionJob = null
+        pendingSuccessfulForecast = null
         contentBeforeLocationPicker = null
-        activeLocation = location
-        observationJob?.cancel()
-        mutableState.value = WeatherUiState.Loading
-        observationJob = scope.launch {
-            repository.observe(location).collect { weather ->
-                if (weather != null) {
+        activationJob = scope.launch {
+            activate(location, persist, generation, deviceCoordinates)
+        }
+    }
+
+    private suspend fun activate(
+        location: Location,
+        persist: Boolean,
+        generation: Long,
+        deviceCoordinates: DeviceCoordinates?
+    ) {
+        val activated = activationMutex.withLock {
+            if (!isCurrentActivation(generation)) return@withLock false
+            if (persist) repository.setActiveLocation(location)
+            if (!isCurrentActivation(generation)) return@withLock false
+
+            activeLocation = location
+            mutableState.value = WeatherUiState.Loading
+            true
+        }
+        if (!activated || !isCurrentActivation(generation, location)) return
+
+        if (deviceCoordinates != null) {
+            placeResolutionJob = scope.launch {
+                resolveDevicePlace(location, deviceCoordinates, generation)
+            }
+        }
+
+        coroutineScope {
+            launch {
+                repository.observe(location).collect { weather ->
+                    if (weather == null || !isCurrentActivation(generation, location)) {
+                        return@collect
+                    }
                     val old = mutableState.value as? WeatherUiState.Content
-                    mutableState.value = WeatherUiState.Content(
+                    val content = WeatherUiState.Content(
                         weather = weather,
                         savedLocations = repository.savedLocations(),
                         isRefreshing = old?.isRefreshing ?: false,
                         refreshMessage = old?.refreshMessage,
                         unitPreference = unitPreference,
-                        displayUnits = unitPreference.resolve(automaticUnitSystem)
+                        displayUnits = unitPreference.resolve(automaticUnitSystem),
+                        showFirstForecastTip = old?.showFirstForecastTip ?: false,
+                        reviewEligibleForecastId = old?.reviewEligibleForecastId
+                    )
+                    mutableState.value = applyPendingSuccessfulForecast(
+                        content = content,
+                        generation = generation,
+                        location = location
                     )
                 }
             }
+            refreshInternal(location, generation)
+            awaitCancellation()
         }
-        refreshInternal(location)
     }
 
     private fun showLocationMessage(message: UiMessage) {
@@ -247,7 +322,11 @@ internal class WeatherStateHolder(
         mutableState.value = latest.copy(isLocating = false, message = message)
     }
 
-    private suspend fun resolveDevicePlace(location: Location, coordinates: DeviceCoordinates) {
+    private suspend fun resolveDevicePlace(
+        location: Location,
+        coordinates: DeviceCoordinates,
+        generation: Long
+    ) {
         val place = try {
             withTimeoutOrNull(8_000) {
                 locationProvider.resolvePlace(coordinates)
@@ -263,9 +342,10 @@ internal class WeatherStateHolder(
             country = place.country.trim()
         )
         if (resolvedLocation.name.isBlank() && resolvedLocation.country.isBlank()) return
-        if (activeLocation?.id != location.id) return
+        if (!isCurrentActivation(generation, location)) return
 
         repository.updateLocationDetails(resolvedLocation)
+        if (!isCurrentActivation(generation, location)) return
         activeLocation = resolvedLocation
         val current = mutableState.value as? WeatherUiState.Content
         if (current?.weather?.location?.id == location.id) {
@@ -282,56 +362,158 @@ internal class WeatherStateHolder(
         }
     }
 
-    private suspend fun refreshInternal(location: Location) {
-        val current = mutableState.value
-        if (current is WeatherUiState.Content) {
-            mutableState.value = current.copy(
-                weather = current.weather.advancedToNow(),
-                isRefreshing = true,
-                refreshMessage = null
-            )
-        }
+    private suspend fun refreshInternal(location: Location, generation: Long) {
+        if (!isCurrentActivation(generation, location)) return
+        val gate = refreshGate
+        if (gate.generation != generation || !gate.mutex.tryLock()) return
         try {
-            repository.refreshPrimary(location)
-            val updated = mutableState.value
-            if (updated is WeatherUiState.Content) {
-                mutableState.value = updated.copy(isRefreshing = false, refreshMessage = null)
-            }
-            scope.launch {
-                try {
-                    repository.refreshHistory(location)
-                } catch (cancelled: CancellationException) {
-                    throw cancelled
-                } catch (error: Throwable) {
-                    logFailure("historical weather refresh", error)
-                }
-            }
-            scope.launch {
-                try {
-                    repository.refreshAirQuality(location)
-                } catch (cancelled: CancellationException) {
-                    throw cancelled
-                } catch (error: Throwable) {
-                    logFailure("air-quality refresh", error)
-                }
-            }
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (error: Throwable) {
-            logFailure("weather refresh", error)
-            val cached = mutableState.value
-            mutableState.value = if (cached is WeatherUiState.Content) {
-                cached.copy(
-                    isRefreshing = false,
-                    refreshMessage = UiMessage.RefreshFailedShowingSaved
-                )
-            } else {
-                WeatherUiState.EmptyError(
-                    UiMessage.WeatherUnavailable
+            val current = mutableState.value
+            if (current is WeatherUiState.Content) {
+                mutableState.value = current.copy(
+                    weather = current.weather.advancedToNow(),
+                    isRefreshing = true,
+                    refreshMessage = null
                 )
             }
+            try {
+                val successfulForecastId = repository.refreshPrimary(location)
+                if (!isCurrentActivation(generation, location)) return
+                pendingSuccessfulForecast = PendingSuccessfulForecast(
+                    generation = generation,
+                    locationId = location.id,
+                    forecastId = successfulForecastId
+                )
+                val contentAfterRefresh = mutableState.value as? WeatherUiState.Content
+                if (contentAfterRefresh != null) {
+                    mutableState.value = applyPendingSuccessfulForecast(
+                        content = contentAfterRefresh,
+                        generation = generation,
+                        location = location
+                    )
+                }
+                if (!isCurrentActivation(generation, location)) return
+                val updated = mutableState.value
+                if (updated is WeatherUiState.Content) {
+                    mutableState.value = updated.copy(isRefreshing = false, refreshMessage = null)
+                }
+                scope.launch {
+                    try {
+                        repository.refreshHistory(location)
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Throwable) {
+                        logFailure("historical weather refresh", error)
+                    }
+                }
+                scope.launch {
+                    try {
+                        repository.refreshAirQuality(location)
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Throwable) {
+                        logFailure("air-quality refresh", error)
+                    }
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Throwable) {
+                logFailure("weather refresh", error)
+                if (!isCurrentActivation(generation, location)) return
+                val cached = mutableState.value
+                mutableState.value = if (cached is WeatherUiState.Content) {
+                    cached.copy(
+                        isRefreshing = false,
+                        refreshMessage = UiMessage.RefreshFailedShowingSaved
+                    )
+                } else {
+                    WeatherUiState.EmptyError(
+                        UiMessage.WeatherUnavailable
+                    )
+                }
+            }
+        } finally {
+            gate.mutex.unlock()
         }
     }
+
+    private fun applyPendingSuccessfulForecast(
+        content: WeatherUiState.Content,
+        generation: Long,
+        location: Location
+    ): WeatherUiState.Content {
+        val pending = pendingSuccessfulForecast ?: return content
+        if (
+            pending.generation != generation ||
+            pending.locationId != location.id ||
+            content.weather.location.id != location.id ||
+            !isCurrentActivation(generation, location)
+        ) {
+            return content
+        }
+        val successfulForecastId = pending.forecastId
+        if (content.weather.fetchedAtEpochSeconds < successfulForecastId) return content
+
+        val shouldShowTip = !onboardingState.hasShownFirstForecastTip
+        onboardingState = OnboardingState(
+            hasCompletedFirstForecast = true,
+            hasShownFirstForecastTip = onboardingState.hasShownFirstForecastTip || shouldShowTip
+        )
+        onboardingStateStore.write(onboardingState)
+        pendingSuccessfulForecast = null
+        return content.copy(
+            showFirstForecastTip = content.showFirstForecastTip || shouldShowTip,
+            reviewEligibleForecastId = successfulForecastId
+        )
+    }
+
+    private fun cancelDeviceLocationRequest() {
+        deviceLocationRequestGeneration += 1
+        deviceLocationJob?.cancel()
+        deviceLocationJob = null
+    }
+
+    private fun isCurrentDeviceLocationRequest(generation: Long): Boolean =
+        generation == deviceLocationRequestGeneration &&
+            mutableState.value is WeatherUiState.ChooseLocation
+
+    private fun isCurrentActivation(generation: Long, location: Location? = null): Boolean =
+        generation == activationGeneration &&
+            (location == null || activeLocation?.id == location.id)
+
+    private data class PendingSuccessfulForecast(
+        val generation: Long,
+        val locationId: String,
+        val forecastId: Long
+    )
+
+    private data class RefreshGate(val generation: Long, val mutex: Mutex = Mutex())
+}
+
+internal fun DeviceLocationResult.locationFailureMessage(): UiMessage = when (this) {
+    DeviceLocationResult.PermissionDenied -> UiMessage.LocationPermissionDenied
+    DeviceLocationResult.ServicesDisabled -> UiMessage.LocationServicesDisabled
+    is DeviceLocationResult.Failed -> UiMessage.LocationUnavailable
+    is DeviceLocationResult.Success -> error("A successful location has no failure message")
+}
+
+internal fun WeatherUiState.toLocationPicker(
+    savedLocations: List<Location>,
+    activeLocationId: String?
+): WeatherUiState.ChooseLocation? = when (this) {
+    is WeatherUiState.Content -> WeatherUiState.ChooseLocation(
+        savedLocations = savedLocations,
+        activeLocationId = weather.location.id,
+        canCancel = true,
+        quickLocations = UzbekistanQuickLocations.all
+    )
+    is WeatherUiState.EmptyError -> WeatherUiState.ChooseLocation(
+        savedLocations = savedLocations,
+        activeLocationId = activeLocationId,
+        canCancel = false,
+        quickLocations = UzbekistanQuickLocations.all
+    )
+    WeatherUiState.Loading,
+    is WeatherUiState.ChooseLocation -> null
 }
 
 private fun WeatherSnapshot.advancedToNow(): WeatherSnapshot {

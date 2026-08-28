@@ -8,6 +8,13 @@ branded launch icon on black). The source hotfix advances only the Wear OS build
 to 1000007; the earlier paragraphs and artifact hashes remain the historical
 August 13 checkpoint.
 
+Live console recheck on August 28 supersedes the review-state bullets below:
+iOS 1.0.1 build 4 is `Ready for Distribution`, Android phone/tablet 1.0.2 (6)
+is active in 177 countries, and Wear OS 1.0.2 (1000007) is active in 177
+countries. The original dated paragraphs remain as historical release evidence.
+See [the growth implementation checkpoint](GROWTH_RELEASE.md) for current quality
+gates and the unuploaded growth candidate.
+
 ## Store status
 
 - Google Play phone/tablet 1.0.2 (6) is available in production in 177

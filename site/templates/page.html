@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="{{HTML_LANG}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}">
+  <meta name="theme-color" content="#f3f7fc">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nimbo Weather">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{DESCRIPTION}}">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta property="og:image" content="{{OG_IMAGE_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+  {{ALTERNATES}}
+  <link rel="icon" href="{{ASSET_PREFIX}}/nimbo-icon.png" sizes="any">
+  <link rel="stylesheet" href="{{ASSET_PREFIX}}/site.css">
+  <script defer src="{{ASSET_PREFIX}}/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">{{SKIP_LABEL}}</a>
+  <header class="site-header" data-header>
+    <div class="shell nav-shell">
+      <a class="brand" href="{{HOME_URL}}" aria-label="Nimbo Weather">
+        <img src="{{ASSET_PREFIX}}/nimbo-icon.png" alt="" width="42" height="42">
+        <span>Nimbo</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
+        <span></span><span></span><span></span><span class="sr-only">Menu</span>
+      </button>
+      <nav id="primary-nav" class="primary-nav" aria-label="Primary" data-nav>
+        {{NAV_LINKS}}
+        <details class="language-menu">
+          <summary>{{LANGUAGE_LABEL}}</summary>
+          <div class="language-options">{{LANGUAGE_LINKS}}</div>
+        </details>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    {{BODY}}
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div>
+        <a class="brand footer-brand" href="{{HOME_URL}}">
+          <img src="{{ASSET_PREFIX}}/nimbo-icon.png" alt="" width="34" height="34">
+          <span>Nimbo Weather</span>
+        </a>
+        <p>{{WEATHER_DATA}}</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">{{FOOTER_LINKS}}</nav>
+      <p class="footer-note">{{NO_TRACKING}}</p>
+    </div>
+  </footer>
+</body>
+</html>

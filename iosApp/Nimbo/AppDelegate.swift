@@ -14,6 +14,8 @@ private let nimboBackgroundColor = UIColor { traits in
 
 private let nimboThemePreferenceKey = "theme_preference"
 private let weatherRefreshTaskIdentifier = "uz.ganikhodjaev.weather.refresh"
+private let nimboAppGroup = "group.uz.ganikhodjaev.weather"
+private let reviewedVersionKey = "reviewed_version"
 
 private final class BackgroundRefreshState: @unchecked Sendable {
     private let lock = NSLock()
@@ -81,10 +83,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             queue: .main
         ) { _ in
             Task { @MainActor in
-                guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                guard let scene = UIApplication.shared.connectedScenes
+                    .compactMap({ $0 as? UIWindowScene })
+                    .first(where: { $0.activationState == .foregroundActive }),
+                    let version = Bundle.main.object(
+                        forInfoDictionaryKey: "CFBundleShortVersionString"
+                    ) as? String else {
                     return
                 }
                 SKStoreReviewController.requestReview(in: scene)
+                UserDefaults(suiteName: nimboAppGroup)?.set(version, forKey: reviewedVersionKey)
             }
         }
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -122,7 +130,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     private func weatherDidUpdate() {
         WidgetCenter.shared.reloadAllTimelines()
         guard WCSession.isSupported() else { return }
-        let defaults = UserDefaults(suiteName: "group.uz.ganikhodjaev.weather")
+        let defaults = UserDefaults(suiteName: nimboAppGroup)
         let context: [String: Any] = [
             "location": defaults?.string(forKey: "location") ?? "",
             "temperature_c": defaults?.integer(forKey: "temperature_c") ?? 0,

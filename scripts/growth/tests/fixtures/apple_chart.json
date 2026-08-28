@@ -1,0 +1,21 @@
+{
+  "feed": {
+    "entry": [
+      {
+        "im:name": {"label": "Weather One"},
+        "im:artist": {"label": "Vendor One"},
+        "id": {"attributes": {"im:id": "111"}}
+      },
+      {
+        "im:name": {"label": "Nimbo Weather"},
+        "im:artist": {"label": "Nimbo"},
+        "id": {"attributes": {"im:id": "6799886897"}}
+      },
+      {
+        "im:name": {"label": "Weather Three"},
+        "im:artist": {"label": "Vendor Three"},
+        "id": {"attributes": {"im:id": "333"}}
+      }
+    ]
+  }
+}

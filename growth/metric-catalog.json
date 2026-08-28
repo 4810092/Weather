@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "apple_impressions": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "App Store impressions, including product-page views, for the selected period and filters."
+    },
+    "apple_unique_impressions": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Unique devices that viewed the app on the App Store for the selected period and filters."
+    },
+    "apple_product_page_views": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Total App Store product-page views for the selected period and filters."
+    },
+    "apple_unique_product_page_views": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Unique devices that viewed the product page for the selected period and filters."
+    },
+    "apple_first_time_downloads": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "First-time downloads on Apple platforms for the selected period and filters."
+    },
+    "apple_redownloads": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Manual redownloads, excluding updates and restores, for the selected period and filters."
+    },
+    "apple_total_downloads": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "First-time downloads plus redownloads for the selected period and filters."
+    },
+    "apple_conversion_rate_pct": {
+      "platform": "apple",
+      "unit": "percent",
+      "definition": "App Store Connect conversion rate: total downloads and eligible pre-orders divided by unique device impressions. Import the console value; do not substitute first-time downloads divided by impressions."
+    },
+    "apple_installations": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Completed installations reported in App Store Connect usage data."
+    },
+    "apple_first_launches": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Unique first launches from a source that explicitly reports this population. Leave absent when unavailable."
+    },
+    "apple_sessions": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "App uses lasting at least two seconds in App Store Connect usage data."
+    },
+    "apple_average_daily_active_devices_30d": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Average daily active devices over the same complete 30-day window as apple_active_devices_30d."
+    },
+    "apple_active_devices_30d": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Active devices with at least one session in the previous 30 days."
+    },
+    "apple_d7_eligible": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "The day-7-eligible Apple retention cohort denominator."
+    },
+    "apple_d7_retained": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Members of apple_d7_eligible that returned on day 7 under the same cohort definition."
+    },
+    "apple_ratings_count": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Current App Store rating count for the selected storefront. This is a point-in-time metric, not additive."
+    },
+    "apple_average_rating": {
+      "platform": "apple",
+      "unit": "rating_5",
+      "definition": "Current App Store average rating for the selected storefront."
+    },
+    "apple_crashes": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Crashes from opted-in App Store users for the selected period and filters."
+    },
+    "ios_crash_free_sessions_pct": {
+      "platform": "apple",
+      "unit": "percent",
+      "definition": "Direct crash-free-session percentage from a named source. It must not be inferred as one minus crashes divided by sessions."
+    },
+    "apple_deletions": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "App deletions reported for opted-in usage data."
+    },
+    "apple_user_loss_rate_pct": {
+      "platform": "apple",
+      "unit": "percent",
+      "definition": "A source-defined user-loss rate with its denominator recorded in notes; not derived automatically."
+    },
+    "apple_policy_issues": {
+      "platform": "apple",
+      "unit": "count",
+      "definition": "Open policy or review-compliance issues in current App Store Connect state."
+    },
+    "google_store_listing_visitors": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Users that visited the store listing or mini-detail page and did not already have the app installed, under the selected dimensions."
+    },
+    "google_unique_user_install_clicks": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Unique users who clicked Install and did not have the app installed on another device."
+    },
+    "google_store_listing_acquisitions": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Users who visited the listing and installed the app under Google Play's acquisition definition."
+    },
+    "google_store_listing_ctr_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Unique user install clicks divided by store-listing visitors for the same period and dimensions.",
+      "reported_derived_tolerance_percentage_points": 0.1
+    },
+    "google_installations": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Completed installations for the selected period and dimensions. Record the exact Play report path in source_ref."
+    },
+    "google_first_launches": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Unique first launches for the same population and window as google_installations."
+    },
+    "google_average_daily_active_users_30d": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Average daily active users over the same complete 30-day window as google_monthly_active_users."
+    },
+    "google_monthly_active_users": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Monthly active users over the selected complete 30-day window."
+    },
+    "google_d7_eligible": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "The day-7-eligible Google Play retention cohort denominator."
+    },
+    "google_d7_retained": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Members of google_d7_eligible that returned on day 7 under the same cohort definition."
+    },
+    "google_ratings_count": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Current Google Play rating count for the selected storefront. This is a point-in-time metric, not additive."
+    },
+    "google_average_rating": {
+      "platform": "google",
+      "unit": "rating_5",
+      "definition": "Current Google Play average rating for the selected storefront."
+    },
+    "android_user_perceived_crash_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Percentage of daily active users experiencing at least one user-perceived crash in Android vitals."
+    },
+    "android_user_perceived_anr_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Percentage of daily active users experiencing at least one user-perceived ANR in Android vitals."
+    },
+    "android_phone_model_crash_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Highest relevant per-phone-model user-perceived crash rate. Record the device model in the device column."
+    },
+    "android_phone_model_anr_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Highest relevant per-phone-model user-perceived ANR rate. Record the device model in the device column."
+    },
+    "wear_model_crash_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Highest relevant per-watch-model user-perceived crash rate. Record the watch model in the device column."
+    },
+    "wear_model_anr_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "Highest relevant per-watch-model user-perceived ANR rate. Record the watch model in the device column."
+    },
+    "google_user_loss": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Users who uninstalled from all devices or became inactive under Google Play's user-loss definition."
+    },
+    "google_user_loss_rate_pct": {
+      "platform": "google",
+      "unit": "percent",
+      "definition": "A Play-report user-loss rate with the denominator and population recorded in notes; not derived automatically."
+    },
+    "google_policy_issues": {
+      "platform": "google",
+      "unit": "count",
+      "definition": "Open policy-status issues in current Google Play Console state."
+    }
+  }
+}

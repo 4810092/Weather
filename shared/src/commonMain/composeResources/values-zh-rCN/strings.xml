@@ -4,6 +4,18 @@
   <string name="cancel">取消</string>
   <string name="onboarding_title">熟悉易懂的天气。</string>
   <string name="onboarding_body">选择一个地点，将未来 24 小时与刚刚经历过的天气放在一起查看。</string>
+  <string name="quick_places">乌兹别克斯坦热门城市</string>
+  <string name="quick_city_tashkent">塔什干</string>
+  <string name="quick_city_samarkand">撒马尔罕</string>
+  <string name="quick_city_namangan">纳曼干</string>
+  <string name="quick_city_andijan">安集延</string>
+  <string name="quick_city_fergana">费尔干纳</string>
+  <string name="quick_city_bukhara">布哈拉</string>
+  <string name="quick_city_nukus">努库斯</string>
+  <string name="quick_country_uzbekistan">乌兹别克斯坦</string>
+  <string name="first_forecast_tip_title">天气预报已准备好</string>
+  <string name="first_forecast_tip_body">使用“更改地点”保存更多城市，或添加 Nimbo 小组件以快速查看天气。</string>
+  <string name="got_it">知道了</string>
   <string name="search_city">搜索城市</string>
   <string name="current_location">当前位置</string>
   <string name="change_later">稍后可以更改。</string>
@@ -18,6 +30,7 @@
   <string name="change_place">更改地点</string>
   <string name="share_weather">分享天气</string>
   <string name="share_weather_text">%1$s：%2$d°，降雨概率 %3$d%% — Nimbo</string>
+  <string name="share_store_cta">为下次出行下载 Nimbo：</string>
   <string name="theme">主题</string>
   <string name="theme_description">跟随设备外观或手动选择。</string>
   <string name="theme_system">跟随系统</string>

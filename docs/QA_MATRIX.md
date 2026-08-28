@@ -2,6 +2,12 @@
 
 This is the latest evidence checkpoint, not a declaration that store release QA is complete.
 
+The August 28 live-console recheck confirms Android phone/tablet 1.0.2 (6),
+Wear OS 1.0.2 (1000007), and iOS 1.0.1 (4) are distributed. It does not convert
+the pending physical-device rows below into passes. The unuploaded onboarding,
+review, share, retry, ASO, monitoring, and landing-page work is tracked in
+[GROWTH_RELEASE.md](GROWTH_RELEASE.md).
+
 ## Android
 
 | Area | Evidence | Status |

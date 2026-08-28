@@ -1,0 +1,78 @@
+===== emulator-5554 / Steppe_API24 =====
+URL=https://geocoding-api.open-meteo.com/v1/search?name=Bukhara&count=1&language=en&format=json
+ERROR=javax.net.ssl.SSLHandshakeException
+javax.net.ssl.SSLHandshakeException: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	at com.android.org.conscrypt.OpenSSLSocketImpl.startHandshake(OpenSSLSocketImpl.java:361)
+	at com.android.okhttp.Connection.connectTls(Connection.java:235)
+	at com.android.okhttp.Connection.connectSocket(Connection.java:199)
+	at com.android.okhttp.Connection.connect(Connection.java:172)
+	at com.android.okhttp.Connection.connectAndSetOwner(Connection.java:367)
+	at com.android.okhttp.OkHttpClient$1.connectAndSetOwner(OkHttpClient.java:130)
+	at com.android.okhttp.internal.http.HttpEngine.connect(HttpEngine.java:329)
+	at com.android.okhttp.internal.http.HttpEngine.sendRequest(HttpEngine.java:246)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.execute(HttpURLConnectionImpl.java:457)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.getResponse(HttpURLConnectionImpl.java:405)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.getResponseCode(HttpURLConnectionImpl.java:521)
+	at com.android.okhttp.internal.huc.DelegatingHttpsURLConnection.getResponseCode(DelegatingHttpsURLConnection.java:105)
+	at com.android.okhttp.internal.huc.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java)
+	at TlsProbe.main(TlsProbe.java:21)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:262)
+Caused by: java.security.cert.CertificateException: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:549)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:508)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:508)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrusted(TrustManagerImpl.java:401)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrusted(TrustManagerImpl.java:375)
+	at com.android.org.conscrypt.TrustManagerImpl.getTrustedChainForServer(TrustManagerImpl.java:304)
+	at com.android.org.conscrypt.TrustManagerImpl.checkServerTrusted(TrustManagerImpl.java:325)
+	at com.android.org.conscrypt.Platform.checkServerTrusted(Platform.java:178)
+	at com.android.org.conscrypt.OpenSSLSocketImpl.verifyCertificateChain(OpenSSLSocketImpl.java:596)
+	at com.android.org.conscrypt.NativeCrypto.SSL_do_handshake(Native Method)
+	at com.android.org.conscrypt.OpenSSLSocketImpl.startHandshake(OpenSSLSocketImpl.java:357)
+	... 15 more
+Caused by: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	... 26 more
+
+URL=https://api.open-meteo.com/v1/forecast?latitude=39.77&longitude=64.43&current=temperature_2m
+ERROR=javax.net.ssl.SSLHandshakeException
+javax.net.ssl.SSLHandshakeException: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	at com.android.org.conscrypt.OpenSSLSocketImpl.startHandshake(OpenSSLSocketImpl.java:361)
+	at com.android.okhttp.Connection.connectTls(Connection.java:235)
+	at com.android.okhttp.Connection.connectSocket(Connection.java:199)
+	at com.android.okhttp.Connection.connect(Connection.java:172)
+	at com.android.okhttp.Connection.connectAndSetOwner(Connection.java:367)
+	at com.android.okhttp.OkHttpClient$1.connectAndSetOwner(OkHttpClient.java:130)
+	at com.android.okhttp.internal.http.HttpEngine.connect(HttpEngine.java:329)
+	at com.android.okhttp.internal.http.HttpEngine.sendRequest(HttpEngine.java:246)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.execute(HttpURLConnectionImpl.java:457)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.getResponse(HttpURLConnectionImpl.java:405)
+	at com.android.okhttp.internal.huc.HttpURLConnectionImpl.getResponseCode(HttpURLConnectionImpl.java:521)
+	at com.android.okhttp.internal.huc.DelegatingHttpsURLConnection.getResponseCode(DelegatingHttpsURLConnection.java:105)
+	at com.android.okhttp.internal.huc.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java)
+	at TlsProbe.main(TlsProbe.java:21)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:262)
+Caused by: java.security.cert.CertificateException: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:549)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:508)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrustedRecursive(TrustManagerImpl.java:508)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrusted(TrustManagerImpl.java:401)
+	at com.android.org.conscrypt.TrustManagerImpl.checkTrusted(TrustManagerImpl.java:375)
+	at com.android.org.conscrypt.TrustManagerImpl.getTrustedChainForServer(TrustManagerImpl.java:304)
+	at com.android.org.conscrypt.TrustManagerImpl.checkServerTrusted(TrustManagerImpl.java:325)
+	at com.android.org.conscrypt.Platform.checkServerTrusted(Platform.java:178)
+	at com.android.org.conscrypt.OpenSSLSocketImpl.verifyCertificateChain(OpenSSLSocketImpl.java:596)
+	at com.android.org.conscrypt.NativeCrypto.SSL_do_handshake(Native Method)
+	at com.android.org.conscrypt.OpenSSLSocketImpl.startHandshake(OpenSSLSocketImpl.java:357)
+	... 15 more
+Caused by: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+	... 26 more
+
+===== emulator-5556 / Nimbo_API_36 =====
+URL=https://geocoding-api.open-meteo.com/v1/search?name=Bukhara&count=1&language=en&format=json
+STATUS=200
+FIRST_LINE={"results":[{"id":1217662,"name":"Bukhara","latitude":39.77026,"longitude":64.43069,"elevation":220.0,"feature_code":"PPLA","country_code":"UZ","admin1_id":1114929,"timezone":"Asia/Samarkand","populat
+URL=https://api.open-meteo.com/v1/forecast?latitude=39.77&longitude=64.43&current=temperature_2m
+STATUS=200
+FIRST_LINE={"latitude":39.753952,"longitude":64.46453,"generationtime_ms":0.02872943878173828,"utc_offset_seconds":0,"timezone":"GMT","timezone_abbreviation":"GMT","elevation":230.0,"current_units":{"time":"iso8

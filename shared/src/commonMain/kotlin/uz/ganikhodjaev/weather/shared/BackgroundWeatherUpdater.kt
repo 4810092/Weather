@@ -1,29 +1,109 @@
 package uz.ganikhodjaev.weather.shared
 
-import kotlinx.coroutines.flow.filterNotNull
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
+import io.ktor.client.plugins.ResponseException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.SerializationException
 import uz.ganikhodjaev.weather.shared.model.resolve
 import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
+
+enum class BackgroundRefreshOutcome {
+    Updated,
+    NothingToRefresh,
+    TransientFailure,
+    PermanentFailure
+}
 
 class BackgroundWeatherUpdater(platformContext: PlatformContext) {
     private val context = platformContext
     private val repository = NimboContainer(platformContext).weatherRepository
 
-    suspend fun refresh(): Boolean = runCatching {
-        val location = repository.activeLocation() ?: return false
-        val refreshedFromNetwork = runCatching {
+    suspend fun refreshOutcome(): BackgroundRefreshOutcome {
+        val location = repository.activeLocation()
+            ?: return BackgroundRefreshOutcome.NothingToRefresh
+        val primaryOutcome = try {
             repository.refreshPrimary(location)
-            true
-        }.getOrDefault(false)
-        if (refreshedFromNetwork) runCatching { repository.refreshAirQuality(location) }
-        val snapshot = repository.observe(location).filterNotNull().first()
-        val units = repository.unitPreference().resolve(automaticUnitSystem())
-        publishWeatherSnapshot(
-            platformContext = context,
-            snapshot = snapshot,
-            displayUnits = units,
-            allowReview = false
-        )
-        refreshedFromNetwork
-    }.getOrDefault(false)
+            BackgroundRefreshOutcome.Updated
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            classifyBackgroundRefreshFailure(error)
+        }
+
+        if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
+            try {
+                repository.refreshAirQuality(location)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Throwable) {
+                // Air quality is optional; a successful primary forecast remains useful.
+            }
+        }
+
+        try {
+            repository.observe(location).first()?.let { snapshot ->
+                val units = repository.unitPreference().resolve(automaticUnitSystem())
+                publishWeatherSnapshot(
+                    platformContext = context,
+                    snapshot = snapshot,
+                    displayUnits = units
+                )
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
+                return classifyBackgroundRefreshFailure(error)
+            }
+        }
+        return primaryOutcome
+    }
+
+    suspend fun refresh(): Boolean = when (refreshOutcome()) {
+        BackgroundRefreshOutcome.Updated,
+        BackgroundRefreshOutcome.NothingToRefresh -> true
+        BackgroundRefreshOutcome.TransientFailure,
+        BackgroundRefreshOutcome.PermanentFailure -> false
+    }
 }
+
+internal fun classifyBackgroundRefreshFailure(error: Throwable): BackgroundRefreshOutcome = when {
+    error.causeChain().any { it is SerializationException } -> {
+        BackgroundRefreshOutcome.PermanentFailure
+    }
+    error.causeChain().filterIsInstance<ResponseException>().any { responseError ->
+        responseError.response.status.value.isTransientHttpStatus()
+    } -> {
+        BackgroundRefreshOutcome.TransientFailure
+    }
+    error.causeChain().any { it is ResponseException } -> {
+        BackgroundRefreshOutcome.PermanentFailure
+    }
+    error.causeChain().any { cause ->
+        cause is HttpRequestTimeoutException ||
+            cause is ConnectTimeoutException ||
+            cause is SocketTimeoutException
+    } -> {
+        BackgroundRefreshOutcome.TransientFailure
+    }
+    isTransientPlatformNetworkFailure(error) -> BackgroundRefreshOutcome.TransientFailure
+    else -> BackgroundRefreshOutcome.PermanentFailure
+}
+
+internal fun Int.isTransientHttpStatus(): Boolean = this in TRANSIENT_HTTP_CODES || this in 500..599
+
+private fun Throwable.causeChain(): Sequence<Throwable> = sequence {
+    val visited = mutableSetOf<Throwable>()
+    var current: Throwable? = this@causeChain
+    while (current != null && visited.add(current)) {
+        yield(current)
+        current = current.cause
+    }
+}
+
+internal expect fun isTransientPlatformNetworkFailure(error: Throwable): Boolean
+
+private val TRANSIENT_HTTP_CODES = setOf(408, 425, 429)

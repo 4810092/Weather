@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-08-28",
+  "gates": {
+    "ios_crash_gate": {
+      "status": "blocked",
+      "reason": "App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification."
+    },
+    "open_meteo_promotion_clearance": {
+      "status": "pending",
+      "reason": "Clarification email is drafted but has not been sent or answered."
+    },
+    "android_physical_smoke": {
+      "status": "partial",
+      "reason": "The final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and a physical API 25 General Mobile, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete."
+    },
+    "ios_physical_smoke": {
+      "status": "blocked",
+      "reason": "A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build."
+    },
+    "open_policy_issues": {
+      "status": "unknown",
+      "reason": "Mutable store-console policy state requires a current console read."
+    }
+  },
+  "scale_status": "hold",
+  "scale_status_reason": "Public outreach and acquisition scaling remain gated on provider clearance, crash resolution, complete iPhone/device coverage, and critical console guardrails."
+}

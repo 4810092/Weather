@@ -4,6 +4,18 @@
   <string name="cancel">إلغاء</string>
   <string name="onboarding_title">طقس يبدو مألوفًا.</string>
   <string name="onboarding_body">اختر مكانًا لترى الساعات الـ24 القادمة إلى جانب طقس عشته مؤخرًا.</string>
+  <string name="quick_places">مدن شهيرة في أوزبكستان</string>
+  <string name="quick_city_tashkent">طشقند</string>
+  <string name="quick_city_samarkand">سمرقند</string>
+  <string name="quick_city_namangan">نمنغان</string>
+  <string name="quick_city_andijan">أنديجان</string>
+  <string name="quick_city_fergana">فرغانة</string>
+  <string name="quick_city_bukhara">بخارى</string>
+  <string name="quick_city_nukus">نوكوس</string>
+  <string name="quick_country_uzbekistan">أوزبكستان</string>
+  <string name="first_forecast_tip_title">توقعاتك جاهزة</string>
+  <string name="first_forecast_tip_body">استخدم تغيير المكان لحفظ مدن أخرى، أو أضف أداة Nimbo لرؤية الطقس بسرعة.</string>
+  <string name="got_it">فهمت</string>
   <string name="search_city">ابحث عن مدينة</string>
   <string name="current_location">الموقع الحالي</string>
   <string name="change_later">يمكنك تغيير هذا لاحقًا.</string>
@@ -18,6 +30,7 @@
   <string name="change_place">تغيير المكان</string>
   <string name="share_weather">مشاركة الطقس</string>
   <string name="share_weather_text">%1$s: %2$d°، احتمال المطر %3$d%% — Nimbo</string>
+  <string name="share_store_cta">حمّل Nimbo لنزهتك القادمة:</string>
   <string name="theme">المظهر</string>
   <string name="theme_description">استخدم مظهر الجهاز أو اختر مظهرًا.</string>
   <string name="theme_system">النظام</string>
