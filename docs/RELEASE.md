@@ -22,8 +22,10 @@ the authority for live status.
 The coordinated candidate uses Android phone `1.1.0 (7)`, Wear OS `1.1.0
 (1000008)`, and Apple `1.1.0 (5)`. The phone and Wear AABs are upload-signed,
 Bundletool-validated, and retained outside the repository; a universal phone APK
-passed bounded physical API 25 release smoke. See the [growth checkpoint](GROWTH_RELEASE.md)
-and [signed Android artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md).
+passed bounded physical API 25 release smoke. The Apple archive and
+distribution-signed IPA have exact app/widget/watch dSYM coverage. See the
+[growth checkpoint](GROWTH_RELEASE.md), [signed Android artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md),
+and [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md).
 This section records local readiness only: no 1.1.0 store upload, review,
 approval, rollout, or public availability is claimed.
 

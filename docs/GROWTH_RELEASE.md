@@ -58,6 +58,9 @@ search result slices for all five generic queries. A bounded absence means only
   signed phone universal APK passed a clean physical API 25 install, live
   forecast, and cold start; [artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md)
   is local only and does not imply a store upload.
+- Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
+  matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
+  is local only and does not imply App Store Connect or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
   remains API 30. The post-Fragment debug candidate passes API 24 quick-city/
   live/cold/cache/recovery, API 36 Arabic RTL quick-city/live, and physical API
@@ -109,11 +112,13 @@ recorded only after direct store evidence.
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Signed Android artifacts are locally available. Play Internal and TestFlight
-remain bounded QA channels once the relevant platform artifact and authenticated
-upload path are available. Production rollout and public acquisition remain
-fail-closed until the crash, provider, physical-device, and console guardrails
-pass.
+Signed Android and Apple artifacts are locally available. The current host's
+App Store Connect upload account is unavailable, and its Google credential lacks
+the Android Publisher scope; [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
+records that neither internal track was changed. Play Internal and TestFlight
+remain bounded QA channels once an authenticated upload path is available.
+Production rollout and public acquisition remain fail-closed until the crash,
+provider, physical-device, and console guardrails pass.
 
 ## Operating cadence
 
