@@ -200,6 +200,6 @@ results are documented separately. API 24 live weather/cache recovery and API
 36 RTL are no longer blockers on the tested images.
 
 Both no-snapshot emulators were shut down after evidence capture. The final
-`adb devices -l` contained only the two pre-existing physical devices; the
-temporary General Mobile debug installation was removed as documented in the
-physical-device report.
+`adb devices -l` contained only the two pre-existing physical devices; every
+temporary General Mobile Nimbo QA installation was removed as documented in
+the physical-device report.

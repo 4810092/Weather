@@ -1,0 +1,49 @@
+Nimbo Android physical signed-release final checks
+Captured: 2026-08-29 Asia/Tashkent
+Device: General Mobile 4G Dual, Android API 25
+Package under test: uz.ganikhodjaev.weather
+
+Installed identity before cleanup:
+  versionCode=7 minSdk=24 targetSdk=36
+  versionName=1.1.0
+  firstInstallTime=2026-08-28 23:52:31
+  lastUpdateTime=2026-08-28 23:52:31
+
+After clearing the intentionally unreachable QA proxy and performing an
+explicit refresh, the UI tree showed localized live Bukhara weather and did not
+contain either cached-weather warning. A subsequent force-stop/cold start
+resumed uz.ganikhodjaev.weather/.MainActivity with Bukhara content. The Google
+Play review sheet did not recur.
+
+Filtered post-refresh/cold-start logcat scan patterns:
+  FATAL EXCEPTION
+  ANR in uz.ganikhodjaev.weather
+  Process: uz.ganikhodjaev.weather
+  SSLHandshakeException
+  CertPathValidatorException
+  CLEARTEXT communication
+Result: no matches.
+
+Restored device state before uninstall:
+  http_proxy=null
+  global_http_proxy_host=null
+  global_http_proxy_port=null
+  global_http_proxy_exclusion_list=null
+  global_proxy_pac_url=null
+  airplane_mode_on=0
+  wifi_on=1
+  font_scale=1.0
+  accessibility_enabled=0
+  enabled_accessibility_services=null
+
+Cleanup:
+  adb uninstall uz.ganikhodjaev.weather -> Success
+  adb shell pm path uz.ganikhodjaev.weather -> no package path
+
+Untouched control device:
+  Samsung public installation versionCode=5, versionName=1.0.1
+
+The native review-sheet screenshot and UI tree are intentionally excluded from
+the repository because the system surface exposes Google-account PII. They are
+retained with mode 0600 under the private release evidence directory. No star
+was selected and no review was submitted.

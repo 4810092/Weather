@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-08-28",
+  "as_of": "2026-08-29",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
@@ -12,7 +12,7 @@
     },
     "android_physical_smoke": {
       "status": "partial",
-      "reason": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, exact APK/signing identity, and cleanup. Earlier debug evidence covers share, large text, TalkBack, search, and a successful scheduled cache refresh; exact signed phone accessibility/share/offline coverage plus physical tablet, widget, and Wear OS remain incomplete."
+      "reason": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete."
     },
     "ios_physical_smoke": {
       "status": "blocked",

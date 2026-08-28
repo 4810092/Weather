@@ -5,9 +5,9 @@ that checkpoint and may be superseded later in the same document. The latest rec
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The next coordinated candidate is 1.1.0: phone 7, Wear
 1000008, and Apple build 5. Signed Android artifacts are locally validated; the
-phone universal APK passed physical API 25 clean/live/cold-start and was
-removed. Nothing in 1.1.0 has been uploaded or published. Store consoles remain
-the authority for live status.
+phone universal APK passed an expanded physical API 25 signed-release matrix
+and was removed. Nothing in 1.1.0 has been uploaded or published. Store
+consoles remain the authority for live status.
 
 ## Version identity
 
@@ -22,8 +22,10 @@ the authority for live status.
 The coordinated candidate uses Android phone `1.1.0 (7)`, Wear OS `1.1.0
 (1000008)`, and Apple `1.1.0 (5)`. The phone and Wear AABs are upload-signed,
 Bundletool-validated, and retained outside the repository; a universal phone APK
-passed bounded physical API 25 release smoke. The Apple archive and
-distribution-signed IPA have exact app/widget/watch dSYM coverage. See the
+passed physical API 25 clean/live/cold-start, denied-location/manual-search,
+share, 150% text, TalkBack, cached-network recovery, and contextual
+review-prompt smoke. The Apple archive and distribution-signed IPA have exact
+app/widget/watch dSYM coverage. See the
 [growth checkpoint](GROWTH_RELEASE.md), [signed Android artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md),
 and [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md).
 This section records local readiness only: no 1.1.0 store upload, review,

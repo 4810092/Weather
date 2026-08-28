@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: August 28, 2026
+Status date: August 29, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
@@ -55,19 +55,22 @@ search result slices for all five generic queries. A bounded absence means only
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
 - Phone and Wear `1.1.0` AABs are upload-signed and Bundletool-validated. The
-  signed phone universal APK passed a clean physical API 25 install, live
-  forecast, and cold start; [artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md)
+  signed phone universal APK passed physical API 25 clean install, live and
+  cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
+  text, TalkBack, cached-network fallback/recovery, and contextual review-prompt
+  dismissal/no immediate repeat; [artifact evidence](../growth/quality/android-release-artifacts-2026-08-28.md)
   is local only and does not imply a store upload.
 - Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
   is local only and does not imply App Store Connect or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
   remains API 30. The post-Fragment debug candidate passes API 24 quick-city/
-  live/cold/cache/recovery, API 36 Arabic RTL quick-city/live, and physical API
-  25 core/share/large-text/TalkBack paths. An earlier candidate passed API 36
-  English denied-location/search/cold-start. The signed phone release separately
-  passes physical API 25 clean/live/cold-start. Physical tablet, widget, and
-  paired Wear OS coverage remain required.
+  live/cold/cache/recovery and API 36 Arabic RTL quick-city/live. An earlier
+  candidate passed API 36 English denied-location/search/cold-start. The exact
+  signed phone release passes the expanded physical API 25 matrix listed above;
+  the naturally scheduled background refresh passed on the post-Fragment debug
+  candidate. Physical tablet, widget, and paired Wear OS coverage remain
+  required.
 - Metadata schema v2, an Uzbek Google custom listing, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and a new Play feature graphic. Real EN/RU/UZ Android captures now
@@ -103,11 +106,11 @@ recorded only after direct store evidence.
    answer is missing. A paid/customer credential must never be embedded in a
    mobile client.
 3. Complete the remaining physical matrix. The signed phone RC passes General
-   Mobile clean/live/cold-start and was removed after QA; earlier debug candidates
-   add search/share/large-text/TalkBack evidence without claiming exact signed
-   coverage. The prior signed iPad QA install was also removed. Exact signed-phone
-   denied-location/cache/share/accessibility, physical tablet/Wear/widget, and
-   the DDI-blocked iPhone matrix remain.
+   Mobile clean/live/cold-start, denied-location/manual-search, share,
+   large-text, TalkBack, cached-network recovery, and review-prompt paths and was
+   removed after QA. A naturally scheduled background refresh passed on the
+   debug candidate. The prior signed iPad QA install was also removed. Physical
+   tablet/Wear/widget and the DDI-blocked iPhone matrix remain.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
