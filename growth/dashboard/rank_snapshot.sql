@@ -1,6 +1,6 @@
--- Rank evidence available in the initial 2026-08-28 baseline.
--- Google category/search rows are deliberately unknown until the fixed
--- three-profile monitor writes a comparable capture.
+-- Required goal-surface evidence from the fixed 2026-08-29 UZ capture.
+-- The goal surfaces are complete. The separately monitored Apple search for
+-- `Toshkent ob-havo` returned only one unique app and is not represented here.
 SELECT *
 FROM (
   VALUES

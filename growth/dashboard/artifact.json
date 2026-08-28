@@ -4,13 +4,13 @@
     "version": 1,
     "surface": "dashboard",
     "title": "Nimbo UZ Growth Control Room",
-    "generatedAt": "2026-08-28T15:57:01Z",
+    "generatedAt": "2026-08-28T19:19:37Z",
     "cards": [
       {
         "id": "top10_streak",
         "dataset": "headline_metrics",
-        "sourceId": "rank_snapshot",
-        "description": "Complete consecutive days meeting both store rank definitions. An unknown or failed surface breaks the streak.",
+        "sourceId": "evaluation_snapshot",
+        "description": "Complete consecutive days meeting both required store-rank definitions. An unknown or failed required goal surface breaks the streak.",
         "metrics": [
           {"label": "Top-10 streak", "field": "top10_streak_days", "format": "number"},
           {"label": "Target", "field": "top10_streak_target", "format": "number"}
@@ -20,7 +20,7 @@
         "id": "apple_search_rank",
         "dataset": "headline_metrics",
         "sourceId": "rank_snapshot",
-        "description": "Exact position in the fixed 2026-08-28 UZ App Store public search response for the non-branded query weather.",
+        "description": "Exact position in the fixed 2026-08-29 UZ App Store public search response for the non-branded query weather; unchanged from August 28.",
         "metrics": [
           {"label": "Apple weather rank", "field": "apple_weather_rank", "format": "number"},
           {"label": "Target", "field": "rank_target", "format": "number"}
@@ -77,13 +77,14 @@
       {
         "id": "rank_table",
         "title": "UZ rank evidence",
-        "subtitle": "The complete fixed capture fails every required category surface and the generic-query quorum.",
+        "subtitle": "The required goal surfaces are complete and fail every category surface plus the generic-query quorum; one auxiliary Apple query was too sparse.",
         "dataset": "rank_snapshot",
         "sourceId": "rank_snapshot",
         "columns": [
           {"field": "check", "label": "Rank check", "type": "text"},
           {"field": "result", "label": "Result", "type": "text"}
-        ]
+        ],
+        "defaultSort": {"field": "check", "direction": "asc"}
       },
       {
         "id": "baseline_table",
@@ -94,7 +95,8 @@
         "columns": [
           {"field": "metric_label", "label": "Metric", "type": "text"},
           {"field": "value", "label": "Value", "type": "text"}
-        ]
+        ],
+        "defaultSort": {"field": "metric_label", "direction": "asc"}
       },
       {
         "id": "gate_table",
@@ -105,20 +107,22 @@
         "columns": [
           {"field": "gate", "label": "Gate", "type": "text"},
           {"field": "decision", "label": "Status and next action", "type": "text"}
-        ]
+        ],
+        "defaultSort": {"field": "gate", "direction": "asc"}
       }
     ],
     "sources": [
       {"id": "baseline_snapshot", "label": "Versioned store-console baseline", "path": "growth/dashboard/baseline_snapshot.sql"},
       {"id": "driver_comparison", "label": "Baseline and target driver comparison", "path": "growth/dashboard/driver_comparison.sql"},
-      {"id": "rank_snapshot", "label": "2026-08-28 UZ rank snapshot", "path": "growth/dashboard/rank_snapshot.sql"},
+      {"id": "rank_snapshot", "label": "2026-08-29 UZ rank snapshot", "path": "growth/dashboard/rank_snapshot.sql"},
+      {"id": "evaluation_snapshot", "label": "2026-08-29 growth evaluation", "path": "growth/reports/evaluation-2026-08-29.json"},
       {"id": "gate_snapshot", "label": "Fail-closed growth gates", "path": "growth/dashboard/gate_snapshot.sql"}
     ],
     "blocks": [
       {
         "id": "snapshot_context",
         "type": "markdown",
-        "body": "## Baseline verdict\n\nNimbo is **not ready to scale acquisition**. The public-rank goal is unmet, the iOS 1.0.1 crash still lacks a symbolicated diagnostic report, and Open-Meteo promotion clearance is not attached. The Play conversion read is above target as reported, but its denominator must be reconciled before it can support a decision."
+        "body": "## Current verdict\n\nNimbo is **not ready to scale acquisition**. The August 29 public-rank goal is unmet, the iOS 1.0.1 crash still lacks a symbolicated diagnostic report, and Open-Meteo promotion clearance is not attached. The Play conversion read is above target as reported, but its denominator must be reconciled before it can support a decision."
       },
       {"id": "headline_strip", "type": "metric-strip", "cardIds": ["top10_streak", "apple_search_rank", "apple_conversion", "play_conversion", "first_launch_rate"]},
       {"id": "driver_gap", "type": "chart", "chartId": "driver_gap_chart", "layout": "full"},
@@ -135,7 +139,7 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-28T15:57:01Z",
+    "generatedAt": "2026-08-28T19:19:37Z",
     "status": "partial",
     "datasets": {
       "headline_metrics": [
@@ -182,10 +186,10 @@
         {"metric_label": "Google Play · Ratings", "platform": "Google Play", "metric": "Ratings", "value": "1", "evidence_class": "reported_console_readout"}
       ],
       "gate_snapshot": [
-        {"gate": "iOS crash gate", "decision": "BLOCKED · obtain report, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "1 crash on iOS 1.0.1 on 2026-08-25; no stack trace available", "next_action": "Obtain the Organizer/diagnostic report, symbolicate, reproduce, fix, and re-smoke"},
-        {"gate": "Open-Meteo promotion clearance", "decision": "PENDING · obtain written clearance or license", "status": "pending", "evidence": "Free endpoint is documented for non-commercial use; no written promotion clearance attached", "next_action": "Obtain written clearance or approve a separately costed licensed endpoint"},
-        {"gate": "Android device smoke", "decision": "PARTIAL · API 24/36 emulator and physical API 25 paths pass", "status": "partial", "evidence": "Final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and physical API 25, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete", "next_action": "Run the versioned signed RC on the remaining tablet, share, background, and accessibility matrix"},
-        {"gate": "iOS physical smoke", "decision": "BLOCKED · iPad bounded pass; mount iPhone DDI", "status": "blocked", "evidence": "Release passed iOS 18.1 simulator and bounded physical iPad live-provider/cold-launch paths; the required iPhone is connected without a mountable Developer Disk Image", "next_action": "Unlock/reconnect the iPhone, mount DDI, then run denied-location, search, offline, share, VoiceOver, widget, and cold-start paths"}
+        {"gate": "iOS crash gate", "decision": "BLOCKED · obtain report, symbolicate, fix, re-smoke", "status": "blocked", "evidence": "App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.", "next_action": "Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke"},
+        {"gate": "Open-Meteo promotion clearance", "decision": "PENDING · send clarification and record the answer", "status": "pending", "evidence": "Clarification email is drafted but has not been sent or answered", "next_action": "Send through an authenticated sender and record an unambiguous written response"},
+        {"gate": "Android device smoke", "decision": "PARTIAL · signed API 25 phone matrix passes; tablet/widget/Wear remain", "status": "partial", "evidence": "Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.", "next_action": "Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact"},
+        {"gate": "iOS physical smoke", "decision": "BLOCKED · iPad bounded pass; mount iPhone DDI", "status": "blocked", "evidence": "A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build.", "next_action": "Unlock and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix"}
       ]
     },
     "accessIssues": [
@@ -224,16 +228,30 @@
     },
     {
       "id": "rank_snapshot",
-      "label": "2026-08-28 UZ rank snapshot",
+      "label": "2026-08-29 UZ rank snapshot",
       "path": "growth/dashboard/rank_snapshot.sql",
       "query": {
         "engine": "postgresql",
         "sql": "SELECT * FROM (VALUES ('App Store UZ search','all','weather','81',10,'fixed_public_capture'),('App Store UZ Weather chart','official','category','>100',10,'fixed_public_capture'),('Google Play UZ Weather category','uz-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','ru-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ Weather category','en-UZ','category','>30',10,'fixed_logged_out_capture'),('Google Play UZ generic-query quorum','2-of-3 profiles','five configured queries','0 qualifying queries',2,'fixed_logged_out_capture')) AS ranks(surface,profile,query,observed_rank,target_rank,evidence_class)",
-        "description": "Loads the complete fixed public-rank capture while preserving bounded absences.",
-        "executed_at": "2026-08-28T13:54:52Z",
-        "tables_used": ["inline rank values backed by growth/data/public-rank/2026-08-28.json"],
-        "filters": ["Storefront UZ", "Google logged-out profiles uz-UZ, ru-UZ, en-UZ"],
+        "description": "Loads the complete required goal surfaces from the fixed public-rank capture while preserving bounded absences; one auxiliary Apple query is incomplete.",
+        "executed_at": "2026-08-28T19:11:03Z",
+        "tables_used": ["inline rank values backed by growth/data/public-rank/2026-08-29.json"],
+        "filters": ["Snapshot date 2026-08-29", "Storefront UZ", "Google logged-out profiles uz-UZ, ru-UZ, en-UZ", "capture_complete=false because auxiliary Apple Toshkent ob-havo search is below completeness floor", "evaluation.complete=true for all required goal surfaces"],
         "metric_definitions": ["Top-10 means rank at most 10", "A >N result is a bounded absence, not a synthetic rank", "Google generic success requires Top-10 on at least two of three profiles for at least two queries"]
+      }
+    },
+    {
+      "id": "evaluation_snapshot",
+      "label": "2026-08-29 growth evaluation",
+      "path": "growth/reports/evaluation-2026-08-29.json",
+      "query": {
+        "engine": "postgresql",
+        "sql": "SELECT * FROM (VALUES ('2026-08-29',0,7,FALSE,TRUE)) AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)",
+        "description": "Loads the evaluated Top-10 streak state for the latest UZ rank day.",
+        "executed_at": "2026-08-28T19:11:58Z",
+        "tables_used": ["inline evaluation values backed by growth/reports/evaluation-2026-08-29.json"],
+        "filters": ["Current comparable config fingerprint", "Consecutive complete required goal days through 2026-08-29"],
+        "metric_definitions": ["Current streak counts consecutive complete days satisfying both category definitions and the Google generic-query quorum", "A failed required goal day resets the current streak to zero"]
       }
     },
     {
@@ -242,9 +260,9 @@
       "path": "growth/dashboard/gate_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','1 crash on iOS 1.0.1 on 2026-08-25; no stack trace available','Obtain the Organizer/diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Free endpoint is documented for non-commercial use; no written promotion clearance attached','Obtain written clearance or approve a separately costed licensed endpoint'),('Android device smoke','partial','Final debug APK passed localized quick-city selection, live forecast, and cold start on API 24/36 emulators and physical API 25, plus physical search. The immediately preceding runtime-identical candidate passed API 24 offline recovery; signed tablet, share, background, and accessibility coverage remains incomplete','Run the versioned signed RC on the remaining tablet, share, background, and accessibility matrix'),('iOS physical smoke','blocked','Release passed iOS 18.1 simulator and bounded physical iPad live-provider/cold-launch paths; the required iPhone is connected without a mountable Developer Disk Image','Unlock/reconnect the iPhone, mount DDI, then run denied-location, search, offline, share, VoiceOver, widget, and cold-start paths')) AS gates(gate,status,evidence,next_action)",
+        "sql": "SELECT * FROM (VALUES ('iOS crash gate','blocked','App Store Connect shows one iOS 1.0.1 crash on 2026-08-25, but device detail is insufficient and no crash report/stack is exposed for symbolication or root-cause verification.','Obtain the Organizer or diagnostic report, symbolicate, reproduce, fix, and re-smoke'),('Open-Meteo promotion clearance','pending','Clarification email is drafted but has not been sent or answered','Send through an authenticated sender and record an unambiguous written response'),('Android device smoke','partial','Signed phone 1.1.0 (7) passed physical API 25 clean install, live forecast, cold start, denied-location fallback, manual search, share, 150% text, TalkBack, cached-network fallback/recovery, contextual review-prompt dismissal/no immediate repeat, exact APK/signing identity, and cleanup. A scheduled cache refresh passed on the earlier debug candidate; physical tablet, widget, and Wear OS remain incomplete.','Run the signed RC on physical tablet, widget, and Wear OS; keep background evidence scoped to its tested artifact'),('iOS physical smoke','blocked','A locally signed Release passed bounded physical iPad install, provider/cache population, widget-process startup, and cold launch, but the required iPhone is connected without DDI and cannot accept a development build.','Unlock and reconnect the iPhone, mount DDI, then run the remaining signed physical matrix')) AS gates(gate,status,evidence,next_action)",
         "description": "Loads the fail-closed scale gates and their next evidence-producing action.",
-        "executed_at": "2026-08-28T15:57:01Z",
+        "executed_at": "2026-08-28T19:19:37Z",
         "tables_used": ["inline gate values backed by growth/quality/gates.json"],
         "filters": ["Critical organic-acquisition scale gates"],
         "metric_definitions": ["Only explicit pass permits scaling", "Blocked and pending are not pass"]
