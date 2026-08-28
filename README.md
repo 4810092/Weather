@@ -174,7 +174,7 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 
 - Android phone/tablet `1.0.2` (`versionCode 6`) is recorded in the release journal as a completed production rollout on August 13, 2026.
 - iOS/iPadOS `1.0` build 3 is recorded as an external TestFlight build. This repository does **not** claim a public App Store production release.
-- Wear OS `1.0.2` was in internal testing and production review at the last recorded checkpoint; watchOS is included with the Apple build. See [release candidate status](docs/RELEASE_CANDIDATE.md) for the dated record.
+- Wear OS `1.0.2` build 1000006 was rejected for background/splash quality requirements; upload-signed hotfix 1000007 is locally validated, published to the internal Wear track, and under Google review for Production. watchOS remains included with the unchanged Apple build. See [release candidate status](docs/RELEASE_CANDIDATE.md) for the dated record.
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

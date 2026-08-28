@@ -23,6 +23,7 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | Optional location hardware | Play review of version code 3 exposed 1 phone and 5 tablets excluded by implicit `android.hardware.location`; RC2 explicitly marks it optional and Play reports all six restored | Pass |
 | Production submission | Version code 4 became available in 177 countries; later checkpoints advanced through version code 5 to phone/tablet 1.0.2 (6) | 1.0.2 rollout recorded complete on August 13 |
 | 1.0.2 candidate | Phone vc6 and Wear OS vc1000006 pass clean build, bundletool validation, upload-certificate verification, universal-APK install, and cold-launch smoke on API 36/Wear OS emulators | Pass locally; physical paired-device smoke pending |
+| Wear OS policy hotfix | Google rejected vc1000006 for WO-V13/WO-V15. Source vc1000007 uses `#000000` in both UI modes and AndroidX SplashScreen 1.2.0 with the existing launcher glyph in a centered 48 dp drawable. Build, lint, repository checks, upload-certificate match, Bundletool 1.18.3 validation, signed-universal-APK install, and rapid cold-start captures pass on the 480 x 480 / 320 dpi Wear OS XL Round emulator. Play published 1000007 to the internal Wear track and accepted the replacement Production release for review, both with 1000006 not included. | Pass locally; internal release published and Production under review; physical paired-device smoke pending |
 
 ## iOS
 
@@ -48,6 +49,7 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
 | TestFlight | Builds 1 and 2 were processed; no tester was assigned and no physical TestFlight smoke is claimed | Not performed |
 | App Review | iOS 1.0 build 2, submission `d44f3a55-ae31-4a17-9195-371ba9efa478`, submitted August 10, 2026; build 3 remained TestFlight-only at the later checkpoint | Historical submission; live status must be rechecked in App Store Connect |
 | 1.0 build 3 candidate | App, WidgetKit, and watchOS compile; automatic signing registered the new IDs/App Group; App Store export and deep codesign validation pass; required Apple Watch screenshot captured | Pass locally; physical paired-device/TestFlight smoke pending |
+| Wear policy cross-check | The unchanged NimboWatch target and app-icon catalog compile with Xcode 26.6/watchOS 26.5 SDK. No Google-style branded launch screen was added because watchOS does not require one. | Pass locally; no Apple binary change required |
 
 ## External and manual gates at the latest recorded checkpoint
 
@@ -55,7 +57,9 @@ This is the latest evidence checkpoint, not a declaration that store release QA 
   describing it; build 3 is verified only as external TestFlight.
 - Complete physical iPhone/iPad/Apple Watch smoke and VoiceOver checks for a future
   Apple production build.
-- Recheck Wear OS production review and complete paired Android/Wear OS physical-device
-  smoke before claiming that surface is production-validated.
+- Complete paired Android/Wear OS physical-device smoke before claiming that
+  surface is production-validated, and monitor the submitted 1.0.2 (1000007)
+  Production change through Google review. Rejected 1000006 is not included in
+  either replacement release.
 - Monitor production diagnostics after releases. No crash-free-rate, retention, or
   active-user metric is claimed in this repository.

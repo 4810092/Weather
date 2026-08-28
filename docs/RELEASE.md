@@ -3,10 +3,12 @@
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 cross-platform state is [Nimbo 1.0.2 release candidate](RELEASE_CANDIDATE.md): Android
-phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026; Apple build 3
-is external TestFlight rather than an App Store production release; Wear OS production
-review and paired-device QA were still open at that checkpoint. Store consoles remain
-the authority for live status.
+phone/tablet 1.0.2 (6) completed production rollout on August 13, 2026; iOS 1.0.1
+(4) was submitted to App Review on August 23 with automatic release after approval;
+Google rejected Wear OS 1.0.2 (1000006) on August 20 for WO-V13/WO-V15, and
+source hotfix 1000007
+is locally validated, upload-signed, published to the internal Wear track, and under
+Google review for Production. Store consoles remain the authority for live status.
 
 ## Version identity
 
@@ -15,6 +17,56 @@ the authority for live status.
 - iOS bundle ID: `uz.ganikhodjaev.weather`.
 - Android Nimbo 1.0 must use a version code greater than the highest code already accepted by Google Play (legacy repository code is 2).
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
+
+## App Store 1.0.1 submission — 2026-08-23
+
+App Store Connect accepted Nimbo 1.0.1 build 4 and reports submission
+`2655e3c2-03eb-4ca4-be40-e8f74e87a12b` as `Waiting for Review`. The submitted
+binary contains the iOS/iPadOS app, WidgetKit extension, and Apple Watch
+companion. The product page includes iPhone, iPad, and Apple Watch screenshots;
+release notes are populated for all 12 App Store localizations used by Nimbo.
+Automatic release is enabled, with an immediate full rollout after Apple
+approval and no phased release. This is not yet a live App Store release; App
+Store Connect remains authoritative until review and storefront propagation
+complete.
+
+The exported IPA is retained at
+`/Users/khasan/work/ganikhodjaev/.nimbo-release/ios/1.0.1-4/export/Nimbo.ipa`
+with SHA-256
+`5f2b260023bedf2450174de2be4f299a2a2c7adbf4cfcec45ff34f13614425c4`.
+Release simulator build, shared tests, repository/localization/store checks,
+archive/export, distribution signing, and deep code-sign verification passed
+before upload.
+
+## Wear OS policy rejection and hotfix — 2026-08-20
+
+Google rejected Wear OS version code 1000006 because the in-app background was
+not pure black and startup did not show the launcher icon at 48 dp on black. The
+1000007 source hotfix makes the default and night app/window backgrounds
+`#000000`, adds AndroidX Core SplashScreen 1.2.0, and uses the existing launcher
+glyph through a centered 48 dp splash drawable. Repository checks guard the
+policy resources, starting theme, launcher-theme assignment, call ordering, and
+version-code floor.
+
+The hotfix passes `assembleDebug`, `lintDebug`, and `bundleRelease`. Its
+upload-signed AAB has SHA-256
+`aeecf509e977036f9af3f0d48c55e80413619a3fa5ea6061fa9f070f73ba2b91`,
+matches the accepted upload certificate, and passes Bundletool 1.18.3
+validation. A Bundletool-generated universal APK is v3-signed with the same
+certificate and reports package `uz.ganikhodjaev.weather`, version 1.0.2
+(1000007), min SDK 30, and target SDK 36. Rapid
+cold-start captures on the 480 x 480 / 320 dpi Wear OS XL Round emulator show
+the centered branded glyph on black followed by a readable black app surface in
+both UI modes. The unchanged NimboWatch target also builds successfully with
+Xcode 26.6/watchOS 26.5 SDK; no Apple launch-screen change is required.
+Play Console accepted build 1000007 into Production release
+`Nimbo Wear 1.0.2 (1000007) — Policy fix`; build 1000006 appears under `Not
+Included` and rollout is 100%. At 17:50 Asia/Tashkent on August 20, the same
+replacement became the latest internal Wear release, with 1000006 excluded. At
+17:51, Play Console accepted the Production change for review and now lists it
+under `Changes under review`. The internal track has no selected testers, and
+managed publishing remains off, so an approved Production release will publish
+automatically.
 
 ## Android prerequisites
 

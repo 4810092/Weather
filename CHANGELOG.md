@@ -4,8 +4,20 @@ This file records public product and repository checkpoints supported by source 
 
 ## Unreleased
 
+- Fix the Wear OS review blockers by using a pure-black app background and a
+  policy-sized branded launch icon, and advance the Wear OS build to version
+  code 1000007.
 - Improve open-source onboarding, architecture/reference documentation, contributor workflows, dependency updates, CI hardening, and security reporting.
 - Add GitHub prerelease objects for the existing `v1.0.0-rc.1` and `v1.0.0-rc.2` tags without changing tag history.
+
+## iOS 1.0.1 — submitted 2026-08-23
+
+- Submit App Store build 4 with the iOS/iPadOS app, WidgetKit extension, and
+  Apple Watch companion for review.
+- Add the Apple Watch product-page screenshot and localized release notes for
+  all supported App Store localizations.
+- Enable automatic full release after Apple approval. The submission is waiting
+  for review and is not yet recorded as live.
 
 ## Android 1.0.2 — 2026-08-13
 

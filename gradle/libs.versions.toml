@@ -3,6 +3,7 @@ agp = "9.3.1"
 kotlin = "2.4.10"
 compose = "1.11.1"
 activityCompose = "1.13.0"
+coreSplashscreen = "1.2.0"
 coroutines = "1.11.0"
 serialization = "1.11.0"
 datetime = "0.8.0"
@@ -15,6 +16,7 @@ workManager = "2.11.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }

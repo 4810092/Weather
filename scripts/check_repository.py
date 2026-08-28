@@ -120,11 +120,21 @@ if android_version is None or int(android_version.group(1).replace("_", "")) <= 
     fail("Android release versionCode must be greater than uploaded version 5")
 if wear_version is None:
     fail("Wear OS versionCode is missing")
+if int(wear_version.group(1).replace("_", "")) <= 1_000_006:
+    fail("Wear OS versionCode must be newer than rejected version 1000006")
 if android_version.group(1).replace("_", "") == wear_version.group(1).replace("_", ""):
     fail("Wear OS versionCode must be unique across Play form factors")
+if "implementation(libs.androidx.core.splashscreen)" not in wear:
+    fail("Wear OS must use the AndroidX splash screen compatibility library")
 
-if "CURRENT_PROJECT_VERSION: 3" not in ios:
-    fail("iOS release build must remain newer than uploaded build 2")
+version_catalog = (ROOT / "gradle/libs.versions.toml").read_text()
+if "androidx.core:core-splashscreen" not in version_catalog:
+    fail("AndroidX core splash screen dependency is missing from the version catalog")
+if 'coreSplashscreen = "1.2.0"' not in version_catalog:
+    fail("Wear OS must use the reviewed AndroidX Core SplashScreen 1.2.0 release")
+
+if "CURRENT_PROJECT_VERSION: 4" not in ios:
+    fail("iOS release build must remain newer than uploaded build 3")
 for relative in (
     "iosApp/Nimbo/Info.plist",
     "iosApp/NimboSimulator/Info.plist",
@@ -154,6 +164,9 @@ if location_feature is None or location_feature.get(android_required) != "false"
     fail("optional city-search flow requires android.hardware.location to be optional")
 
 wear_manifest = ET.parse(ROOT / "wearApp/src/main/AndroidManifest.xml").getroot()
+wear_application = wear_manifest.find("application")
+if wear_application is None:
+    fail("Wear OS application manifest entry is missing")
 watch_feature = next(
     (
         feature
@@ -167,7 +180,7 @@ if watch_feature is None or watch_feature.get(android_required) == "false":
 standalone = next(
     (
         item
-        for item in wear_manifest.find("application").findall("meta-data")
+        for item in wear_application.findall("meta-data")
         if item.get(android_name) == "com.google.android.wearable.standalone"
     ),
     None,
@@ -175,6 +188,112 @@ standalone = next(
 android_value = "{http://schemas.android.com/apk/res/android}value"
 if standalone is None or standalone.get(android_value) != "false":
     fail("phone-dependent Wear OS package must declare standalone=false")
+
+android_theme = "{http://schemas.android.com/apk/res/android}theme"
+android_icon = "{http://schemas.android.com/apk/res/android}icon"
+if wear_application.get(android_icon) != "@drawable/ic_watch":
+    fail("Wear OS launcher icon must remain @drawable/ic_watch")
+launcher_activity = next(
+    (
+        activity
+        for activity in wear_application.findall("activity")
+        if activity.get(android_name) == ".WearWeatherActivity"
+    ),
+    None,
+)
+if launcher_activity is None or launcher_activity.get(android_theme) != (
+    "@style/Theme.Nimbo.Wear.Starting"
+):
+    fail("Wear OS launcher activity must use the branded starting theme")
+
+wear_resource_root = ROOT / "wearApp/src/main/res"
+wear_color_paths = sorted(wear_resource_root.glob("values*/colors.xml"))
+for path in wear_color_paths:
+    colors = ET.parse(path).getroot()
+    background = next(
+        (color for color in colors.findall("color") if color.get("name") == "weather_background"),
+        None,
+    )
+    if background is None or (background.text or "").strip().upper() != "#000000":
+        fail(f"Wear OS background must be pure black in {path.relative_to(ROOT)}")
+
+wear_style_paths = sorted(wear_resource_root.glob("values*/styles.xml"))
+for path in wear_style_paths:
+    styles = ET.parse(path).getroot()
+    app_theme = next(
+        (style for style in styles.findall("style") if style.get("name") == "Theme.Nimbo.Wear"),
+        None,
+    )
+    theme_items = {
+        item.get("name"): (item.text or "").strip()
+        for item in app_theme.findall("item")
+    } if app_theme is not None else {}
+    if theme_items.get("android:windowBackground") != "@color/weather_background":
+        fail(f"Wear OS window background is not policy-backed in {path.relative_to(ROOT)}")
+    if theme_items.get("android:windowLightStatusBar") != "false":
+        fail(f"Wear OS must use light status-bar content in {path.relative_to(ROOT)}")
+
+android_background = "{http://schemas.android.com/apk/res/android}background"
+wear_layout = ET.parse(
+    ROOT / "wearApp/src/main/res/layout/activity_weather.xml"
+).getroot()
+if wear_layout.get(android_background) != "@color/weather_background":
+    fail("Wear OS root layout must use the policy-backed black background")
+
+starting_styles = ET.parse(
+    ROOT / "wearApp/src/main/res/values/styles.xml"
+).getroot()
+starting_theme = next(
+    (
+        style
+        for style in starting_styles.findall("style")
+        if style.get("name") == "Theme.Nimbo.Wear.Starting"
+    ),
+    None,
+)
+starting_items = {
+    item.get("name"): (item.text or "").strip()
+    for item in starting_theme.findall("item")
+} if starting_theme is not None else {}
+if starting_theme is None or starting_theme.get("parent") != "Theme.SplashScreen":
+    fail("Wear OS starting theme must inherit Theme.SplashScreen")
+if starting_items.get("windowSplashScreenBackground") != "@android:color/black":
+    fail("Wear OS splash screen background must be black")
+if starting_items.get("windowSplashScreenAnimatedIcon") != "@drawable/splash_screen":
+    fail("Wear OS splash screen must use the policy-sized icon drawable")
+if starting_items.get("postSplashScreenTheme") != "@style/Theme.Nimbo.Wear":
+    fail("Wear OS splash screen must transition to Theme.Nimbo.Wear")
+
+android_width = "{http://schemas.android.com/apk/res/android}width"
+android_height = "{http://schemas.android.com/apk/res/android}height"
+android_drawable = "{http://schemas.android.com/apk/res/android}drawable"
+android_gravity = "{http://schemas.android.com/apk/res/android}gravity"
+splash = ET.parse(ROOT / "wearApp/src/main/res/drawable/splash_screen.xml").getroot()
+splash_item = splash.find("item")
+if splash_item is None or (
+    splash_item.get(android_width) != "@dimen/splash_screen_icon_size"
+    or splash_item.get(android_height) != "@dimen/splash_screen_icon_size"
+    or splash_item.get(android_drawable) != "@drawable/ic_watch"
+    or splash_item.get(android_gravity) != "center"
+):
+    fail("Wear OS splash drawable must center the launcher icon at the policy size")
+
+dimensions = ET.parse(ROOT / "wearApp/src/main/res/values/dimens.xml").getroot()
+splash_size = next(
+    (item for item in dimensions.findall("dimen") if item.get("name") == "splash_screen_icon_size"),
+    None,
+)
+if splash_size is None or (splash_size.text or "").strip() != "48dp":
+    fail("Wear OS splash screen icon must be exactly 48dp")
+
+wear_activity = (
+    ROOT
+    / "wearApp/src/main/java/uz/ganikhodjaev/weather/wear/WearWeatherActivity.kt"
+).read_text()
+install_position = wear_activity.find("installSplashScreen()")
+super_position = wear_activity.find("super.onCreate(savedInstanceState)")
+if install_position < 0 or super_position < 0 or install_position > super_position:
+    fail("Wear OS activity must install the splash screen before super.onCreate")
 
 license_text = (ROOT / "LICENSE").read_text()
 if "Apache License" not in license_text or "Version 2.0, January 2004" not in license_text:

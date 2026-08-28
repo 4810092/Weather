@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="weather_background">#101820</color>
+    <color name="weather_background">#000000</color>
     <color name="weather_primary">#FFFFFF</color>
     <color name="weather_secondary">#C1D4E8</color>
     <color name="weather_tertiary">#9EB5C9</color>
