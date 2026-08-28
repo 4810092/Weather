@@ -23,9 +23,12 @@ committed Xcode project was regenerated from it with XcodeGen 2.45.3.
 
 The current phone and Apple rows stay blocked until new artifacts are built
 from the current source, signed with the accepted identities, hashed, and
-tested on the required physical devices. Signing material was not available to
-the non-interactive build session, so no placeholder hash or inherited QA claim
-is recorded.
+tested on the required physical devices. Signing metadata and protected local
+material are present, but current non-interactive private operations fail: the
+Android `security` secret lookup exits with status `51`, while Apple archive
+signing returns `errSecInternalComponent`. See
+`growth/quality/signing-readiness-2026-08-29.md`. No placeholder hash or
+inherited QA claim is recorded.
 
 ## Local source-identity checks
 
@@ -37,6 +40,9 @@ is recorded.
   arm64-only Release simulator build completed without signing; the app and
   widget Info.plists both expand to build `6`. This proves source/project
   consistency only, not an archive, distribution signature, or device pass.
+- A later current-source signing readiness pass confirmed compatible Apple
+  profiles and visible identities, but both the full archive and an isolated
+  watch archive failed at `codesign`; neither produced an xcarchive.
 
 ## Preserved historical candidates
 

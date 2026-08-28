@@ -156,7 +156,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities, but the login Keychain is locked and neither current candidate has a signed artifact, immutable hash, or matching physical-QA evidence. Unchanged Wear OS 1.1.0 (1000008) alone remains verified-current."
+        "reason": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities. Protected signing material, compatible Apple profiles, and signing identities are present, but the Android security value lookups exit with status 51 and Apple archive codesign fails with errSecInternalComponent, backed by Security framework errSecAuthFailed. Neither current phone nor Apple candidate has a signed artifact, immutable hash, or matching physical-QA evidence; unchanged Wear OS 1.1.0 (1000008) alone remains verified-current. See growth/quality/signing-readiness-2026-08-29.md."
       },
       {
         "id": "android_physical_smoke",
@@ -177,7 +177,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "The registrar surface reports nimbo.uz waiting for activation, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete."
+        "reason": "The registrar surface reports nimbo.uz is activating, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. Cloudflare reports the zone pending with no DNS records. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete."
       },
       {
         "id": "store_policy_console_clearance",

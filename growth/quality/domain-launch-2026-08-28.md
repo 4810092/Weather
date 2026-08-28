@@ -7,6 +7,8 @@ are not available**.
 
 - GitHub Pages deployment `6147270106` for commit
   `584f47a83637ce3587ce980a69f392b84a57656b` completed successfully.
+- GitHub Pages workflow run `33213699930` for the current commit
+  `53d4801d5d2012b300bb44959f08c32afe705045` also completed successfully.
 - The repository Pages configuration uses the workflow build type and accepts
   `nimbo.uz` as its custom domain.
 - The generated site uses `https://nimbo.uz` as the canonical origin for the
@@ -31,6 +33,11 @@ It also listed registrar `Arsenal-D` and the intended Cloudflare nameservers.
 A read-only recheck at `2026-08-29 02:26 +05:00` returned the same WHOIS
 status, DNSSEC-authenticated registry `NXDOMAIN`, no public `A`/`AAAA` answer,
 and no resolvable HTTPS endpoint.
+
+At `2026-08-29 03:07 +05:00`, the authenticated registrar list still showed
+`nimbo.uz` as `Активируется`, WHOIS still reported `EXPIRED`, and the registry
+still returned DNSSEC-authenticated `NXDOMAIN`. The Cloudflare dashboard showed
+the zone as `pending` and its authoritative DNS table contained no records.
 
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for

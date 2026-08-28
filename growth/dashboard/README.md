@@ -9,8 +9,10 @@ The dashboard is intentionally `blocked`. On 2026-08-29 the auxiliary Apple
 `Toshkent ob-havo` search returned only one unique app, below the 10-app
 completeness floor, while all required goal surfaces were complete and failed;
 the streak is therefore correctly zero. Current phone vc8 and Apple build 6
-lack signed artifacts and physical QA, the iOS crash lacks a symbolicated
-report, and `nimbo.uz` is still waiting for registrar activation. Missing
+cannot complete their protected private-signing operations and lack signed
+artifacts and physical QA; the retained signed Wear artifact is current but
+lacks physical-watch QA. The iOS crash lacks a symbolicated report, and
+`nimbo.uz` is still waiting for registrar activation. Missing
 evidence remains explicit rather than silently becoming a zero or pass.
 The dashboard also exposes every critical weekly metric guardrail; all eight
 are currently `unknown`, independently blocking scale. The point-in-time
@@ -22,8 +24,16 @@ Refresh order:
 1. Run the public rank monitor and import the latest store exports.
 2. Reconcile every numerator, denominator, window, country, device, and version.
 3. Update the bounded SQL and artifact snapshot.
-4. Run `python3 scripts/check_dashboard_report.py` to prove every cited SQL/JSON
-   input still matches the artifact.
-5. Rebuild `report.html` with the Data Analytics portable-artifact delivery
-   script.
+4. Rebuild `report.html` with the installed Data Analytics portable-artifact
+   renderer:
+
+   ```sh
+   NIMBO_DATA_ANALYTICS_PLUGIN_ROOT=/absolute/path/to/data-analytics-plugin
+   node "$NIMBO_DATA_ANALYTICS_PLUGIN_ROOT/skills/build-report/scripts/deliver_portable_artifact.mjs" \
+     --input growth/dashboard/artifact.json \
+     --output growth/dashboard/report.html
+   ```
+
+5. Run `python3 scripts/check_dashboard_report.py` to prove every cited SQL/JSON
+   input, the canonical artifact, and the embedded report payload agree.
 6. Run the repository checks again before a dashboard is published.

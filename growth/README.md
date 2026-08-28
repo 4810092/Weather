@@ -2,8 +2,9 @@
 
 Current verdict (2026-08-29): **HOLD ACQUISITION**. The reproducible public
 monitor and daily snapshots are in place, but the required rank surfaces fail
-and the Top-10 streak is zero. Current phone vc8 and Apple build 6 have only
-unsigned local builds, with no matching hash or physical QA; signed phone vc7
+and the Top-10 streak is zero. Current phone vc8 and Apple build 6 cannot
+complete their protected private-signing operations and therefore have no
+source-synced signed artifact, matching hash, or physical QA; signed phone vc7
 and Apple build 5 are historical evidence only. The iOS crash diagnostic,
 provider promotion clearance, complete device matrix, registrar activation for
 `nimbo.uz`, and reconciled console exports are still missing. A build, a Pages

@@ -10,9 +10,10 @@ Status: **BLOCKED**. Do not scale public acquisition or send outreach while this
   suppressed `-` values, so neither dimension can be used as incident evidence.
 - Xcode 26.6 Organizer was opened locally for the Nimbo product. Its Crashes
   view reports `Error Downloading Crashes List — A developer account is
-  required for downloading crashes list.` The login Keychain is currently
-  locked, and no account/authentication change was attempted. This is an access
-  blocker, not evidence that the crash is absent.
+  required for downloading crashes list.` No account/authentication change was
+  attempted. This is an access blocker, not evidence that the crash is absent;
+  the separate current-source private-signing authorization failure is recorded
+  in `growth/quality/signing-readiness-2026-08-29.md`.
 
 - App Store Connect Analytics' own read-only time-series request was reproduced
   with `adamId=6799886897`, measure `crashes`, daily frequency, and exact app-

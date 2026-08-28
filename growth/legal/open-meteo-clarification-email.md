@@ -2,7 +2,7 @@
 
 Status: prepared, not sent.
 To: `info@open-meteo.com`
-Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), checked 2026-08-28.
+Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), checked 2026-08-29.
 Subject: Clarification on non-commercial organic promotion for Nimbo
 
 Hello Open-Meteo team,
@@ -37,6 +37,10 @@ Nimbo maintainer
 
 ## Send gate
 
+- The 2026-08-29 terms still list apps without subscriptions or advertising as
+  non-commercial examples, but separately classify integration into
+  promotional activities as commercial. That ambiguity is why silence or the
+  absence of monetization cannot close this gate.
 - Re-check the terms and official contact address on the send date.
 - Fill the sender name and reply address.
 - Obtain explicit authorization to send external email.
