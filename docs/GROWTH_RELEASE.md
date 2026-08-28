@@ -60,8 +60,10 @@ search result slices for all five generic queries. A bounded absence means only
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  Phone vc8 and Apple build 6 remain source-sync blocked with no current hash,
-  signing evidence, or physical-QA evidence; they are not uploadable artifacts.
+  Phone vc8 now has bounded current-commit API 25 debug/source evidence, but no
+  upload-signed artifact or matching release-certificate physical pass. Apple
+  build 6 still has no current signed artifact or physical result. Neither is
+  an uploadable artifact.
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
@@ -83,9 +85,9 @@ search result slices for all five generic queries. A bounded absence means only
   live/cold/cache/recovery and API 36 Arabic RTL quick-city/live. An earlier
   candidate passed API 36 English denied-location/search/cold-start. The exact
   historical signed phone vc7 passes the expanded physical API 25 matrix listed above;
-  the naturally scheduled background refresh passed on the post-Fragment debug
-  candidate. Physical tablet, widget, and paired Wear OS coverage remain
-  required.
+  the post-throttle current-commit debug APK separately passes API 25 live,
+  provider-blocked fresh-cache cold start, manual bypass, recovery, and cleanup.
+  Physical tablet, widget, and paired Wear OS coverage remain required.
 - Metadata schema v2, an Uzbek Google custom listing, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ

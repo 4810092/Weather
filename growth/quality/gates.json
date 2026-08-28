@@ -15,7 +15,7 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "An earlier same-day phone 1.1.0 (8) debug/source snapshot passed bounded API 25 onboarding, live weather, cached offline cold start, and stability checks. Subsequent provider-throttling and cross-path single-flight changes have no matching physical result, and there is still no upload-signed current artifact or release-certificate physical pass. The signed vc7 matrix is historical and does not transfer to vc8; physical tablet, widget, and Wear OS coverage also remains required."
+      "reason": "Current commit 2004e4f phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live weather, a fresh-cache cold start with provider access blocked and no automatic refresh failure, explicit manual-refresh failure/recovery, and cleanup. The APK is debug-signed; there is still no upload-signed current artifact or release-certificate physical pass. Signed vc7 is historical; physical tablet, widget, and Wear OS coverage also remains required."
     },
     "ios_physical_smoke": {
       "status": "blocked",

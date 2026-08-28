@@ -49,6 +49,13 @@ inherited QA claim is recorded.
   builds. These checks do not create signed artifacts or physical-device proof.
 - The earlier API 25 debug/source smoke is now historical because it predates
   the provider-throttling and cross-path single-flight changes.
+- Commit `2004e4f237ce4f176a106d465ecc21b2dc36d741` then passed a bounded
+  physical API 25 debug/source smoke for live weather, the fresh-cache
+  automatic skip with provider access blocked, explicit manual bypass,
+  recovery, and cleanup. Its APK hash is
+  `1d3ade497395c349d0fda77e72f76e494da230933d9aa011ac71bb475f48a31e`.
+  Debug signing does not satisfy the upload-signed vc8 or release-certificate
+  physical gates.
 
 ## Preserved historical candidates
 
