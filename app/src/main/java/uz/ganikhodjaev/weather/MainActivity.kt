@@ -15,14 +15,21 @@ import uz.ganikhodjaev.weather.shared.PlatformContext
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val darkTheme = initialDarkTheme()
-        val systemBarStyle = if (darkTheme) {
-            SystemBarStyle.dark(Color.TRANSPARENT)
+        val statusBarStyle: SystemBarStyle
+        val navigationBarStyle: SystemBarStyle
+        if (darkTheme) {
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         } else {
-            SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            navigationBarStyle = SystemBarStyle.light(
+                Color.TRANSPARENT,
+                LEGACY_LIGHT_NAVIGATION_BAR_SCRIM
+            )
         }
         enableEdgeToEdge(
-            statusBarStyle = systemBarStyle,
-            navigationBarStyle = systemBarStyle
+            statusBarStyle = statusBarStyle,
+            navigationBarStyle = navigationBarStyle
         )
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawable(
@@ -53,5 +60,6 @@ class MainActivity : ComponentActivity() {
         const val THEME_PREFERENCE_KEY = "theme_preference"
         const val LIGHT_BACKGROUND = 0xFFF3F7FC.toInt()
         const val DARK_BACKGROUND = 0xFF101820.toInt()
+        const val LEGACY_LIGHT_NAVIGATION_BAR_SCRIM = 0x801B1B1B.toInt()
     }
 }

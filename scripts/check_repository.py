@@ -248,6 +248,14 @@ if "enableEdgeToEdge(" not in main_activity_source:
     fail("phone activity must enable edge-to-edge on pre-Android 15 devices")
 if "window.isNavigationBarContrastEnforced = false" not in main_activity_source:
     fail("phone activity must disable the legacy three-button navigation scrim")
+if "LEGACY_LIGHT_NAVIGATION_BAR_SCRIM" not in main_activity_source:
+    fail("phone activity must protect light navigation icons on Android API 24-25")
+if re.search(
+    r"navigationBarStyle\s*=\s*SystemBarStyle\.light\(\s*"
+    r"Color\.TRANSPARENT,\s*Color\.TRANSPARENT\s*\)",
+    main_activity_source,
+):
+    fail("light navigation style must not be transparent on legacy Android")
 
 weather_screen_source = (
     ROOT
