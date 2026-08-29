@@ -45,6 +45,17 @@ The same overview displayed standard store-listing conversion as `40.82%`.
 The capture did not expose that card's numerator and denominator, so the value
 is preserved as a Console summary and is not recomputed from the other cards.
 
+## Rating-age boundary
+
+A second authenticated read-only check completed at `2026-08-29 12:16 +05:00`.
+Ratings Overview still reported a global default rating of `1.000` from one
+user. The all-time reviews page reported zero ratings with written reviews, and
+the rating breakdown showed no matching record for the most recent 90 days.
+This supports only the bounded conclusion that the lone rating is not a new
+textual defect report. The Console surface did not expose its date, app version,
+device, country, or storefront, so it must not be attributed to Uzbekistan or
+to the current public build.
+
 ## Engagement detail and data lag
 
 The detailed Statistics URLs explicitly carried

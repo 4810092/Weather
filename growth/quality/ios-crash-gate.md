@@ -59,15 +59,17 @@ Organizer remains the authority for the missing report and affected binary.
 
 ## Current-source hardening evidence — does not close the gate
 
-Exact product commit `97c26cbec570468b4971daa7779e3839aa4c48ce`
-hardens reachable UIKit lifecycle, main-actor completion, storage-startup,
-saved-location-limit, and long-lived SQL observation failure paths. Focused
-tests, a clean full Gradle gate, and exact Release simulator builds passed.
+Exact product commit `df5f82401348a2cca7405feec36c03621af43ea7`
+retains the reachable UIKit lifecycle, main-actor completion, storage-startup,
+saved-location-limit, and long-lived SQL observation hardening from `97c26cb`.
+It adds localized, user-initiated support/rating paths without changing the
+automatic review policy. Focused tests, a clean full Gradle gate, and exact
+Release simulator builds passed.
 
 The exact `1.1.0 (6)` simulator app executable SHA-256 is
-`e6a43119ff23a1ffd3fb0da600bfad9334b94f3ce7a15d244afa9744d853c539`;
+`d293763bc3dcf0eee73ebac9db1d5f0e4eda7aca7849c6000e3caf714041f5d9`;
 the embedded widget SHA-256 is
-`0df017e7e3f01e04acdba3b7cbb304e442318b2fad4e2ca68b1fba0a391afa94`.
+`74b6c6af76d5dc01efb61c2cd66c4fa4b28975704b690bc1371ea21579fd533b`.
 The app completed 40 cold-launch/terminate cycles with zero launch or terminate
 failures, new matching diagnostics, scene-lifecycle faults, unexpected-executor
 faults, or matching crash/fatal lines in the bounded log.

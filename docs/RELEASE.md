@@ -24,10 +24,12 @@ live status.
 Review-prompt and background-refresh hardening landed after the retained phone
 vc7 and Apple build-5 artifacts were produced. The current source identities
 are therefore phone `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple
-`1.1.0 (6)`; all remain blocked with null current SHA, signing evidence, and
-physical-QA evidence until rebuilt and tested. Wear application payload is
+`1.1.0 (6)`. Exact-current unsigned Android bundles and ad-hoc Apple
+simulator products now have recorded hashes, but all remain blocked without
+source-current distribution signing and matching physical-QA evidence. Wear
+application payload is
 unchanged, but its retained signed AAB embeds historical revision `4d9492a`, not
-the current `97c26cb`; payload parity does not satisfy exact-source provenance.
+the current `df5f824`; payload parity does not satisfy exact-source provenance.
 The exact boundary and preserved historical hashes are recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
 and [upload manifest](../store/upload-manifest-1.1.0.json).

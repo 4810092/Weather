@@ -53,6 +53,8 @@ Nimbo does not claim that these choices are universal best practices. The ADRs r
 - Android and iOS shared Compose UI, Android home widget, WidgetKit extension, Wear OS companion, and watchOS companion.
 - 13 shipped languages including Arabic RTL and Uzbek.
 - Adaptive phone/tablet layouts, large-text reflow, screen-reader semantics, and an intentionally left-to-right chronological timeline in RTL locales.
+- Localized, user-initiated support and store-rating paths with no incentives,
+  sentiment gating, accounts, or tracking parameters.
 
 ## Architecture
 
@@ -190,10 +192,11 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 - iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. One iOS 1.0.1 crash remains unsymbolicated, so acquisition scaling is blocked.
 - Wear OS `1.0.2` (`versionCode 1000007`) was rechecked as active in Google Play Production in 177 countries on August 28. Physical paired-device smoke is still pending.
 - The coordinated `1.1.0` source identities are Android phone 8, Wear 1000008,
-  and Apple build 6; nothing is uploaded or public. Only the unchanged signed
-  Wear artifact remains source-current. Signed phone vc7 and Apple build 5,
-  including the vc7 API 25 physical matrix, are preserved historical evidence
-  and do not establish signing or QA for current phone vc8 or Apple build 6.
+  and Apple build 6; nothing is uploaded or public. No retained signed artifact
+  is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
+  all embed or represent historical source. The exact-current phone and Wear
+  outputs are unsigned, while Apple build 6 is simulator-only. Historical QA
+  does not establish signing or physical coverage for the current candidates.
   See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md), the
   [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-29.md),
   and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).

@@ -52,6 +52,11 @@ search result slices for all five generic queries. A bounded absence means only
   displayed; invocation is not claimed as display.
 - Localized share CTA with a canonical platform store link and no coordinates,
   identifiers, or analytics parameters.
+- A user-initiated Help and feedback path opens the canonical Nimbo support
+  page, and a separate neutral Rate Nimbo action opens the platform store
+  listing/review surface. Both are localized across all 13 app languages and
+  contain no tracking parameters, incentives, sentiment gating, or change to
+  the contextual automatic review policy.
 - Android background retry for transient failures, with permanent and no-work
   outcomes kept distinct. A durable retry-pending state preserves WorkManager
   backoff without making another provider call before the one-hour cooldown.
@@ -71,8 +76,10 @@ search result slices for all five generic queries. A bounded absence means only
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
-- Wear `1.1.0 (1000008)` remains upload-signed, Bundletool-validated, and
-  source-current. The signed phone `1.1.0 (7)` universal APK is now a preserved
+- The retained upload-signed Wear `1.1.0 (1000008)` artifact embeds revision
+  `4d9492a`, so it is historical rather than source-current. The exact-current
+  Wear output embeds revision `df5f824` but is unsigned. The signed phone
+  `1.1.0 (7)` universal APK is likewise a preserved
   historical candidate; it passed physical API 25 clean install, live and
   cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
   text, TalkBack, cached-network fallback/recovery, and contextual review-prompt
@@ -89,9 +96,11 @@ search result slices for all five generic queries. A bounded absence means only
   live/cold/cache/recovery and API 36 Arabic RTL quick-city/live. An earlier
   candidate passed API 36 English denied-location/search/cold-start. The exact
   historical signed phone vc7 passes the expanded physical API 25 matrix listed above;
-  the post-throttle current-commit debug APK separately passes API 25 live,
+  the post-throttle `97c26cb` debug APK separately passes API 25 live,
   provider-blocked fresh-cache cold start, manual bypass, recovery, and cleanup.
-  Physical tablet, widget, and paired Wear OS coverage remain required.
+  Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
+  onboarding, live weather, and support/Play destination smoke. Physical
+  tablet, widget, and paired Wear OS coverage remain required.
 - Metadata schema v2, an Uzbek Google custom listing, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ
@@ -124,12 +133,12 @@ recorded only after direct store evidence.
    symbolicate it against the retained build-4 archive and dSYM, reproduce where
    possible, fix it, and demonstrate the crash-free-session guardrail. Absence of
    a downloadable report is not a pass.
-2. Send the prepared Open-Meteo clarification through an authenticated sender
-   and record an unambiguous written response. Promotion stays paused while the
-   answer is missing. A paid/customer credential must never be embedded in a
-   mobile client.
-3. Produce source-synced signed phone vc8 and Apple build-6 artifacts, then
-   complete the remaining physical matrix. Historical phone vc7 passes General
+2. Monitor the sent Open-Meteo clarification and record an unambiguous written
+   response. Promotion stays paused while the answer is missing. A
+   paid/customer credential must never be embedded in a mobile client.
+3. Produce source-synced signed phone vc8, Wear vc1000008, and Apple build-6
+   artifacts, then complete the remaining physical matrix. Historical phone
+   vc7 passes General
    Mobile clean/live/cold-start, denied-location/manual-search, share,
    large-text, TalkBack, cached-network recovery, and review-prompt paths and was
    removed after QA. A naturally scheduled background refresh passed on the
@@ -137,15 +146,17 @@ recorded only after direct store evidence.
    but could not launch while the device was locked and was removed; the older
    bounded `1.0.1 (4)` iPad runtime pass remains separately scoped. Physical
    QA for current phone `1.1.0 (8)` and Apple `1.1.0 (6)`, plus Android
-   tablet/Wear/widget and the unavailable, previously DDI-blocked iPhone matrix,
-   remains.
+   tablet/Wear/widget, the unavailable iPhone/watch matrix, and the now
+   CoreDevice-usable iPad remains. The iPad connection/DDI sub-blocker is clear,
+   but no exact-current distribution-signed Apple build exists to install.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Only the unchanged signed Wear artifact is source-current. Signed phone vc7 and
-Apple build 5 are preserved historical candidates; current phone vc8 and Apple
-build 6 are blocked before signing and physical QA. The current host's App Store
+No retained signed artifact is source-current: signed phone vc7, signed Wear
+vc1000008, and Apple build 5 all embed or represent historical source. Current
+phone vc8, Wear vc1000008, and Apple build 6 are blocked before exact-current
+signing and physical QA. The current host's App Store
 Connect upload account is unavailable, and its Google credential lacks
 the Android Publisher scope; [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
 records that neither internal track was changed. Play Internal and TestFlight

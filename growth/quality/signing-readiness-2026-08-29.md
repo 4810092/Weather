@@ -9,14 +9,14 @@ not printed, exported, replaced, or reset.
 ## Current source
 
 The exact product commit is
-`97c26cbec570468b4971daa7779e3839aa4c48ce`.
+`df5f82401348a2cca7405feec36c03621af43ea7`.
 
 ### Android phone
 
 - The current `1.1.0 (8)` phone AAB SHA-256 is
-  `c89b311f2227ecad6ff0f80d8f18529348f52118655b8c70112c2aef48d1c23c`;
+  `8e590cca0d7e9945874c58a412520142e9d965584236f73cb2836f98a9b9bb19`;
   mapping SHA-256 is
-  `0e1624387e2829c90b690a9c288d4140545df68ecbf523d98e36d704b8150988`.
+  `1e87fc59cbfae641bd70e980d33d9696284494f08aff0240d35995d912dc7846`.
 - Bundletool 1.18.3 validation passed. The bundle manifest reports package
   `uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
   and targetSdk `36`. Embedded VCS metadata identifies the full commit above.
@@ -25,9 +25,11 @@ The exact product commit is
 - A protected Android signing-value lookup through `security` exits with status
   `51`; no secret was exposed and no credential mutation was attempted.
 - Exact debug APK SHA-256
-  `5680f2bd8b7f2904cd61831c774614fb1bd147239ae37a78e858209346a180f0`
-  passed bounded physical API 25 and isolated API 36 emulator QA. Debug signing
-  does not satisfy the upload-signing or full release-device matrix.
+  `fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753`
+  passed fresh-install physical API 25 onboarding, live Tashkent, and the
+  localized support/rate destination smoke; pulled bytes matched. Broader API
+  25/API 36 crash-hardening QA remains historical to commit `97c26cb`. Debug
+  signing does not satisfy the upload-signing or full release-device matrix.
 
 ### Wear OS
 
@@ -37,12 +39,10 @@ The exact product commit is
   not the current product commit, so it remains a historical signed artifact
   and is not labelled exact-current.
 - A fresh exact-commit local Wear output SHA-256
-  `0a0369d132d856c27625efed1b1cb3489b97e41b7c218f33957fe281ec77485c`
-  embeds revision `97c26cbec570468b4971daa7779e3839aa4c48ce` and has zero
-  signature entries. Its non-signature payload matches the retained signed
-  bundle except for the version-control metadata entry, which correctly names
-  the different build revision. That payload parity is useful provenance but
-  does not turn the historical signed bundle into an exact-current artifact.
+  `d4df3f2a4f7c315b8afd309ea9cd5d04825c8c9662faa2a7155faf982a155637`
+  embeds revision `df5f82401348a2cca7405feec36c03621af43ea7` and has zero
+  signature entries. The retained signed bundle remains historical and cannot
+  be promoted as exact-current.
 - No physical-watch pass is recorded.
 
 ### Apple app, widget, and watch
@@ -52,9 +52,9 @@ Exact-commit Release simulator executables built with
 
 | Product | Version | SHA-256 |
 | --- | --- | --- |
-| iOS app | `1.1.0 (6)` | `e6a43119ff23a1ffd3fb0da600bfad9334b94f3ce7a15d244afa9744d853c539` |
-| Widget | `1.1.0 (6)` | `0df017e7e3f01e04acdba3b7cbb304e442318b2fad4e2ca68b1fba0a391afa94` |
-| Watch app | `1.1.0 (6)` | `71452e1d08c9293aaf0c3b851b7335c8053b3568f06231cba0633c4758b6b462` |
+| iOS app | `1.1.0 (6)` | `d293763bc3dcf0eee73ebac9db1d5f0e4eda7aca7849c6000e3caf714041f5d9` |
+| Widget | `1.1.0 (6)` | `74b6c6af76d5dc01efb61c2cd66c4fa4b28975704b690bc1371ea21579fd533b` |
+| Watch app | `1.1.0 (6)` | `0ebc1c8f49f390e57bee86420b5be977ead8f086cb4b9a7ed0ab6849c26068c7` |
 
 These products contain only Xcode linker-generated ad-hoc signatures. They
 have no Team Identifier, bound Info.plist, sealed resources, distribution
@@ -63,7 +63,8 @@ signature, xcarchive, exported IPA, or upload eligibility.
 The exact app completed 40 simulator cold-launch/terminate cycles with zero
 launch failures, terminate failures, new matching diagnostic reports, scene-
 lifecycle faults, unexpected-executor faults, or matching crash/fatal lines in
-the bounded log. This is simulator stability evidence, not signing or physical
+10,252 bounded process-log entries. Its installed executable hash matched the
+table above. This is simulator stability evidence, not signing or physical
 Apple evidence.
 
 Keychain Access visibly contains valid Apple Development and Apple Distribution
@@ -74,12 +75,16 @@ CodeSign phase with `Command CodeSign failed with a nonzero exit code`; no
 authorization prompt, xcarchive, or upload followed. Existing signing material
 was left untouched.
 
-At `2026-08-29 10:32 +05:00`, a new read-only readiness check listed the
-previously used physical iPad as nominally available, but its lock-state query
-timed out and the `--no-auto-mount-ddis` DDI-services query failed while opening
-the CoreDevice tunnel. The current iPhone and paired watch remained unavailable.
-No DDI was mounted, and no app was built, installed, launched, or removed during
-this check, so the exact-current Apple physical matrix could not resume.
+At `2026-08-29 12:10 +05:00`, a read-only CoreDevice refresh showed the
+previously used physical iPad as available and paired. Its lock-state query
+succeeded with `unlockedSinceBoot=true`; `ddiServices --no-auto-mount-ddis`
+reported the existing developer disk image as compatible and usable. A targeted
+application query found no installed Nimbo build. The current iPhone and paired
+watch remained unavailable, and `xctrace` still listed the iPad as offline. No
+DDI was mounted, and no app was built, installed, launched, or removed during
+this check. The iPad connection/DDI sub-blocker is therefore clear, but the
+exact-current Apple physical matrix still cannot start without a distribution-
+signed build 6 archive.
 
 ## Decision
 

@@ -2,7 +2,7 @@
 
 Status: **BLOCKED — DO NOT IMPORT A WEEKLY CSV YET**.
 
-The consoles were checked read-only between `2026-08-29 11:31` and `11:39
+The consoles were checked read-only between `2026-08-29 11:31` and `12:16
 +05:00`. No store listing, release, event, report configuration, rating, or
 policy state was changed.
 
@@ -26,9 +26,12 @@ A conservative `2026-08-19..2026-08-25` inspection established these bounds:
 - MAU exposes rows only for August 19 and 20, so it is not a complete weekly or
   30-day population;
 - Android Vitals exposes no user-perceived crash or ANR value;
-- Ratings Overview reports a global default rating of `1.000` from `1` user,
-  but the inspected page does not prove that the rating belongs to storefront
-  UZ, so it is not imported as a UZ rating;
+- Ratings Overview reports a global default rating of `1.000` from `1` user.
+  The all-time reviews page contains zero text reviews, and the rating breakdown
+  exposes no matching rating in its most recent 90-day range. The lone rating
+  is therefore not evidence of a new reported defect, but the page still does
+  not prove its date, app version, device, or storefront. It is not imported as
+  a UZ rating;
 - the monitoring overview reports no policy violations. This global
   point-in-time observation cannot by itself close the two-store app-global
   policy guardrail.
@@ -41,9 +44,11 @@ It contains no PII and has SHA-256
 ## App Store Connect
 
 The Nimbo Analytics URL redirected to App Store Connect login with
-`authResult=FAILED`. No password, passkey, or 2FA value was guessed or extracted.
-No current Apple weekly aggregate was obtained, and older point-in-time console
-observations were not relabelled as a complete UZ weekly slice.
+`authResult=FAILED`. A passkey flow was started but did not establish a session;
+the page was reloaded to cancel the pending verification. No password, passkey
+secret, or 2FA value was entered, guessed, or extracted. No current Apple weekly
+aggregate was obtained, and older point-in-time console observations were not
+relabelled as a complete UZ weekly slice.
 
 ## Import decision
 
