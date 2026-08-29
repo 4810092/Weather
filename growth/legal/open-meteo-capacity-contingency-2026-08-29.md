@@ -1,6 +1,10 @@
 # Open-Meteo capacity contingency — 2026-08-29
 
-Status: **implemented request-throttling; legal clearance still pending**.
+Status: **implemented request-throttling; written clearance confirmed for the
+exact unpaid, non-monetized organic-promotion scope**. OpenMeteo GmbH confirmed
+that scope in ticket `234272` on 2026-08-29; the authenticated record and its
+limits are preserved in
+[`open-meteo-clarification-email.md`](open-meteo-clarification-email.md).
 No endpoint, API key, subscription, proxy, or budget was changed.
 
 ## Official constraints
@@ -79,8 +83,12 @@ definition or an explicit Open-Meteo answer, not only this formula.
 
 ## Decision boundary
 
-- Keep organic acquisition and outreach paused until written promotion
-  clearance is attached.
+- Provider clearance no longer blocks the described unpaid organic activity.
+  Acquisition and outreach remain paused only while the independent crash,
+  exact signed-artifact, physical-device, and release gates remain blocked.
+- Re-open the provider decision before monetization, paid promotion,
+  sponsorships, referral or affiliate revenue, attribution changes, Free API
+  limit changes, or any other material change to the confirmed facts.
 - If commercial access is required, do not embed the customer API key in the
   app. Design a server-side proxy/customer endpoint with secrets outside the
   clients, request coalescing, cache controls, rate limits, and fail-closed
