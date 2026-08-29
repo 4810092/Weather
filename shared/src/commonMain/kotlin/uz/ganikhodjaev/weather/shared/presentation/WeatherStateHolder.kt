@@ -21,6 +21,7 @@ import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
 import uz.ganikhodjaev.weather.shared.BackgroundRefreshOutcome
 import uz.ganikhodjaev.weather.shared.InMemoryAutomaticRefreshAttemptStore
 import uz.ganikhodjaev.weather.shared.classifyBackgroundRefreshFailure
+import uz.ganikhodjaev.weather.shared.data.SavedLocationLimitReachedException
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.isAutomaticRefreshDue
@@ -75,6 +76,7 @@ internal enum class UiMessage {
     LocationPermissionDenied,
     LocationServicesDisabled,
     LocationUnavailable,
+    SavedLocationLimitReached,
     RefreshFailedShowingSaved,
     WeatherUnavailable
 }
@@ -112,9 +114,15 @@ internal class WeatherStateHolder(
 
     fun start() {
         if (started) return
+        val storedLocation = try {
+            unitPreference = repository.unitPreference()
+            repository.activeLocation()
+        } catch (error: Throwable) {
+            logFailure("startup storage read", error)
+            mutableState.value = WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
+            return
+        }
         started = true
-        unitPreference = repository.unitPreference()
-        val storedLocation = repository.activeLocation()
         if (storedLocation == null) {
             mutableState.value = WeatherUiState.ChooseLocation(
                 isOnboarding = !onboardingState.hasCompletedFirstForecast,
@@ -239,6 +247,10 @@ internal class WeatherStateHolder(
     }
 
     fun refresh() {
+        if (!started) {
+            start()
+            return
+        }
         launchRefresh(forceRefresh = true, nowEpochSeconds = null)
     }
 
@@ -298,7 +310,6 @@ internal class WeatherStateHolder(
         placeResolutionJob?.cancel()
         placeResolutionJob = null
         pendingSuccessfulForecast = null
-        contentBeforeLocationPicker = null
         activationJob = scope.launch {
             activate(location, persist, generation, deviceCoordinates)
         }
@@ -310,14 +321,30 @@ internal class WeatherStateHolder(
         generation: Long,
         deviceCoordinates: DeviceCoordinates?
     ) {
-        val activated = activationMutex.withLock {
-            if (!isCurrentActivation(generation)) return@withLock false
-            if (persist) repository.setActiveLocation(location)
-            if (!isCurrentActivation(generation)) return@withLock false
+        val activated = try {
+            activationMutex.withLock {
+                if (!isCurrentActivation(generation)) return@withLock false
+                if (persist) repository.setActiveLocation(location)
+                if (!isCurrentActivation(generation)) return@withLock false
 
-            activeLocation = location
-            mutableState.value = WeatherUiState.Loading
-            true
+                activeLocation = location
+                contentBeforeLocationPicker = null
+                mutableState.value = WeatherUiState.Loading
+                true
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: SavedLocationLimitReachedException) {
+            if (isCurrentActivation(generation)) {
+                showLocationMessage(UiMessage.SavedLocationLimitReached)
+            }
+            false
+        } catch (error: Throwable) {
+            logFailure("location activation", error)
+            if (isCurrentActivation(generation)) {
+                showLocationMessage(UiMessage.LocationUnavailable)
+            }
+            false
         }
         if (!activated || !isCurrentActivation(generation, location)) return
 
@@ -329,26 +356,48 @@ internal class WeatherStateHolder(
 
         coroutineScope {
             launch {
-                repository.observe(location).collect { weather ->
-                    if (weather == null || !isCurrentActivation(generation, location)) {
-                        return@collect
+                var retryDelayMillis = WEATHER_OBSERVATION_INITIAL_RETRY_MILLIS
+                while (isCurrentActivation(generation, location)) {
+                    var failed = false
+                    try {
+                        repository.observe(location).collect { weather ->
+                            if (weather == null || !isCurrentActivation(generation, location)) {
+                                return@collect
+                            }
+                            val old = mutableState.value as? WeatherUiState.Content
+                            val content = WeatherUiState.Content(
+                                weather = weather,
+                                savedLocations = repository.savedLocations(),
+                                isRefreshing = old?.isRefreshing ?: false,
+                                refreshMessage = old?.refreshMessage,
+                                unitPreference = unitPreference,
+                                displayUnits = unitPreference.resolve(automaticUnitSystem),
+                                showFirstForecastTip = old?.showFirstForecastTip ?: false,
+                                reviewEligibleForecastId = old?.reviewEligibleForecastId
+                            )
+                            mutableState.value = applyPendingSuccessfulForecast(
+                                content = content,
+                                generation = generation,
+                                location = location
+                            )
+                        }
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Throwable) {
+                        failed = true
+                        logFailure("weather observation", error)
+                        handleObservationFailure(generation, location)
                     }
-                    val old = mutableState.value as? WeatherUiState.Content
-                    val content = WeatherUiState.Content(
-                        weather = weather,
-                        savedLocations = repository.savedLocations(),
-                        isRefreshing = old?.isRefreshing ?: false,
-                        refreshMessage = old?.refreshMessage,
-                        unitPreference = unitPreference,
-                        displayUnits = unitPreference.resolve(automaticUnitSystem),
-                        showFirstForecastTip = old?.showFirstForecastTip ?: false,
-                        reviewEligibleForecastId = old?.reviewEligibleForecastId
-                    )
-                    mutableState.value = applyPendingSuccessfulForecast(
-                        content = content,
-                        generation = generation,
-                        location = location
-                    )
+                    if (isCurrentActivation(generation, location)) {
+                        delay(retryDelayMillis)
+                        retryDelayMillis = if (failed) {
+                            (retryDelayMillis * 2).coerceAtMost(
+                                WEATHER_OBSERVATION_MAX_RETRY_MILLIS
+                            )
+                        } else {
+                            WEATHER_OBSERVATION_INITIAL_RETRY_MILLIS
+                        }
+                    }
                 }
             }
             refreshInternal(
@@ -364,6 +413,19 @@ internal class WeatherStateHolder(
     private fun showLocationMessage(message: UiMessage) {
         val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         mutableState.value = latest.copy(isLocating = false, message = message)
+    }
+
+    private fun handleObservationFailure(generation: Long, location: Location) {
+        if (!isCurrentActivation(generation, location)) return
+        mutableState.value = when (val current = mutableState.value) {
+            is WeatherUiState.Content -> current.copy(
+                isRefreshing = false,
+                refreshMessage = UiMessage.RefreshFailedShowingSaved,
+                reviewEligibleForecastId = null
+            )
+            WeatherUiState.Loading -> WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
+            else -> current
+        }
     }
 
     private suspend fun resolveDevicePlace(
@@ -663,3 +725,6 @@ private fun WeatherSnapshot.advancedToNow(): WeatherSnapshot {
 private fun logFailure(operation: String, error: Throwable) {
     println("Nimbo $operation failed: ${error::class.simpleName ?: "unknown error"}")
 }
+
+private const val WEATHER_OBSERVATION_INITIAL_RETRY_MILLIS = 2_000L
+private const val WEATHER_OBSERVATION_MAX_RETRY_MILLIS = 60_000L

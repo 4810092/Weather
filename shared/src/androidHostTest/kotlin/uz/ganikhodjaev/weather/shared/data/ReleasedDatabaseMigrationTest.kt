@@ -32,7 +32,11 @@ class ReleasedDatabaseMigrationTest {
             ).value
             assertEquals(1L, beforeVersion)
 
-            NimboDatabase.Schema.migrate(driver, oldVersion = 1L, newVersion = 2L)
+            NimboDatabase.Schema.migrate(
+                driver,
+                oldVersion = 1L,
+                newVersion = NimboDatabase.Schema.version
+            )
             val migrated = NimboDatabase(driver)
 
             val location =
@@ -48,6 +52,16 @@ class ReleasedDatabaseMigrationTest {
             assertEquals(
                 "Metric",
                 migrated.weatherQueries.selectSetting("unit_preference").executeAsOne()
+            )
+            assertTrue(
+                migrated.weatherQueries.selectDailyForecast(location.id, 0L)
+                    .executeAsList()
+                    .isEmpty()
+            )
+            assertTrue(
+                migrated.weatherQueries.selectAirQuality(location.id, 0L)
+                    .executeAsList()
+                    .isEmpty()
             )
         } finally {
             driver.close()

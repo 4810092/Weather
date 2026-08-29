@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Лицензии открытого ПО</string>
   <string name="recent_days">Последние дни</string>
   <string name="saved_places">Сохранённые места</string>
+  <string name="saved_location_limit_reached">Можно сохранить до 10 мест. Удалите одно, чтобы добавить другое.</string>
   <string name="remove_saved_place">Удалить сохранённое место</string>
   <string name="remove_saved_place_message">Удалить %1$s и сохранённые данные о погоде?</string>
   <string name="remove">Удалить</string>
@@ -119,4 +120,5 @@
   <string name="location_unavailable">Не удалось определить местоположение. Найдите город вручную.</string>
   <string name="refresh_failed_saved">Не удалось обновить. Показана сохранённая погода.</string>
   <string name="weather_unavailable">Погода недоступна. Проверьте подключение и повторите попытку.</string>
+  <string name="app_start_unavailable">Nimbo не удалось открыть сохранённые данные о погоде. Попробуйте снова.</string>
 </resources>

@@ -3,6 +3,7 @@ package uz.ganikhodjaev.weather.shared.data
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -57,6 +58,50 @@ class LocationRetentionTest {
                     .executeAsList()
                     .isEmpty()
             )
+        } finally {
+            driver.close()
+        }
+    }
+
+    @Test
+    fun eleventhLocationRollsBackWithoutClearingTheActiveLocation() = runBlocking {
+        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        NimboDatabase.Schema.create(driver)
+        val repository = WeatherRepository(NimboDatabase(driver), OpenMeteoService())
+
+        try {
+            repeat(MAX_SAVED_LOCATIONS) { index ->
+                repository.setActiveLocation(
+                    Location(
+                        id = "saved-$index",
+                        name = "Saved $index",
+                        country = "Test",
+                        latitude = 40.0 + index,
+                        longitude = 60.0 + index,
+                        timezone = "Asia/Tashkent"
+                    )
+                )
+            }
+            val activeBeforeOverflow = assertNotNull(repository.activeLocation())
+            val failure = try {
+                repository.setActiveLocation(
+                    Location(
+                        id = "overflow",
+                        name = "Overflow",
+                        country = "Test",
+                        latitude = 0.0,
+                        longitude = 0.0,
+                        timezone = "UTC"
+                    )
+                )
+                null
+            } catch (error: Throwable) {
+                error
+            }
+
+            assertIs<SavedLocationLimitReachedException>(failure)
+            assertEquals(MAX_SAVED_LOCATIONS, repository.savedLocations().size)
+            assertEquals(activeBeforeOverflow, repository.activeLocation())
         } finally {
             driver.close()
         }

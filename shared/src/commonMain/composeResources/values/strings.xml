@@ -44,6 +44,7 @@
     <string name="open_source_licenses">Open-source licenses</string>
     <string name="recent_days">Recent days</string>
     <string name="saved_places">Saved places</string>
+    <string name="saved_location_limit_reached">You can save up to 10 places. Remove one to add another.</string>
     <string name="remove_saved_place">Remove saved place</string>
     <string name="remove_saved_place_message">Remove %1$s and its saved weather?</string>
     <string name="remove">Remove</string>
@@ -116,4 +117,5 @@
     <string name="location_unavailable">Couldn’t determine your location. Search for a city instead.</string>
     <string name="refresh_failed_saved">Couldn’t refresh. Showing saved weather.</string>
     <string name="weather_unavailable">Weather is unavailable. Check your connection and try again.</string>
+    <string name="app_start_unavailable">Nimbo couldn’t open its saved weather. Try again.</string>
 </resources>

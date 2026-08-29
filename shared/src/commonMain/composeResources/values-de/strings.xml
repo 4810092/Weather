@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Open-Source-Lizenzen</string>
   <string name="recent_days">Letzte Tage</string>
   <string name="saved_places">Gespeicherte Orte</string>
+  <string name="saved_location_limit_reached">Du kannst bis zu 10 Orte speichern. Entferne einen, um einen weiteren hinzuzufügen.</string>
   <string name="remove_saved_place">Gespeicherten Ort entfernen</string>
   <string name="remove_saved_place_message">%1$s und die gespeicherten Wetterdaten entfernen?</string>
   <string name="remove">Entfernen</string>
@@ -117,4 +118,5 @@
   <string name="location_unavailable">Dein Standort konnte nicht ermittelt werden. Suche stattdessen nach einer Stadt.</string>
   <string name="refresh_failed_saved">Aktualisierung fehlgeschlagen. Gespeichertes Wetter wird angezeigt.</string>
   <string name="weather_unavailable">Wetter ist nicht verfügbar. Prüfe die Verbindung und versuche es erneut.</string>
+  <string name="app_start_unavailable">Nimbo konnte die gespeicherten Wetterdaten nicht öffnen. Versuche es erneut.</string>
 </resources>

@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Licences open source</string>
   <string name="recent_days">Jours récents</string>
   <string name="saved_places">Lieux enregistrés</string>
+  <string name="saved_location_limit_reached">Vous pouvez enregistrer jusqu’à 10 lieux. Supprimez-en un pour en ajouter un autre.</string>
   <string name="remove_saved_place">Supprimer le lieu enregistré</string>
   <string name="remove_saved_place_message">Supprimer %1$s et ses données météo enregistrées ?</string>
   <string name="remove">Supprimer</string>
@@ -118,4 +119,5 @@
   <string name="location_unavailable">Impossible de déterminer votre position. Recherchez une ville.</string>
   <string name="refresh_failed_saved">Actualisation impossible. Affichage de la météo enregistrée.</string>
   <string name="weather_unavailable">La météo est indisponible. Vérifiez la connexion et réessayez.</string>
+  <string name="app_start_unavailable">Nimbo n’a pas pu ouvrir les données météo enregistrées. Réessayez.</string>
 </resources>

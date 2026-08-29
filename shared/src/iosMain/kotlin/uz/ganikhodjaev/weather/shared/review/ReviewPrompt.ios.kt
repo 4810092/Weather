@@ -8,6 +8,7 @@ import platform.UIKit.UIApplicationState
 import platform.UIKit.UISceneActivationStateForegroundActive
 import platform.UIKit.UIWindowScene
 import uz.ganikhodjaev.weather.shared.PlatformContext
+import uz.ganikhodjaev.weather.shared.activeIosWindow
 
 internal actual fun considerReviewPrompt(
     platformContext: PlatformContext,
@@ -65,7 +66,7 @@ private object StoreKitReviewRequester : IosReviewRequester {
                 isApplicationActive = application.applicationState ==
                     UIApplicationState.UIApplicationStateActive,
                 hasForegroundWindowScene = foregroundScene != null,
-                hasLegacyKeyWindow = application.keyWindow != null
+                hasLegacyKeyWindow = activeIosWindow() != null
             )
         ) {
             IosReviewRequestPath.ForegroundWindowScene -> {
@@ -73,9 +74,8 @@ private object StoreKitReviewRequester : IosReviewRequester {
                 true
             }
             IosReviewRequestPath.LegacyKeyWindow -> {
-                // Nimbo intentionally uses the legacy AppDelegate window lifecycle on iOS 15+.
-                // That lifecycle has no UIWindowScene, so StoreKit's legacy request API is the
-                // only in-app review path that can present without a scene migration.
+                // Keep the legacy StoreKit path as a defensive fallback if UIKit has a key
+                // window while its foreground scene is temporarily unavailable.
                 SKStoreReviewController.requestReview()
                 true
             }

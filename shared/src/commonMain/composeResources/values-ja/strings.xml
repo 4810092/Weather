@@ -45,6 +45,7 @@
   <string name="open_source_licenses">オープンソースライセンス</string>
   <string name="recent_days">最近の日々</string>
   <string name="saved_places">保存した場所</string>
+  <string name="saved_location_limit_reached">保存できる場所は10件までです。別の場所を追加するには1件削除してください。</string>
   <string name="remove_saved_place">保存した場所を削除</string>
   <string name="remove_saved_place_message">%1$s と保存済みの天気データを削除しますか？</string>
   <string name="remove">削除</string>
@@ -116,4 +117,5 @@
   <string name="location_unavailable">現在地を特定できません。都市を検索してください。</string>
   <string name="refresh_failed_saved">更新できませんでした。保存済みの天気を表示しています。</string>
   <string name="weather_unavailable">天気を取得できません。接続を確認して再試行してください。</string>
+  <string name="app_start_unavailable">保存済みの天気データを開けませんでした。もう一度お試しください。</string>
 </resources>

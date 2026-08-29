@@ -33,6 +33,12 @@ targets:
         CADisableMinimumFrameDurationOnPhone: true
         BGTaskSchedulerPermittedIdentifiers:
           - uz.ganikhodjaev.weather.refresh
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
         UIBackgroundModes:
           - fetch
         NSLocationWhenInUseUsageDescription: Nimbo uses your approximate location to show weather around you.
@@ -110,6 +116,12 @@ targets:
         CADisableMinimumFrameDurationOnPhone: true
         BGTaskSchedulerPermittedIdentifiers:
           - uz.ganikhodjaev.weather.refresh
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
         UIBackgroundModes:
           - fetch
         NSLocationWhenInUseUsageDescription: Nimbo uses your approximate location to show weather around you.

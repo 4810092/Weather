@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Licenças de código aberto</string>
   <string name="recent_days">Dias recentes</string>
   <string name="saved_places">Locais guardados</string>
+  <string name="saved_location_limit_reached">Pode guardar até 10 locais. Remova um para adicionar outro.</string>
   <string name="remove_saved_place">Remover local guardado</string>
   <string name="remove_saved_place_message">Remover %1$s e os dados meteorológicos guardados?</string>
   <string name="remove">Remover</string>
@@ -118,4 +119,5 @@
   <string name="location_unavailable">Não foi possível determinar a sua localização. Pesquise uma cidade.</string>
   <string name="refresh_failed_saved">Não foi possível atualizar. A mostrar o tempo guardado.</string>
   <string name="weather_unavailable">O tempo está indisponível. Verifique a ligação e tente novamente.</string>
+  <string name="app_start_unavailable">O Nimbo não conseguiu abrir os dados meteorológicos guardados. Tente novamente.</string>
 </resources>

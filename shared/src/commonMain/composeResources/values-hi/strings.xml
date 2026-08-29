@@ -45,6 +45,7 @@
   <string name="open_source_licenses">ओपन-सोर्स लाइसेंस</string>
   <string name="recent_days">हाल के दिन</string>
   <string name="saved_places">सहेजे गए स्थान</string>
+  <string name="saved_location_limit_reached">आप अधिकतम 10 स्थान सहेज सकते हैं। नया स्थान जोड़ने के लिए किसी एक को हटाएँ।</string>
   <string name="remove_saved_place">सहेजा गया स्थान हटाएँ</string>
   <string name="remove_saved_place_message">%1$s और उसका सहेजा गया मौसम डेटा हटाएँ?</string>
   <string name="remove">हटाएँ</string>
@@ -117,4 +118,5 @@
   <string name="location_unavailable">आपका स्थान निर्धारित नहीं हो सका। इसके बजाय शहर खोजें।</string>
   <string name="refresh_failed_saved">अपडेट नहीं हो सका। सहेजा गया मौसम दिखाया जा रहा है।</string>
   <string name="weather_unavailable">मौसम उपलब्ध नहीं है। कनेक्शन जाँचें और फिर कोशिश करें।</string>
+  <string name="app_start_unavailable">Nimbo सहेजा गया मौसम डेटा नहीं खोल सका। फिर से कोशिश करें।</string>
 </resources>

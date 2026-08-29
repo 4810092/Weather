@@ -45,6 +45,7 @@
   <string name="open_source_licenses">تراخيص المصادر المفتوحة</string>
   <string name="recent_days">الأيام الأخيرة</string>
   <string name="saved_places">الأماكن المحفوظة</string>
+  <string name="saved_location_limit_reached">يمكنك حفظ ما يصل إلى 10 أماكن. أزل مكانًا لإضافة مكان آخر.</string>
   <string name="remove_saved_place">إزالة المكان المحفوظ</string>
   <string name="remove_saved_place_message">هل تريد إزالة %1$s وبيانات الطقس المحفوظة؟</string>
   <string name="remove">إزالة</string>
@@ -121,4 +122,5 @@
   <string name="location_unavailable">تعذّر تحديد موقعك. ابحث عن مدينة بدلًا من ذلك.</string>
   <string name="refresh_failed_saved">تعذّر التحديث. يتم عرض الطقس المحفوظ.</string>
   <string name="weather_unavailable">الطقس غير متاح. تحقق من الاتصال وحاول مجددًا.</string>
+  <string name="app_start_unavailable">تعذر على Nimbo فتح بيانات الطقس المحفوظة. حاول مرة أخرى.</string>
 </resources>

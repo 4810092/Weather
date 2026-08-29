@@ -1,5 +1,6 @@
 import UIKit
 @preconcurrency import BackgroundTasks
+import Dispatch
 import NimboShared
 import WidgetKit
 @preconcurrency import WatchConnectivity
@@ -72,7 +73,6 @@ private func storedInterfaceStyle() -> UIUserInterfaceStyle {
 @main
 @MainActor
 final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
-    var window: UIWindow?
     private var weatherObserver: NSObjectProtocol?
     private let backgroundUpdater = BackgroundWeatherUpdater(platformContext: PlatformContext())
 
@@ -82,7 +82,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     ) -> Bool {
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: weatherRefreshTaskIdentifier,
-            using: nil
+            using: .main
         ) { [weak self] task in
             guard let refreshTask = task as? BGAppRefreshTask else {
                 task.setTaskCompleted(success: false)
@@ -104,24 +104,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 self?.weatherDidUpdate()
             }
         }
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        let rootViewController = MainViewControllerKt.MainViewController()
-        let interfaceStyle = storedInterfaceStyle()
-        window.overrideUserInterfaceStyle = interfaceStyle
-        rootViewController.overrideUserInterfaceStyle = interfaceStyle
-        rootViewController.view.backgroundColor = nimboBackgroundColor
-        window.backgroundColor = nimboBackgroundColor
-        window.rootViewController = rootViewController
-        window.makeKeyAndVisible()
-        self.window = window
         return true
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        scheduleBackgroundRefresh()
-    }
-
-    private func scheduleBackgroundRefresh() {
+    func scheduleBackgroundRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: weatherRefreshTaskIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
         try? BGTaskScheduler.shared.submit(request)
@@ -132,7 +118,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         let state = BackgroundRefreshState()
         task.expirationHandler = { state.expire(task: task) }
         let handle = backgroundUpdater.startRefresh { result in
-            state.finish(task: task, success: result.boolValue)
+            Task { @MainActor in
+                state.finish(task: task, success: result.boolValue)
+            }
         }
         state.install(handle)
     }
@@ -185,5 +173,32 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         Task { @MainActor [weak self] in
             self?.weatherDidUpdate()
         }
+    }
+}
+
+@MainActor
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        let window = UIWindow(windowScene: windowScene)
+        let rootViewController = MainViewControllerKt.MainViewController()
+        let interfaceStyle = storedInterfaceStyle()
+        window.overrideUserInterfaceStyle = interfaceStyle
+        rootViewController.overrideUserInterfaceStyle = interfaceStyle
+        rootViewController.view.backgroundColor = nimboBackgroundColor
+        window.backgroundColor = nimboBackgroundColor
+        window.rootViewController = rootViewController
+        window.makeKeyAndVisible()
+        self.window = window
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        (UIApplication.shared.delegate as? AppDelegate)?.scheduleBackgroundRefresh()
     }
 }

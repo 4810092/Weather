@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import pathlib
+import plistlib
 import re
 import hashlib
 import ssl
@@ -197,6 +198,46 @@ for relative in (
     content = (ROOT / relative).read_text()
     if "$(MARKETING_VERSION)" not in content or "$(CURRENT_PROJECT_VERSION)" not in content:
         fail(f"{relative} must inherit the Xcode release version")
+
+for relative in (
+    "iosApp/Nimbo/Info.plist",
+    "iosApp/NimboSimulator/Info.plist",
+):
+    info = plistlib.loads((ROOT / relative).read_bytes())
+    manifest = info.get("UIApplicationSceneManifest", {})
+    configurations = manifest.get("UISceneConfigurations", {}).get(
+        "UIWindowSceneSessionRoleApplication",
+        [],
+    )
+    if manifest.get("UIApplicationSupportsMultipleScenes") is not False:
+        fail(f"{relative} must declare a single scene-based UIKit lifecycle")
+    if not any(
+        configuration.get("UISceneDelegateClassName")
+        == "$(PRODUCT_MODULE_NAME).SceneDelegate"
+        for configuration in configurations
+    ):
+        fail(f"{relative} must configure the Nimbo SceneDelegate")
+
+app_delegate = (ROOT / "iosApp/Nimbo/AppDelegate.swift").read_text()
+if "final class SceneDelegate: UIResponder, UIWindowSceneDelegate" not in app_delegate:
+    fail("iOS UI lifecycle must be owned by a UIWindowSceneDelegate")
+if "UIWindow(frame: UIScreen.main.bounds)" in app_delegate:
+    fail("iOS must not recreate the legacy application-owned window lifecycle")
+if not re.search(
+    r"BGTaskScheduler\.shared\.register\(\s*"
+    r"forTaskWithIdentifier:\s*weatherRefreshTaskIdentifier,\s*"
+    r"using:\s*\.main\s*\)",
+    app_delegate,
+):
+    fail("the @MainActor iOS background-refresh handler must run on the main queue")
+if not re.search(
+    r"backgroundUpdater\.startRefresh\s*\{[^}]*"
+    r"Task\s*\{\s*@MainActor\s+in[^}]*"
+    r"state\.finish",
+    app_delegate,
+    re.DOTALL,
+):
+    fail("iOS background-refresh completion must hop back to MainActor")
 
 for bundle_id in (f"{identity}.widget", f"{identity}.watchkitapp"):
     if f"PRODUCT_BUNDLE_IDENTIFIER: {bundle_id}" not in ios:

@@ -3,9 +3,9 @@ package uz.ganikhodjaev.weather.shared.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import platform.Foundation.NSUserDefaults
-import platform.UIKit.UIApplication
 import platform.UIKit.UIUserInterfaceStyle
 import uz.ganikhodjaev.weather.shared.PlatformContext
+import uz.ganikhodjaev.weather.shared.activeIosWindow
 import uz.ganikhodjaev.weather.shared.model.ThemePreference
 
 private const val THEME_PREFERENCE_KEY = "theme_preference"
@@ -35,7 +35,7 @@ internal actual fun ApplyPlatformThemeAppearance(
             ThemePreference.Light -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
             ThemePreference.Dark -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
         }
-        UIApplication.sharedApplication.keyWindow?.let { window ->
+        activeIosWindow()?.let { window ->
             window.overrideUserInterfaceStyle = style
             window.rootViewController?.overrideUserInterfaceStyle = style
             window.rootViewController?.setNeedsStatusBarAppearanceUpdate()

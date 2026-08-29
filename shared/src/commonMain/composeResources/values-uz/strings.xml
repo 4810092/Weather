@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Ochiq manba litsenziyalari</string>
   <string name="recent_days">So‘nggi kunlar</string>
   <string name="saved_places">Saqlangan joylar</string>
+  <string name="saved_location_limit_reached">Ko‘pi bilan 10 ta joyni saqlashingiz mumkin. Yana birini qo‘shish uchun bittasini o‘chiring.</string>
   <string name="remove_saved_place">Saqlangan joyni o‘chirish</string>
   <string name="remove_saved_place_message">%1$s va uning saqlangan ob-havo ma’lumotlari o‘chirilsinmi?</string>
   <string name="remove">O‘chirish</string>
@@ -117,4 +118,5 @@
   <string name="location_unavailable">Joylashuvingizni aniqlab bo‘lmadi. Shaharni qo‘lda qidiring.</string>
   <string name="refresh_failed_saved">Yangilab bo‘lmadi. Saqlangan ob-havo ko‘rsatilmoqda.</string>
   <string name="weather_unavailable">Ob-havo mavjud emas. Internetni tekshirib, qayta urining.</string>
+  <string name="app_start_unavailable">Nimbo saqlangan ob-havo ma’lumotlarini ocha olmadi. Qayta urinib ko‘ring.</string>
 </resources>

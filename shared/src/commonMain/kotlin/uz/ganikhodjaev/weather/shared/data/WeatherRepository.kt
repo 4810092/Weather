@@ -45,6 +45,9 @@ internal interface WeatherDataSource {
     fun setUnitPreference(preference: UnitPreference)
 }
 
+internal class SavedLocationLimitReachedException :
+    IllegalStateException("Saved location limit reached")
+
 internal class WeatherRepository(
     private val database: NimboDatabase,
     private val service: OpenMeteoService,
@@ -314,8 +317,8 @@ internal class WeatherRepository(
                     id = location.id
                 )
             } else {
-                require(savedLocations().size < MAX_SAVED_LOCATIONS) {
-                    "Saved location limit reached"
+                if (savedLocations().size >= MAX_SAVED_LOCATIONS) {
+                    throw SavedLocationLimitReachedException()
                 }
                 queries.insertOrReplaceLocation(
                     id = location.id,
@@ -368,9 +371,10 @@ internal class WeatherRepository(
         const val SECONDS_PER_DAY = 24L * SECONDS_PER_HOUR
         const val AIR_QUALITY_RETENTION_SECONDS = 7L * SECONDS_PER_DAY
         const val UNIT_PREFERENCE_KEY = "unit_preference"
-        const val MAX_SAVED_LOCATIONS = 10
     }
 }
+
+internal const val MAX_SAVED_LOCATIONS = 10
 
 private fun weatherObservationEpochSeconds(): Flow<Long> = flow {
     while (true) {

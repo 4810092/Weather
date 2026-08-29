@@ -45,6 +45,7 @@
   <string name="open_source_licenses">Açık kaynak lisansları</string>
   <string name="recent_days">Son günler</string>
   <string name="saved_places">Kayıtlı yerler</string>
+  <string name="saved_location_limit_reached">En fazla 10 konum kaydedebilirsiniz. Yeni bir konum eklemek için birini kaldırın.</string>
   <string name="remove_saved_place">Kayıtlı yeri kaldır</string>
   <string name="remove_saved_place_message">%1$s ve kayıtlı hava durumu verileri kaldırılsın mı?</string>
   <string name="remove">Kaldır</string>
@@ -117,4 +118,5 @@
   <string name="location_unavailable">Konumunuz belirlenemedi. Bunun yerine şehir arayın.</string>
   <string name="refresh_failed_saved">Yenilenemedi. Kayıtlı hava durumu gösteriliyor.</string>
   <string name="weather_unavailable">Hava durumu kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
+  <string name="app_start_unavailable">Nimbo kayıtlı hava durumu verilerini açamadı. Tekrar deneyin.</string>
 </resources>

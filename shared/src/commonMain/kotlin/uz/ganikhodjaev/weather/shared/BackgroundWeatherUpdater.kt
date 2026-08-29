@@ -29,20 +29,23 @@ enum class BackgroundRefreshOutcome {
 
 class BackgroundWeatherUpdater(platformContext: PlatformContext) {
     private val context = platformContext
-    private val container = NimboContainer(platformContext)
-    private val repository = container.weatherRepository
+    private val container = runCatching { NimboContainer(platformContext) }
     private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    suspend fun refreshOutcome(): BackgroundRefreshOutcome = refreshBackgroundWeather(
-        repository = repository,
-        attemptStore = container.automaticRefreshAttemptStore
-    ) { snapshot ->
-        val units = repository.unitPreference().resolve(automaticUnitSystem())
-        publishWeatherSnapshot(
-            platformContext = context,
-            snapshot = snapshot,
-            displayUnits = units
-        )
+    suspend fun refreshOutcome(): BackgroundRefreshOutcome {
+        val container = container.getOrNull() ?: return BackgroundRefreshOutcome.PermanentFailure
+        val repository = container.weatherRepository
+        return refreshBackgroundWeather(
+            repository = repository,
+            attemptStore = container.automaticRefreshAttemptStore
+        ) { snapshot ->
+            val units = repository.unitPreference().resolve(automaticUnitSystem())
+            publishWeatherSnapshot(
+                platformContext = context,
+                snapshot = snapshot,
+                displayUnits = units
+            )
+        }
     }
 
     suspend fun refresh(): Boolean = when (refreshOutcome()) {

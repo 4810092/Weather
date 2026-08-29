@@ -45,6 +45,7 @@
   <string name="open_source_licenses">开源许可</string>
   <string name="recent_days">最近几天</string>
   <string name="saved_places">已保存地点</string>
+  <string name="saved_location_limit_reached">最多可保存 10 个地点。请先移除一个地点再添加新地点。</string>
   <string name="remove_saved_place">移除已保存地点</string>
   <string name="remove_saved_place_message">移除%1$s及其已保存的天气数据？</string>
   <string name="remove">移除</string>
@@ -116,4 +117,5 @@
   <string name="location_unavailable">无法确定你的位置。请改为搜索城市。</string>
   <string name="refresh_failed_saved">无法刷新。正在显示已保存的天气。</string>
   <string name="weather_unavailable">天气暂不可用。请检查网络后重试。</string>
+  <string name="app_start_unavailable">Nimbo 无法打开已保存的天气数据。请重试。</string>
 </resources>
