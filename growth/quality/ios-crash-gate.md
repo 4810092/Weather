@@ -97,15 +97,23 @@ Organizer remains the authority for the missing report and affected binary.
 
 ## Current-source hardening evidence — does not close the gate
 
-Current product source `9342824db7c0dcadfc4bdfe11f580377c108d968`
+Current product source `9c2dce4200dbba5487c8c458ade4616005fde6e6`
 retains the reachable UIKit lifecycle, main-actor completion, storage-startup,
 saved-location-limit, and long-lived SQL observation hardening from `97c26cb`.
+It also closes three deterministic storage-failure paths that previously let a
+synchronous database exception escape the delete-place or unit-preference UI
+callbacks, or escape the reverse-geocode enrichment coroutine. Four
+throwing-repository regression tests now preserve the prior UI/location state
+and surface a localized nonfatal message where user action is possible.
+
 The exact current Release-simulator executable SHA-256 values are app
-`0db3db757a7c0c497f7712c565a9b40e71edf271505cf0d0887c0ff3d59c0a76`,
-widget `57e2fcafc984c050104ceb29d16ea49a1c97c563522426833094692882edf022`,
-and watch `c6e8ff6543aa4ece0ccab7c7ee740eaef720fa07ab211e3846ca2cb00a48da66`.
-The shared simulator test, 18 Apple surface tests, and exact-source Release
-simulator builds pass.
+`b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849`,
+widget `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff`,
+and watch `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728`.
+Their binary and dSYM UUIDs match, the shared iOS simulator suite and 18 Apple
+surface tests pass, and exact-source Release simulator builds succeed. This
+prevents the reproduced exception escapes but cannot be attributed to the
+suppressed historical crash without its missing diagnostic.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

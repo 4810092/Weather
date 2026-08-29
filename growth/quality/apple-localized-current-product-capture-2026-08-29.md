@@ -1,22 +1,35 @@
 # Apple localized current-product capture — 2026-08-29
 
-Status: **PASS for App Store screenshot provenance only**.
+Status: **PASS for truthful App Store screenshot provenance; exact-current
+recapture is pending**.
 
 This record does not satisfy Apple signing, physical-device, crash,
 TestFlight, review, rollout, or public-availability gates. It proves that the
-three UZ-growth phone sources are localized pixels from the exact current
-product simulator build and that the rendered creative set remains based on
-real application UI.
+three UZ-growth phone sources are localized pixels from a pinned real product
+simulator build and that the rendered creative set remains based on real
+application UI. Product source has since advanced only in storage-error paths,
+so this record no longer labels those pixels as an exact-current binary capture.
 
 ## Exact build and environment
 
-- Product source:
+- Captured product source:
   `9342824db7c0dcadfc4bdfe11f580377c108d968`.
-- Release simulator app: `NimboSimulator` `1.1.0 (6)`, bundle
+- Captured Release simulator app: `NimboSimulator` `1.1.0 (6)`, bundle
   `uz.ganikhodjaev.weather`, minimum iOS `15.0`.
-- Executable SHA-256:
+- Captured executable SHA-256:
   `0db3db757a7c0c497f7712c565a9b40e71edf271505cf0d0887c0ff3d59c0a76`.
 - Runtime: iPhone 16 Pro Max, iOS 18.1, 1320 x 2868 framebuffer.
+
+Current product source
+`9c2dce4200dbba5487c8c458ade4616005fde6e6` adds localized nonfatal handling
+for failed place deletion, unit-preference persistence, and reverse-geocode
+enrichment. Its exact Release simulator executable SHA-256 is
+`b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849`;
+the matching dSYM UUID verifies. These changes do not alter the normal
+successful forecast state shown in the three screenshots, but that source
+relationship is code review and automated-test evidence, not a replacement for
+recapturing exact-current pixels. The screenshots remain truthful for the
+candidate feature set and are explicitly bounded to captured source `9342824`.
 
 The simulator container was seeded only with the product's checked-in Tashkent
 quick-city identity and exact coordinates (`quick:uz:tashkent`, 41.2995,

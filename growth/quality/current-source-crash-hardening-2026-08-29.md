@@ -1,14 +1,18 @@
-# Current-source crash hardening — 2026-08-29
+# Pinned-source crash hardening — 2026-08-29
 
 ## Verdict
 
-**PASS within the bounded source, simulator, and debug-device scope** for exact
-product commit `df5f82401348a2cca7405feec36c03621af43ea7`.
+**PASS within the bounded historical source, simulator, and debug-device
+scope** for exact product commit
+`df5f82401348a2cca7405feec36c03621af43ea7`.
 
-The current product descends directly from crash-hardening commit `97c26cb` and
-adds only the localized, user-initiated support and store-rating paths plus
-their tests. No automatic review-policy or crash-hardening implementation was
-removed.
+At the time of this record, the pinned product descended directly from
+crash-hardening commit `97c26cb` and added only the localized, user-initiated
+support and store-rating paths plus their tests. Current product source is
+`9c2dce4200dbba5487c8c458ade4616005fde6e6`; it also contains the later durable
+first-forecast activation tip and storage-failure hardening. See
+`growth/quality/ios-crash-gate.md` for the current-source boundary. None of the
+historical hashes below is relabelled exact-current.
 
 This result does **not** close `ios_crash_gate`. The production `1.0.1 (4)`
 crash on 2026-08-25 still has no downloadable `.ips`, stack, incident ID, or
@@ -106,8 +110,8 @@ API 25 phone. Pulling the installed base APK reproduced the same hash.
   public installation remained untouched.
 
 Broader physical API 25 and isolated API 36 crash-path evidence remains scoped
-to preceding commit `97c26cb`; the current bounded follow-up is recorded in
-`growth/quality/android-trust-feedback-smoke-2026-08-29.md`.
+to preceding commit `97c26cb`; the then-current pinned bounded follow-up is
+recorded in `growth/quality/android-trust-feedback-smoke-2026-08-29.md`.
 
 ## Remaining gates
 

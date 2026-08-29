@@ -62,6 +62,28 @@ executable records minOS 15.0 and runs on iOS 18.1, but **iOS 15 support remains
 NOT VERIFIED and release-blocked** until an actual iOS 15 device/runtime passes,
 or a separate product decision raises the declared deployment floor.
 
+## Exact storage-hardening product recheck — 2026-08-29 22:11 +05:00
+
+Product source `9c2dce4200dbba5487c8c458ade4616005fde6e6`
+was rebuilt in isolated DerivedData with `CODE_SIGNING_ALLOWED=NO`, arm64-only
+Release simulator destinations. The source closes deterministic database-error
+escapes in saved-place deletion, unit-preference persistence, and
+reverse-geocode enrichment; four throwing-repository regressions pass.
+
+| Product | Executable SHA-256 | Binary / dSYM UUID | Result |
+| --- | --- | --- | --- |
+| `NimboSimulator.app` `1.1.0 (6)` | `b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849` | `44F5F65F-080A-3F89-B5E5-D052EDF9A219` | Release simulator build and dSYM verification pass |
+| `NimboWidget.appex` | `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff` | `4DB04672-B8CF-3BD7-909B-D0869C744ABB` | Embedded extension build and dSYM verification pass |
+| `NimboWatch.app` | `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728` | `58CE68C5-A8B1-32B9-BE4D-BEE8A8C531C0` | Release watch-simulator build and dSYM verification pass |
+
+All three executables carry linker-generated ad-hoc signatures with no Team
+Identifier. The shared iOS simulator suite, 18-case Swift surface suite, full
+Gradle release gate, and 121-resource localization parity pass. The existing
+Skiko `libicu` simulator minOS warning remains unchanged. This is exact-source
+build/test evidence only: it is not distribution signing, iOS 15 runtime,
+physical-device, Widget gallery, paired-watch, TestFlight, review, rollout, or
+public-availability evidence.
+
 ## iOS 18.1 simulator scenarios
 
 | Scenario | Result | Evidence |

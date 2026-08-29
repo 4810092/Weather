@@ -9,14 +9,14 @@ not printed, exported, replaced, or reset.
 ## Current source
 
 The exact product commit is
-`9342824db7c0dcadfc4bdfe11f580377c108d968`.
+`9c2dce4200dbba5487c8c458ade4616005fde6e6`.
 
 ### Android phone
 
 - The current `1.1.0 (8)` phone AAB SHA-256 is
-  `e1c65555ed6848e30b335af2312acd37200f741bc42f55e2754a79134b84c5f8`;
+  `b7c7acb6e90189e8d73e5b8a5f780bf1d3ab36f43edaf3d5076a1dba4e22d4e5`;
   mapping SHA-256 is
-  `df9153ef1bc8973c39df369a2d5fb14825bcd0a04c9ea3ee5a2634e7494d9a6a`.
+  `4fdfeefa05c8f71eb3cc2ac538732672ae2c5ba5793ddd35f03bfa7f6b714d18`.
 - Bundletool 1.18.3 validation passed. The bundle manifest reports package
   `uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
   and targetSdk `36`. Embedded VCS metadata identifies the full commit above.
@@ -26,23 +26,27 @@ The exact product commit is
   keystore is present with mode `600`. A protected signing-value lookup through
   `security` still exits with status `51`; no password or private value was
   retrieved, and no credential mutation was attempted.
-- A subsequent source-exact signing attempt used a detached standalone checkout
-  at `9342824` because AGP cannot resolve valid VCS metadata through this
-  repository's registered-worktree pointer. The standalone build reproduced the
-  authoritative unsigned phone and Wear AAB hashes and embedded the full exact
-  revision. Both password lookups again returned status `51`
+- An earlier source-exact signing attempt used a detached standalone checkout
+  at prior product source `9342824` because AGP cannot resolve valid VCS
+  metadata through this repository's registered-worktree pointer. That
+  standalone build reproduced the then-authoritative prior-source unsigned
+  phone and Wear AAB hashes and embedded the full prior revision. Both password
+  lookups again returned status `51`
   (`errSecAuthFailed`); the planned JDK 17 `jarsigner` flow would have consumed
   them only through protected environment variables, but it was not started.
   No signed output was created or retained, and all shell variables and
-  temporary checkouts were removed.
-- Exact debug APK SHA-256
+  temporary checkouts were removed. The current `9c2dce4` standalone refresh
+  did not read Keychain values or retry signing; it reproduced the unsigned
+  hashes above with exact embedded VCS metadata.
+- Prior-product debug APK SHA-256
   `40f3d15d9eed33761c4e53c86ed91ac26411817811fb93792e1eb65ef0a69227`
   passed fresh-install physical API 25 Russian onboarding and the exact durable
   first-forecast-tip path. The CTA opened the existing cancelable picker,
   retained Tashkent, persisted acknowledgement, and stayed suppressed after a
   cold start. Pulled installed bytes matched and the exercised log path had zero
-  matching fatal/ANR entries. Debug signing does not satisfy upload signing or
-  the full release-device matrix.
+  matching fatal/ANR entries. That result is scoped to product source `9342824`;
+  debug signing does not satisfy upload signing or the full release-device
+  matrix.
 
 ### Wear OS
 
@@ -52,8 +56,8 @@ The exact product commit is
   not the current product commit, so it remains a historical signed artifact
   and is not labelled exact-current.
 - A fresh exact-commit local Wear output SHA-256
-  `d5c681fb292596b8703cea3a1b40e33d1f9ce450202648777af02d69066437c5`
-  embeds revision `9342824db7c0dcadfc4bdfe11f580377c108d968` and has zero
+  `2d73fdf1e4fd661a96a699a9fd2ef7b2e989b0f4ab019692ce7c97465673d3fa`
+  embeds revision `9c2dce4200dbba5487c8c458ade4616005fde6e6` and has zero
   signature entries. The retained signed bundle remains historical and cannot
   be promoted as exact-current.
 - No physical-watch pass is recorded.
@@ -65,9 +69,9 @@ Exact-commit Release simulator executables built with
 
 | Product | Version | SHA-256 |
 | --- | --- | --- |
-| iOS app | `1.1.0 (6)` | `0db3db757a7c0c497f7712c565a9b40e71edf271505cf0d0887c0ff3d59c0a76` |
-| Widget | `1.1.0 (6)` | `57e2fcafc984c050104ceb29d16ea49a1c97c563522426833094692882edf022` |
-| Watch app | `1.1.0 (6)` | `c6e8ff6543aa4ece0ccab7c7ee740eaef720fa07ab211e3846ca2cb00a48da66` |
+| iOS app | `1.1.0 (6)` | `b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849` |
+| Widget | `1.1.0 (6)` | `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff` |
+| Watch app | `1.1.0 (6)` | `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728` |
 
 These products contain only Xcode linker-generated ad-hoc signatures. They
 have no Team Identifier, bound Info.plist, sealed resources, distribution
@@ -75,19 +79,20 @@ signature, xcarchive, exported IPA, or upload eligibility.
 
 The current source passed the shared iOS simulator test, 18 Swift surface tests,
 and fresh Release simulator builds for app, WidgetKit, and watch. The executable
-UUIDs are app `93135119-99F1-3E23-A5DC-97ADC7D9E0B7`, widget
-`5E2196A9-DDE9-3429-B003-78BCEA6E5322`, and watch
-`9A50D076-B33B-38C5-99CC-55B29C8ADDFD`; all match their dSYMs. This is simulator
+UUIDs are app `44F5F65F-080A-3F89-B5E5-D052EDF9A219`, widget
+`4DB04672-B8CF-3BD7-909B-D0869C744ABB`, and watch
+`58CE68C5-A8B1-32B9-BE4D-BEE8A8C531C0`; all match their dSYMs. This is simulator
 evidence, not signing or physical Apple evidence. The earlier 40-cycle
 simulator stability record remains historical to commit `df5f824` and is not
 promoted as exact-current proof.
 
 Keychain Access visibly contains valid Apple Development and Apple Distribution
 identities with associated private keys. A command-line private-key operation
-still reports `errSecAuthFailed (-25293)`. The exact-source device archive for
-the `Nimbo` scheme failed in the `NimboWidget` CodeSign phase with
-`errSecInternalComponent`; no xcarchive or upload followed. The local archive
-log SHA-256 is
+still reports `errSecAuthFailed (-25293)`. The device-archive attempt for prior
+product source `9342824` failed in the `NimboWidget` CodeSign phase with
+`errSecInternalComponent`; no xcarchive or upload followed. The current
+`9c2dce4` source was not relabelled with that archive attempt and has only the
+simulator build evidence above. The prior-source local archive log SHA-256 is
 `6e082e58720080d3cff0c09378f546446298df0f4704711358229e6a6a4659ec`.
 Existing signing material was left untouched.
 
@@ -102,7 +107,7 @@ this check. The iPad connection/DDI sub-blocker is therefore clear, but the
 exact-current Apple physical matrix still cannot start without a distribution-
 signed build 6 archive.
 
-During the later exact-source archive attempt, the same iPad reported locked and
+During that prior-source archive attempt, the same iPad reported locked and
 `ddiServicesAvailable=false`. The 12:10 unlocked/DDI-usable observation is
 therefore retained only as point-in-time history, not as current readiness. No
 exact-source Apple build was installed or physically exercised, and the device

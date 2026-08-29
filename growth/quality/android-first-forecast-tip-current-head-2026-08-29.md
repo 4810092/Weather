@@ -2,8 +2,10 @@
 
 ## Verdict
 
-**PASS within the exact-source debug scope** for product commit
-`9342824db7c0dcadfc4bdfe11f580377c108d968`.
+**PASS within the pinned prior-product debug scope** for product commit
+`9342824db7c0dcadfc4bdfe11f580377c108d968`. Current product source is
+`9c2dce4200dbba5487c8c458ade4616005fde6e6`; this physical result is not
+relabelled as current-source evidence.
 
 On a clean physical Android 7.1.1 / API 25 install, the first successful
 Tashkent forecast displayed the localized Russian first-forecast tip and its

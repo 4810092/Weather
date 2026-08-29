@@ -67,7 +67,7 @@ or clearing its data.
 | Process stability | PASS within exercised paths | Filtered logcat contained no Nimbo fatal exception, process-crash, or ANR entry |
 
 The app was force-stopped after the run and intentionally left installed at
-the exact current debug bytes, preserving the pre-existing device data.
+the exact tested `df5f824` debug bytes, preserving the pre-existing device data.
 Automatic rotation remained enabled in its original portrait state. This is
 still debug-certificate evidence, not Play-processed or upload-signed proof.
 
@@ -77,7 +77,7 @@ On API 25, Nimbo was force-stopped and uninstalled after capture. Package path
 and process queries were empty, and all temporary device-side UI dumps were
 removed. The separate API 36 follow-up above updated the pre-existing
 same-certificate debug installation without clearing its data and left it
-force-stopped on the exact current bytes.
+force-stopped on the exact pinned `df5f824` bytes.
 
 The capture set was reviewed during the run. Representative transient hashes
 were footer PNG

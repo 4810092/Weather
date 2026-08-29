@@ -44,11 +44,12 @@ The committed set contains 35 Android phone screenshots: five images each for
 English, Russian, and Uzbek, plus two localized images for each of the other ten
 app languages. It also
 contains four English 2560 × 1440 Android large-screen screenshots and one
-480 × 480 Wear OS screenshot captured from the current watch app. The Apple
+480 × 480 Wear OS screenshot captured from the product watch app. The Apple
 set adds one 416 × 496 Apple Watch screenshot, plus one
 1320 × 2868 App Store iPhone and one 2064 × 2752 App Store iPad screenshot for
-each of the 13 app languages. All were captured from current production UI with
-a populated local database; no UI was invented.
+each of the 13 app languages. All were captured from real production UI with a
+populated local database; no UI was invented. Capture provenance is recorded
+per asset and does not imply exact-current binary or physical-device coverage.
 
 Google Play and App Store Connect do not offer Uzbek as a product-page locale.
 The publishable Google package therefore contains one Custom Store Listing,
@@ -130,8 +131,10 @@ drift stops the build. The manifest also hashes the exact set of 22 phone,
 watch, and feature-graphic source images, so stale generated artwork cannot
 pass after an input capture changes. Story six uses locale-matched watch captures; RU/UZ
 sources are real simulator/emulator evidence. The Apple captures remain scoped
-to historical build 5 and do not establish current build-6 or physical-watch
-QA.
+to pinned product source `9342824`, build 6. Current product source `9c2dce4`
+changes storage-error handling only, but its exact-current screenshot recapture
+is still pending; the retained pixels do not establish current-source or
+physical-watch QA.
 
 `scripts/check_store_metadata.py` validates schema version, locale coverage,
 platform/storefront relationships, exact UZ/RU candidate copy, text limits, experiment

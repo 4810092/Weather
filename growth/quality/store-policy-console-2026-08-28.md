@@ -37,14 +37,15 @@ The refreshed console also showed two edge-to-edge compatibility
 recommendations. Recommendations are tracked as release-quality input; they
 are not open policy issues and do not change the explicit policy result.
 
-The current unreleased candidate now pins `androidx.fragment:fragment:1.9.0`
-in the phone, shared Android, and Wear OS graphs. Dependency reports resolve
+The unreleased candidate source pins `androidx.fragment:fragment:1.9.0` in the
+phone, shared Android, and Wear OS graphs. The recorded dependency reports at
+the time resolved
 the transitive `1.0.0`/`1.1.0` requests to `1.9.0`, and both generated AAB
 `dependencies.pb` manifests contain `fragment 1.9.0`:
 
-- phone AAB SHA-256:
+- then-current phone AAB SHA-256:
   `a631c67df19761964d25dd6fbbdc89b7d9c0ee6d8544ebc23113bcee52043ed9`
-- Wear OS AAB SHA-256:
+- pinned signed Wear OS AAB SHA-256:
   `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6`
 
 This closes the candidate dependency defect. The production-console warning
@@ -52,7 +53,7 @@ will remain visible until a newer accepted bundle replaces phone `1.0.2 (6)`.
 
 ## Edge-to-edge recommendations
 
-Current commit `f97238beb8d99cea5ed19883b1528dca4923baee` contains commits
+Pinned source `f97238beb8d99cea5ed19883b1528dca4923baee` contains commits
 `5ada89f` and `80cdd60`, which close the app-owned findings behind the two Play
 recommendations:
 
@@ -64,15 +65,15 @@ recommendations:
 - light mode supplies a dark navigation fallback for API 24–25, where dark
   navigation icons are unavailable.
 
-The exact current unsigned AAB above passes Bundletool validation with package
+The recorded unsigned AAB above passed Bundletool validation with package
 `uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
 targetSdk `36`, and zero signature entries. Matching-source `f97238b` debug APK
 SHA-256 `7b2f2c12d56fdda293f19317ef6eb6da153213f84b1daeef11fd35f8e9e30edb`
 passed bounded physical API 25 and API 36 emulator QA for legacy navigation
 contrast, IME resize, true-offline fallback/recovery, dark landscape, and
-process stability. The debug result is not a Play-processed artifact, but the
-edge-to-edge source closure is now current rather than inherited only from the
-historical commit-80 run. See
+process stability. The debug result is not a Play-processed artifact. Current
+product source `9c2dce4` descends from this implementation, but the recorded
+runtime and artifact hashes remain pinned to `f97238b`. See
 `android-current-head-device-smoke-2026-08-29.md`.
 
 This is source and bounded-runtime closure, not Play Console closure. The cards

@@ -1,20 +1,22 @@
-# Android current-HEAD device smoke — 2026-08-29
+# Android pinned-source device smoke — 2026-08-29
 
 ## Verdict
 
-**PASS within the bounded current-source/debug scope** for product commit
+**PASS within the bounded pinned-source/debug scope** for product commit
 `f97238beb8d99cea5ed19883b1528dca4923baee`. Debug APK SHA-256
 `7b2f2c12d56fdda293f19317ef6eb6da153213f84b1daeef11fd35f8e9e30edb`
 was built from a worktree whose only uncommitted changes were growth content,
 reporting, and evidence files; no application source differed from `f97238b`.
 That APK was installed on the dedicated physical Android 7.1.1 / API 25 phone
-and the Android 16 / API 36 `Nimbo_API_36` emulator.
+and the Android 16 / API 36 `Nimbo_API_36` emulator. Current product source is
+`9c2dce4200dbba5487c8c458ade4616005fde6e6`; none of this report's hashes or
+device results is relabelled as exact-current evidence.
 
-The current bytes passed physical onboarding, city selection, ordinary city
+The pinned bytes passed physical onboarding, city selection, ordinary city
 search, live forecast, share-chooser, legacy navigation contrast, and process
 stability. On API 36 they also passed a true-offline cached cold start,
 failed-refresh fallback, connectivity recovery, IME resize, and dark landscape
-layout. No Nimbo crash or ANR was captured in the exercised paths. The current
+layout. No Nimbo crash or ANR was captured in the exercised paths. The pinned
 rerun intentionally did not force an in-app Store review request; the
 failed-refresh review-eligibility transition remains covered by the automated
 test added in `f97238b`.
@@ -23,10 +25,10 @@ This is not a release-artifact pass. The APK is debuggable and uses the Android
 debug certificate. The upload-signed vc8 artifact, physical tablet and widget
 coverage, and paired physical Wear OS coverage are still missing. The
 `android_physical_smoke` and `release_artifact_source_sync` gates therefore
-remain blocked. This current debug rerun closes the stale-source gap only for
-the bounded paths below; it cannot replace exact-current signed-artifact QA.
+remain blocked. This debug rerun closed the stale-source gap only at the
+recorded source; it cannot replace exact-current signed-artifact QA.
 
-## Current `f97238b` rerun
+## Pinned `f97238b` rerun
 
 | Field | Value |
 |---|---|
@@ -84,7 +86,7 @@ Evidence:
 
 The following earlier matrix remains valid only for exact commit
 `80cdd608b93056edd05e29873da43834a916cd3a` bytes. It is retained as a bounded
-regression reference and is not substituted for the current rerun above.
+regression reference and is not substituted for the pinned rerun above.
 
 ### Historical artifact identity
 
@@ -107,7 +109,7 @@ Target: General Mobile 4G Dual, Android 7.1.1 / API 25, 720 x 1280, Russian.
 
 | Scenario | Result | Evidence observed |
 |---|---|---|
-| Exact current artifact install | PASS | `adb install -r` succeeded over the temporary same-certificate QA install; package state remained `1.1.0 (8)`, minSdk 24, targetSdk 36, and the pulled installed bytes matched the APK hash above |
+| Exact pinned artifact install | PASS | `adb install -r` succeeded over the temporary same-certificate QA install; package state remained `1.1.0 (8)`, minSdk 24, targetSdk 36, and the pulled installed bytes matched the APK hash above |
 | Retained-place online cold start | PASS | Force-stop and cold launch rendered the saved Tashkent forecast, comparison insight, timeline, and interactive controls |
 | Legacy navigation contrast | PASS | Light-theme API 25 rendered white three-button navigation icons over the new dark compatibility scrim; the prior transparent/light low-contrast state was no longer present |
 | Landscape inset path | PASS | Forced landscape retained Tashkent plus visible share and refresh controls inside the 1280 x 720 content area; device rotation settings were restored afterward |
@@ -153,12 +155,12 @@ applies all-side protection:
   by a local debug or upload certificate without uninstalling user data.
 - This report does not claim physical API 24, tablet, widget, Wear OS, TalkBack,
   large-text, upload-signed, Play-processed, store-review, or production proof.
-- The current `f97238b` source contains the commit-80 removal of app-owned deprecated system-bar theme
+- The pinned `f97238b` source contains the commit-80 removal of app-owned deprecated system-bar theme
   attributes. Google Play may still attribute compatibility calls inside
   AndroidX Activity to the app until a new bundle is processed and its expanded
   recommendation origins can be inspected; this report does not pre-claim
   console closure.
 - Exact retry windows, single-flight behavior, review policy, share-link
   composition, and localization coverage remain backed by automated tests.
-  The current device rerun records only the runtime paths directly exercised
+  The pinned device rerun records only the runtime paths directly exercised
   above and did not force or consume a Store review prompt.
