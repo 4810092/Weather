@@ -161,6 +161,12 @@
       "blocker_type": "deliverable",
       "status": "blocked",
       "evidence": "growth/quality/internal-track-upload-2026-08-28.md"
+    },
+    {
+      "id": "deliverable.google_promotional_content_access",
+      "blocker_type": "deliverable",
+      "status": "unknown",
+      "evidence": "growth/featuring/google-2026-09.md"
     }
   ],
   "prohibited_claims": [
