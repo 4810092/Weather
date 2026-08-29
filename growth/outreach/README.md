@@ -13,3 +13,16 @@ Before contact:
 Never buy a list, scrape private addresses, mass-send, promise coverage/rank, offer an incentive for installs or reviews, or present an unverified address as confirmed.
 
 The list deliberately uses editorial desks, organizational inboxes, official forms, or public community accounts. It excludes private contact details and personal journalist addresses even when an article byline exposes one.
+
+## Personalized draft pack
+
+[draft-manifest.csv](draft-manifest.csv) maps every verified shortlist row to
+one concise, copy-ready first message and exactly one follow-up. The individual
+files are indexed in [drafts/README.md](drafts/README.md). They are drafts only:
+creating the files does not change `contact_status`, `last_contacted`, or
+`follow_up_due`, and no message has been sent or staged in an external system.
+
+The language in the manifest is selected from each row's
+`preferred_language`. Every draft keeps the row's public organizational route
+and `hook_source_url`; no private person, inferred address, or additional
+contact detail has been added.
