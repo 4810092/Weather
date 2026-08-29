@@ -64,6 +64,8 @@ jobs:
           :app:testDebugUnitTest
           :wearApp:testDebugUnitTest
           :shared:verifySqlDelightMigration
+          :app:lintRelease
+          :wearApp:lintRelease
           :app:bundleRelease
           :wearApp:bundleRelease
       - uses: actions/upload-artifact@v7

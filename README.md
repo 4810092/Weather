@@ -148,7 +148,7 @@ The checked-in `NimboSimulator` scheme does not require an Apple developer ident
 
 ## Quality gates
 
-The pull-request workflow runs repository/secret-hygiene checks, localization parity, store metadata/assets, ktlint, shared tests on Android host and iOS Simulator, the released-database migration test, SQLDelight migration verification, R8 Android bundles, an unsigned iOS app/WidgetKit build, and a watchOS Simulator build.
+The pull-request workflow runs repository/secret-hygiene checks, localization parity, store metadata/assets, ktlint, release Android Lint for phone and Wear, shared tests on Android host and iOS Simulator, the released-database migration test, SQLDelight migration verification, R8 Android bundles, an unsigned iOS app/WidgetKit build, and a watchOS Simulator build.
 
 Run the main local gate from a clean tree with:
 
@@ -168,6 +168,8 @@ python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
   :app:testDebugUnitTest \
   :wearApp:testDebugUnitTest \
   :shared:verifySqlDelightMigration \
+  :app:lintRelease \
+  :wearApp:lintRelease \
   :app:bundleRelease \
   :wearApp:bundleRelease
 ```
