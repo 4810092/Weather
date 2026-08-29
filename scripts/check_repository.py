@@ -219,6 +219,45 @@ if application.get(android_network_security_config) != "@xml/network_security_co
 if application.get(android_uses_cleartext_traffic) != "false":
     fail("Android application must reject cleartext traffic")
 
+phone_theme_paths = (
+    ROOT / "app/src/main/res/values/themes.xml",
+    ROOT / "app/src/main/res/values-night/themes.xml",
+)
+deprecated_system_bar_items = {
+    "android:statusBarColor",
+    "android:navigationBarColor",
+    "android:windowLightStatusBar",
+}
+for path in phone_theme_paths:
+    theme_items = {
+        item.get("name")
+        for item in ET.parse(path).getroot().findall("./style/item")
+    }
+    configured_deprecated_items = theme_items & deprecated_system_bar_items
+    if configured_deprecated_items:
+        fail(
+            "phone theme must delegate system bars to enableEdgeToEdge: "
+            f"{path.relative_to(ROOT)} configures "
+            f"{', '.join(sorted(configured_deprecated_items))}"
+        )
+
+main_activity_source = (
+    ROOT / "app/src/main/java/uz/ganikhodjaev/weather/MainActivity.kt"
+).read_text()
+if "enableEdgeToEdge(" not in main_activity_source:
+    fail("phone activity must enable edge-to-edge on pre-Android 15 devices")
+if "window.isNavigationBarContrastEnforced = false" not in main_activity_source:
+    fail("phone activity must disable the legacy three-button navigation scrim")
+
+weather_screen_source = (
+    ROOT
+    / "shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/ui/WeatherScreen.kt"
+).read_text()
+if ".windowInsetsPadding(WindowInsets.safeDrawing)" not in weather_screen_source:
+    fail("weather content must apply safe-drawing insets on all four sides")
+if "WindowInsets.safeDrawing.only" in weather_screen_source:
+    fail("weather content must not discard horizontal cutout or waterfall insets")
+
 network_security = ET.parse(
     ROOT / "app/src/main/res/xml/network_security_config.xml"
 ).getroot()
