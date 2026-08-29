@@ -537,6 +537,10 @@ private fun WeatherContent(
                 CenteredSection(horizontalPadding) {
                     CurrentSummary(state = state, condition = condition, insights = insights)
                 }
+                Spacer(Modifier.height(20.dp))
+                CenteredSection(horizontalPadding) {
+                    OutsideCard(outside, weather.location.timezone)
+                }
                 if (state.showFirstForecastTip) {
                     Spacer(Modifier.height(20.dp))
                     CenteredSection(horizontalPadding) {
@@ -547,7 +551,6 @@ private fun WeatherContent(
                 WeatherDetails(
                     state = state,
                     selected = selected,
-                    outside = outside,
                     recentDays = recentDays,
                     horizontalPadding = horizontalPadding,
                     onSelected = { selected = it },
@@ -790,7 +793,6 @@ private fun CurrentSummary(
 private fun WeatherDetails(
     state: WeatherUiState.Content,
     selected: WeatherHour,
-    outside: OutsideRecommendation,
     recentDays: List<RecentDaySummary>,
     horizontalPadding: Dp,
     onSelected: (WeatherHour) -> Unit,
@@ -816,10 +818,6 @@ private fun WeatherDetails(
     Spacer(Modifier.height(18.dp))
     CenteredSection(horizontalPadding) {
         SelectedHour(selected, weather.location.timezone, state.displayUnits)
-    }
-    Spacer(Modifier.height(18.dp))
-    CenteredSection(horizontalPadding) {
-        OutsideCard(outside, weather.location.timezone)
     }
     if (weather.airQuality.isNotEmpty()) {
         Spacer(Modifier.height(18.dp))

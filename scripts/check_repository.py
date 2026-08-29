@@ -336,6 +336,26 @@ if ".windowInsetsPadding(WindowInsets.safeDrawing)" not in weather_screen_source
 if "WindowInsets.safeDrawing.only" in weather_screen_source:
     fail("weather content must not discard horizontal cutout or waterfall insets")
 
+weather_content_source = weather_screen_source.split(
+    "private fun WeatherContent(", maxsplit=1
+)[-1].split("private fun FirstForecastTip(", maxsplit=1)[0]
+primary_section_markers = [
+    "CurrentSummary(state = state, condition = condition, insights = insights)",
+    "OutsideCard(outside, weather.location.timezone)",
+    "FirstForecastTip(onDismissFirstForecastTip)",
+    "WeatherDetails(",
+]
+primary_section_positions = [
+    weather_content_source.find(marker) for marker in primary_section_markers
+]
+if any(position < 0 for position in primary_section_positions):
+    fail("weather primary section markers are incomplete")
+if primary_section_positions != sorted(primary_section_positions):
+    fail(
+        "Best Time Outside must render after the current summary and before "
+        "the first-forecast tip and hourly details"
+    )
+
 network_security = ET.parse(
     ROOT / "app/src/main/res/xml/network_security_config.xml"
 ).getroot()
