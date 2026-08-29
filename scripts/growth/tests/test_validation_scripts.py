@@ -229,14 +229,19 @@ class ValidationScriptsTest(unittest.TestCase):
         )
         self.assertEqual(
             manifest["source_capture_evidence"],
-            "growth/quality/apple-localized-current-product-capture-2026-08-29.md",
+            "growth/quality/apple-localized-current-product-capture-2026-08-30.md",
         )
         self.assertTrue((ROOT / manifest["source_capture_evidence"]).is_file())
-        self.assertTrue(
-            all(
-                story["app_store_source_name"] == "01-current.png"
-                for story in manifest["stories"]
-            )
+        self.assertEqual(
+            [story["app_store_source_name"] for story in manifest["stories"]],
+            [
+                "01-current.png",
+                "02-recent-comparison.png",
+                "03-timeline-selected.png",
+                "04-details.png",
+                "01-current.png",
+                "01-current.png",
+            ],
         )
         for locale, payload in manifest["locales"].items():
             expected_segment = "en" if locale == "en-US" else locale
@@ -253,7 +258,7 @@ class ValidationScriptsTest(unittest.TestCase):
         self.assertEqual(set(manifest["output_sha256"]), set(output_paths))
         self.assertEqual(validate_output_sha256_contract(manifest, root=ROOT), [])
         source_paths = generated_source_paths(manifest)
-        self.assertEqual(len(source_paths), 22)
+        self.assertEqual(len(source_paths), 31)
         self.assertEqual(set(manifest["source_sha256"]), set(source_paths))
         self.assertEqual(validate_source_sha256_contract(manifest, root=ROOT), [])
 
@@ -995,6 +1000,11 @@ class ValidationScriptsTest(unittest.TestCase):
                 BACKING_JSON_PATHS["rank"],
                 ("surfaces", "apple", "search", "weather", "target_rank"),
                 80,
+            ),
+            (
+                BACKING_JSON_PATHS["rank"],
+                ("goal_evidence_complete",),
+                False,
             ),
             (
                 BACKING_JSON_PATHS["evaluation"],

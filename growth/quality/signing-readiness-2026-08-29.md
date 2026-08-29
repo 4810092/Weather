@@ -50,6 +50,15 @@ The exact product commit is
   full release-device matrix. The earlier APK
   `40f3d15d9eed33761c4e53c86ed91ac26411817811fb93792e1eb65ef0a69227`
   remains prior-product evidence for source `9342824` only.
+- The byte-identical exact-current debug APK and pulled API 36 installed bytes
+  SHA-256
+  `52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
+  also passed a fresh no-snapshot Pixel Tablet emulator smoke in Uzbek.
+  Landscape onboarding, live forecast, Best Time, durable-tip persistence,
+  home-screen widget render/tap, large text, rotation, process health, and
+  cleanup passed. This closes the stale-product tablet-layout/widget emulator
+  gap only; debug signing and an emulator do not satisfy upload signing,
+  physical-tablet QA, or the signed release-device matrix.
 
 ### Wear OS
 

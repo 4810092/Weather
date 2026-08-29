@@ -5,7 +5,9 @@ Status: **authenticated dated Console evidence** for Nimbo
 `2026-08-29 08:41:37 +05:00` (`2026-08-29T03:41:37Z`). No Console setting,
 release, rollout, policy declaration, review response, report, or export was
 created or changed during that capture. A later, separately timestamped
-project-only custom-listing draft save is recorded below.
+project-only custom-listing draft save is recorded below. A final authenticated
+pass enabled review email notifications and created non-PII metric exports;
+those bounded operational changes are also recorded explicitly.
 
 ## Current production and publishing state
 
@@ -57,6 +59,54 @@ textual defect report. The Console surface did not expose its date, app version,
 device, country, or storefront, so it must not be attributed to Uzbekistan or
 to the current public build.
 
+## 23:37 review-inbox and acquisition refresh
+
+An authenticated refresh at `2026-08-29 23:37–23:46 +05:00` confirmed the
+global default rating remained `1.000` from one rating user and that there were
+still zero written reviews across the all-time range. The lone star-only rating
+has no reply surface, so no developer response was submitted.
+
+Email notifications had been disabled for all app-review categories. The
+account-level settings were changed and saved so the developer account email
+now receives notifications for new one- through five-star reviews and edited
+reviews, across the account's apps. This is intentionally disclosed as an
+account-wide operational change because Play Console did not offer a Nimbo-only
+scope. No marketing, rating request, reviewer data, review reply, listing,
+release, rollout, or publication state was changed.
+
+The rolling Last 28 days acquisition overview now displayed `778` device
+impressions, `21` installs, `14` first opens, `11` monthly active devices
+(`+38%`), unavailable device D7 retention, and the same `40.82%` summary
+store-listing conversion. The one-impression difference from the morning
+capture is consistent with a moving 28-day window; neither value is rewritten
+as a fixed calendar aggregate.
+
+The newer Store Listings overview exposed a separate date range
+`2026-07-27..2026-08-23`: `44` visitors, `18` unique users who clicked Install,
+and `41%` CTR across listing surfaces. The published default listing row
+reported `42` visitors and `28.6%` conversion. These are distinct Console
+populations and are not reconciled with the acquisition-overview conversion by
+assumption.
+
+The active-mode crash/ANR issues view still contained no issue rows and no
+numeric user-perceived rates. That remains unavailable quality evidence, not a
+zero-crash or zero-ANR claim.
+
+## Explicit country export
+
+The Statistics report selected legacy store-listing acquisitions and visitors,
+country dimension `Overall, UZ`, and exported non-PII CSVs. In the explicit
+`2026-08-01..2026-08-28` request, returned data ended on August 22. The UZ
+series contained four visitor-days in total—two on August 6, one on August 9,
+and one on August 10—and one store-listing acquisition on August 6.
+
+The exact seven-day `2026-08-16..2026-08-22` request retained `UZ` in the URL,
+but Console omitted the UZ series from both the visible table and exported CSV.
+Only Overall columns were returned. The omission is privacy-suppressed or
+unavailable and must not be converted to numeric zeros or a UZ conversion
+rate. File identities and the import decision are recorded in
+`growth/quality/weekly-console-evidence-2026-08-29.md`.
+
 ## Engagement detail and data lag
 
 The detailed Statistics URLs explicitly carried
@@ -103,6 +153,12 @@ Play displayed three recommendations against the processed public build:
 1. update an outdated `androidx.fragment` version;
 2. improve edge-to-edge coverage;
 3. remove unsupported edge-to-edge APIs or parameters.
+
+The final dashboard refresh displayed six cards in total: the three phone
+cards above, plus outdated Fragment and Activity recommendations and an R8
+memory/performance recommendation for public Wear release `1000007`. These are
+processed-public-build recommendations, not diagnostics for exact-current
+unsigned source revision `9c2dce4`.
 
 No additional runtime patch is justified in the current `1.1.0 (8)` source:
 
@@ -177,13 +233,15 @@ listing was created by this action.
   <https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/vitals/crashes>
 - UZ custom store listing draft:
   <https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/store-listings/4834799756935529888>
+- Review notification settings:
+  <https://play.google.com/console/u/0/developers/5513021445726079938/notifications>
 
 ## Importer boundary
 
 This file is not a seven-day importer dataset. It combines point-in-time
-Console state, a `Last 28 days` acquisition preset without exposed calendar
-endpoints, daily engagement rows with reporting lag, and unavailable quality
-metrics. It contains no complete seven-day record envelope, daily source rows,
-required scope set, or normalized importer schema. It therefore must not be
-used to populate weekly actuals, infer missing days, or turn D7/crash/ANR
-guardrails into `PASS`, `FAIL`, or numeric zero.
+Console state, a rolling acquisition preset, daily engagement rows with
+reporting lag, sparse country data, and unavailable quality metrics. The exact
+seven-day export omitted the requested UZ series, and there is still no
+complete daily source/device/version scope or normalized importer envelope.
+It therefore must not be used to populate weekly actuals, infer missing UZ
+days, or turn D7/crash/ANR guardrails into `PASS`, `FAIL`, or numeric zero.

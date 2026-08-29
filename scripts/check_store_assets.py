@@ -79,6 +79,17 @@ for locale in STORE_LOCALES:
         "PNG",
     )
 
+for locale in ("en", "ru-RU", "uz-UZ"):
+    for name in (
+        "02-recent-comparison.png",
+        "03-timeline-selected.png",
+        "04-details.png",
+    ):
+        EXPECTED[f"store/screenshots/app-store/iphone-6.9-{locale}/{name}"] = (
+            (1320, 2868),
+            "PNG",
+        )
+
 
 def inspect_image(path: Path) -> tuple[tuple[int, int], str, str, bool]:
     try:
@@ -303,16 +314,6 @@ def load_creative_manifest() -> tuple[dict, list[str]]:
                 failures.append(f"{locale}/{platform}: expected six non-empty captions")
             lowered = " ".join(values).lower()
             unsupported_claims = ["home-screen widget", "виджет", "vidjet"]
-            if platform == "app-store":
-                unsupported_claims.extend(
-                    [
-                        "10-day",
-                        "air quality",
-                        "качество воздуха",
-                        "10 kunlik",
-                        "havo sifati",
-                    ]
-                )
             for unsupported in unsupported_claims:
                 if unsupported in lowered:
                     failures.append(

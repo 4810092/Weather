@@ -30,6 +30,13 @@ The build-detail and diagnostic-signature requests for build `4` both returned
 HTTP 403 `FORBIDDEN_ERROR` for security reasons. This authenticated key therefore
 cannot retrieve the suppressed historical crash signature or log.
 
+After the zero-count preflight, exactly one request attempted to create an
+`ONGOING` analytics report request for Nimbo. App Store Connect returned HTTP
+403 `FORBIDDEN_ERROR`; no resource id was created or returned. The request was
+not retried, and no duplicate, report instance, segment, or user-level data was
+created or downloaded. Official automated weekly analytics therefore remains
+permission-blocked for the current key.
+
 ## Bounded 1.1.0 draft attempt
 
 Preflight reads proved that an iOS `1.1.0` version did not exist. A single
@@ -58,12 +65,12 @@ deleted, committed, or replaced.
 ## Decision
 
 The read path is usable for inventory verification, but App Store Connect write
-access is unavailable to this key. Creating the `1.1.0` draft requires an
-existing write-capable account/session or a separately authorized key/role.
-Diagnostics remain blocked by the security 403. Neither limitation is treated
-as proof that the historical crash is resolved, and neither permits attaching
-a build or submitting a release before the signed-artifact and physical QA
-gates pass.
+access is unavailable to this key. Creating the `1.1.0` draft or an ongoing
+analytics report request requires an existing write-capable account/session or
+a separately authorized key/role. Diagnostics remain blocked by the security
+403. These limitations are not treated as proof that the historical crash is
+resolved, and they do not permit attaching a build or submitting a release
+before the signed-artifact and physical QA gates pass.
 
 This record is authenticated API evidence, not proof of upload, review,
 publication, rollout, or end-user availability.

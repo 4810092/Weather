@@ -119,7 +119,7 @@
   },
   "creative_sets": {
     "growth-2026-08": {
-      "revision": 5,
+      "revision": 7,
       "manifest": "store/creative-sets/growth-2026-08.json",
       "platforms": [
         "app-store",

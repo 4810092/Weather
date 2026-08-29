@@ -1,0 +1,2 @@
+check_id,platform,scope,source_surface,source_as_of,average_rating,rating_count,text_review_count,substantive_review_count,oldest_substantive_review_at,action_at,action,sla_state,notification_state
+play-global-20260829t2340+0500,google_play,global_default,play_console_ratings_and_reviews,2026-08-29T23:40:00+05:00,1.000,1,0,0,,,none,non_actionable,account_wide_all_1_to_5_star_and_edited_reviews_saved_to_developer_account_email

@@ -23,14 +23,14 @@ EXPECTED_SOURCE_PATHS = {
     "baseline_snapshot": "growth/dashboard/baseline_snapshot.sql",
     "driver_comparison": "growth/dashboard/driver_comparison.sql",
     "rank_snapshot": "growth/dashboard/rank_snapshot.sql",
-    "evaluation_snapshot": "growth/reports/evaluation-2026-08-29.json",
+    "evaluation_snapshot": "growth/reports/evaluation-2026-08-30.json",
     "gate_snapshot": "growth/dashboard/gate_snapshot.sql",
     "quality_guardrail_snapshot": "growth/dashboard/guardrail_snapshot.sql",
 }
 BACKING_JSON_PATHS = {
     "baseline": "growth/baseline/2026-08-28.json",
-    "rank": "growth/data/public-rank/2026-08-29.json",
-    "evaluation": "growth/reports/evaluation-2026-08-29.json",
+    "rank": "growth/data/public-rank/2026-08-30.json",
+    "evaluation": "growth/reports/evaluation-2026-08-30.json",
     "framework": "growth/kpi-framework.json",
     "gates": "growth/quality/gates.json",
 }
@@ -358,9 +358,13 @@ def _verify_rank_parity(
         raise DashboardConsistencyError(
             f"rank/framework source schema is incomplete: {error}"
         ) from error
-    if rank.get("date") != "2026-08-29" or not evaluation.get("complete"):
+    if (
+        rank.get("date") != "2026-08-30"
+        or rank.get("goal_evidence_complete") is not True
+        or not evaluation.get("complete")
+    ):
         raise DashboardConsistencyError(
-            "dashboard rank source must be the complete 2026-08-29 goal snapshot"
+            "dashboard rank source must be the complete 2026-08-30 goal snapshot"
         )
     weather_rank = _observed_rank(apple["search"]["weather"])
     category_rank = _observed_rank(apple["category"])

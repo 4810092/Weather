@@ -1,8 +1,17 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: August 29, 2026
+Status date: August 30, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
+
+<!-- release-authority-current:start -->
+<!-- source_revision:9c2dce4200dbba5487c8c458ade4616005fde6e6 -->
+<!-- artifact:android_phone;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ea0cf59f9f2f1e94ab31e3875b6977ddff68c5f1d822222e69707b0d7fd90d0d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=395e546ef1fbf05448e0fb1ce3e0c37217ee460193dfde430dc2629ee597e76b -->
+<!-- release-authority-current:end -->
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -23,16 +32,18 @@ and their overview populations are not claimed to be UZ-only.
 | iOS quality | One crash is shown on August 25 under version 1.0.1. Device detail is suppressed as insufficient data and no crash report or stack trace is exposed, so the crash gate remains blocked. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Play overview | The August 28 28-day view showed 21 installations, 14 first launches, and 11 MAU; ratings and Android vitals were suppressed as insufficient data. A later August 29 action saved UZ custom listing `4834799756935529888` only as an unpublished draft, without review submission or production change. |
+| Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
-state live under [`growth/`](../growth/README.md). The first fixed public capture
-places Nimbo outside the first 100 entries of the Apple UZ Weather chart, at
-position 81 for Apple query `weather`, outside the observed Google Weather
-category slices on all three fixed profiles, and outside the observed Google
-search result slices for all five generic queries. A bounded absence means only
-“below the captured slice”; it is never converted to a synthetic rank.
+state live under [`growth/`](../growth/README.md). The August 30 canonical
+public capture places Nimbo at position 22 in the official Apple UZ Weather
+chart and position 87 for Apple query `weather`, outside the first 30 Google
+Weather category results on all three fixed profiles, and at Top-10 for none of
+the five generic Google queries. One auxiliary Apple `Toshkent ob-havo` search
+returned only one unique result, but every goal surface was decisive. The
+verified streak therefore remains `0/7`. A bounded absence means only “below
+the captured slice”; it is never converted to a synthetic rank.
 
 ## Implemented, not published
 
@@ -68,19 +79,30 @@ search result slices for all five generic queries. A bounded absence means only
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  Exact product source `9342824` now has a bounded physical API 25 debug pass for
-  the first-forecast activation path and a fresh no-snapshot API 24 emulator pass
-  for live, cold-start, cached-offline, and recovery behavior. There is still no
-  upload-signed current phone artifact or matching release-certificate physical
-  matrix. Apple build 6 has exact Release-simulator hashes and localized phone
-  capture provenance, but no distribution-signed archive or physical result.
-  None of this evidence is an uploadable artifact.
+  Exact product source `9c2dce4` has a bounded physical API 25 debug pass for
+  Russian onboarding, Tashkent without location, live forecast, the truthful
+  late-day Best Time boundary, first-tip persistence, cached offline fallback,
+  recovery, and product-scoped process health. It also has a fresh no-snapshot
+  API 24 emulator pass for live, cold-start, cached-offline, and recovery
+  behavior, plus a byte-identical API 36 tablet emulator pass for Uzbek layout,
+  live forecast, Best Time, durable-tip persistence, home-screen widget
+  render/tap, large text, rotation, and process health. The physical APK uses
+  the debug certificate, and the tablet/widget pass is emulator-only: there is
+  still no upload-signed current phone artifact or matching release-certificate
+  physical matrix. Apple build 6 has exact-current Release-simulator hashes, but its
+  localized iPhone phone capture set now contains twelve exact-current
+  `9c2dce4` simulator sources across four real states per locale. The attempted
+  Apple offline transition was not captured and is not claimed. That proves
+  localized phone screenshot provenance only; Apple Watch sources remain
+  historical build-5 simulator evidence. It has no
+  distribution-signed archive or physical result. None of this evidence is an
+  uploadable artifact.
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
 - The retained upload-signed Wear `1.1.0 (1000008)` artifact embeds revision
   `4d9492a`, so it is historical rather than source-current. The exact-current
-  Wear output embeds revision `9342824` but is unsigned. The signed phone
+  Wear output embeds revision `9c2dce4` but is unsigned. The signed phone
   `1.1.0 (7)` universal APK is likewise a preserved
   historical candidate; it passed physical API 25 clean install, live and
   cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
@@ -92,15 +114,19 @@ search result slices for all five generic queries. A bounded absence means only
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
   remains scoped to build 5. Current Apple build 6 has no distribution-signed
   archive or physical runtime result. Its exact-product ad-hoc simulator hash and
-  [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-29.md)
+  [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
   do not imply App Store Connect or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
-  remains API 30. Exact product source `9342824` passes a clean, no-snapshot API
+  remains API 30. Exact product source `9c2dce4` passes a clean, no-snapshot API
   24 debug run covering no-permission quick-city, live weather, first-forecast
   tip acknowledgement, online cold start, cached-offline refresh, recovery, and
   process health; built and pulled-installed bytes match. The
   [current API 24 evidence](../growth/quality/android-api24-current-product-smoke-2026-08-29.md)
-  remains explicitly unsigned and emulator-only. Earlier candidates
+  remains explicitly unsigned and emulator-only. The byte-identical current
+  debug APK also passes the bounded API 36 tablet/widget emulator scope in
+  [current tablet/widget evidence](../growth/quality/android-current-product-tablet-widget-smoke-2026-08-29.md).
+  This closes the stale-product tablet-layout/widget emulator gap only; it is
+  not a physical-tablet or upload-signed result. Earlier candidates
   passed API 36 Arabic RTL quick-city/live and English denied-location/search/
   cold-start. The exact
   historical signed phone vc7 passes the expanded physical API 25 matrix listed above;
@@ -109,14 +135,18 @@ search result slices for all five generic queries. A bounded absence means only
   Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
   onboarding, live weather, and support/Play destination smoke plus a
   same-certificate preserved-data update on physical API 36; pulled bytes match
-  on both. Physical tablet, widget, and paired Wear OS coverage remain required.
+  on both. Upload-signed physical tablet/widget and paired Wear OS coverage
+  remain required.
 - Metadata schema v2, an Uzbek Google custom listing persisted as unpublished
   Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ
-  Android captures prove Best Time, 10-day/AQI, and offline claims. Exact-current
-  Apple EN/RU/UZ phone sources now prove localized live product pixels for the
-  phone creative pack; their simulator provenance is not signing or physical QA.
+  Android captures prove Best Time, 10-day/AQI, and offline claims. Apple
+  Twelve EN/RU/UZ iPhone phone sources from the exact-current `9c2dce4`
+  build-6 simulator app cover overview, recent comparison, selected timeline,
+  and details states per locale. They prove localized live product pixels for
+  the phone creative pack, not signing, physical QA, TestFlight, or store state.
+  The attempted Apple offline transition was not captured and is not claimed.
   The watch story uses locale-matched simulator/emulator captures. The Apple
   Watch capture is build-5 UI evidence and cannot satisfy build-6 QA; neither
   platform capture is physical-watch QA. The draft was not submitted for review
@@ -167,7 +197,11 @@ recorded only after direct store evidence.
    and `xcdevice`, but it was locked; lock-state and no-auto-mount DDI queries
    failed before current DDI readiness could be read. The iPad is therefore not
    action-ready, and no exact-current distribution-signed Apple build exists to
-   install.
+   install. The exact-current phone debug APK separately passed the bounded API
+   25 onboarding/live/Best Time/tip/offline/recovery/process-health scope, but
+   its debug certificate cannot satisfy this signed-artifact matrix. Its
+   byte-identical API 36 tablet/widget emulator pass likewise does not replace
+   physical-tablet or signed-candidate QA.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.

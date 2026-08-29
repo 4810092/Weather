@@ -11,6 +11,15 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 1.1.0 has been uploaded or published. Store consoles remain the authority for
 live status.
 
+<!-- release-authority-current:start -->
+<!-- source_revision:9c2dce4200dbba5487c8c458ade4616005fde6e6 -->
+<!-- artifact:android_phone;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ea0cf59f9f2f1e94ab31e3875b6977ddff68c5f1d822222e69707b0d7fd90d0d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=395e546ef1fbf05448e0fb1ce3e0c37217ee460193dfde430dc2629ee597e76b -->
+<!-- release-authority-current:end -->
+
 ## Version identity
 
 - Product name: Nimbo.
@@ -21,19 +30,30 @@ live status.
 
 ## Nimbo 1.1.0 source-sync correction — 2026-08-29
 
-Review-prompt and background-refresh hardening landed after the retained phone
-vc7 and Apple build-5 artifacts were produced. The current source identities
-are therefore phone `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple
-`1.1.0 (6)`. Exact-current unsigned Android bundles and ad-hoc Apple
-simulator products now have recorded hashes, but all remain blocked without
-source-current distribution signing and matching physical-QA evidence. Wear
-application payload is
-unchanged, but its retained signed AAB embeds historical revision `4d9492a`, not
-the current product source `9342824`; payload parity does not satisfy exact-source
+Review-prompt, background-refresh, and forecast-storage failure hardening landed
+after the retained phone vc7 and Apple build-5 artifacts were produced. The
+authoritative current product source is
+`9c2dce4200dbba5487c8c458ade4616005fde6e6`; its identities are phone
+`1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple `1.1.0 (6)`.
+Exact-current unsigned Android bundles and ad-hoc Apple simulator products have
+recorded hashes, but all remain blocked without source-current distribution
+signing and matching physical-QA evidence. The exact-current phone debug APK
+passed bounded physical API 25 onboarding/live/late-day Best Time/tip/offline/
+recovery/process-health QA, but its debug certificate does not satisfy the
+upload-signed physical matrix. Byte-identical debug bytes also passed the
+bounded API 36 tablet/widget emulator scope in Uzbek, including widget
+render/tap, large text, and rotation; that is not physical-tablet or signed-
+candidate QA. The Wear application payload is unchanged, but
+its retained signed AAB embeds historical revision `4d9492a`, not the current
+product source `9c2dce4`; payload parity does not satisfy exact-source
 provenance.
 The exact boundary and preserved historical hashes are recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
-and [upload manifest](../store/upload-manifest-1.1.0.json).
+and [upload manifest](../store/upload-manifest-1.1.0.json); the bounded debug
+phone run is recorded in the
+[current-product physical smoke](../growth/quality/android-current-product-physical-smoke-2026-08-29.md).
+The tablet/widget emulator boundary is recorded separately in the
+[current-product tablet/widget smoke](../growth/quality/android-current-product-tablet-widget-smoke-2026-08-29.md).
 
 ## Nimbo 1.1.0 historical internal checkpoint — 2026-08-28
 

@@ -34,6 +34,8 @@ REQUIRED = (
     "docs/PRIVACY.md",
     "docs/PROVIDERS.md",
     "docs/CODEX_FOR_OSS_APPLICATION.md",
+    "growth/reviews/README.md",
+    "growth/reviews/review-inbox.csv",
 )
 FORBIDDEN_SUFFIXES = (
     ".aab",
@@ -585,5 +587,35 @@ if "Apache License" not in license_text or "Version 2.0, January 2004" not in li
 canonical = (ROOT / "shared/src/commonMain/composeResources/values/strings.xml").read_text()
 if "Open-Meteo" not in canonical or "GeoNames" not in canonical:
     fail("in-app provider attribution is missing")
+
+try:
+    review_inbox_check = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/check_review_inbox.py")],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+        text=True,
+        timeout=15,
+    )
+except (OSError, subprocess.TimeoutExpired) as error:
+    fail(f"cannot run review inbox validator: {error}")
+if review_inbox_check.returncode != 0:
+    detail = review_inbox_check.stderr.strip() or review_inbox_check.stdout.strip()
+    fail(f"review inbox validation failed: {detail or 'unknown error'}")
+
+try:
+    public_claims_check = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/check_google_play_public_claims.py")],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+        text=True,
+        timeout=15,
+    )
+except (OSError, subprocess.TimeoutExpired) as error:
+    fail(f"cannot run Google Play public-claims validator: {error}")
+if public_claims_check.returncode != 0:
+    detail = public_claims_check.stderr.strip() or public_claims_check.stdout.strip()
+    fail(f"Google Play public-claims validation failed: {detail or 'unknown error'}")
 
 print(f"Repository checks passed for {len(repository_paths)} source paths.")

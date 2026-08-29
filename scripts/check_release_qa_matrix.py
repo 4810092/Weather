@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
@@ -13,10 +14,18 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCUMENT = Path("docs/QA_MATRIX.md")
+AUTHORITY_DOCUMENTS = (
+    Path("growth/README.md"),
+    Path("docs/GROWTH_RELEASE.md"),
+    DOCUMENT,
+    Path("docs/RELEASE.md"),
+)
 UPLOAD_MANIFEST = Path("store/upload-manifest-1.1.0.json")
 QUALITY_GATES = Path("growth/quality/gates.json")
 CURRENT_BLOCK_START = "<!-- release-qa-current:start -->"
 CURRENT_BLOCK_END = "<!-- release-qa-current:end -->"
+AUTHORITY_BLOCK_START = "<!-- release-authority-current:start -->"
+AUTHORITY_BLOCK_END = "<!-- release-authority-current:end -->"
 HISTORICAL_HEADING = "## Historical evidence — non-transferable"
 VALID_SOURCE_SYNC = {"blocked", "verified-current"}
 VALID_GATE_STATUS = {"blocked", "pending", "unknown", "fail", "pass"}
@@ -365,10 +374,30 @@ def _historical_identity(
     return f"`{version} ({identity})`"
 
 
-def expected_current_block(
-    root: Path = ROOT,
-) -> tuple[str | None, list[str], list[str]]:
-    """Return authoritative Markdown, failures, and historical identities."""
+def _current_physical_evidence_boundary(
+    root: Path,
+    artifact_id: str,
+    artifact: dict[str, Any],
+    failures: list[str],
+) -> str:
+    evidence = artifact.get("physical_qa_evidence")
+    if evidence is None:
+        return "none"
+    if _existing_repository_file(
+        root,
+        evidence,
+        f"{artifact_id}: physical_qa_evidence",
+        failures,
+    ):
+        assert isinstance(evidence, str)
+        return evidence
+    return "invalid"
+
+
+def _expected_blocks(
+    root: Path,
+) -> tuple[str | None, str | None, list[str], list[str]]:
+    """Return QA table, authority block, failures, and historical identities."""
 
     failures: list[str] = []
     manifest = _load_json_object(root / UPLOAD_MANIFEST, "upload manifest", failures)
@@ -394,8 +423,17 @@ def expected_current_block(
         gate_id: _gate_status(gates, gate_id, failures)
         for gate_id in {surface["physical_gate"] for surface in SURFACES}
     }
+    physical_gate_reason_digests: dict[str, str] = {}
+    for gate_id in ("android_physical_smoke", "ios_physical_smoke"):
+        gate = gates.get(gate_id)
+        reason = gate.get("reason") if isinstance(gate, dict) else None
+        if isinstance(reason, str) and reason.strip():
+            physical_gate_reason_digests[gate_id] = hashlib.sha256(
+                reason.encode("utf-8")
+            ).hexdigest()
 
     rows: list[str] = []
+    authority_artifact_rows: list[str] = []
     historical_identities: list[str] = []
     for surface in SURFACES:
         artifact_id = surface["artifact"]
@@ -422,6 +460,16 @@ def expected_current_block(
         if source_sync not in VALID_SOURCE_SYNC:
             failures.append(f"{artifact_id}: invalid source_sync {source_sync!r}")
             continue
+        physical_evidence = _current_physical_evidence_boundary(
+            root,
+            artifact_id,
+            artifact,
+            failures,
+        )
+        authority_artifact_rows.append(
+            f"<!-- artifact:{artifact_id};source_sync={source_sync};"
+            f"physical_qa_evidence={physical_evidence} -->"
+        )
         _existing_repository_file(
             root,
             artifact.get("source_sync_evidence"),
@@ -478,8 +526,9 @@ def expected_current_block(
             f"`{physical_gate}: {physical_status}` | **{status}** |"
         )
 
-    if failures:
-        return None, failures, historical_identities
+    revision = manifest.get("source_revision")
+    if failures or not isinstance(revision, str):
+        return None, None, failures, historical_identities
     block = "\n".join(
         (
             CURRENT_BLOCK_START,
@@ -489,19 +538,71 @@ def expected_current_block(
             CURRENT_BLOCK_END,
         )
     )
+    authority_block = "\n".join(
+        (
+            AUTHORITY_BLOCK_START,
+            f"<!-- source_revision:{revision} -->",
+            *authority_artifact_rows,
+            *(
+                f"<!-- physical_gate:{gate_id}={physical_gate_statuses[gate_id]};"
+                f"reason_sha256={physical_gate_reason_digests[gate_id]} -->"
+                for gate_id in ("android_physical_smoke", "ios_physical_smoke")
+            ),
+            AUTHORITY_BLOCK_END,
+        )
+    )
+    return block, authority_block, failures, historical_identities
+
+
+def expected_current_block(
+    root: Path = ROOT,
+) -> tuple[str | None, list[str], list[str]]:
+    """Return authoritative QA Markdown, failures, and historical identities."""
+
+    block, _, failures, historical_identities = _expected_blocks(root)
     return block, failures, historical_identities
 
 
+def expected_authority_block(
+    root: Path = ROOT,
+) -> tuple[str | None, list[str]]:
+    """Return the narrative authority block derived from manifest and gates."""
+
+    _, authority_block, failures, _ = _expected_blocks(root)
+    return authority_block, failures
+
+
 def validate(root: Path = ROOT) -> list[str]:
-    expected, failures, historical_identities = expected_current_block(root)
-    if expected is None:
+    expected, authority_block, failures, historical_identities = _expected_blocks(root)
+    if expected is None or authority_block is None:
         return failures
 
-    path = root / DOCUMENT
-    try:
-        document = path.read_text(encoding="utf-8")
-    except OSError as error:
-        return [*failures, f"{DOCUMENT}: cannot read: {error}"]
+    documents: dict[Path, str] = {}
+    for relative in AUTHORITY_DOCUMENTS:
+        try:
+            documents[relative] = (root / relative).read_text(encoding="utf-8")
+        except OSError as error:
+            failures.append(f"{relative}: cannot read: {error}")
+
+    for relative, document in documents.items():
+        if (
+            document.count(AUTHORITY_BLOCK_START) != 1
+            or document.count(AUTHORITY_BLOCK_END) != 1
+        ):
+            failures.append(
+                f"{relative}: current authority block markers must each appear once"
+            )
+            continue
+        start = document.index(AUTHORITY_BLOCK_START)
+        end = document.index(AUTHORITY_BLOCK_END, start) + len(AUTHORITY_BLOCK_END)
+        if document[start:end] != authority_block:
+            failures.append(
+                f"{relative}: current authority block differs from upload manifest/gates"
+            )
+
+    document = documents.get(DOCUMENT)
+    if document is None:
+        return failures
 
     if document.count(CURRENT_BLOCK_START) != 1 or document.count(CURRENT_BLOCK_END) != 1:
         failures.append(f"{DOCUMENT}: exact-current block markers must each appear once")

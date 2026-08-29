@@ -7,8 +7,13 @@ import unittest
 from pathlib import Path
 
 from scripts.check_release_qa_matrix import (
+    AUTHORITY_BLOCK_END,
+    AUTHORITY_BLOCK_START,
+    AUTHORITY_DOCUMENTS,
+    DOCUMENT,
     HISTORICAL_HEADING,
     ROOT,
+    expected_authority_block,
     expected_current_block,
     validate,
 )
@@ -118,7 +123,7 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
             ["git", "rev-parse", "HEAD"], cwd=self.root, text=True
         ).strip()
 
-    def _write_text(self, relative: str, content: str) -> None:
+    def _write_text(self, relative: str | Path, content: str) -> None:
         path = self.root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
@@ -133,10 +138,21 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         block, failures, historical_identities = expected_current_block(self.root)
         self.assertEqual(failures, [])
         self.assertIsNotNone(block)
+        authority_block, authority_failures = expected_authority_block(self.root)
+        self.assertEqual(authority_failures, [])
+        self.assertIsNotNone(authority_block)
+        assert authority_block is not None
+        for relative in AUTHORITY_DOCUMENTS:
+            if relative != DOCUMENT:
+                self._write_text(
+                    relative,
+                    f"# Fixture narrative\n\n{authority_block}\n",
+                )
         historical_rows = "\n".join(f"- {identity}" for identity in historical_identities)
         self._write_text(
-            "docs/QA_MATRIX.md",
+            DOCUMENT,
             "# Release QA matrix\n\n"
+            f"{authority_block}\n\n"
             "## Exact-current candidate\n\n"
             f"{block}\n\n"
             f"{HISTORICAL_HEADING}\n\n"
@@ -159,6 +175,82 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
 
     def test_fixture_contract_passes(self) -> None:
         self.assertEqual(validate(self.root), [])
+
+    def test_narrative_source_revision_drift_fails_closed(self) -> None:
+        path = self.root / "growth/README.md"
+        document = path.read_text(encoding="utf-8")
+        path.write_text(
+            document.replace(self.source_revision, "f" * 40),
+            encoding="utf-8",
+        )
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "growth/README.md: current authority block differs from upload manifest/gates",
+            failures,
+        )
+
+    def test_narrative_physical_gate_drift_fails_closed(self) -> None:
+        path = self.root / "docs/GROWTH_RELEASE.md"
+        document = path.read_text(encoding="utf-8")
+        path.write_text(
+            document.replace(
+                "physical_gate:android_physical_smoke=blocked",
+                "physical_gate:android_physical_smoke=pass",
+            ),
+            encoding="utf-8",
+        )
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "docs/GROWTH_RELEASE.md: current authority block differs from upload manifest/gates",
+            failures,
+        )
+
+    def test_physical_gate_reason_change_invalidates_narratives(self) -> None:
+        gates = self._read_json("growth/quality/gates.json")
+        gates["gates"]["android_physical_smoke"]["reason"] = (
+            "new bounded physical evidence"
+        )
+        self._write_json("growth/quality/gates.json", gates)
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "docs/QA_MATRIX.md: current authority block differs from upload manifest/gates",
+            failures,
+        )
+
+    def test_manifest_physical_evidence_change_invalidates_narratives(self) -> None:
+        self._write_text("growth/second-evidence.md", "new fixture evidence\n")
+        manifest = self._read_json("store/upload-manifest-1.1.0.json")
+        manifest["artifacts"]["android_phone"]["physical_qa_evidence"] = (
+            "growth/second-evidence.md"
+        )
+        self._write_json("store/upload-manifest-1.1.0.json", manifest)
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "docs/RELEASE.md: current authority block differs from upload manifest/gates",
+            failures,
+        )
+
+    def test_each_narrative_requires_exact_authority_markers(self) -> None:
+        path = self.root / "docs/RELEASE.md"
+        document = path.read_text(encoding="utf-8")
+        start = document.index(AUTHORITY_BLOCK_START)
+        end = document.index(AUTHORITY_BLOCK_END, start) + len(AUTHORITY_BLOCK_END)
+        path.write_text(document[:start] + document[end:], encoding="utf-8")
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "docs/RELEASE.md: current authority block markers must each appear once",
+            failures,
+        )
 
     def test_manifest_identity_drift_fails_closed(self) -> None:
         manifest = self._read_json("store/upload-manifest-1.1.0.json")

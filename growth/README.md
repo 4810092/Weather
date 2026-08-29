@@ -1,15 +1,36 @@
 # Nimbo growth operations
 
-Current verdict (2026-08-29): **HOLD ACQUISITION**. The reproducible public
-monitor and daily snapshots are in place, but the required rank surfaces fail
-and the Top-10 streak is zero. Current phone vc8 and Apple build 6 cannot
+<!-- release-authority-current:start -->
+<!-- source_revision:9c2dce4200dbba5487c8c458ade4616005fde6e6 -->
+<!-- artifact:android_phone;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ea0cf59f9f2f1e94ab31e3875b6977ddff68c5f1d822222e69707b0d7fd90d0d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=395e546ef1fbf05448e0fb1ce3e0c37217ee460193dfde430dc2629ee597e76b -->
+<!-- release-authority-current:end -->
+
+Current verdict (2026-08-30): **HOLD ACQUISITION**. The canonical 00:00 +05:00
+public snapshot places Nimbo at `#22` in Apple's official UZ Weather chart and
+`#87` for Apple `weather`; all three fixed Google UZ category profiles remain
+outside the first 30 and `0/5` generic queries qualify. One auxiliary Apple
+`Toshkent ob-havo` search returned only one unique app, but every goal surface
+is decisive and fails, so the verified Top-10 streak remains `0/7`. Current
+phone vc8 and Apple build 6 cannot
 complete their protected private-signing operations and therefore have no
 source-synced signed artifact or matching release-certificate physical QA.
-Current Android product source has bounded debug API 24 emulator evidence;
-physical API 25 evidence and Apple localized simulator captures remain scoped
-to their explicitly pinned prior product sources. Neither closes signing or the
-physical release matrix. Signed phone vc7 and Apple build 5 are historical
-evidence only. OpenMeteo GmbH has confirmed
+Exact current product source `9c2dce4` has bounded debug API 24 emulator and
+physical API 25 phone evidence, plus byte-identical debug API 36 tablet/widget
+emulator evidence. The physical pass uses the debug certificate; it is not an
+upload-signed phone result, while the tablet/widget pass is not physical-device
+evidence. Neither covers a paired Wear OS device. Apple app/widget/watch have
+exact-current Release-simulator evidence, and the localized iPhone phone
+capture set now has twelve exact-current `9c2dce4` build-6 simulator sources
+covering four real states per locale. The attempted Apple offline transition
+was not captured and is not claimed; Apple Watch sources remain historical
+build-5 simulator evidence. None closes
+signing, physical-device, TestFlight, store-state, or the release matrix.
+Signed phone vc7 and Apple build 5 are historical evidence only. OpenMeteo GmbH
+has confirmed
 the exact unpaid, non-monetized organic-promotion scope for the non-commercial
 API. The iOS crash diagnostic, complete device matrix, and reconciled console
 exports are still missing. A build, a Pages
@@ -25,18 +46,22 @@ deployment, or historical device evidence does not close those gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
+| Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |
 | Provider capacity | [legal/open-meteo-capacity-contingency-2026-08-29.md](legal/open-meteo-capacity-contingency-2026-08-29.md) | Source-derived request model, implemented cache gate, official limits, and the no-key-in-client boundary |
 | Android emulator QA | [quality/android-emulator-smoke-2026-08-28.md](quality/android-emulator-smoke-2026-08-28.md) | API 24/36 live, denied-location, search, offline/error, recovery, and cold-start evidence |
-| Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact product-source no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
-| Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Clean API 25 live/search/cold-start evidence and uninstall boundary |
+| Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact `9c2dce4` no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
+| Android exact-product physical QA | [quality/android-current-product-physical-smoke-2026-08-29.md](quality/android-current-product-physical-smoke-2026-08-29.md) | Exact `9c2dce4` debug-certificate API 25 onboarding/live/late-day Best Time/tip/offline/recovery/process-health pass; explicitly not upload-signed, tablet/widget, or Wear evidence |
+| Android exact-product tablet/widget QA | [quality/android-current-product-tablet-widget-smoke-2026-08-29.md](quality/android-current-product-tablet-widget-smoke-2026-08-29.md) | Byte-identical exact `9c2dce4` debug APK on an API 36 tablet emulator: Uzbek layout, live forecast, Best Time, durable tip, widget render/tap, large text, rotation, process health, and explicit non-physical/non-upload boundary |
+| Historical signed Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Historical phone vc7 clean API 25 live/search/cold-start evidence and uninstall boundary |
 | Trust and feedback QA | [quality/android-trust-feedback-smoke-2026-08-29.md](quality/android-trust-feedback-smoke-2026-08-29.md) | Exact-commit API 25 fresh-install plus API 36 preserved-data update, support/rate destinations, byte identity, and cleanup boundary |
 | Public ASO deployment gap | [quality/public-store-deployment-gap-2026-08-29.md](quality/public-store-deployment-gap-2026-08-29.md) | Dated public-store proof plus the authenticated unpublished Google UZ draft boundary |
+| Google UZ public-claims parity | [quality/google-play-uz-public-claims-parity-2026-08-30.md](quality/google-play-uz-public-claims-parity-2026-08-30.md) | Exact preserved phone vc6 and Wear 1000007 AAB-derived runtime/structure audit, candidate-only exclusions, creative provenance boundary, and fail-closed listing/assets drift guard; claim parity passes while Console submission remains held by independent gates |
 | UZ competitor ASO audit | [reports/aso-competitor-audit-2026-08-29.md](reports/aso-competitor-audit-2026-08-29.md) | Bounded official-store term evidence and the resulting truthful Apple/Google metadata revisions |
 | Provider-throttle physical QA | [quality/android-provider-throttle-smoke-2026-08-29.md](quality/android-provider-throttle-smoke-2026-08-29.md) | Pinned source `2004e4f` API 25 fresh-cache skip, manual bypass, recovery, and cleanup evidence |
 | Apple runtime QA | [quality/apple-runtime-smoke-2026-08-28.md](quality/apple-runtime-smoke-2026-08-28.md) | Simulator and bounded iPad proof plus the explicit iPhone DDI blocker |
-| Apple screenshot provenance | [quality/apple-localized-current-product-capture-2026-08-29.md](quality/apple-localized-current-product-capture-2026-08-29.md) | EN/RU/UZ build-6 simulator phone pixels from pinned source `9342824`, current storage-error-only source boundary, source hashes, renderer boundary, and explicit non-signing/non-physical scope |
+| Apple screenshot provenance | [quality/apple-localized-current-product-capture-2026-08-30.md](quality/apple-localized-current-product-capture-2026-08-30.md) | Twelve exact-current `9c2dce4` build-6 simulator EN/RU/UZ iPhone phone sources across four real states per locale, executable/source identities, rejected offline attempt, live-provider and renderer boundaries, and explicit non-signing/non-physical scope; Apple Watch sources remain historical build-5 evidence |
 | iOS 15 widget compatibility | [quality/ios-widget-compatibility-2026-08-29.md](quality/ios-widget-compatibility-2026-08-29.md) | Pinned implementation source `fc07dd1` minOS/UUID/hash proof plus available-runtime host integration and the explicit missing iOS 15/16 runtime boundary |
 
 The public monitor does not log in, use cookies, bypass access controls, or claim to reproduce personalized store UI. Google results remain sensitive to IP, compatibility, experiments, and server behavior. An absent target is recorded only as `> observed_count`.

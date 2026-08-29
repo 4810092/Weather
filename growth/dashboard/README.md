@@ -10,10 +10,14 @@ Public outreach and acquisition scaling remain gated on crash diagnosis,
 source-synced signed phone, Wear OS, and Apple artifacts, complete
 physical-device coverage, and critical console guardrails. Open-Meteo written
 clearance passes for the exact unpaid, non-monetized organic-promotion scope.
-On 2026-08-29 the auxiliary Apple
-`Toshkent ob-havo` search returned only one unique app, below the 10-app
-completeness floor, while all required goal surfaces were complete and failed;
-the streak is therefore correctly zero. Product commit
+The canonical `2026-08-30T00:00:25+05:00` capture places Nimbo at `#87`
+for Apple `weather` search and `#22` in the official Apple Weather chart;
+all three Google category profiles remain outside the first 30 and `0/5`
+generic queries qualify. The auxiliary Apple `Toshkent ob-havo` search
+returned only one unique app, below the 10-app completeness floor, but it is
+a non-goal diagnostic source error: `goal_evidence_complete=true`, all
+required goal surfaces are complete and failed, and the streak remains `0/7`.
+Product commit
 `9c2dce4200dbba5487c8c458ade4616005fde6e6` resolves to phone 1.1.0 (8),
 Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Its Bundletool-validated phone
 AAB
@@ -35,9 +39,13 @@ and watch
 Their UUID-matched dSYMs verify; the shared iOS simulator suite, 18 Swift
 surface tests, full Gradle release gate, and localization parity pass. All
 three Apple products remain ad-hoc simulator outputs rather than uploadable
-archives. EN/RU/UZ iPhone captures remain pinned to prior UI source `9342824`
-and are not relabelled as exact-current; the storage-hardening change does not
-alter their normal UI pixels. Product commit `9c2dce4` also closes three
+archives. Twelve EN/RU/UZ iPhone phone sources now come from the exact-current
+`9c2dce4` build-6 simulator app: overview, recent comparison, selected timeline,
+and 10-day/AQI details in each locale. The attempted Apple offline transition
+was not captured and is not claimed. This proves localized phone screenshot
+provenance only, not signing, physical-device, TestFlight, or store state.
+Apple Watch sources remain historical build-5 simulator evidence. Product
+commit `9c2dce4` also closes three
 deterministic storage-failure exception escapes and adds four
 throwing-repository regressions.
 
@@ -49,9 +57,15 @@ durable-tip persistence, offline cache, recovery, process health, and cleanup
 passed, with zero product-scoped fatal/ANR/SSL/CertPath/trust-anchor matches.
 The exact-source API 24 emulator APK
 `168bb6acdb95453a8dfd141947edbcb9292b756fd3429fffa56fc4baf125dbec`
-retains its fresh live/cache/recovery pass. These are debug regression results,
-not upload-signed release proof. Prior widget and API 37 round-Wear evidence
-remains historical. Google Play Custom Store Listing
+retains its fresh live/cache/recovery pass. The byte-identical exact-current
+debug APK and installed bytes
+`52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
+also passed a fresh no-snapshot API 36 Pixel Tablet emulator smoke in Uzbek:
+landscape onboarding, live forecast, Best Time, durable-tip persistence,
+home-screen widget render/tap, font scale `1.3`, rotation, process health, and
+cleanup passed. These are debug regression results; the API 36 result is
+emulator evidence, not physical-tablet or upload-signed release proof. Prior
+API 37 round-Wear evidence remains historical. Google Play Custom Store Listing
 `4834799756935529888` persists as an Uzbekistan-only `Draft` with Uzbek fallback
 and separate Russian copy and creatives. It was not submitted for review or
 published, and public production remains `1.0.2 (6)`.
@@ -65,9 +79,37 @@ version or localization draft was created. No build, localization, screenshot,
 Custom Product Page, submission, or release mutation followed. The Apple copy
 and creative payload therefore remains repository-prepared, not an App Store
 Connect draft or deployed store state.
+The same authenticated preflight found zero existing analytics report requests.
+Exactly one bounded POST then attempted to create an `ONGOING` analytics report
+request for app `6799886897`; App Store Connect returned security `403` without
+a resource ID. The request was not retried, and no duplicate, report instance,
+segment, user-level data, or PII was created or downloaded. Automated weekly
+Apple analytics therefore remains permission-blocked for the current key and
+the dashboard's missing-console-data state remains explicit.
+An authenticated Play Console refresh at `2026-08-29 23:37–23:46 +05:00`
+confirmed the global default rating remains `1.000` from one user, with zero
+written reviews across the all-time range. The lone star-only rating has no
+reply surface and is not attributed to Uzbekistan, a device, version, or
+storefront. Account-level email notifications were enabled and saved for new
+one- through five-star reviews and edited reviews; no email address, reviewer
+data, or other PII is stored in the dashboard. The existing daily heartbeat
+now checks the Nimbo review inbox once per day after `09:15` Asia/Tashkent.
+
+The same refresh showed a rolling `Last 28 days` acquisition snapshot of `778`
+device impressions, `21` installs, `14` first opens, `11` monthly active
+devices, unavailable D7 retention, and the unchanged `40.82%` summary
+conversion. The dated historical baseline remains `779` impressions and is not
+rewritten by a moving-window refresh. The separate modern Store Listings window
+`2026-07-27..2026-08-23` reported `44` visitors, `18` install clicks, and `41%`
+CTR across listing surfaces; its published default-listing row separately
+reported `42` visitors and `28.6%` conversion. These are distinct populations
+and are not reconciled with each other or with the acquisition-summary card.
+For the exact `2026-08-16..2026-08-22` export, Console retained `UZ` in the
+request but omitted the UZ series from both the table and CSV. No UZ visitor,
+acquisition, or conversion value is imported, zero-filled, or derived.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
 is still missing despite the bounded exact API 24 emulator and API 25 physical
-debug passes. Android Keychain
+phone plus API 36 emulator tablet/widget debug passes. Android Keychain
 metadata and the existing mode-600 keystore are present, but the protected value
 was not retrieved and upload signing remains unavailable. At 20:44 +05:00 the
 iPad was again available and paired, but lock-state and DDI queries failed

@@ -118,7 +118,7 @@ python3 scripts/build_store_creatives.py
 
 The current renderer is intentionally pinned to the exact macOS Arial and Arial
 Bold byte hashes recorded in the manifest. Those proprietary system fonts are
-not vendored, so Ubuntu CI validates the exact 22 source hashes and 40 output
+not vendored, so Ubuntu CI validates the exact 31 source hashes and 40 output
 hashes instead of attempting a non-equivalent re-render. A local rebuild must
 run on a machine with the pinned font bytes and Pillow version; any mismatch
 fails before assets are accepted.
@@ -127,14 +127,22 @@ The command creates 36 opaque PNG creatives under
 `store/creatives/growth-2026-08/`, three localized 1024 × 500 Google Play
 feature graphics for EN/RU/UZ, and an EN alias for the global default listing.
 Re-running it with identical inputs produces identical bytes; renderer or font
-drift stops the build. The manifest also hashes the exact set of 22 phone,
+drift stops the build. The manifest also hashes the exact set of 31 phone,
 watch, and feature-graphic source images, so stale generated artwork cannot
-pass after an input capture changes. Story six uses locale-matched watch captures; RU/UZ
-sources are real simulator/emulator evidence. The Apple captures remain scoped
-to pinned product source `9342824`, build 6. Current product source `9c2dce4`
-changes storage-error handling only, but its exact-current screenshot recapture
-is still pending; the retained pixels do not establish current-source or
-physical-watch QA.
+pass after an input capture changes. Story six uses locale-matched watch
+captures; RU/UZ sources are real simulator/emulator evidence. The Apple phone
+capture set contains four distinct exact-current states per EN/RU/UZ locale:
+overview/Best Time, recent comparison, selected timeline, and 10-day/AQI
+details. They are from product source `9c2dce4`, build 6, and are
+bounded to an iPhone 17 Pro Max simulator on iOS 26.5 with the checked-in
+Tashkent quick-city seed and the normal live provider path. This proves current
+localized phone pixels only; it does not establish distribution signing,
+physical iPhone/iPad/watch/widget QA, TestFlight, store review, rollout, or
+public availability. An offline-cache state was not checked in for Apple: a
+process-scoped unreachable proxy did not deterministically force the live
+provider to fail, and product data was not modified to manufacture the state.
+Story five therefore keeps the exact-current overview plus the separately
+audited privacy claim; it is not evidence of an Apple offline transition.
 
 `scripts/check_store_metadata.py` validates schema version, locale coverage,
 platform/storefront relationships, exact UZ/RU candidate copy, text limits, experiment
