@@ -66,28 +66,33 @@ private struct NimboWidgetView: View {
     @Environment(\.colorScheme) private var colorScheme
     let entry: WeatherEntry
 
+    @ViewBuilder
     var body: some View {
-        switch family {
-        case .accessoryInline:
-            Text("\(symbol) \(temperature) · \(rangeText)")
-        case .accessoryCircular:
-            VStack(spacing: 0) {
-                Text(symbol)
-                Text(temperature).font(.caption.bold())
-                if hasDailyRange {
-                    Text(rangeText).font(.system(size: 8, weight: .semibold))
+        if #available(iOS 16.0, *) {
+            switch family {
+            case .accessoryInline:
+                Text("\(symbol) \(temperature) · \(rangeText)")
+            case .accessoryCircular:
+                VStack(spacing: 0) {
+                    Text(symbol)
+                    Text(temperature).font(.caption.bold())
+                    if hasDailyRange {
+                        Text(rangeText).font(.system(size: 8, weight: .semibold))
+                    }
                 }
-            }
-        case .accessoryRectangular:
-            VStack(alignment: .leading, spacing: 1) {
-                Text(entry.location).font(.headline).lineLimit(1)
-                Text("\(symbol) \(temperature) · \(rainLabel)")
-                    .font(.caption)
-                if hasDailyRange {
-                    Text(rangeText).font(.caption2.weight(.semibold))
+            case .accessoryRectangular:
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(entry.location).font(.headline).lineLimit(1)
+                    Text("\(symbol) \(temperature) · \(rainLabel)")
+                        .font(.caption)
+                    if hasDailyRange {
+                        Text(rangeText).font(.caption2.weight(.semibold))
+                    }
                 }
+            default:
+                homeWidget
             }
-        default:
+        } else {
             homeWidget
         }
     }
@@ -121,11 +126,11 @@ private struct NimboWidgetView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        .containerBackground(for: .widget) {
+        .nimboWidgetBackground(
             colorScheme == .dark
                 ? Color(red: 0.063, green: 0.094, blue: 0.125)
                 : Color(red: 0.953, green: 0.969, blue: 0.988)
-        }
+        )
     }
 
     private var hasDailyRange: Bool {
@@ -166,6 +171,19 @@ private struct NimboWidgetView: View {
     }
 }
 
+private extension View {
+    @ViewBuilder
+    func nimboWidgetBackground(_ color: Color) -> some View {
+        if #available(iOS 17.0, *) {
+            containerBackground(for: .widget) {
+                color
+            }
+        } else {
+            background(color)
+        }
+    }
+}
+
 @main
 struct NimboWidget: Widget {
     let kind = "NimboWeather"
@@ -176,12 +194,18 @@ struct NimboWidget: Widget {
         }
         .configurationDisplayName(String(localized: "Nimbo Weather"))
         .description(String(localized: "Weather you can understand at a glance."))
-        .supportedFamilies([
-            .systemSmall,
-            .systemMedium,
-            .accessoryInline,
-            .accessoryCircular,
-            .accessoryRectangular
-        ])
+        .supportedFamilies(supportedWidgetFamilies)
+    }
+
+    private var supportedWidgetFamilies: [WidgetFamily] {
+        var families: [WidgetFamily] = [.systemSmall, .systemMedium]
+        if #available(iOS 16.0, *) {
+            families.append(contentsOf: [
+                .accessoryInline,
+                .accessoryCircular,
+                .accessoryRectangular
+            ])
+        }
+        return families
     }
 }

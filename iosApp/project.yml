@@ -80,7 +80,7 @@ targets:
   NimboWidget:
     type: app-extension
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "15.0"
     sources:
       - path: NimboWidget
       - path: NimboSurfaces

@@ -143,6 +143,34 @@ if "coreLibraryDesugaring(libs.desugar.jdk.libs)" not in android:
 if f"PRODUCT_BUNDLE_IDENTIFIER: {identity}" not in ios:
     fail("iOS production bundle identifier changed")
 
+widget_deployment_target = re.search(
+    r'(?ms)^  NimboWidget:\n.*?^    deploymentTarget: "([^"]+)"', ios
+)
+if (
+    widget_deployment_target is None
+    or widget_deployment_target.group(1) != "15.0"
+):
+    fail("WidgetKit extension must support the iOS 15 application floor")
+
+widget_source = (ROOT / "iosApp/NimboWidget/NimboWidget.swift").read_text()
+for required_widget_contract in (
+    "if #available(iOS 16.0, *)",
+    "if #available(iOS 17.0, *)",
+    "containerBackground(for: .widget)",
+    "background(color)",
+    ".supportedFamilies(supportedWidgetFamilies)",
+):
+    if required_widget_contract not in widget_source:
+        fail(f"WidgetKit compatibility contract missing: {required_widget_contract}")
+
+generated_xcode_project = (
+    ROOT / "iosApp/Nimbo.xcodeproj/project.pbxproj"
+).read_text()
+if generated_xcode_project.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;") != 4:
+    fail("generated Xcode project must keep app and widget at iOS 15")
+if "IPHONEOS_DEPLOYMENT_TARGET = 17.0;" in generated_xcode_project:
+    fail("generated Xcode project still contains the obsolete iOS 17 widget floor")
+
 android_version = re.search(r"versionCode\s*=\s*([\d_]+)", android)
 wear_version = re.search(r"versionCode\s*=\s*([\d_]+)", wear)
 android_version_name = re.search(r'versionName\s*=\s*"([^"]+)"', android)

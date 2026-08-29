@@ -86,6 +86,12 @@ xcodebuild \
 
 The `NimboSimulator` target embeds WidgetKit but deliberately omits the watch companion so a generic iOS Simulator build does not require a paired watch destination. The `Nimbo` device/archive scheme requires Apple signing and is not a contributor prerequisite.
 
+The iOS app and home-screen widget both target iOS 15. Accessory widget
+families are registered only on iOS 16 and later, while the removable WidgetKit
+container background is used on iOS 17 and later with an iOS 15–16 background
+fallback. A successful lower-deployment build proves API compatibility, not
+runtime rendering on an unavailable older simulator.
+
 `iosApp/project.yml` is the human-reviewable XcodeGen definition. The generated `Nimbo.xcodeproj` is also committed so XcodeGen is not required for a first build. If a change regenerates the project, review and commit both the definition and the resulting project changes.
 
 ## Shared code workflow

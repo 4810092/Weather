@@ -76,6 +76,30 @@ class ValidationScriptsTest(unittest.TestCase):
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
         )
 
+    def test_ios_widget_matches_app_floor_with_guarded_newer_surfaces(self) -> None:
+        project = (ROOT / "iosApp/project.yml").read_text(encoding="utf-8")
+        generated = (
+            ROOT / "iosApp/Nimbo.xcodeproj/project.pbxproj"
+        ).read_text(encoding="utf-8")
+        widget = (
+            ROOT / "iosApp/NimboWidget/NimboWidget.swift"
+        ).read_text(encoding="utf-8")
+
+        self.assertRegex(
+            project,
+            r'(?ms)^  NimboWidget:\n.*?^    deploymentTarget: "15\.0"',
+        )
+        self.assertEqual(generated.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;"), 4)
+        self.assertNotIn("IPHONEOS_DEPLOYMENT_TARGET = 17.0;", generated)
+        for compatibility_contract in (
+            "if #available(iOS 16.0, *)",
+            "if #available(iOS 17.0, *)",
+            "containerBackground(for: .widget)",
+            "background(color)",
+            ".supportedFamilies(supportedWidgetFamilies)",
+        ):
+            self.assertIn(compatibility_contract, widget)
+
     def test_store_inspection_decodes_pixels_and_rejects_truncation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             valid = Path(directory) / "valid.png"
