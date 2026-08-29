@@ -51,7 +51,7 @@ jobs:
           python-version: "3.13"
       - name: Install site validation dependencies
         run: python3 -m pip install --disable-pip-version-check Pillow==12.2.0
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - name: Build and validate localized site
         run: |
           python3 -m unittest discover -s scripts/growth/tests -p 'test_site_articles.py'
@@ -61,7 +61,7 @@ jobs:
           python3 scripts/check_store_assets.py
           python3 scripts/check_dashboard_report.py
           python3 scripts/build_site.py
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: build/pages
 
@@ -77,4 +77,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
