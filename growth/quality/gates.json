@@ -25,8 +25,8 @@
     "release_artifact_source_sync": {
       "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "44c189209c793cf097fcc293faf8db88033e6902",
-      "reason": "Product/build-input commit 44c189209c793cf097fcc293faf8db88033e6902 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6), and adds a fail-closed NimboSourceRevision setting to every Apple product. A one-time unsigned Release simulator smoke confirmed that an explicitly supplied full revision reaches the app, widget, and watch Info.plists. No Android or Apple artifact was signed or rebuilt as a retained upload candidate from this revision. All prior AAB, APK, simulator, screenshot, archive, IPA, and physical-device evidence belongs to earlier revisions and is non-transferable. The schema-v2 manifest therefore keeps all three current artifact hashes and current signing/physical evidence null; 0/3 artifacts are byte-verified and the gate remains blocked."
+      "source_revision": "aa6496d0ac9011ff818d2c0dd2ec5c565317400c",
+      "reason": "Product/build-input commit aa6496d0ac9011ff818d2c0dd2ec5c565317400c resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It preserves fail-closed NimboSourceRevision plumbing and replaces the obsolete global Apple profile override with deterministic, bundle-specific App Store profiles for the app, WidgetKit extension, and watch app plus a matching manual export map. Read-only Xcode build settings prove that each target selects its own bundle-compatible profile. No Android or Apple artifact was signed or rebuilt as a retained upload candidate from this revision. All prior AAB, APK, simulator, screenshot, archive, IPA, and physical-device evidence belongs to earlier revisions and is non-transferable. The schema-v2 manifest therefore keeps all three current artifact hashes and current signing/physical evidence null; 0/3 artifacts are byte-verified and the gate remains blocked."
     },
     "domain_activation": {
       "status": "pass",
