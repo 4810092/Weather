@@ -383,6 +383,22 @@ class ValidationScriptsTest(unittest.TestCase):
         }
         self.assertEqual(google_custom_ids, {GOOGLE_UZ_COUNTRY_LISTING_ID})
 
+        country_listing = next(
+            listing
+            for listing in metadata["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        uz_short = country_listing["custom_listing"]["localizations"]["en-US"][
+            "short_description"
+        ]
+        self.assertEqual(
+            uz_short,
+            "Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.",
+        )
+        self.assertLessEqual(len(uz_short), 80)
+        for local_term in ("Toshkent", "O‘zbekiston", "ob-havo"):
+            self.assertIn(local_term, uz_short)
+
         schema = json.loads(
             (ROOT / "store/metadata.schema.json").read_text(encoding="utf-8")
         )

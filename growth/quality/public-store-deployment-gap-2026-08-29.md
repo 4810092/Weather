@@ -1,7 +1,8 @@
 # Public store deployment gap — 2026-08-29
 
 Status: **candidate ASO package is prepared; the Google UZ listing is saved as
-an unpublished draft**.
+an unpublished draft whose Uzbek short description now trails the repository
+candidate**.
 
 The public Apple and Google product pages were checked read-only at
 `2026-08-29 12:29:59 +05:00`. No console setting, listing, release, experiment,
@@ -44,6 +45,12 @@ carrying the Uzbek fallback and `ru-RU` carrying the Russian payload. That
 percentage is listing targeting, not release rollout. The visible public feature
 graphic materially differs from all three versioned candidate graphics.
 
+After the authenticated capture, the repository candidate was refined to
+`Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.`
+The Console Draft still contains the older Uzbek short description shown in the
+table. This repository-only change is not evidence that the revised copy was
+saved, submitted, reviewed, published, or made available to users.
+
 Public evidence:
 <https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather&hl=uz&gl=UZ>
 and
@@ -51,9 +58,10 @@ and
 
 ## Decision
 
-The highest-impact Google UZ country-listing change now exists as an unpublished
-Console draft with its localized feature graphics and six captioned screenshot
-stories. Submission, review, publication, and end-user availability remain
+The Google UZ country listing exists as an unpublished Console draft with its
+localized feature graphics and six captioned screenshot stories, but its Uzbek
+short description must still be synchronized with the newer repository
+candidate. Submission, review, publication, and end-user availability remain
 pending. Apple default title/subtitle work is already live, so re-submitting the
 same values is not treated as growth progress.
 

@@ -288,7 +288,7 @@
             "audience_locale": "uz-UZ",
             "store_locale_fallback": "en-US",
             "title": "Nimbo: Ob-havo va prognoz",
-            "short_description": "Ob-havo prognozi: tashqariga chiqish uchun eng yaxshi vaqtni toping.",
+            "short_description": "Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.",
             "full_description": "Toshkent va O‘zbekiston shaharlari uchun mahalliy ob-havo prognozi: tashqariga chiqish uchun qulay vaqtni ko‘ring.\n\nNimbo hozirgi holatni, keyingi 24 soatni va 10 kunlik prognozni shu joydagi yaqin kunlar ob-havosi bilan yonma-yon ko‘rsatadi. Oldindagi soatlar kechagidan issiqroq, salqinroq, yomg‘irliroq yoki deyarli bir xil bo‘lishini tezda biling.\n\n• Hozirgi ob-havoning tushunarli xulosasi\n• Ketma-ket −24 / HOZIR / +24 vaqt chizig‘i\n• Kecha va yaqin kunlar bilan taqqoslash\n• Qulaylik va ob-havo xavflariga ko‘ra tashqariga chiqish uchun yaxshi vaqt\n• Toshkent, Samarqand, Buxoro va boshqa shaharlarni joylashuv ruxsatisiz qidirish\n• 10 kunlik ob-havo prognozi va havo sifati\n• Internet bo‘lmaganda saqlangan ob-havo\n• Apple Watch va Wear OS uchun vidjetlar hamda hamroh ilovalar\n• Avtomatik, metrik yoki imperial birliklar\n\nHisob, reklama va tahlil yo‘q. Taxminiy joylashuv ixtiyoriy; joylashuv ruxsatisiz shahar qidirish mumkin.\n\nOb-havo va joy ma’lumotlarini Open-Meteo taqdim etadi. Tarixiy qiymatlar model va reanaliz ma’lumotlari bo‘lib, muayyan stansiyaning tasdiqlangan kuzatuvlari emas."
           },
           "ru-RU": {

@@ -10,15 +10,19 @@ created or changed.
 Keep the prepared Google Play UZ titles and strengthen the short descriptions
 without losing the differentiated benefit:
 
-- Uzbek audience: keep `Nimbo: Ob-havo va prognoz`; change the short copy to
-  `Ob-havo prognozi: tashqariga chiqish uchun eng yaxshi vaqtni toping.`
+- Uzbek audience: keep `Nimbo: Ob-havo va prognoz`; use the short copy
+  `Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.`
 - Russian audience: keep `Nimbo: Погода и прогноз`; change the short copy to
   `Прогноз погоды: найдите лучшее время, чтобы выйти на улицу.`
 
 The titles and revised short descriptions cover the strongest truthful generic
-term families. They retain differentiated benefit-led copy: none of the
-inspected competitor title, subtitle, or short-description surfaces used
-Nimbo's best-time-outside or recent-weather-comparison proposition.
+and local term families without repeating both title terms in the Uzbek short
+description. All three fixed Google profiles placed geographically named apps
+first for `Toshkent ob-havo`, while Nimbo met no Top-10 quorum for that query.
+The copy therefore adds truthful Tashkent and Uzbekistan context while retaining
+the differentiated best-time-outside benefit. None of the inspected competitor
+title, subtitle, or short-description surfaces used Nimbo's best-time-outside
+or recent-weather-comparison proposition.
 
 The UZ-targeted full descriptions were also refined. They now add natural,
 truthful context for Tashkent and Uzbekistan, ordinary city search, the
