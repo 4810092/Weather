@@ -1,14 +1,18 @@
-# Apple localized exact-current product capture — 2026-08-30
+# Apple localized source-bound product capture — 2026-08-30
 
-Status: **PASS for exact-current App Store phone screenshot provenance**.
+Status: **PASS for predecessor `9c2dce4` App Store phone screenshot provenance;
+not current-binary evidence for `44c1892`**.
 
 This record proves only the provenance and store-format readiness of twelve
 localized iPhone phone sources: four distinct states in each of English,
 Russian, and Uzbek. It does not satisfy Apple distribution signing,
 physical-device, iPad, widget, paired-watch, iOS 15, crash, TestFlight, review,
 rollout, or public-availability gates.
+The captures were exact-current for `9c2dce4` when recorded; later source
+authority `44c1892` supersedes that binary identity, so the images remain
+creative provenance but cannot verify the current app artifact.
 
-## Exact build and simulator boundary
+## Exact captured build and simulator boundary
 
 - Product source:
   `9c2dce4200dbba5487c8c458ade4616005fde6e6`.
@@ -81,11 +85,11 @@ record makes no claim that an Apple offline transition was captured.
 
 ## Creative-set and cleanup boundary
 
-Creative manifest revision 7 hashes the twelve exact-current source files. The
+Creative manifest revision 7 hashes the twelve source-bound predecessor files. The
 deterministic renderer only crops, scales, frames, and captions those real
 application pixels; the complete generated output set remains byte-locked in
 the manifest. Stories two through four now use the matching recent-comparison,
-selected-timeline, and 10-day/AQI sources. Story five retains the exact-current
+selected-timeline, and 10-day/AQI sources. Story five retains the source-bound
 overview and the separately audited privacy caption; it is not presented as
 Apple offline-state evidence.
 

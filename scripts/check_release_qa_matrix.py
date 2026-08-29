@@ -11,6 +11,19 @@ import sys
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.release_artifact_verifier import (
+        VerificationResult,
+        evidence_contains_digest,
+        verify_manifest_artifacts,
+    )
+except ModuleNotFoundError:
+    from release_artifact_verifier import (  # type: ignore[no-redef]
+        VerificationResult,
+        evidence_contains_digest,
+        verify_manifest_artifacts,
+    )
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCUMENT = Path("docs/QA_MATRIX.md")
@@ -405,6 +418,7 @@ def _expected_blocks(
     identities = _build_identities(root, failures)
 
     release = manifest.get("release")
+    revision = manifest.get("source_revision")
     if not isinstance(release, str) or not release:
         failures.append("upload manifest: release must be a non-empty string")
     artifacts = manifest.get("artifacts")
@@ -417,6 +431,7 @@ def _expected_blocks(
         gates = {}
 
     _validate_source_revision(root, manifest, gates, failures)
+    artifact_verifications = verify_manifest_artifacts(root, manifest, failures)
 
     release_gate_status = _gate_status(gates, RELEASE_GATE, failures)
     physical_gate_statuses = {
@@ -466,22 +481,38 @@ def _expected_blocks(
             artifact,
             failures,
         )
+        verification = artifact_verifications.get(
+            artifact_id,
+            VerificationResult(
+                artifact_id=artifact_id,
+                source_sync=str(source_sync),
+                byte_verified=False,
+            ),
+        )
         authority_artifact_rows.append(
             f"<!-- artifact:{artifact_id};source_sync={source_sync};"
+            f"byte_verified={str(verification.byte_verified).lower()};"
             f"physical_qa_evidence={physical_evidence} -->"
         )
-        _existing_repository_file(
+        evidence_contains_digest(
             root,
             artifact.get("source_sync_evidence"),
+            revision,
             f"{artifact_id}: source_sync_evidence",
             failures,
+            binding="the manifest source_revision",
         )
 
         historical_identity = _historical_identity(artifact, field, release)
-        if historical_identity is None:
-            failures.append(f"{artifact_id}: historical candidate identity is missing")
-        else:
-            historical_identities.append(historical_identity)
+        if source_sync == "blocked":
+            if historical_identity is None:
+                failures.append(f"{artifact_id}: historical candidate identity is missing")
+            else:
+                historical_identities.append(historical_identity)
+        elif artifact.get("historical_candidate") is not None:
+            failures.append(
+                f"{artifact_id}: verified-current artifact cannot carry a historical candidate"
+            )
 
         physical_gate = surface["physical_gate"]
         physical_status = physical_gate_statuses.get(physical_gate)
@@ -489,6 +520,7 @@ def _expected_blocks(
             continue
         ready_authority = (
             source_sync == "verified-current"
+            and verification.byte_verified
             and release_gate_status == "pass"
             and physical_status == "pass"
         )
@@ -501,18 +533,20 @@ def _expected_blocks(
                 )
                 evidence_ready = False
             evidence_ready = (
-                _existing_repository_file(
+                evidence_contains_digest(
                     root,
                     artifact.get("signing_evidence"),
+                    sha256,
                     f"{artifact_id}: READY signing_evidence",
                     failures,
                 )
                 and evidence_ready
             )
             evidence_ready = (
-                _existing_repository_file(
+                evidence_contains_digest(
                     root,
                     artifact.get("physical_qa_evidence"),
+                    sha256,
                     f"{artifact_id}: READY physical_qa_evidence",
                     failures,
                 )
@@ -522,18 +556,33 @@ def _expected_blocks(
         status = "READY" if ready else "BLOCKED"
         rows.append(
             f"| {surface['label']} | `{version_name} ({build_number})` | "
-            f"`{source_sync}` | `{RELEASE_GATE}: {release_gate_status}` | "
+            f"`{source_sync}` | `{str(verification.byte_verified).lower()}` | "
+            f"`{RELEASE_GATE}: {release_gate_status}` | "
             f"`{physical_gate}: {physical_status}` | **{status}** |"
         )
 
-    revision = manifest.get("source_revision")
+    if release_gate_status == "pass":
+        unverified = [
+            artifact_id
+            for artifact_id in ("android_phone", "wear_os", "apple")
+            if not artifact_verifications.get(
+                artifact_id,
+                VerificationResult(artifact_id, "missing", False),
+            ).byte_verified
+        ]
+        if unverified:
+            failures.append(
+                "quality gates: release_artifact_source_sync cannot pass without "
+                "byte-verified artifacts: " + ", ".join(unverified)
+            )
+
     if failures or not isinstance(revision, str):
         return None, None, failures, historical_identities
     block = "\n".join(
         (
             CURRENT_BLOCK_START,
-            "| Surface | Exact candidate | Manifest source sync | Release/source gate | Required physical QA | Fail-closed status |",
-            "| --- | --- | --- | --- | --- | --- |",
+            "| Surface | Exact candidate | Manifest source sync | Real bytes verified | Release/source gate | Required physical QA | Fail-closed status |",
+            "| --- | --- | --- | --- | --- | --- | --- |",
             *rows,
             CURRENT_BLOCK_END,
         )

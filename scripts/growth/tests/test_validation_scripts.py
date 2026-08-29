@@ -522,6 +522,31 @@ class ValidationScriptsTest(unittest.TestCase):
             any("declared build 5 differs from source 6" in item for item in failures)
         )
 
+    def test_historical_hashes_cannot_be_relabelled_as_current_bytes(self) -> None:
+        manifest = copy.deepcopy(self.upload_manifest())
+        for artifact in manifest["artifacts"].values():
+            historical = artifact["historical_candidate"]
+            artifact["source_sync"] = "verified-current"
+            artifact["sha256"] = historical["sha256"]
+            artifact["signing_evidence"] = historical["signing_evidence"]
+            artifact["physical_qa_evidence"] = None
+            artifact["historical_candidate"] = None
+        failures: list[str] = []
+
+        with mock.patch.dict(
+            "os.environ",
+            {"NIMBO_RELEASE_ARTIFACT_ROOT": ""},
+            clear=False,
+        ):
+            validate_upload_artifacts(manifest, "1.1.0", failures)
+
+        for artifact_id in ("android_phone", "wear_os", "apple"):
+            self.assertIn(
+                f"upload manifest artifact {artifact_id}: verified-current "
+                "requires real artifact bytes through NIMBO_RELEASE_ARTIFACT_ROOT",
+                failures,
+            )
+
     def test_blocked_artifact_can_preserve_same_version_historical_bytes(self) -> None:
         manifest = copy.deepcopy(self.upload_manifest())
         wear = manifest["artifacts"]["wear_os"]

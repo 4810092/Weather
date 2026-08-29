@@ -154,6 +154,8 @@ Run the main local gate from a clean tree with:
 
 ```sh
 python3 scripts/check_repository.py
+python3 scripts/verify_release_artifacts.py
+python3 scripts/check_release_qa_matrix.py
 python3 scripts/check_localizations.py
 python3 scripts/check_store_metadata.py
 python3 scripts/check_store_assets.py
@@ -198,11 +200,14 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 - The coordinated `1.1.0` source identities are Android phone 8, Wear 1000008,
   and Apple build 6; nothing is uploaded or public. No retained signed artifact
   is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
-  all embed or represent historical source. The exact-current phone and Wear
-  outputs are unsigned, while Apple build 6 is simulator-only. Historical QA
+  all embed or represent historical source. The predecessor `9c2dce4` phone and
+  Wear outputs are unsigned, while its Apple build 6 is simulator-only; current
+  source `44c1892` has no retained candidate bytes. Historical QA
   does not establish signing or physical coverage for the current candidates.
-  See the [growth implementation checkpoint](docs/GROWTH_RELEASE.md), the
-  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-29.md),
+  Current product/build source `44c1892` adds Apple source-revision plumbing;
+  prior unsigned and device evidence is non-transferable. See the [growth
+  implementation checkpoint](docs/GROWTH_RELEASE.md), the
+  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30.md),
   and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 

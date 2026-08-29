@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from scripts.check_release_qa_matrix import (
     AUTHORITY_BLOCK_END,
@@ -17,6 +18,7 @@ from scripts.check_release_qa_matrix import (
     expected_current_block,
     validate,
 )
+from scripts.release_artifact_verifier import EXPECTED_POLICY, VerificationResult
 
 
 class ReleaseQaMatrixCheckTest(unittest.TestCase):
@@ -35,40 +37,88 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
             "iosApp/project.yml",
             "MARKETING_VERSION: 1.1.0\nCURRENT_PROJECT_VERSION: 6\n",
         )
+        self._write_text(
+            "iosApp/Nimbo.xcodeproj/project.pbxproj",
+            "MARKETING_VERSION = 1.1.0;\nCURRENT_PROJECT_VERSION = 6;\n",
+        )
         self.source_revision = self._commit_release_source()
-        self._write_text("growth/evidence.md", "fixture evidence\n")
+        self._write_text(
+            "growth/quality/source.md",
+            f"fixture source evidence for {self.source_revision}\n",
+        )
+        historical_evidence = {
+            "android_phone": "growth/quality/android-history.md",
+            "wear_os": "growth/quality/wear-history.md",
+            "apple": "growth/quality/apple-history.md",
+        }
+        historical_digests = {
+            "android_phone": "a" * 64,
+            "wear_os": "b" * 64,
+            "apple": "c" * 64,
+        }
+        for artifact_id, evidence in historical_evidence.items():
+            self._write_text(
+                evidence,
+                f"historical artifact SHA-256: {historical_digests[artifact_id]}\n",
+            )
         self._write_json(
             "store/upload-manifest-1.1.0.json",
             {
+                "schema_version": 2,
                 "release": "1.1.0",
                 "source_revision": self.source_revision,
+                "verification_policy": EXPECTED_POLICY,
                 "artifacts": {
                     "android_phone": {
+                        "filename": "nimbo-phone-1.1.0-vc8.aab",
                         "version_code": 8,
                         "source_sync": "blocked",
-                        "sha256": "a" * 64,
-                        "signing_evidence": "growth/evidence.md",
-                        "physical_qa_evidence": "growth/evidence.md",
-                        "source_sync_evidence": "growth/evidence.md",
-                        "historical_candidate": {"version_code": 7},
+                        "sha256": None,
+                        "signing_evidence": None,
+                        "physical_qa_evidence": None,
+                        "source_sync_evidence": "growth/quality/source.md",
+                        "historical_candidate": {
+                            "status": "historical-superseded",
+                            "filename": "nimbo-phone-1.1.0-vc7.aab",
+                            "version_code": 7,
+                            "sha256": "a" * 64,
+                            "signing_evidence": historical_evidence["android_phone"],
+                            "physical_qa_evidence": None,
+                        },
                     },
                     "wear_os": {
+                        "filename": "nimbo-wear-1.1.0-vc1000008.aab",
                         "version_code": 1_000_008,
                         "source_sync": "blocked",
-                        "sha256": "b" * 64,
-                        "signing_evidence": "growth/evidence.md",
-                        "physical_qa_evidence": "growth/evidence.md",
-                        "source_sync_evidence": "growth/evidence.md",
-                        "historical_candidate": {"version_code": 1_000_008},
+                        "sha256": None,
+                        "signing_evidence": None,
+                        "physical_qa_evidence": None,
+                        "source_sync_evidence": "growth/quality/source.md",
+                        "historical_candidate": {
+                            "status": "historical-superseded",
+                            "filename": "nimbo-wear-1.1.0-vc1000008.aab",
+                            "version_code": 1_000_008,
+                            "sha256": "b" * 64,
+                            "signing_evidence": historical_evidence["wear_os"],
+                            "physical_qa_evidence": None,
+                        },
                     },
                     "apple": {
+                        "filename": "Nimbo.ipa",
                         "build": 6,
                         "source_sync": "blocked",
-                        "sha256": "c" * 64,
-                        "signing_evidence": "growth/evidence.md",
-                        "physical_qa_evidence": "growth/evidence.md",
-                        "source_sync_evidence": "growth/evidence.md",
-                        "historical_candidate": {"build": 5},
+                        "sha256": None,
+                        "signing_evidence": None,
+                        "physical_qa_evidence": None,
+                        "source_sync_evidence": "growth/quality/source.md",
+                        "historical_candidate": {
+                            "status": "historical-superseded",
+                            "filename": "Nimbo.ipa",
+                            "build": 5,
+                            "sha256": "c" * 64,
+                            "signing_evidence": historical_evidence["apple"],
+                            "physical_qa_evidence": None,
+                        },
                     },
                 },
             },
@@ -85,6 +135,7 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
                 }
             },
         )
+        self._commit_records("Fixture release evidence")
         self._write_document()
 
     def tearDown(self) -> None:
@@ -134,6 +185,32 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
     def _read_json(self, relative: str) -> dict:
         return json.loads((self.root / relative).read_text(encoding="utf-8"))
 
+    def _commit_records(self, message: str) -> None:
+        subprocess.run(
+            ["git", "add", "-A"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        staged = subprocess.run(
+            ["git", "diff", "--cached", "--quiet"],
+            cwd=self.root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if staged.returncode == 1:
+            subprocess.run(
+                ["git", "commit", "--quiet", "-m", message],
+                cwd=self.root,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        else:
+            self.assertEqual(staged.returncode, 0, staged.stderr)
+
     def _write_document(self) -> None:
         block, failures, historical_identities = expected_current_block(self.root)
         self.assertEqual(failures, [])
@@ -162,13 +239,53 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
 
     def _set_ready_authority(self) -> None:
         manifest = self._read_json("store/upload-manifest-1.1.0.json")
-        for artifact in manifest["artifacts"].values():
+        digests = {
+            "android_phone": "a" * 64,
+            "wear_os": "b" * 64,
+            "apple": "c" * 64,
+        }
+        for artifact_id, artifact in manifest["artifacts"].items():
             artifact["source_sync"] = "verified-current"
+            artifact["sha256"] = digests[artifact_id]
+            artifact["signing_evidence"] = (
+                f"growth/quality/{artifact_id}-signing.md"
+            )
+            artifact["physical_qa_evidence"] = (
+                f"growth/quality/{artifact_id}-physical.md"
+            )
+            artifact["historical_candidate"] = None
         self._write_json("store/upload-manifest-1.1.0.json", manifest)
+        for artifact_id, digest in digests.items():
+            self._write_text(
+                f"growth/quality/{artifact_id}-signing.md",
+                f"verified signing artifact SHA-256: {digest}\n",
+            )
+            self._write_text(
+                f"growth/quality/{artifact_id}-physical.md",
+                f"physical QA artifact SHA-256: {digest}\n",
+            )
         gates = self._read_json("growth/quality/gates.json")
         for gate in gates["gates"].values():
             gate["status"] = "pass"
         self._write_json("growth/quality/gates.json", gates)
+        self._commit_records("Fixture current release evidence")
+
+    @staticmethod
+    def _successful_verifications() -> dict[str, VerificationResult]:
+        return {
+            artifact_id: VerificationResult(
+                artifact_id=artifact_id,
+                source_sync="verified-current",
+                byte_verified=True,
+                sha256=digest,
+                details={"fixture": True},
+            )
+            for artifact_id, digest in {
+                "android_phone": "a" * 64,
+                "wear_os": "b" * 64,
+                "apple": "c" * 64,
+            }.items()
+        }
 
     def test_repository_matrix_matches_current_authority(self) -> None:
         self.assertEqual(validate(ROOT), [])
@@ -223,7 +340,7 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
             failures,
         )
 
-    def test_manifest_physical_evidence_change_invalidates_narratives(self) -> None:
+    def test_blocked_manifest_cannot_claim_physical_evidence(self) -> None:
         self._write_text("growth/second-evidence.md", "new fixture evidence\n")
         manifest = self._read_json("store/upload-manifest-1.1.0.json")
         manifest["artifacts"]["android_phone"]["physical_qa_evidence"] = (
@@ -234,7 +351,8 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         failures = validate(self.root)
 
         self.assertIn(
-            "docs/RELEASE.md: current authority block differs from upload manifest/gates",
+            "upload manifest artifact android_phone: blocked artifact must keep "
+            "physical_qa_evidence null",
             failures,
         )
 
@@ -356,13 +474,21 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
     def test_gate_change_invalidates_a_stale_ready_block(self) -> None:
         self._set_ready_authority()
         gates = self._read_json("growth/quality/gates.json")
-        self._write_document()
-        self.assertEqual(validate(self.root), [])
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            self._write_document()
+            self.assertEqual(validate(self.root), [])
 
         gates["gates"]["android_physical_smoke"]["status"] = "blocked"
         self._write_json("growth/quality/gates.json", gates)
 
-        failures = validate(self.root)
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            failures = validate(self.root)
 
         self.assertIn(
             "docs/QA_MATRIX.md: exact-current block differs from build/manifest/gate authority",
@@ -391,7 +517,7 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         )
 
     def test_missing_source_sync_evidence_fails_closed(self) -> None:
-        (self.root / "growth/evidence.md").unlink()
+        (self.root / "growth/quality/source.md").unlink()
 
         failures = validate(self.root)
 
@@ -405,7 +531,11 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         manifest["artifacts"]["android_phone"]["sha256"] = "not-a-digest"
         self._write_json("store/upload-manifest-1.1.0.json", manifest)
 
-        failures = validate(self.root)
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            failures = validate(self.root)
 
         self.assertIn(
             "android_phone: READY requires sha256 to be 64 hexadecimal characters",
@@ -418,7 +548,11 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         manifest["artifacts"]["wear_os"]["signing_evidence"] = None
         self._write_json("store/upload-manifest-1.1.0.json", manifest)
 
-        failures = validate(self.root)
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            failures = validate(self.root)
 
         self.assertIn(
             "wear_os: READY signing_evidence must be an existing repository-relative file path",
@@ -429,16 +563,41 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         self._set_ready_authority()
         manifest = self._read_json("store/upload-manifest-1.1.0.json")
         manifest["artifacts"]["apple"]["physical_qa_evidence"] = (
-            "growth/missing-physical-evidence.md"
+            "growth/quality/missing-physical-evidence.md"
         )
         self._write_json("store/upload-manifest-1.1.0.json", manifest)
 
-        failures = validate(self.root)
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            failures = validate(self.root)
 
         self.assertIn(
             "apple: READY physical_qa_evidence is missing: "
-            "growth/missing-physical-evidence.md",
+            "growth/quality/missing-physical-evidence.md",
             failures,
+        )
+
+    def test_claimed_ready_without_real_artifact_bytes_fails_closed(self) -> None:
+        self._set_ready_authority()
+
+        failures = validate(self.root)
+
+        for artifact_id in ("android_phone", "wear_os", "apple"):
+            self.assertIn(
+                f"upload manifest artifact {artifact_id}: verified-current "
+                "requires real artifact bytes through NIMBO_RELEASE_ARTIFACT_ROOT",
+                failures,
+            )
+        self.assertTrue(
+            any(
+                failure.startswith(
+                    "quality gates: release_artifact_source_sync cannot pass "
+                    "without byte-verified artifacts:"
+                )
+                for failure in failures
+            )
         )
 
 

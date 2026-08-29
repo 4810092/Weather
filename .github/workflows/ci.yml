@@ -47,6 +47,7 @@ jobs:
       - name: Repository and localization checks
         run: |
           python3 scripts/check_repository.py
+          python3 scripts/verify_release_artifacts.py
           python3 scripts/check_release_qa_matrix.py
           python3 scripts/check_localizations.py
           python3 scripts/check_store_metadata.py
@@ -93,7 +94,15 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
       - uses: gradle/actions/setup-gradle@v6
+      - name: Validate release source identity
+        id: release-source
+        run: |
+          revision="$(python3 scripts/verify_release_artifacts.py --print-source-revision)"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Run shared iOS Simulator tests
         run: ./gradlew :shared:iosSimulatorArm64Test
       - name: Run iOS glanceable-surface state tests
@@ -118,6 +127,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=YES \
+            NIMBO_SOURCE_REVISION='${{ steps.release-source.outputs.revision }}' \
             build
           xcodebuild \
             -project iosApp/Nimbo.xcodeproj \
@@ -128,4 +138,5 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=YES \
+            NIMBO_SOURCE_REVISION='${{ steps.release-source.outputs.revision }}' \
             build

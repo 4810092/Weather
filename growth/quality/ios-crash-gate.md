@@ -101,25 +101,28 @@ production `1.0.1 (4)`, but the crashed app/extension binary UUID and root cause
 cannot be proven without the actual diagnostic report. App Store Connect/Xcode
 Organizer remains the authority for the missing report and affected binary.
 
-## Current-source hardening evidence — does not close the gate
+## Current code inheritance and predecessor execution evidence
 
-Current product source `9c2dce4200dbba5487c8c458ade4616005fde6e6`
-retains the reachable UIKit lifecycle, main-actor completion, storage-startup,
+Current source authority `44c189209c793cf097fcc293faf8db88033e6902`
+inherits the reachable UIKit lifecycle, main-actor completion, storage-startup,
 saved-location-limit, and long-lived SQL observation hardening from `97c26cb`.
-It also closes three deterministic storage-failure paths that previously let a
+Predecessor commit `9c2dce4200dbba5487c8c458ade4616005fde6e6`
+also closed three deterministic storage-failure paths that previously let a
 synchronous database exception escape the delete-place or unit-preference UI
 callbacks, or escape the reverse-geocode enrichment coroutine. Four
 throwing-repository regression tests now preserve the prior UI/location state
 and surface a localized nonfatal message where user action is possible.
 
-The exact current Release-simulator executable SHA-256 values are app
+The executed tests and exact predecessor Release-simulator SHA-256 values below
+belong to `9c2dce4`: app
 `b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849`,
 widget `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff`,
 and watch `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728`.
 Their binary and dSYM UUIDs match, the shared iOS simulator suite and 18 Apple
-surface tests pass, and exact-source Release simulator builds succeed. This
-prevents the reproduced exception escapes but cannot be attributed to the
-suppressed historical crash without its missing diagnostic.
+surface tests pass, and source-bound Release simulator builds succeed. The code
+is inherited by `44c1892`, but these executed results and binary identities are
+non-transferable; neither can be attributed to the suppressed historical crash
+without its missing diagnostic.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

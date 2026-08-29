@@ -16,8 +16,11 @@ on:
       - "growth/reports/**"
       - "scripts/build_site.py"
       - "scripts/check_dashboard_report.py"
+      - "scripts/check_release_qa_matrix.py"
       - "scripts/check_store_assets.py"
       - "scripts/check_store_metadata.py"
+      - "scripts/release_artifact_verifier.py"
+      - "scripts/verify_release_artifacts.py"
       - "scripts/growth/tests/test_site_articles.py"
       - "site/**"
       - "store/assets/google-play/**"
@@ -41,6 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v6
         with:
@@ -51,6 +55,8 @@ jobs:
       - name: Build and validate localized site
         run: |
           python3 -m unittest discover -s scripts/growth/tests -p 'test_site_articles.py'
+          python3 scripts/verify_release_artifacts.py
+          python3 scripts/check_release_qa_matrix.py
           python3 scripts/check_store_metadata.py
           python3 scripts/check_store_assets.py
           python3 scripts/check_dashboard_report.py

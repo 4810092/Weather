@@ -10,6 +10,11 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
+try:
+    from scripts.release_artifact_verifier import verify_manifest_artifacts
+except ModuleNotFoundError:
+    from release_artifact_verifier import verify_manifest_artifacts  # type: ignore[no-redef]
+
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_LOCALES = {
     "en-US",
@@ -710,6 +715,7 @@ def validate_upload_artifacts(
     if not isinstance(upload_manifest, dict):
         failures.append("upload manifest must be an object")
         return
+    verify_manifest_artifacts(ROOT, upload_manifest, failures)
     artifacts = upload_manifest.get("artifacts")
     if not isinstance(artifacts, dict) or set(artifacts) != ARTIFACT_NAMES:
         failures.append(

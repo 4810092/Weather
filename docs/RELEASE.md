@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:9c2dce4200dbba5487c8c458ade4616005fde6e6 -->
-<!-- artifact:android_phone;source_sync=blocked;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ea0cf59f9f2f1e94ab31e3875b6977ddff68c5f1d822222e69707b0d7fd90d0d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=395e546ef1fbf05448e0fb1ce3e0c37217ee460193dfde430dc2629ee597e76b -->
+<!-- source_revision:44c189209c793cf097fcc293faf8db88033e6902 -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bfbb3c1553078d1a8e76aa50949710068d05a65ed773774227b6f0f403012570 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bc50b496e8ce38e68e8546203a1ec108119ba75859fe4e58fdbbbeddef2f0bd0 -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,16 +28,30 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 source-sync correction — 2026-08-29
+## Nimbo 1.1.0 Apple source-binding correction — 2026-08-30
+
+The authoritative product/build-input revision is
+`44c189209c793cf097fcc293faf8db88033e6902`. It keeps phone `1.1.0 (8)`, Wear
+OS `1.1.0 (1000008)`, and Apple `1.1.0 (6)`, while adding a fail-closed
+`NimboSourceRevision` build setting to the iOS app, WidgetKit extension,
+simulator app, and watch app. A one-time unsigned Release simulator smoke
+confirmed that an explicitly supplied full revision reaches all produced
+Info.plists. No retained upload artifact was built or signed from this revision,
+so all earlier Android, Apple, screenshot, and device evidence is historical
+and non-transferable. The current decision is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30.md)
+and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Nimbo 1.1.0 historical source-sync checkpoint — 2026-08-29
 
 Review-prompt, background-refresh, and forecast-storage failure hardening landed
-after the retained phone vc7 and Apple build-5 artifacts were produced. The
-authoritative current product source is
+after the retained phone vc7 and Apple build-5 artifacts were produced. At this
+checkpoint the authoritative product source was
 `9c2dce4200dbba5487c8c458ade4616005fde6e6`; its identities are phone
 `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple `1.1.0 (6)`.
 Exact-current unsigned Android bundles and ad-hoc Apple simulator products have
 recorded hashes, but all remain blocked without source-current distribution
-signing and matching physical-QA evidence. The exact-current phone debug APK
+signing and matching physical-QA evidence. That predecessor phone debug APK
 passed bounded physical API 25 onboarding/live/late-day Best Time/tip/offline/
 recovery/process-health QA, but its debug certificate does not satisfy the
 upload-signed physical matrix. Byte-identical debug bytes also passed the
@@ -245,16 +259,23 @@ Verify or create App ID `uz.ganikhodjaev.weather` in the named Apple Developer t
 The device archive command is:
 
 ```sh
+nimbo_source_revision="$(python3 scripts/verify_release_artifacts.py --print-source-revision)"
 xcodebuild -project iosApp/Nimbo.xcodeproj -scheme Nimbo \
   -configuration Release -destination 'generic/platform=iOS' \
   -archivePath build/Nimbo.xcarchive \
   CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='Apple Distribution' \
   DEVELOPMENT_TEAM=5SWEZ7HTYP \
+  NIMBO_SOURCE_REVISION="$nimbo_source_revision" \
   PROVISIONING_PROFILE_SPECIFIER='Nimbo App Store 1.0' archive
 xcodebuild -exportArchive -archivePath build/Nimbo.xcarchive \
   -exportPath build/app-store-export \
   -exportOptionsPlist iosApp/ExportOptions.plist
 ```
+
+The first command fails unless the manifest revision is a real commit and the
+actual tracked/untracked product bytes match it. Never replace it with an
+unvalidated `git rev-parse` value: the same validated full revision must be
+expanded into the signed app, widget, and watch Info.plists.
 
 On August 10, 2026 these commands produced and exported a valid arm64 App Store
 archive without requiring an Xcode account login. The archive and exported IPA

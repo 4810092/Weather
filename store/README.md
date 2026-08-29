@@ -12,7 +12,7 @@ creative-set references, experiment gates, and marketing/support/privacy URLs.
 Its `product.release` identifies the coordinated candidate described by the
 repository, not the currently public store versions; the validator requires it
 to match the Android, Wear OS, and Apple source versions.
-`upload-manifest-1.1.0.json` resolves each store surface to its exact locale,
+`upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its exact locale,
 metadata, creative, and artifact source-sync state. It intentionally remains
 `draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
 upload-candidate hashes, signing, and physical-QA evidence until exact-source
@@ -22,6 +22,46 @@ revision differs from the current product/build inputs or if either authority
 drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
 bytes remain historical candidates because their source predates the current
 revision. This is a preflight inventory, not evidence of a console upload.
+The pinned verification policy is executable rather than documentary:
+`scripts/verify_release_artifacts.py` permits the current blocked state without
+private files, but any `verified-current` claim must reopen the exact external
+filenames under `NIMBO_RELEASE_ARTIFACT_ROOT`, recompute their hashes, and pass
+platform signature, signer, identity, and embedded-source checks in the same
+invocation. Android additionally requires the exact Bundletool 1.18.3 JAR under
+`NIMBO_BUNDLETOOL_JAR`. The Apple gate also requires the retained
+`Nimbo.xcarchive`, its matching dSYMs, the App Store Connect
+`ExportOptions.plist`, and a signed `NimboSourceRevision` value in all three
+bundles. Plain Markdown or JSON receipts cannot replace those bytes. Before the
+action-time check, stage only the exact release inputs under one owner-only
+directory with this layout (the AAB/IPA names come from the manifest):
+
+```text
+<artifact-root>/
+├── nimbo-phone-1.1.0-vc8.aab
+├── nimbo-wear-1.1.0-vc1000008.aab
+├── Nimbo.ipa
+├── Nimbo.xcarchive/
+└── ExportOptions.plist
+```
+
+Then run `python3 scripts/verify_release_artifacts.py --artifact-root
+<artifact-root> --bundletool-jar <bundletool-all-1.18.3.jar>`. The verifier
+copies each store artifact into a read-only temporary staging file, verifies
+that copy, and re-hashes both the staged and source bytes before returning.
+The current public GitHub-hosted CI and Pages jobs intentionally have no signed
+artifact inputs and therefore pass only while all three artifacts remain
+`blocked`. In the same change that first promotes an artifact to
+`verified-current`, the release workflow must stage immutable outputs for a
+protected GitHub-hosted macOS verification job (including Bundletool for the
+Android checks) and make CI/Pages depend on that result. Until that delivery
+path exists, a READY commit is expected to fail closed; no self-hosted Mac
+runner is required. The byte verifier proves that the checked-out source is
+clean relative to the embedded revision, but external bytes alone cannot prove
+the tree was clean when they were built. The protected job must therefore
+build, sign, and verify from the same clean checkout and retain workflow
+provenance/attestation before the first `verified-current` promotion. The
+implemented gate and its remaining trust boundary are recorded in
+[`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md).
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.
@@ -140,17 +180,17 @@ drift stops the build. The manifest also hashes the exact set of 31 phone,
 watch, and feature-graphic source images, so stale generated artwork cannot
 pass after an input capture changes. Story six uses locale-matched watch
 captures; RU/UZ sources are real simulator/emulator evidence. The Apple phone
-capture set contains four distinct exact-current states per EN/RU/UZ locale:
+capture set contains four distinct source-bound states per EN/RU/UZ locale:
 overview/Best Time, recent comparison, selected timeline, and 10-day/AQI
-details. They are from product source `9c2dce4`, build 6, and are
+details. They are from predecessor product source `9c2dce4`, build 6, and are
 bounded to an iPhone 17 Pro Max simulator on iOS 26.5 with the checked-in
-Tashkent quick-city seed and the normal live provider path. This proves current
-localized phone pixels only; it does not establish distribution signing,
+Tashkent quick-city seed and the normal live provider path. They remain valid
+creative provenance but do not prove the current `44c1892` binary, distribution signing,
 physical iPhone/iPad/watch/widget QA, TestFlight, store review, rollout, or
 public availability. An offline-cache state was not checked in for Apple: a
 process-scoped unreachable proxy did not deterministically force the live
 provider to fail, and product data was not modified to manufacture the state.
-Story five therefore keeps the exact-current overview plus the separately
+Story five therefore keeps the source-bound overview plus the separately
 audited privacy claim; it is not evidence of an Apple offline transition.
 
 `scripts/check_store_metadata.py` validates schema version, locale coverage,
