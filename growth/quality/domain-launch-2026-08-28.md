@@ -16,6 +16,9 @@ are not available**.
 - The registrar-facing record contains the Cloudflare-assigned nameservers
   `jose.ns.cloudflare.com` and `sharon.ns.cloudflare.com`; this is not proof of
   registry delegation.
+- The Cloudflare zone now contains the complete DNS-only GitHub Pages record
+  set: four `A`, four `AAAA`, and the `www` `CNAME`. These records are staged
+  but cannot answer publicly until the `.uz` registry publishes delegation.
 - A direct HTTP request to the GitHub Pages edge with `Host: nimbo.uz` returned
   HTTP `200` with the expected site. This proves that the Pages origin can route
   the custom host, but it does not prove public DNS or HTTPS reachability.
@@ -45,6 +48,14 @@ resolve the host, WHOIS still reported the domain record as `EXPIRED`, and the
 Cloudflare zone still displayed "Waiting for your registrar to propagate your
 new nameservers". No DNS record was created while delegation remained absent.
 
+At `2026-08-29 05:53 +05:00`, all nine GitHub Pages records listed below had
+been created in Cloudflare with proxying disabled, and an immediate Cloudflare
+nameserver recheck had been requested. The authenticated registrar still showed
+the correct assigned Cloudflare nameservers and status `Активируется`. The
+authoritative `.uz` query and the Cloudflare and Google public resolvers still
+returned `NXDOMAIN`, so public DNS and TLS remain blocked on registrar/registry
+activation rather than on missing zone content.
+
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
 `nimbo.uz`. The registry has therefore not published a delegation. The
@@ -65,15 +76,16 @@ complete and independently verified:
 2. Confirm that WHOIS no longer reports `EXPIRED` or waiting for activation and
    that the `.uz` registry publishes delegation to the intended Cloudflare
    nameservers.
-3. Add and verify the Cloudflare DNS records below, then confirm public `NS`,
-   `A`, `AAAA`, and `www` resolution from independent recursive resolvers.
+3. Verify the staged Cloudflare DNS records below after delegation, then confirm
+   public `NS`, `A`, `AAAA`, and `www` resolution from independent recursive
+   resolvers.
 4. Wait for GitHub Pages certificate issuance, enable HTTPS, and verify the
    apex, `www`, redirects, canonical URLs, and every localized route over TLS.
 
-## DNS records required after activation
+## DNS records staged before activation
 
-All records must remain DNS-only while GitHub verifies the domain and issues
-TLS:
+All records are present and must remain DNS-only while GitHub verifies the
+domain and issues TLS:
 
 | Type | Name | Target |
 |---|---|---|
