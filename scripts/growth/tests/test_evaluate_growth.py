@@ -228,6 +228,80 @@ class GrowthEvaluationTest(unittest.TestCase):
         result = evaluate_guardrails(weekly, framework, gates)
         self.assertTrue(result["critical_quality_gates_pass"])
 
+    def test_policy_guardrail_requires_both_store_values(self) -> None:
+        weekly = import_csv(
+            FIXTURES / "weekly_metrics.csv",
+            load_json(GROWTH_ROOT / "metric-catalog.json"),
+        )
+        weekly["records"] = [
+            record
+            for record in weekly["records"]
+            if record["metric"] != "google_policy_issues"
+        ]
+        gates = {
+            "gates": {
+                requirement["id"]: {"status": "pass"}
+                for requirement in self.framework["scale_gates"]
+            }
+        }
+
+        result = evaluate_guardrails(weekly, self.framework, gates)
+
+        self.assertFalse(result["critical_quality_gates_pass"])
+        policy = next(
+            item
+            for item in result["metric_guardrails"]
+            if item["id"] == "open_policy_issues"
+        )
+        self.assertEqual(policy["status"], "unknown")
+        self.assertEqual(policy["values"], [0.0])
+        self.assertEqual(policy["missing_metric_ids"], ["google_policy_issues"])
+
+        apple_policy = next(
+            record
+            for record in weekly["records"]
+            if record["metric"] == "apple_policy_issues"
+        )
+        apple_policy["value"] = 1
+        failed = evaluate_guardrails(weekly, self.framework, gates)
+        failed_policy = next(
+            item
+            for item in failed["metric_guardrails"]
+            if item["id"] == "open_policy_issues"
+        )
+        self.assertEqual(failed_policy["status"], "fail")
+        self.assertEqual(
+            failed_policy["missing_metric_ids"], ["google_policy_issues"]
+        )
+
+    def test_policy_guardrail_uses_app_global_scope(self) -> None:
+        weekly = import_csv(
+            FIXTURES / "weekly_metrics.csv",
+            load_json(GROWTH_ROOT / "metric-catalog.json"),
+        )
+        apple_policy = next(
+            record
+            for record in weekly["records"]
+            if record["metric"] == "apple_policy_issues"
+        )
+        apple_policy["storefront"] = "UZ"
+        gates = {
+            "gates": {
+                requirement["id"]: {"status": "pass"}
+                for requirement in self.framework["scale_gates"]
+            }
+        }
+
+        result = evaluate_guardrails(weekly, self.framework, gates)
+        policy = next(
+            item
+            for item in result["metric_guardrails"]
+            if item["id"] == "open_policy_issues"
+        )
+
+        self.assertEqual(policy["status"], "unknown")
+        self.assertEqual(policy["missing_metric_ids"], ["apple_policy_issues"])
+
     def test_scale_gate_framework_matches_operational_gate_registry(self) -> None:
         gate_registry = load_json(GROWTH_ROOT / "quality/gates.json")["gates"]
         configured_gate_ids = [

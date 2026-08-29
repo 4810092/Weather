@@ -102,16 +102,16 @@ search result slices for all five generic queries. A bounded absence means only
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
   source-backed growth dashboard. GitHub Pages is deployed and configured for
   `nimbo.uz`; future site/dashboard changes on `master` deploy automatically.
-  Public DNS/TLS remain unavailable while the `.uz` registry has not published
-  the registrar's Cloudflare delegation.
+  Public Cloudflare delegation, DNS, Let's Encrypt TLS, redirects, canonicals,
+  and the localized production routes have passed the dated launch gate.
 - Daily public rank capture, weekly console import, KPI/guardrail evaluation,
   crash/provider gates, a provider clarification draft, and outreach materials.
   Scripts do not log in, publish, send, purchase, or alter provider endpoints.
-- An active Codex heartbeat temporarily runs hourly while checking domain
-  activation, Pages health, and the existing same-day rank snapshot. After the
-  domain is healthy it returns to daily 06:15 operation; on Mondays it
-  conditionally imports a valid supplied seven-day console CSV. The repository's
-  launchd template remains uninstalled so there is no duplicate scheduler.
+- An active Codex heartbeat temporarily runs hourly while provider, crash,
+  signing, and release-access blockers remain unresolved. It checks Pages and
+  the same-day rank snapshot; on Mondays it conditionally imports only a valid
+  seven-day console CSV. The repository's launchd template remains uninstalled
+  so there is no duplicate scheduler.
 
 These changes are the versioned `1.1.0` source candidate. Repository versioning
 and historical or locally built artifacts do not imply TestFlight, Play Internal,

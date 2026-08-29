@@ -102,6 +102,7 @@ class WeeklyReportTest(unittest.TestCase):
         ] = []
         for guardrail in evaluation["guardrails"]["metric_guardrails"]:
             guardrail["values"] = []
+            guardrail["missing_metric_ids"] = list(guardrail["metric_ids"])
             guardrail["status"] = "unknown"
 
         report = render_weekly_report(
@@ -114,6 +115,72 @@ class WeeklyReportTest(unittest.TestCase):
         self.assertIn("Apple conversion: actual is missing", report)
         self.assertIn("Unknown quality guardrails", report)
         self.assertNotIn("0% — UNKNOWN", report)
+
+    def test_partial_composite_policy_guardrail_remains_unknown(self) -> None:
+        evaluation = self.evaluation()
+        policy = next(
+            item
+            for item in evaluation["guardrails"]["metric_guardrails"]
+            if item["id"] == "open_policy_issues"
+        )
+        policy["values"] = [0.0]
+        policy["missing_metric_ids"] = ["google_policy_issues"]
+        policy["status"] = "unknown"
+        weekly = self.weekly()
+        weekly["records"] = [
+            record
+            for record in weekly["records"]
+            if record["metric"] != "google_policy_issues"
+        ]
+
+        report = render_weekly_report(
+            evaluation,
+            evaluation_source="evaluation.json",
+            rank_snapshot=self.rank_snapshot(),
+            rank_source="rank.json",
+            weekly=weekly,
+            weekly_source="weekly.json",
+        )
+
+        self.assertIn("| Open policy issues | 0 | == 0 | UNKNOWN |", report)
+        self.assertNotIn("Open policy issues conflicts", report)
+
+    def test_legacy_guardrails_infer_unambiguous_missing_provenance(self) -> None:
+        evaluation = self.evaluation()
+        for guardrail in evaluation["guardrails"]["metric_guardrails"]:
+            guardrail.pop("missing_metric_ids")
+
+        report = render_weekly_report(
+            evaluation,
+            evaluation_source="legacy-evaluation.json",
+            rank_snapshot=self.rank_snapshot(),
+            rank_source="rank.json",
+            weekly=self.weekly(),
+            weekly_source="weekly.json",
+        )
+
+        self.assertIn("Weekly evidence: `weekly.json` — ACCEPTED", report)
+        self.assertIn("| Open policy issues | 0, 0 | == 0 | PASS |", report)
+
+    def test_legacy_partial_composite_without_provenance_is_rejected(self) -> None:
+        evaluation = self.evaluation()
+        policy = next(
+            item
+            for item in evaluation["guardrails"]["metric_guardrails"]
+            if item["id"] == "open_policy_issues"
+        )
+        policy["values"] = [0.0]
+        policy["status"] = "pass"
+        policy.pop("missing_metric_ids")
+
+        with self.assertRaisesRegex(
+            ReportInputError,
+            "legacy composite values lack metric provenance",
+        ):
+            render_weekly_report(
+                evaluation,
+                evaluation_source="legacy-evaluation.json",
+            )
 
     def test_mismatched_rank_snapshot_is_not_reported_as_current(self) -> None:
         rank_snapshot = self.rank_snapshot()

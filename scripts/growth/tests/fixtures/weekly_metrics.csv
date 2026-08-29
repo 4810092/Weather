@@ -12,7 +12,7 @@ week_start,week_end,platform,storefront,source_scope,device,app_version,metric,v
 2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_sessions,1000,count,App Store Connect > Usage,2026-08-31,opt-in population
 2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_crashes,1,count,App Store Connect > Usage,2026-08-31,opt-in population
 2026-08-24,2026-08-30,apple,UZ,summary,all,all,ios_crash_free_sessions_pct,99.9,percent,Reviewed crash-free-session source,2026-08-31,direct metric
-2026-08-24,2026-08-30,apple,UZ,summary,all,all,apple_policy_issues,0,count,App Store Connect > Policy and Review,2026-08-31,current state
+2026-08-24,2026-08-30,apple,ALL,summary,all,all,apple_policy_issues,0,count,App Store Connect > Policy and Review,2026-08-31,app-global current state
 2026-08-24,2026-08-30,google,UZ,summary,all,all,google_store_listing_visitors,600,count,Play Console > Store performance,2026-08-31,UZ summary
 2026-08-24,2026-08-30,google,UZ,summary,all,all,google_unique_user_install_clicks,240,count,Play Console > Store performance,2026-08-31,same dimensions as visitors
 2026-08-24,2026-08-30,google,UZ,summary,all,all,google_store_listing_ctr_pct,40,percent,Play Console > Store performance,2026-08-31,console value
@@ -30,4 +30,4 @@ week_start,week_end,platform,storefront,source_scope,device,app_version,metric,v
 2026-08-24,2026-08-30,google,UZ,device,Pixel 8,all,android_phone_model_anr_rate_pct,1,percent,Play Console > Android vitals > Devices,2026-08-31,observed phone model
 2026-08-24,2026-08-30,google,UZ,device,Pixel Watch 3,all,wear_model_crash_rate_pct,1,percent,Play Console > Android vitals > Wear devices,2026-08-31,observed watch model
 2026-08-24,2026-08-30,google,UZ,device,Pixel Watch 3,all,wear_model_anr_rate_pct,1,percent,Play Console > Android vitals > Wear devices,2026-08-31,observed watch model
-2026-08-24,2026-08-30,google,UZ,summary,all,all,google_policy_issues,0,count,Play Console > Policy status,2026-08-31,current state
+2026-08-24,2026-08-30,google,ALL,summary,all,all,google_policy_issues,0,count,Play Console > Policy status,2026-08-31,app-global current state

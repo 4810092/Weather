@@ -21,6 +21,7 @@ if __package__ in (None, ""):
 from scripts.growth.common import (  # noqa: E402
     GROWTH_ROOT,
     MODEL_VITAL_METRICS,
+    POLICY_METRICS,
     ROOT,
     is_concrete_device,
     load_json,
@@ -707,6 +708,45 @@ def _validate_guardrails(payload: dict[str, Any]) -> dict[str, Any]:
             )
             for position, value in enumerate(values)
         ]
+        raw_missing_metric_ids = item.get("missing_metric_ids")
+        if raw_missing_metric_ids is None:
+            # Schema-v1 evaluations produced before missing-metric provenance was
+            # added remain readable only when the provenance is unambiguous.
+            if not normalized_values:
+                missing_metric_ids = list(metric_ids)
+            elif len(metric_ids) == 1 or len(normalized_values) == len(metric_ids):
+                missing_metric_ids = []
+            else:
+                raise ReportInputError(
+                    f"metric guardrail {identifier} legacy composite values lack "
+                    "metric provenance"
+                )
+            item["missing_metric_ids"] = missing_metric_ids
+        else:
+            missing_metric_ids = _list(
+                raw_missing_metric_ids,
+                f"metric guardrail {identifier}.missing_metric_ids",
+            )
+        if any(not isinstance(metric_id, str) for metric_id in missing_metric_ids):
+            raise ReportInputError(
+                f"metric guardrail {identifier}.missing_metric_ids must contain strings"
+            )
+        canonical_missing = [
+            metric_id for metric_id in metric_ids if metric_id in missing_metric_ids
+        ]
+        if missing_metric_ids != canonical_missing:
+            raise ReportInputError(
+                f"metric guardrail {identifier}.missing_metric_ids are not canonical"
+            )
+        present_metric_count = len(metric_ids) - len(missing_metric_ids)
+        if (
+            (present_metric_count == 0 and normalized_values)
+            or (present_metric_count > 0 and not normalized_values)
+            or (len(metric_ids) > 1 and len(normalized_values) != present_metric_count)
+        ):
+            raise ReportInputError(
+                f"metric guardrail {identifier}.values conflict with missing_metric_ids"
+            )
         critical = item.get("critical")
         if not isinstance(critical, bool):
             raise ReportInputError(
@@ -723,15 +763,16 @@ def _validate_guardrails(payload: dict[str, Any]) -> dict[str, Any]:
             raise ReportInputError(
                 f"metric guardrail {identifier}.unknown_policy differs from the framework"
             )
+        passed = all(
+            _compare(value, str(operator), threshold)
+            for value in normalized_values
+        )
         expected_status = (
-            "unknown"
-            if not normalized_values
+            "fail"
+            if not passed
+            else "unknown"
+            if missing_metric_ids
             else "pass"
-            if all(
-                _compare(value, str(operator), threshold)
-                for value in normalized_values
-            )
-            else "fail"
         )
         if item.get("status") != expected_status:
             raise ReportInputError(
@@ -1766,16 +1807,18 @@ def _target_text(driver: dict[str, Any] | None, *, rating: bool = False) -> str:
     return f"{operator} {target}{suffix}"
 
 
-def _weekly_guardrail_values(
+def _weekly_guardrail_values_by_metric(
     weekly: dict[str, Any], identifier: str
-) -> list[float]:
-    values: list[float] = []
+) -> dict[str, list[float]]:
+    values_by_metric: dict[str, list[float]] = {}
     for metric_id in GUARDRAIL_METRIC_IDS[identifier]:
+        values: list[float] = []
         for record in weekly["records"]:
             if (
                 record.get("metric") != metric_id
                 or record.get("decision_eligible", True) is not True
-                or record.get("storefront") != "UZ"
+                or record.get("storefront")
+                != ("ALL" if metric_id in POLICY_METRICS else "UZ")
                 or record.get("app_version") != "all"
             ):
                 continue
@@ -1790,7 +1833,8 @@ def _weekly_guardrail_values(
             ):
                 continue
             values.append(float(record["value"]))
-    return values
+        values_by_metric[metric_id] = values
+    return values_by_metric
 
 
 def _reconciled_metric_guardrails(
@@ -1802,18 +1846,32 @@ def _reconciled_metric_guardrails(
     if weekly is None:
         for item in effective:
             item["values"] = []
+            item["missing_metric_ids"] = list(
+                GUARDRAIL_METRIC_IDS[str(item["id"])]
+            )
             item["status"] = "unknown"
         return effective, [], False
     gaps: list[str] = []
     conflict_found = False
     for item in effective:
         identifier = str(item["id"])
-        expected = sorted(_weekly_guardrail_values(weekly, identifier))
+        expected_by_metric = _weekly_guardrail_values_by_metric(weekly, identifier)
+        expected = sorted(
+            value
+            for metric_id in GUARDRAIL_METRIC_IDS[identifier]
+            for value in expected_by_metric[metric_id]
+        )
         actual = sorted(float(value) for value in item["values"])
+        expected_missing = [
+            metric_id
+            for metric_id in GUARDRAIL_METRIC_IDS[identifier]
+            if not expected_by_metric[metric_id]
+        ]
+        actual_missing = item.get("missing_metric_ids")
         if len(expected) != len(actual) or any(
             abs(left - right) > 0.001
             for left, right in zip(expected, actual, strict=True)
-        ):
+        ) or actual_missing != expected_missing:
             conflict_found = True
             label = GUARDRAIL_LABELS.get(identifier, identifier)
             gaps.append(
@@ -1821,6 +1879,7 @@ def _reconciled_metric_guardrails(
                 "suppressed."
             )
             item["values"] = []
+            item["missing_metric_ids"] = list(GUARDRAIL_METRIC_IDS[identifier])
             item["status"] = "conflict"
     return effective, gaps, conflict_found
 

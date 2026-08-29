@@ -508,7 +508,7 @@ def _verify_evaluation_and_gate_parity(
         or "open_policy_issues" not in framework_guardrails
     ):
         raise DashboardConsistencyError(
-            "point-in-time policy gate and weekly policy metric must use distinct IDs"
+            "operational policy gate and app-global policy metric must use distinct IDs"
         )
 
     headline_rows = datasets.get("headline_metrics")

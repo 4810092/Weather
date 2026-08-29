@@ -15,6 +15,7 @@ if __package__ in (None, ""):
 from scripts.growth.common import (  # noqa: E402
     GROWTH_ROOT,
     MODEL_VITAL_METRICS,
+    POLICY_METRICS,
     is_concrete_device,
     load_json,
     now_in,
@@ -191,6 +192,17 @@ def _guardrail_metric_values(
 ) -> list[float]:
     if weekly is None:
         return []
+    if metric in POLICY_METRICS:
+        return [
+            float(record["value"])
+            for record in weekly.get("records", [])
+            if record.get("metric") == metric
+            and record.get("decision_eligible", True) is True
+            and record.get("storefront") == "ALL"
+            and record.get("source_scope") == "summary"
+            and record.get("device") == "all"
+            and record.get("app_version") == "all"
+        ]
     if metric not in MODEL_VITAL_METRICS:
         return _summary_metric_values(weekly, metric, include_derived=False)
     return [
@@ -418,24 +430,34 @@ def evaluate_guardrails(
             metric_ids = ["apple_policy_issues", "google_policy_issues"]
         else:
             metric_ids = [identifier]
+        values_by_metric = {
+            metric_id: _guardrail_metric_values(weekly, metric_id)
+            for metric_id in metric_ids
+        }
         values = [
             value
             for metric_id in metric_ids
-            for value in _guardrail_metric_values(weekly, metric_id)
+            for value in values_by_metric[metric_id]
         ]
-        if not values:
+        missing_metric_ids = [
+            metric_id for metric_id in metric_ids if not values_by_metric[metric_id]
+        ]
+        passed = all(
+            _compare(value, definition["operator"], float(definition["threshold"]))
+            for value in values
+        )
+        if not passed:
+            status = "fail"
+        elif missing_metric_ids:
             status = "unknown"
         else:
-            passed = all(
-                _compare(value, definition["operator"], float(definition["threshold"]))
-                for value in values
-            )
-            status = "pass" if passed else "fail"
+            status = "pass"
         guardrail_results.append(
             {
                 "id": identifier,
                 "metric_ids": metric_ids,
                 "values": values,
+                "missing_metric_ids": missing_metric_ids,
                 "operator": definition["operator"],
                 "threshold": definition["threshold"],
                 "critical": definition["critical"],

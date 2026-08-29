@@ -10,5 +10,5 @@ FROM (
     ('android_phone_model_anr_rate_pct', 'Android phone-model ANR rate', 'unknown', TRUE, '< 8%', 'review_required', 'Import decision-eligible concrete phone-model ANR evidence and review the worst observed model'),
     ('wear_model_crash_rate_pct', 'Wear OS model crash rate', 'unknown', TRUE, '< 4%', 'review_required', 'Import decision-eligible concrete Wear OS model crash evidence and review the worst observed model'),
     ('wear_model_anr_rate_pct', 'Wear OS model ANR rate', 'unknown', TRUE, '< 5%', 'review_required', 'Import decision-eligible concrete Wear OS model ANR evidence and review the worst observed model'),
-    ('open_policy_issues', 'Weekly store policy issues', 'unknown', TRUE, '= 0', 'block_scale', 'Import Apple and Google policy-issue counts for the same weekly UZ evidence window')
+    ('open_policy_issues', 'App-global store policy issues', 'unknown', TRUE, '= 0', 'block_scale', 'Import current app-global Apple and Google policy-issue counts with storefront ALL')
 ) AS guardrails(guardrail_id, guardrail, status, critical, threshold, unknown_policy, next_action);

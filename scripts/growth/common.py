@@ -23,6 +23,13 @@ MODEL_VITAL_METRICS = frozenset(
     }
 )
 
+POLICY_METRICS = frozenset(
+    {
+        "apple_policy_issues",
+        "google_policy_issues",
+    }
+)
+
 _NON_CONCRETE_DEVICES = frozenset(
     {
         "all",

@@ -8,8 +8,9 @@
 
 Nimbo is a production Kotlin Multiplatform weather application for Android and iOS. It is also an inspectable reference codebase for shared Compose Multiplatform UI, SQLDelight-backed offline data, deterministic weather insights, localization and RTL, adaptive layouts, accessibility, and real mobile release constraints.
 
-**Website:** `nimbo.uz` is configured on GitHub Pages, but public DNS/TLS
-activation is pending; see the [domain launch state](growth/quality/domain-launch-2026-08-28.md).
+**Website:** [nimbo.uz](https://nimbo.uz) is live on GitHub Pages. Cloudflare
+delegation, HTTPS, redirects, canonicals, and the localized routes pass the
+dated [domain launch checks](growth/quality/domain-launch-2026-08-28.md).
 
 This repository contains an application, not a framework or reusable weather SDK. The value is in studying a complete product and its trade-offs: platform shells, shared UI and state, provider normalization, database migrations, widgets and watch companions, privacy boundaries, CI, store metadata, and release evidence all live together.
 

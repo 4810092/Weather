@@ -19,6 +19,7 @@ if __package__ in (None, ""):
 from scripts.growth.common import (  # noqa: E402
     GROWTH_ROOT,
     MODEL_VITAL_METRICS,
+    POLICY_METRICS,
     is_concrete_device,
     load_json,
     parse_date,
@@ -299,6 +300,16 @@ def import_csv(path: Path, catalog: dict[str, Any]) -> dict[str, Any]:
                 if definition["unit"] != row["unit"]:
                     raise ImportValidationError(
                         f"row {row_number}: unit must be {definition['unit']}"
+                    )
+                if row["metric"] in POLICY_METRICS and (
+                    row["storefront"] != "ALL"
+                    or row["source_scope"] != "summary"
+                    or row["device"] != "all"
+                    or row["app_version"] != "all"
+                ):
+                    raise ImportValidationError(
+                        f"row {row_number}: {row['metric']} requires storefront=ALL, "
+                        "source_scope=summary, device=all, and app_version=all"
                     )
                 if row["metric"] in MODEL_VITAL_METRICS and (
                     row["source_scope"] != "device"

@@ -22,7 +22,7 @@ the fresh `97c26cb` output except for VCS metadata, but no exact-current signed 
 bundle exists. The historical iOS crash
 still lacks a symbolicated report; the current-source hardening evidence cannot
 be attributed to that event and does not close the crash gate. The
-The authenticated Gmail thread and `in:anywhere` searches were checked read-only
+authenticated Gmail thread and `in:anywhere` searches were checked read-only
 at 10:22:53 +05:00: the 06:05:07 clarification remains the thread's only
 message with label `SENT`, and no inbound Open-Meteo reply is indexed in that
 account. This does not prove delivery or exclude another account or a later
@@ -36,10 +36,11 @@ The domain gate is now `pass`; Uzbek intentionally uses the site root rather
 than a separate Uzbek-prefixed route.
 Missing evidence elsewhere remains explicit rather than silently becoming a
 zero or pass.
-The dashboard also exposes every critical weekly metric guardrail; all eight
-are currently `unknown`, independently blocking scale. The point-in-time
-`store_policy_console_clearance` operational gate is intentionally distinct
-from the weekly `open_policy_issues` metric.
+The dashboard also exposes every critical metric guardrail; all eight are
+currently `unknown`, independently blocking scale. The app-global point-in-time
+`open_policy_issues` metric requires both `storefront=ALL` records and remains
+intentionally distinct from the operational `store_policy_console_clearance`
+gate.
 
 Refresh order:
 

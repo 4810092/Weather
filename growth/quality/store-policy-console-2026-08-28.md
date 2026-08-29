@@ -83,7 +83,8 @@ the application by static Play analysis.
 
 ## Boundary
 
-The console state can change after this observation. The weekly KPI importer
-must still receive explicit `apple_policy_issues=0` and
-`google_policy_issues=0` rows from a complete seven-day console evidence
-period before the evaluator's metric guardrail can become `pass`.
+The console state can change after this observation. At the next evidence
+cutoff, the KPI importer must still receive explicit
+`apple_policy_issues=0` and `google_policy_issues=0` rows with
+`storefront=ALL`; both app-global records are required before the evaluator's
+metric guardrail can become `pass`.

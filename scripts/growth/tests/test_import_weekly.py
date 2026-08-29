@@ -65,6 +65,26 @@ class WeeklyImportTest(unittest.TestCase):
                         ):
                             import_csv(path, self.catalog)
 
+    def test_policy_metrics_require_app_global_summary_scope(self) -> None:
+        fixture = (FIXTURES / "weekly_metrics.csv").read_text()
+        original = "apple,ALL,summary,all,all,apple_policy_issues"
+        invalid_scopes = {
+            "country storefront": "apple,UZ,summary,all,all,apple_policy_issues",
+            "device scope": "apple,ALL,device,iPhone 16,all,apple_policy_issues",
+        }
+        for case, replacement in invalid_scopes.items():
+            with self.subTest(case=case):
+                content = fixture.replace(original, replacement, 1)
+                self.assertNotEqual(content, fixture)
+                with tempfile.TemporaryDirectory() as directory:
+                    path = Path(directory) / "bad-policy-scope.csv"
+                    path.write_text(content)
+                    with self.assertRaisesRegex(
+                        ImportValidationError,
+                        "requires storefront=ALL, source_scope=summary",
+                    ):
+                        import_csv(path, self.catalog)
+
     def test_impossible_derived_percentage_is_rejected(self) -> None:
         content = (FIXTURES / "weekly_metrics.csv").read_text()
         content = content.replace(
