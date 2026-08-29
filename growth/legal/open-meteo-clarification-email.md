@@ -1,13 +1,17 @@
-# DRAFT — do not send without explicit approval
+# Open-Meteo promotion clarification — sent 2026-08-29
 
-Status: prepared, not sent.
+Status: sent at `2026-08-29 06:05 +05:00`; awaiting an unambiguous written
+response. The provider gate remains `pending`.
 To: `info@open-meteo.com`
-Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), checked 2026-08-29.
+Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), re-checked immediately before sending on 2026-08-29.
 Subject: Clarification on non-commercial organic promotion for Nimbo
 
 Hello Open-Meteo team,
 
-I maintain [Nimbo](https://nimbo.uz/), an [open-source](https://github.com/4810092/Weather) weather app for iOS and Android. The app is free and currently has no subscriptions, advertising, paid features, affiliate links, accounts, analytics SDK, or sale of user data. It uses Open-Meteo's public forecast, historical forecast, air-quality, and geocoding endpoints and displays the required Open-Meteo/GeoNames attribution.
+I maintain Nimbo, an open-source weather app for iOS and Android:
+https://github.com/4810092/Weather
+
+The public project site is being activated at https://nimbo.uz/. The app is free and currently has no subscriptions, advertising, paid features, affiliate links, accounts, analytics SDK, or sale of user data. It uses Open-Meteo's public forecast, historical forecast, air-quality, and geocoding endpoints and displays the required Open-Meteo/GeoNames attribution.
 
 Before doing any public promotion, I would like written clarification on the “promotional activities” example in your commercial-use terms.
 
@@ -31,9 +35,9 @@ If option 2 applies, please recommend the appropriate plan and confirm whether a
 
 Thank you,
 
-`[name]`
+Khasan Ganikhodjaev
 Nimbo maintainer
-`[reply email]`
+https://github.com/4810092/Weather
 
 ## Send gate
 
@@ -41,7 +45,8 @@ Nimbo maintainer
   non-commercial examples, but separately classify integration into
   promotional activities as commercial. That ambiguity is why silence or the
   absence of monetization cannot close this gate.
-- Re-check the terms and official contact address on the send date.
-- Fill the sender name and reply address.
-- Obtain explicit authorization to send external email.
+- The terms and official contact address were re-checked on the send date.
+- The Gmail provider returned a successful sent-message result from the
+  authenticated maintainer account. A pre-send search found no earlier thread
+  to or from the provider contact, so no duplicate was sent.
 - Save the sent timestamp and full written reply; do not mark the provider gate `pass` based on silence or an ambiguous answer.

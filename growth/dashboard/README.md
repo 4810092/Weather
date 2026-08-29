@@ -13,6 +13,7 @@ cannot complete their protected private-signing operations and lack signed
 artifacts plus matching release-certificate physical QA; the bounded phone vc8
 API 25 debug/source pass is now historical because runtime source changed. The retained signed Wear
 artifact is current but lacks physical-watch QA. The iOS crash lacks a symbolicated report, and
+the Open-Meteo clarification has been sent but is awaiting a written response;
 `nimbo.uz` is still waiting for registrar activation. Missing
 evidence remains explicit rather than silently becoming a zero or pass.
 The dashboard also exposes every critical weekly metric guardrail; all eight

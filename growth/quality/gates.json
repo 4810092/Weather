@@ -10,7 +10,7 @@
     "open_meteo_promotion_clearance": {
       "status": "pending",
       "blocks_publication": true,
-      "reason": "Clarification email is drafted but has not been sent or answered."
+      "reason": "Clarification was sent to Open-Meteo's official contact at 2026-08-29 06:05 +05:00 from the authenticated maintainer account; no written reply has been received."
     },
     "android_physical_smoke": {
       "status": "blocked",
