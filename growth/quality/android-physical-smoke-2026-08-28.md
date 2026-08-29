@@ -3,6 +3,7 @@
 ## Verdict
 
 - **PASS** on a General Mobile 4G Dual running Android 7.1 / API 25 for the exact signed phone release candidate `1.1.0 (7)`: clean install, Russian onboarding, denied-location fallback, manual city search, live Open-Meteo weather, saved-place cold start, native share sheet, 150% text, TalkBack focus/semantics, cached-network fallback and recovery, review-prompt dismissal/no immediate repeat, matching artifact/signing identity, and process stability.
+- Historical source AAB binding: `nimbo-phone-1.1.0-vc7.aab`, SHA-256 `e476a124c33854873add9061140f68f1720ff098202b52e7758038bb50f5a77c`. The installed universal APK has its own separately recorded hash; this AAB hash binds the retained physical result to its historical release lineage and does not promote it to the current candidate.
 - A post-Fragment debug runtime candidate separately passed a naturally scheduled background refresh that advanced weather, daily, and air-quality caches. This check is not relabelled as a signed-release execution.
 - AndroidX Fragment 1.9.0 is explicitly selected in every Android target.
 - The Samsung device carrying the existing public Nimbo `1.0.1 (5)` installation was inspected only to confirm its version and was not modified, launched, cleared, or reinstalled.

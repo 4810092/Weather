@@ -1,11 +1,24 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "release": "1.1.0",
-  "source_revision": "9c2dce4200dbba5487c8c458ade4616005fde6e6",
-  "prepared_on": "2026-08-29",
+  "source_revision": "44c189209c793cf097fcc293faf8db88033e6902",
+  "prepared_on": "2026-08-30",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
   "creative_manifest": "store/creative-sets/growth-2026-08.json",
+  "verification_policy": {
+    "artifact_root_env": "NIMBO_RELEASE_ARTIFACT_ROOT",
+    "bundletool_jar_env": "NIMBO_BUNDLETOOL_JAR",
+    "bundletool_version": "1.18.3",
+    "bundletool_sha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+    "android_package_id": "uz.ganikhodjaev.weather",
+    "android_upload_certificate_sha256": "431548a4871c9c090eee808ac3a34898f5d78602d9e747dfe81e228415aac252",
+    "apple_team_id": "5SWEZ7HTYP",
+    "apple_distribution_certificate_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+    "apple_archive_relative_path": "Nimbo.xcarchive",
+    "apple_export_options_relative_path": "ExportOptions.plist",
+    "apple_source_revision_info_key": "NimboSourceRevision"
+  },
   "artifacts": {
     "android_phone": {
       "filename": "nimbo-phone-1.1.0-vc8.aab",
@@ -14,7 +27,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-phone-1.1.0-vc7.aab",
@@ -31,7 +44,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-wear-1.1.0-vc1000008.aab",
@@ -48,7 +61,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "Nimbo.ipa",

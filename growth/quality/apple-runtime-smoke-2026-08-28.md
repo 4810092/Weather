@@ -4,6 +4,7 @@
 
 - **iOS 18.1 simulator: PASS** for Release build, clean onboarding render, live Bukhara weather from Open-Meteo, persisted-location cold launch, and absence of a captured fatal/error log line.
 - **Physical iPad mini: PASS (bounded) on 1.0.1 (4)** for local Release signing, install, launch, real forecast/cache population, Widget extension process startup, cold relaunch, and cleanup. On 2026-08-29 the exact archived `1.1.0 (5)` candidate also installed and reported the correct identity, but launch was blocked because the iPad was locked; it was immediately removed and is not counted as a runtime pass.
+- Historical build-5 IPA binding: `Nimbo.ipa`, SHA-256 `b36f8fddb225cd616e3833de6037b6434486ec3cbb9ed06f5cc8deb0627ed4dc`. This preserves the exact archived candidate identity for the bounded install observation; it does not convert the locked-device attempt into a runtime pass or satisfy build 6.
 - **Physical iPhone 14 Pro: BLOCKED** before build/install. The earlier paired session reached `connected (no DDI)` and Xcode could not mount the developer disk image; on the 2026-08-29 recheck the device was unavailable. No app was installed or modified on that iPhone.
 - **iOS 15 runtime: NOT RUN.** The oldest installed simulator runtime is iOS 18.1 and the connected devices run iOS/iPadOS 26.x. The app binary itself declares `minos 15.0`, but that is build evidence, not runtime evidence.
 

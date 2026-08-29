@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-08-29",
+  "as_of": "2026-08-30",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
@@ -25,8 +25,8 @@
     "release_artifact_source_sync": {
       "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "9c2dce4200dbba5487c8c458ade4616005fde6e6",
-      "reason": "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). The phone AAB SHA-256 is b7c7acb6e90189e8d73e5b8a5f780bf1d3ab36f43edaf3d5076a1dba4e22d4e5 and mapping SHA-256 is 4fdfeefa05c8f71eb3cc2ac538732672ae2c5ba5793ddd35f03bfa7f6b714d18; the Wear AAB SHA-256 is 2d73fdf1e4fd661a96a699a9fd2ef7b2e989b0f4ab019692ce7c97465673d3fa. Both bundles pass Bundletool 1.18.3 and ZIP integrity, embed the full exact revision, and have zero signature entries. Apple Release simulator hashes are app b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849, widget 7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff, and watch c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728; UUID-matched dSYMs verify, but the products are ad-hoc simulator outputs. The full Gradle release gate, shared iOS simulator suite, 18 Apple surface tests, and localization parity pass. Exact-current API 24 emulator live/cache/recovery regression evidence passes. Exact-current debug APK and installed bytes SHA-256 52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730 pass physical API 25 live/tip/offline/recovery/process-health QA and a byte-identical API 36 emulator tablet/widget smoke including Uzbek layout, home widget render/tap, large text, rotation, process health, and cleanup. Android Keychain metadata and the mode-600 keystore are present, but protected signing-value access still fails and was not retried for this build. The API 36 result is emulator debug evidence, and there is no exact-current signed phone/Wear artifact, distribution-signed Apple archive, or signed physical matrix, so the gate remains blocked."
+      "source_revision": "44c189209c793cf097fcc293faf8db88033e6902",
+      "reason": "Product/build-input commit 44c189209c793cf097fcc293faf8db88033e6902 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6), and adds a fail-closed NimboSourceRevision setting to every Apple product. A one-time unsigned Release simulator smoke confirmed that an explicitly supplied full revision reaches the app, widget, and watch Info.plists. No Android or Apple artifact was signed or rebuilt as a retained upload candidate from this revision. All prior AAB, APK, simulator, screenshot, archive, IPA, and physical-device evidence belongs to earlier revisions and is non-transferable. The schema-v2 manifest therefore keeps all three current artifact hashes and current signing/physical evidence null; 0/3 artifacts are byte-verified and the gate remains blocked."
     },
     "domain_activation": {
       "status": "pass",
