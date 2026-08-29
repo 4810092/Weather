@@ -142,7 +142,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Product commit ee7c36f retains the reachable-path hardening and adds a strict Apple Empty/Fresh/Stale surface contract with 18 passing XCTest cases plus successful app/widget/watch Release simulator builds. Those preventive results cannot be attributed to the historical event and do not replace symbolication, physical iPhone QA, or post-rollout evidence."
+        "reason": "Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Product commit 24ea373 retains the reachable-path and fail-closed surface hardening, places the Best Time recommendation on the primary activation path, and passes the shared iOS simulator test, 18 Apple surface XCTest cases, and fresh app/widget/watch Release simulator builds. Those preventive results cannot be attributed to the historical event and do not replace symbolication, exact signed physical iPhone QA, or post-rollout evidence."
       },
       {
         "id": "open_meteo_promotion_clearance",
@@ -156,21 +156,21 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Product commit ee7c36f resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Phone AAB SHA-256 e16da522aca84776419a999db82a9ddb5a42b15660516bfe6f1fd65cf5a3edcb and mapping SHA-256 7e678576d95e36dd8e27cab78a565a47a1539a3caf6f769a283f9aca415a324f pass Bundletool 1.18.3 and embedded-VCS checks but the AAB has 0 signature entries. Wear AAB SHA-256 d1088ec635b69258baf5aaa42e42423b930a97a3077f059a2ae59c6d06061e71 embeds ee7c36f and has 0 signature entries; the retained signed Wear AAB embeds historical revision 4d9492a. Apple simulator hashes are app 279185d6778c7819d889a1f769d8ce2eb10b861790ed4ef2cc833044946aad90, widget bd651c05eb19551853fd5dde604fafdc7233f1615f21a9462b20f45199dc3209, and watch 14c419fb71f35097c0fe4396183acb1d701ef229ea55f3608a2982d5bab5c493; UUID-matched dSYMs verify, but these are ad-hoc simulator products, not archives. Android protected lookup and Apple private-key use remain unavailable. There is no exact-current signed phone/Wear artifact, distribution-signed Apple archive, or signed-artifact physical matrix."
+        "reason": "Product commit 24ea373 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Phone AAB SHA-256 f91d0dce82aad7596118a6563d64b94f9f90daa2550cfb4b345fc3ef966bfdab and mapping SHA-256 d749110783872a36406c56a99b11d9c67764a7973d767656c3bd6f0ed59addfd pass Bundletool 1.18.3 and embedded-VCS checks but the AAB has 0 signature entries. Wear AAB SHA-256 6bcf5f9b947cb52887ba2e5c7a48c59cd5a1428c4680c67d63edd6a708bcd439 embeds 24ea373 and has 0 signature entries; the retained signed Wear AAB embeds historical revision 4d9492a. Apple simulator hashes are app 421b867257004a15e6042cb98817190570b91cb8c54ac61b3c4e8df049f94ad7, widget e639f0661cd6e96924803d8aa5982706ee0d78c981b7d2d4375b920d2eac1b27, and watch 9f29f22984185f2c5cf072357434b442b5e95f90b6c292b9aabfc97993bd689d; UUID-matched dSYMs verify, but these are ad-hoc simulator products, not archives. The exact debug phone APK passed the bounded physical API 25 activation-path smoke. Android protected lookup and Apple private-key use remain unavailable. There is no exact-current signed phone/Wear artifact, distribution-signed Apple archive, or signed-artifact physical matrix."
       },
       {
         "id": "android_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Historical exact commit df5f824 debug APK SHA-256 fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753 passed fresh-install physical API 25 QA and a same-certificate preserved-data update on the physical API 36 Samsung; pulled bytes matched on both. Product commit ee7c36f adds fail-closed widget/Wear freshness behavior and has API 24 phone-widget plus API 37 round-Wear emulator coverage, but no source-synced signed physical tablet, widget, or paired Wear OS result. The current physical gate therefore remains blocked."
+        "reason": "Product commit 24ea373 exact debug APK SHA-256 968ac46930c6175562855b1e5229a74f9d49c47e3b4da107334d337291530ad4 passed a fresh-install physical Android 7.1.1 / API 25 smoke in Russian; pulled installed bytes matched. Onboarding, Tashkent without location permission, the first-screen Best Time card, 150% text, and the exercised process path passed. Prior commit ee7c36f retains API 24 phone-widget and API 37 round-Wear Empty/Fresh/Stale emulator evidence, but there is no exact-current upload-signed phone artifact, physical tablet/widget result, or paired Wear OS result. The current physical gate therefore remains blocked."
       },
       {
         "id": "ios_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Product commit ee7c36f Apple 1.1.0 (6) Release simulator executable hashes are app 279185d6778c7819d889a1f769d8ce2eb10b861790ed4ef2cc833044946aad90, widget bd651c05eb19551853fd5dde604fafdc7233f1615f21a9462b20f45199dc3209, and watch 14c419fb71f35097c0fe4396183acb1d701ef229ea55f3608a2982d5bab5c493. UUID-matched dSYMs and 18 surface XCTest cases pass, but all three products are simulator-only with ad-hoc linker signatures, no TeamIdentifier, no archive, and no upload eligibility. The iPad CoreDevice/DDI path is usable, but no exact-current signed build exists; iPhone, iPad, WidgetKit, and paired-watch physical coverage remains required."
+        "reason": "Product commit 24ea373 Apple 1.1.0 (6) Release simulator executable hashes are app 421b867257004a15e6042cb98817190570b91cb8c54ac61b3c4e8df049f94ad7, widget e639f0661cd6e96924803d8aa5982706ee0d78c981b7d2d4375b920d2eac1b27, and watch 9f29f22984185f2c5cf072357434b442b5e95f90b6c292b9aabfc97993bd689d. UUID-matched dSYMs, the shared iOS simulator test, and 18 surface XCTest cases pass, but all three products are simulator-only with ad-hoc linker signatures, no TeamIdentifier, no archive, and no upload eligibility. The iPad CoreDevice/DDI path is usable, but no exact-current signed build exists; iPhone, iPad, WidgetKit, and paired-watch physical coverage remains required."
       },
       {
         "id": "domain_activation",

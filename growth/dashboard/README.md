@@ -10,34 +10,36 @@ Public outreach and acquisition scaling remain gated on provider clearance, cras
 On 2026-08-29 the auxiliary Apple
 `Toshkent ob-havo` search returned only one unique app, below the 10-app
 completeness floor, while all required goal surfaces were complete and failed;
-the streak is therefore correctly zero. Product commit `ee7c36f` resolves to
+the streak is therefore correctly zero. Product commit `24ea373` resolves to
 phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Its
 Bundletool-validated phone AAB
-`e16da522aca84776419a999db82a9ddb5a42b15660516bfe6f1fd65cf5a3edcb`
+`f91d0dce82aad7596118a6563d64b94f9f90daa2550cfb4b345fc3ef966bfdab`
 and mapping
-`7e678576d95e36dd8e27cab78a565a47a1539a3caf6f769a283f9aca415a324f`
+`d749110783872a36406c56a99b11d9c67764a7973d767656c3bd6f0ed59addfd`
 embed the exact revision, but the AAB has zero signature entries. The Wear AAB
-`d1088ec635b69258baf5aaa42e42423b930a97a3077f059a2ae59c6d06061e71`
-also embeds `ee7c36f` and has zero signature entries; the retained signed Wear
+`6bcf5f9b947cb52887ba2e5c7a48c59cd5a1428c4680c67d63edd6a708bcd439`
+also embeds `24ea373` and has zero signature entries; the retained signed Wear
 bundle still embeds historical revision `4d9492a`. Exact Apple simulator
 executables are app
-`279185d6778c7819d889a1f769d8ce2eb10b861790ed4ef2cc833044946aad90`,
+`421b867257004a15e6042cb98817190570b91cb8c54ac61b3c4e8df049f94ad7`,
 widget
-`bd651c05eb19551853fd5dde604fafdc7233f1615f21a9462b20f45199dc3209`,
+`e639f0661cd6e96924803d8aa5982706ee0d78c981b7d2d4375b920d2eac1b27`,
 and watch
-`14c419fb71f35097c0fe4396183acb1d701ef229ea55f3608a2982d5bab5c493`.
+`9f29f22984185f2c5cf072357434b442b5e95f90b6c292b9aabfc97993bd689d`.
 Their UUID-matched dSYMs verify, 18 Swift surface tests pass, and the Release
 simulator builds succeed, but all three remain ad-hoc simulator products rather
-than uploadable archives. A clean Gradle gate parsed 232 test executions with
-zero failures. API 24 widget and API 37 round-Wear emulator scenarios pass the
-strict Empty/Fresh/Stale contract; this is not source-synced signed physical
-proof. Google Play Custom Store Listing `4834799756935529888` persists as an
+than uploadable archives. The exact debug phone APK passed a fresh-install
+physical API 25 smoke in Russian, including Tashkent without location
+permission, first-screen Best Time rendering, and 150% text; its installed
+bytes matched. API 24 widget and API 37 round-Wear emulator scenarios remain
+prior regression evidence for `ee7c36f`; none of this is source-synced signed
+physical proof. Google Play Custom Store Listing `4834799756935529888` persists as an
 Uzbekistan-only `Draft` with Uzbek fallback and separate Russian copy and
 creatives. It was not submitted for review or published, and public production
 remains `1.0.2 (6)`.
-Historical physical Android evidence remains scoped to commit `df5f824`.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
-is missing. The iPad CoreDevice/DDI path is usable, but no exact-current signed
+is still missing despite the bounded exact debug-phone pass. The iPad
+CoreDevice/DDI path is usable, but no exact-current signed
 Apple build exists, so it cannot provide current physical proof. The historical
 iOS crash still lacks a symbolicated report; current-source hardening, tests,
 and simulator builds cannot be attributed to that event and do not close the
