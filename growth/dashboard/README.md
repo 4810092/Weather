@@ -55,6 +55,16 @@ remains historical. Google Play Custom Store Listing
 `4834799756935529888` persists as an Uzbekistan-only `Draft` with Uzbek fallback
 and separate Russian copy and creatives. It was not submitted for review or
 published, and public production remains `1.0.2 (6)`.
+At 22:56 +05:00, authenticated App Store Connect API inventory reads confirmed
+that Apple exposes public iOS `1.0.1` with valid build `4`, and contains no
+`1.1.0` version or builds `5`/`6`. Build-detail and diagnostic-signature GETs
+for build `4` returned security `403`. A single bounded POST attempting to
+create only a manual-release `1.1.0` version also returned `403`; a final
+authenticated GET again returned zero `1.1.0` versions, proving that no partial
+version or localization draft was created. No build, localization, screenshot,
+Custom Product Page, submission, or release mutation followed. The Apple copy
+and creative payload therefore remains repository-prepared, not an App Store
+Connect draft or deployed store state.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
 is still missing despite the bounded exact API 24 emulator and API 25 physical
 debug passes. Android Keychain
@@ -64,7 +74,10 @@ iPad was again available and paired, but lock-state and DDI queries failed
 because it had not been unlocked recently; the iPhone and watch remained
 unavailable. No exact-current signed Apple build exists, so it cannot provide
 current physical proof; iOS 15 runtime coverage is also unverified. The
-historical iOS crash still lacks a diagnostic and symbolicated report.
+historical iOS crash still lacks a diagnostic and symbolicated report. The
+authenticated inventory path closes the API-authentication discovery gap, but
+its diagnostic request is permission-blocked by `403` and cannot recover the
+suppressed crash signature or log.
 Current-source hardening, tests, and simulator builds cannot identify or be
 attributed to that event and do not close the crash gate. OpenMeteo GmbH
 replied at 17:25 +05:00 in ticket `234272` and

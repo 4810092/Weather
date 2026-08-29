@@ -26,6 +26,13 @@ Its existence is not evidence of review, publication, or end-user availability.
 - The repository's UZ-oriented Custom Product Page remains `draft`. Its Uzbek
   and Russian copy and localized creatives are not proven public, and keyword
   assignment remains blocked until the base `1.1.0` keywords are approved.
+- At `2026-08-29 22:56 +05:00`, authenticated App Store Connect API reads
+  confirmed that no iOS `1.1.0` version or build newer than `4` exists. A
+  bounded attempt to create only a manual-release `1.1.0` version was rejected
+  with HTTP 403 before resource creation; a final GET again returned zero
+  `1.1.0` versions. No localization, asset, build, submission, or release
+  mutation followed. See
+  `growth/quality/app-store-connect-api-2026-08-29.md`.
 
 Public evidence:
 <https://apps.apple.com/uz/app/nimbo-weather/id6799886897> and
@@ -78,7 +85,9 @@ Release upload and publication remain blocked by the crash, source-signed
 artifact, and remaining physical-device gates. Open-Meteo clearance passes for
 the exact unpaid, non-monetized organic-promotion scope; saving the Google
 listing as a project-only draft did not cross the remaining gates. Google
-Console is currently authenticated, while App Store Connect is not. The public
-Apple page
+Console is currently authenticated. App Store Connect inventory reads are also
+authenticated, but the available API key cannot create the `1.1.0` draft or
+read the suppressed crash diagnostics; both surfaces returned permission 403.
+The public Apple page
 still reports `1.0.1` and Google reports `1.0.2`; neither proves that the
 repository's `1.1.0` candidate, revised copy, or creatives are deployed.

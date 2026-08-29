@@ -71,23 +71,29 @@ found no production diagnostic payload:
   query could only recover diagnostics present on that physical device, not the
   suppressed report from another opted-in production user.
 - No App Store Connect API key/configuration or common issuer/key environment
-  variable is present in the repository, the usual user configuration paths, or
-  the current process environment. The available App Store Connect browser tab
-  is at the Apple Account login screen, so the previous authenticated Analytics
-  request cannot currently be repeated without interactive account
-  authentication.
+  variable is present in this repository, the usual user configuration paths,
+  or the current process environment. A later bounded host-wide audit did find
+  an existing maintainer-owned Team/Individual API key outside this repository.
+  Its JWT authenticated successfully and resolved app `6799886897`, so the
+  earlier repository-local absence is not treated as a host-wide access result.
 - Xcode's bundled `altool` and Transporter are present, but the installed
   `altool` command surface covers upload, validation, provider/app listing, and
   metadata transfer rather than production crash download. No separate `asc`,
   `fastlane`, `pilot`, or `deliver` CLI is installed. These tools therefore do
   not provide an already-authorized crash-recovery path on this host.
-- Apple's documented read-only API path can list diagnostic signatures for a
-  build and retrieve anonymized logs for a returned signature, but it requires
-  a valid App Store Connect JWT. No key was created and no request was made.
-  Low-volume thresholds still mean an empty API result would not prove that the
-  already-confirmed crash did not occur. See Apple's
+- At `2026-08-29 22:56 +05:00`, that existing key returned HTTP 200 for Nimbo's
+  app, versions, builds, and analytics-report-request inventory. It confirmed
+  public version `1.0.1`, build `4`, and no builds newer than `4`; it also showed
+  zero existing analytics report requests. The build-detail and documented
+  diagnostic-signature requests for build `4` both returned HTTP 403
+  `FORBIDDEN_ERROR` for security reasons. The key therefore closes the
+  authentication-discovery gap but cannot retrieve the missing signature or
+  diagnostic log. No report request, key, role, app, version, build, or store
+  state was created or changed during that read-only audit. See Apple's
   [diagnostic-signature endpoint](https://developer.apple.com/documentation/appstoreconnectapi/get-v1-builds-_id_-diagnosticsignatures)
-  and [diagnostic-log endpoint](https://developer.apple.com/documentation/appstoreconnectapi/get-v1-diagnosticsignatures-_id_-logs).
+  and [diagnostic-log endpoint](https://developer.apple.com/documentation/appstoreconnectapi/get-v1-diagnosticsignatures-_id_-logs),
+  plus the bounded local record in
+  `growth/quality/app-store-connect-api-2026-08-29.md`.
 
 The absence of a local report and Apple's low-volume suppression do not mean the
 crash is fixed or harmless. The authoritative aggregate pins the event to
@@ -135,10 +141,10 @@ Immediate recovery paths, in priority order:
 1. Authenticate the existing developer account in Xcode, including user-handled
    2FA if requested, then refresh Organizer > Crashes for Nimbo and export the
    actual build-4 incident if Apple exposes it.
-2. Alternatively, use an already-authorized App Store Connect Team or Individual
-   API key to identify build `1.0.1 (4)`, list its diagnostic signatures without
-   changing store state, and download any returned anonymized log. Key creation
-   or role changes are separate external mutations and were not performed.
+2. If Apple grants a role/key access path that is permitted to read diagnostics,
+   repeat the already-authenticated build `1.0.1 (4)` signature query and
+   download any returned anonymized log. The current key is verified for app and
+   inventory reads but receives a security 403 for this diagnostic surface.
 3. Unlock the paired iOS device and repeat the `systemCrashLogs` lookup only as a
    local-reproduction aid; do not treat that device's result as the missing
    opted-in production report.
