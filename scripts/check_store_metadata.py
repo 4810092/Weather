@@ -776,10 +776,10 @@ def validate_upload_artifacts(
             if (
                 not isinstance(historical_identity, int)
                 or expected_identity is None
-                or historical_identity >= expected_identity
+                or historical_identity > expected_identity
             ):
                 failures.append(
-                    f"{owner}: historical identity must precede current source"
+                    f"{owner}: historical identity must not exceed current source"
                 )
             historical_sha = historical["sha256"]
             if not isinstance(historical_sha, str) or not SHA256.fullmatch(
@@ -802,11 +802,13 @@ def validate_upload_artifacts(
                 failures.append(
                     f"{owner}: historical SHA-256 is absent from signing evidence"
                 )
-            require_evidence_path(
-                historical["physical_qa_evidence"],
-                f"{owner}.historical.physical_qa_evidence",
-                failures,
-            )
+            historical_physical_evidence = historical["physical_qa_evidence"]
+            if historical_physical_evidence is not None:
+                require_evidence_path(
+                    historical_physical_evidence,
+                    f"{owner}.historical.physical_qa_evidence",
+                    failures,
+                )
         elif source_sync == "verified-current":
             artifact_sha = artifact["sha256"]
             if not isinstance(artifact_sha, str) or not SHA256.fullmatch(artifact_sha):

@@ -26,12 +26,19 @@
     "wear_os": {
       "filename": "nimbo-wear-1.1.0-vc1000008.aab",
       "version_code": 1000008,
-      "source_sync": "verified-current",
-      "sha256": "ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6",
-      "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-29.md",
-      "historical_candidate": null
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "nimbo-wear-1.1.0-vc1000008.aab",
+        "version_code": 1000008,
+        "sha256": "ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6",
+        "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+        "physical_qa_evidence": null
+      }
     },
     "apple": {
       "filename": "Nimbo.ipa",
@@ -144,6 +151,7 @@
     "Open-Meteo promotion clearance",
     "iOS crash diagnosis",
     "source-synced signed Android phone 1.1.0 (8) artifact and physical smoke",
+    "source-synced signed Wear OS 1.1.0 (1000008) artifact and physical smoke",
     "source-synced signed Apple 1.1.0 (6) artifact and physical runtime matrix",
     "physical tablet, widget, and Wear OS smoke",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",

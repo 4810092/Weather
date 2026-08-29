@@ -25,7 +25,7 @@ blocked.
 | Package / version | `uz.ganikhodjaev.weather` / `1.1.0 (8)` |
 | APK signature | v2, `C=US, O=Android, CN=Android Debug` |
 | Debug certificate SHA-256 | `7b112e7dce7a8e61ec85b2187fbc642fa196909a53351d298126ca2e23ffe3f8` |
-| Device | General Mobile 4G Dual (`gm4g_sprout`, serial `e76fd426`) |
+| Device | General Mobile 4G Dual (`gm4g_sprout`, physical API 25 test device) |
 | OS / display / locale | Android 7.1.1 / API 25; 720 x 1280; Russian |
 | Execution window | `2026-08-29 04:09–04:15 +05:00` |
 

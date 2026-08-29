@@ -14,11 +14,13 @@ repository, not the currently public store versions; the validator requires it
 to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` resolves each store surface to its exact locale,
 metadata, creative, and artifact source-sync state. It intentionally remains
-`draft-blocked`: current phone vc8 and Apple build 6 have null hashes, signing,
-and physical-QA evidence until new source-synced artifacts exist. The older
-signed phone vc7 and Apple build 5 bytes are retained only as historical
-candidates; unchanged Wear `1000008` remains verified-current. This is a
-preflight inventory, not evidence of a console upload.
+`draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
+current hashes, signing, and physical-QA evidence until exact-source artifacts
+exist. The older signed phone vc7 and Apple build 5 bytes are retained only as
+historical candidates. The retained signed Wear `1000008` embeds an older VCS
+revision and is likewise historical even though its non-signature payload
+matches the fresh current output except for version-control metadata. This is
+a preflight inventory, not evidence of a console upload.
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

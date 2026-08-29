@@ -4,11 +4,12 @@ This is a chronological release journal. Statements inside a dated paragraph des
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
-Wear 1000008, and Apple build 6. Only the unchanged Wear artifact is
-source-current. Signed phone 7 and Apple build 5 are preserved as historical
-candidates; their hashes, signing, and QA do not transfer to current phone 8 or
-Apple build 6. Nothing in 1.1.0 has been uploaded or published. Store consoles
-remain the authority for live status.
+Wear 1000008, and Apple build 6. No exact-current signed artifact exists for
+those three surfaces. Signed phone 7, signed Wear 1000008 with historical VCS
+revision, and Apple build 5 are preserved as historical candidates; their
+hashes, signing, and QA do not transfer to the exact current source. Nothing in
+1.1.0 has been uploaded or published. Store consoles remain the authority for
+live status.
 
 ## Version identity
 
@@ -22,11 +23,13 @@ remain the authority for live status.
 
 Review-prompt and background-refresh hardening landed after the retained phone
 vc7 and Apple build-5 artifacts were produced. The current source identities
-are therefore phone `1.1.0 (8)` and Apple `1.1.0 (6)`; both remain blocked with
-null current SHA, signing evidence, and physical-QA evidence until rebuilt and
-tested. Wear OS source is unchanged at `1.1.0 (1000008)` and its retained signed
-AAB remains source-current. The exact boundary and preserved historical hashes
-are recorded in the [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
+are therefore phone `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple
+`1.1.0 (6)`; all remain blocked with null current SHA, signing evidence, and
+physical-QA evidence until rebuilt and tested. Wear application payload is
+unchanged, but its retained signed AAB embeds historical revision `4d9492a`, not
+the current `97c26cb`; payload parity does not satisfy exact-source provenance.
+The exact boundary and preserved historical hashes are recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
 and [upload manifest](../store/upload-manifest-1.1.0.json).
 
 ## Nimbo 1.1.0 historical internal checkpoint — 2026-08-28

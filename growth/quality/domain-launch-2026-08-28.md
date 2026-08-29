@@ -1,7 +1,7 @@
 # `nimbo.uz` launch state — 2026-08-28, refreshed 2026-08-29
 
-Status: **BLOCKED — registrar activation is incomplete; public domain and TLS
-are not available**.
+Status: **BLOCKED — registrar record is active, but registry delegation, public
+DNS, and TLS are not yet available**.
 
 ## Completed
 
@@ -89,11 +89,20 @@ non-delegation, no public `A` or `AAAA` answer, and no resolvable HTTPS host.
 The registrar follow-up remains the latest owner action; no further message or
 DNS change was made.
 
-Registry lookup, direct queries to authoritative `.uz` nameservers, and public
-recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
-`nimbo.uz`. The registry has therefore not published a delegation. The
-nameservers shown in the registrar-facing record are not publicly effective,
-and this is not an ordinary Cloudflare propagation delay.
+At `2026-08-29 09:52 +05:00`, domain-specific `.uz` WHOIS changed to
+`NIMBO.UZ` status `ACTIVE`, updated `29-Aug-2026`, with expiration
+`29-Aug-2027` and the intended Cloudflare nameservers. This closes the expired
+registrar-record part of the blocker. It does not yet prove delegation: the
+authoritative `.uz` nameserver, Cloudflare resolver, and Google resolver still
+returned DNSSEC-authenticated `NXDOMAIN`, while direct queries to
+`jose.ns.cloudflare.com` continued to return the staged apex `A` records and
+`www` CNAME. The authenticated Cloudflare Zone API still reported the zone as
+`pending`. `https://nimbo.uz/` still could not resolve.
+
+The registry has therefore accepted the active domain record but has not yet
+published an effective parent delegation at the capture time. Public DNS and
+certificate issuance remain pending propagation; the prepared Cloudflare child
+zone itself continues to answer correctly when queried directly.
 
 TLS for `nimbo.uz` is not provisioned. The successful GitHub Pages deployment
 and direct edge-host HTTP `200` are origin-only evidence; public reachability
@@ -104,11 +113,10 @@ and HTTPS remain unclaimed.
 Do not announce or promote `nimbo.uz` as live until all of the following are
 complete and independently verified:
 
-1. Complete the registrar activation flow, including any outstanding payment
-   or identity/contact verification required by Webname/Arsenal-D.
-2. Confirm that WHOIS no longer reports `EXPIRED` or waiting for activation and
-   that the `.uz` registry publishes delegation to the intended Cloudflare
-   nameservers.
+1. Keep the now-active registrar record and intended Cloudflare nameservers
+   unchanged while the `.uz` registry publishes the parent delegation.
+2. Confirm the delegation independently at the authoritative `.uz` nameserver
+   and through Cloudflare and Google recursive resolvers.
 3. Verify the staged Cloudflare DNS records below after delegation, then confirm
    public `NS`, `A`, `AAAA`, and `www` resolution from independent recursive
    resolvers.

@@ -43,6 +43,27 @@ production `1.0.1 (4)`, but the crashed app/extension binary UUID and root cause
 cannot be proven without the actual diagnostic report. App Store Connect/Xcode
 Organizer remains the authority for the missing report and affected binary.
 
+## Current-source hardening evidence — does not close the gate
+
+Exact product commit `97c26cbec570468b4971daa7779e3839aa4c48ce`
+hardens reachable UIKit lifecycle, main-actor completion, storage-startup,
+saved-location-limit, and long-lived SQL observation failure paths. Focused
+tests, a clean full Gradle gate, and exact Release simulator builds passed.
+
+The exact `1.1.0 (6)` simulator app executable SHA-256 is
+`e6a43119ff23a1ffd3fb0da600bfad9334b94f3ce7a15d244afa9744d853c539`;
+the embedded widget SHA-256 is
+`0df017e7e3f01e04acdba3b7cbb304e442318b2fad4e2ca68b1fba0a391afa94`.
+The app completed 40 cold-launch/terminate cycles with zero launch or terminate
+failures, new matching diagnostics, scene-lifecycle faults, unexpected-executor
+faults, or matching crash/fatal lines in the bounded log.
+
+These are preventive source and simulator results only. The simulator products
+are ad-hoc linked, not distribution-signed, and no physical iPhone result
+exists. Because the historical production report, stack, incident ID, and
+crashed binary UUID remain unavailable, no current change is attributed to the
+2026-08-25 event and `ios_crash_gate` remains **BLOCKED**.
+
 ## Required close-out evidence
 
 1. Export or download the actual crash report from Xcode Organizer/App Store Connect, preserving incident ID, app version/build, OS/device, occurrence window, affected users, and binary image UUIDs.

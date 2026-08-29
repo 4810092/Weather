@@ -298,6 +298,28 @@ class ValidationScriptsTest(unittest.TestCase):
             any("declared build 5 differs from source 6" in item for item in failures)
         )
 
+    def test_blocked_artifact_can_preserve_same_version_historical_bytes(self) -> None:
+        manifest = copy.deepcopy(self.upload_manifest())
+        wear = manifest["artifacts"]["wear_os"]
+        self.assertEqual(wear["source_sync"], "blocked")
+        self.assertEqual(
+            wear["historical_candidate"]["version_code"], wear["version_code"]
+        )
+        self.assertIsNone(wear["historical_candidate"]["physical_qa_evidence"])
+
+        failures: list[str] = []
+        validate_upload_artifacts(manifest, "1.1.0", failures)
+        self.assertEqual(failures, [])
+
+        wear["historical_candidate"]["version_code"] = wear["version_code"] + 1
+        failures = []
+        validate_upload_artifacts(manifest, "1.1.0", failures)
+        self.assertIn(
+            "upload manifest artifact wear_os: historical identity must not "
+            "exceed current source",
+            failures,
+        )
+
     def test_apple_keyword_limit_uses_utf8_bytes(self) -> None:
         failures: list[str] = []
         validate_text_fields(

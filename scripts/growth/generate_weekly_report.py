@@ -100,8 +100,9 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Produce source-current signed Android and Apple artifacts, record their "
-        "identities and hashes, and keep upload blocked until matching QA passes.",
+        "Produce source-current signed Android phone, Wear OS, and Apple artifacts, "
+        "record their identities and hashes, and keep upload blocked until matching "
+        "QA passes.",
     ),
     "android_physical_smoke": (
         "Android engineering",

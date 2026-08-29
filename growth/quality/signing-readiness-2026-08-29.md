@@ -1,104 +1,94 @@
-# Current-source signing readiness — 2026-08-29
+# Signing readiness — 2026-08-29
 
-Status: **BLOCKED for Android phone and Apple; VERIFIED-CURRENT for the
-unchanged Wear OS artifact**. No artifact was uploaded, submitted, or
-published during these checks.
+Status: **BLOCKED for Android phone, Wear OS, and Apple**.
 
-## Android phone and Wear OS
+No artifact was uploaded, submitted, or published during this check. Protected
+credentials, private keys, aliases, passwords, and provisioning contents were
+not printed, exported, replaced, or reset.
 
-- Fresh release bundles build successfully as phone `1.1.0 (8)` and Wear OS
-  `1.1.0 (1000008)`, but the Gradle release variants have no signing
-  configuration and the fresh outputs are unsigned.
-- An isolated exact-commit rebuild at
-  `f97238beb8d99cea5ed19883b1528dca4923baee` produced the unsigned phone AAB
-  `build/release/nimbo-phone-1.1.0-vc8-unsigned-f97238b.aab` with SHA-256
-  `a631c67df19761964d25dd6fbbdc89b7d9c0ee6d8544ebc23113bcee52043ed9`.
-  Bundletool 1.18.3 validation passed; its manifest reports package
+## Current source
+
+The exact product commit is
+`97c26cbec570468b4971daa7779e3839aa4c48ce`.
+
+### Android phone
+
+- The current `1.1.0 (8)` phone AAB SHA-256 is
+  `c89b311f2227ecad6ff0f80d8f18529348f52118655b8c70112c2aef48d1c23c`;
+  mapping SHA-256 is
+  `0e1624387e2829c90b690a9c288d4140545df68ecbf523d98e36d704b8150988`.
+- Bundletool 1.18.3 validation passed. The bundle manifest reports package
   `uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
-  and targetSdk `36`. Archive inspection found zero signature entries. The
-  companion mapping file
-  `build/release/nimbo-phone-1.1.0-vc8-mapping-f97238b.txt` has SHA-256
-  `b25870ff3173eb6bccd0ee6bceffba098685d11aa828d27dc9f7a1965ec2c6c7`.
-  Both ignored local files are source/build evidence only, not release
-  candidates, and neither is referenced by the upload manifest.
-- The expected upload keystore exists outside the repository with owner-only
-  permissions. Both password items are present in the login Keychain, but
-  exact account-and-service lookups that request their values make the
-  `security` command exit with status `51`. A second value-only attempt during
-  the isolated exact-HEAD build produced the same empty result. No password
-  value was printed, persisted, passed in an argument, or made available to
-  the build environment.
-- A signed phone vc8 artifact therefore does not exist. The previous phone vc7
-  signature and physical smoke remain historical evidence only.
-- The unchanged, retained Wear OS vc1000008 AAB remains the current signed
-  artifact with SHA-256
+  and targetSdk `36`. Embedded VCS metadata identifies the full commit above.
+- Archive inspection reports zero signature entries. This is an unsigned local
+  release artifact and cannot be uploaded.
+- A protected Android signing-value lookup through `security` exits with status
+  `51`; no secret was exposed and no credential mutation was attempted.
+- Exact debug APK SHA-256
+  `5680f2bd8b7f2904cd61831c774614fb1bd147239ae37a78e858209346a180f0`
+  passed bounded physical API 25 and isolated API 36 emulator QA. Debug signing
+  does not satisfy the upload-signing or full release-device matrix.
+
+### Wear OS
+
+- The retained signed `1.1.0 (1000008)` AAB SHA-256 is
   `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6`.
-  Its AAB signature and retained universal APK signature still verify, but it
-  has no physical-watch result and has not been uploaded.
-- Current commit `f97238beb8d99cea5ed19883b1528dca4923baee` debug APK SHA-256
-  `7b2f2c12d56fdda293f19317ef6eb6da153213f84b1daeef11fd35f8e9e30edb`
-  passed bounded QA on the dedicated physical API 25 phone and API 36 emulator,
-  including onboarding, live city selection/search, share chooser, legacy
-  navigation contrast, true-offline cache/error/recovery, IME resize, dark
-  landscape, and process stability. See
-  `growth/quality/android-current-head-device-smoke-2026-08-29.md`. Debug
-  signing does not satisfy the upload-signed artifact or full physical-matrix
-  requirements.
+  It embeds VCS revision `4d9492a343283344ac80f3248a73c6fc752906e1`,
+  not the current product commit, so it remains a historical signed artifact
+  and is not labelled exact-current.
+- A fresh exact-commit local Wear output SHA-256
+  `0a0369d132d856c27625efed1b1cb3489b97e41b7c218f33957fe281ec77485c`
+  embeds revision `97c26cbec570468b4971daa7779e3839aa4c48ce` and has zero
+  signature entries. Its non-signature payload matches the retained signed
+  bundle except for the version-control metadata entry, which correctly names
+  the different build revision. That payload parity is useful provenance but
+  does not turn the historical signed bundle into an exact-current artifact.
+- No physical-watch pass is recorded.
 
-## Apple app, widget, and watch
+### Apple app, widget, and watch
 
-- All three targets resolve to `1.1.0 (6)`. Automatic signing, compatible
-  development and App Store provisioning profiles, and valid development and
-  distribution identities are visible.
-- Exact current commit `f97238beb8d99cea5ed19883b1528dca4923baee` passed
-  arm64 Release simulator builds with `CODE_SIGNING_ALLOWED=NO`:
-  - iOS app `uz.ganikhodjaev.weather`, `1.1.0 (6)`, minimum iOS 15.0:
-    executable SHA-256
-    `67a99d6cfc04302c54aeb71fed0a78a6e3c6c9d9aaaca7bb4d0f1e13ed62bb58`;
-  - embedded widget `uz.ganikhodjaev.weather.widget`, `1.1.0 (6)`, minimum
-    iOS 17.0: executable SHA-256
-    `3c65e9c8716a0f0426e19f2682b0d0ab1f1c0c0975106e773694d22600f72a4e`;
-  - watch app `uz.ganikhodjaev.weather.watchkitapp`, `1.1.0 (6)`, minimum
-    watchOS 10.0: executable SHA-256
-    `75a329ed9ad25ae8fe25dcdb54afcd0b5828a9975d2056a9ec28bc079761713a`.
-  Their exact executable paths and source-sync boundary are recorded in
-  `growth/quality/release-artifact-source-sync-2026-08-29.md`.
-- Each bundle lacks a `_CodeSignature` directory. Each simulator Mach-O has
-  only Xcode's ad-hoc linker signature: `TeamIdentifier` is unset, the
-  `Info.plist` is not bound, and resources are not sealed. This is not a
-  development or distribution signature. These simulator products are not
-  uploadable and provide no xcarchive, exported IPA, validated dSYM set, or
-  physical Apple smoke evidence.
-- A full Nimbo archive selects the expected profiles but fails when `codesign`
-  reaches the widget with `errSecInternalComponent`. A separate watch archive
-  fails at its `codesign` step with the same error.
-- One commit-80 device archive attempt again reached widget CodeSign
-  and failed with `errSecInternalComponent`; no provisioning or compilation
-  error preceded it and no xcarchive was produced.
-- Unified Security framework logs for all observed attempts report
-  `errSecAuthFailed` (`-25293`) from the `seckey` path. They do not report a
-  provisioning-profile or entitlement failure, user cancellation, or
-  `errSecInteractionNotAllowed`. This localizes the blocker to authorization of
-  the private-key operation without over-claiming whether the remaining cause
-  is keychain lock state, ACL, or UI policy.
-- No Apple `1.1.0 (6)` xcarchive or IPA was produced. The earlier build-5 IPA
-  remains historical and cannot satisfy the current-source gate.
-- One current iPad now has Developer Mode enabled, a compatible and usable DDI,
-  and a connected local-network tunnel. Signing still blocks creation of an
-  exact installable build. The observed iPhones and paired watch are currently
-  unavailable to CoreDevice, so no Apple app was installed or launched.
+Exact-commit Release simulator executables built with
+`CODE_SIGNING_ALLOWED=NO`:
+
+| Product | Version | SHA-256 |
+| --- | --- | --- |
+| iOS app | `1.1.0 (6)` | `e6a43119ff23a1ffd3fb0da600bfad9334b94f3ce7a15d244afa9744d853c539` |
+| Widget | `1.1.0 (6)` | `0df017e7e3f01e04acdba3b7cbb304e442318b2fad4e2ca68b1fba0a391afa94` |
+| Watch app | `1.1.0 (6)` | `71452e1d08c9293aaf0c3b851b7335c8053b3568f06231cba0633c4758b6b462` |
+
+These products contain only Xcode linker-generated ad-hoc signatures. They
+have no Team Identifier, bound Info.plist, sealed resources, distribution
+signature, xcarchive, exported IPA, or upload eligibility.
+
+The exact app completed 40 simulator cold-launch/terminate cycles with zero
+launch failures, terminate failures, new matching diagnostic reports, scene-
+lifecycle faults, unexpected-executor faults, or matching crash/fatal lines in
+the bounded log. This is simulator stability evidence, not signing or physical
+Apple evidence.
+
+Keychain Access visibly contains valid Apple Development and Apple Distribution
+identities with associated private keys. A command-line private-key operation
+still reports `errSecAuthFailed (-25293)`. A GUI Xcode archive for the exact
+project, `Nimbo` scheme, and generic iOS device failed in the `NimboWidget`
+CodeSign phase with `Command CodeSign failed with a nonzero exit code`; no
+authorization prompt, xcarchive, or upload followed. Existing signing material
+was left untouched.
 
 ## Decision
 
-Certificate/profile metadata being visible is not proof that the private
-signing operation works. Keep `release_artifact_source_sync`,
-`android_physical_smoke`, and `ios_physical_smoke` blocked until:
+Publication remains blocked until all of the following are true:
 
-1. the existing private signing material is usable by the non-interactive
-   release process;
-2. exact current-source signed artifacts are produced, hashed, and fully
-   validated; and
-3. those exact artifacts pass the required physical-device matrix.
+1. The existing protected signing identities authorize private-key use without
+   replacing or exporting them.
+2. The phone AAB is upload-signed from the exact current source and its package,
+   version, certificate, Bundletool output, VCS metadata, and hash are verified.
+3. Apple app, widget, and watch are archived and distribution-signed from the
+   exact current source; provisioning, dSYMs, executable identities, and exported
+   IPA are verified.
+4. Wear OS is signed again from the exact current revision and its certificate,
+   embedded revision, payload, and hash are verified.
+5. The signed artifacts pass the required physical phone/tablet/widget/watch
+   matrix. No physical Apple pass currently exists.
 
-This file deliberately records no passwords, private-key data, certificate
-subject names, profile UUIDs, device identifiers, or account identifiers.
+This record proves only current local readiness and the signing blocker. It is
+not proof of store upload, review, rollout, or public availability.

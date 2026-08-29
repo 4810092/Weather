@@ -1,6 +1,6 @@
 Nimbo Android background refresh — physical API 25 — 2026-08-28
 
-Device: General Mobile 4G Dual (e76fd426), Android 7.1 / API 25
+Device: General Mobile 4G Dual (physical API 25 test device), Android 7.1 / API 25
 Package under test: uz.ganikhodjaev.weather 1.0.2 (6), debug runtime candidate
 WorkSpec: 72f3843a-f293-4287-9658-3d708ab62feb, generation 4
 Delegate: uz.ganikhodjaev.weather.WeatherRefreshWorker
