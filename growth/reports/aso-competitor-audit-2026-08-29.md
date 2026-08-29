@@ -5,6 +5,12 @@ listing draft**. Capture window: `2026-08-29 13:09–13:24 +05:00`. No store
 listing, experiment, release, review, outreach message, or paid campaign was
 created or changed.
 
+Update on 2026-08-30: the Uzbek-fallback title decision below was superseded
+by the newer, separately evidenced `Nimbo Weather: Ob-havo` decision in
+[`google-play-uz-title-opportunity-2026-08-30.md`](google-play-uz-title-opportunity-2026-08-30.md).
+The original decision remains here as a dated record rather than being
+silently rewritten.
+
 ## Decision
 
 Keep the prepared Google Play UZ titles and strengthen the short descriptions

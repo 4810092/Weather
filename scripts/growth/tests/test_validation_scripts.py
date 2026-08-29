@@ -516,6 +516,14 @@ class ValidationScriptsTest(unittest.TestCase):
             for listing in metadata["listings"]
             if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
         )
+        uz_title = country_listing["custom_listing"]["localizations"]["en-US"][
+            "title"
+        ]
+        self.assertEqual(uz_title, "Nimbo Weather: Ob-havo")
+        self.assertLessEqual(len(uz_title), 30)
+        for title_term in ("weather", "ob-havo"):
+            self.assertIn(title_term, uz_title.casefold())
+
         uz_short = country_listing["custom_listing"]["localizations"]["en-US"][
             "short_description"
         ]

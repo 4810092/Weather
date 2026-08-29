@@ -2,6 +2,12 @@
 
 Status: **CLAIM PARITY PASS; CONSOLE SUBMISSION HOLD**.
 
+Revision 2, audited after the repository-only Uzbek-fallback title change from
+`Nimbo: Ob-havo va prognoz` to `Nimbo Weather: Ob-havo`. The new title adds a
+generic discovery term and retains the local `Ob-havo` phrase; it adds no
+functional or quality claim. The evidence and bounded rationale are recorded
+in `growth/reports/google-play-uz-title-opportunity-2026-08-30.md`.
+
 The persisted Uzbekistan Custom Store Listing draft is truthful for the
 currently public Android phone release `1.0.2 (6)` and the public Wear OS
 release `1.0.2 (1000007)`. The copy and six Google Play stories do not depend
@@ -43,7 +49,7 @@ marks a stronger behavior that this audit did not prove.
 
 | Draft claim / story | Classification | Exact evidence | Asset or copy source | Decision |
 | --- | --- | --- | --- | --- |
-| `Nimbo: Ob-havo va prognoz` / `Nimbo: Погода и прогноз` | public-proven | Product identity is version-neutral; both public APKs label the app `Nimbo` and ship RU/UZ resources | `store/metadata.json` | safe |
+| `Nimbo Weather: Ob-havo` / `Nimbo: Погода и прогноз` | public-proven | Product identity is version-neutral; both public APKs label the app `Nimbo` and ship RU/UZ resources. `Weather` and `Ob-havo` describe the existing weather product rather than a new function | `store/metadata.json` | safe |
 | Best Time Outside / лучшее время / eng yaxshi vaqt | public-proven | Exact phone vc6 runtime rendered `Tashqariga chiqish uchun eng yaxshi vaqt`, `00:00–02:00`, and the comfort/rain/wind reason | title, short copy, full copy, feature graphics, `01-best-time.png` | safe; no 1.1-only dependency |
 | Compare with yesterday / recent weather | public-proven | Exact phone vc6 runtime rendered `Kecha shu vaqtdagi bilan deyarli bir xil` and recent-day cards | full copy and `02-recent-comparison.png` | safe |
 | `−24 / NOW / +24` timeline | public-proven | Exact phone vc6 runtime rendered `24 soat oldin · hozir · 24 soat keyin`; current UZ `01-current` and `02-timeline-selected` source pixels are pixel-identical to the captures committed with the 1.0.2 release source | full copy and `03-timeline.png` | safe |

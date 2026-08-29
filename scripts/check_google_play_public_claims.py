@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AUDIT_DOC = ROOT / "growth/quality/google-play-uz-public-claims-parity-2026-08-30.md"
 METADATA = ROOT / "store/metadata.json"
 LISTING_ID = "google-play-uz-country-listing"
-EXPECTED_LISTING_SHA256 = "25a85a9ecd8673f9e68a6f456b07108f2e8b56c783e46c08f893931528415755"
+EXPECTED_LISTING_SHA256 = "3464949ecf2d23acacac5942fc5ef8b9a0955c888db3e36a76f4d47bd44519e6"
 EXPECTED_LISTING_ROUTING = {
     "localization_refs": ["en-US", "ru-RU"],
     "overrides": {},
@@ -50,6 +50,8 @@ EXPECTED_ASSET_SHA256 = {
 
 AUDIT_MARKERS = (
     "Status: **CLAIM PARITY PASS; CONSOLE SUBMISSION HOLD**.",
+    "Nimbo Weather: Ob-havo",
+    "growth/reports/google-play-uz-title-opportunity-2026-08-30.md",
     "**Public 1.0.2 claim parity: PASS.**",
     "**Custom-listing Console submission: HOLD.**",
     "798cfe33b636cbe6a291ef0125abc193dbd1549e31c7daf50b261a0105c322ca",

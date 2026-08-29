@@ -109,7 +109,7 @@ LISTING_FIELDS = {
 }
 PLATFORMS = {"app-store", "google-play"}
 LISTING_TYPES = {"default", "custom-listing", "custom-product-page"}
-UZ_TITLE = "Nimbo: Ob-havo va prognoz"
+UZ_TITLE = "Nimbo Weather: Ob-havo"
 UZ_SHORT = "Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping."
 RU_TITLE = "Nimbo: Погода и прогноз"
 RU_SHORT = "Прогноз погоды: найдите лучшее время, чтобы выйти на улицу."

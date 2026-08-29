@@ -4,6 +4,12 @@ Status: **candidate ASO package is prepared; the Google UZ listing is saved as
 an unpublished draft whose Uzbek short description matches the repository
 candidate**.
 
+Update on 2026-08-30: the repository-only Uzbek-fallback title changed to
+`Nimbo Weather: Ob-havo`; no matching Console write was made. The dated table
+below preserves the last authenticated Console observation and must not be
+read as proof that the newer title is saved, submitted, or public. See
+`growth/reports/google-play-uz-title-opportunity-2026-08-30.md`.
+
 The public Apple and Google product pages were checked read-only at
 `2026-08-29 12:29:59 +05:00`. No console setting, listing, release, experiment,
 or asset was changed. Public pages prove only what was visible at that capture;
