@@ -6,7 +6,10 @@ artifact. `report.html` is generated from that artifact with the packaged Data
 Analytics portable-artifact renderer; it must not be edited by hand.
 
 The dashboard is intentionally `blocked`, with scale status `hold`.
-Public outreach and acquisition scaling remain gated on provider clearance, crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails.
+Public outreach and acquisition scaling remain gated on crash diagnosis,
+source-synced signed phone, Wear OS, and Apple artifacts, complete
+physical-device coverage, and critical console guardrails. Open-Meteo written
+clearance passes for the exact unpaid, non-monetized organic-promotion scope.
 On 2026-08-29 the auxiliary Apple
 `Toshkent ob-havo` search returned only one unique app, below the 10-app
 completeness floor, while all required goal surfaces were complete and failed;
@@ -43,11 +46,11 @@ CoreDevice/DDI path is usable, but no exact-current signed
 Apple build exists, so it cannot provide current physical proof. The historical
 iOS crash still lacks a symbolicated report; current-source hardening, tests,
 and simulator builds cannot be attributed to that event and do not close the
-crash gate. The authenticated Gmail thread and broad Open-Meteo searches were
-checked read-only at 13:12 +05:00: the 06:05:07 clarification remains the
-only indexed matching message with label `SENT`, and no inbound Open-Meteo
-reply is indexed in that account. This does not prove delivery or exclude
-another account or a later unindexed reply; written clearance remains absent.
+crash gate. OpenMeteo GmbH replied at 17:25 +05:00 in ticket `234272` and
+explicitly confirmed non-commercial API entitlement under the complete terms
+sent at 06:05:07 +05:00. The pass is limited to the described free,
+non-monetized app and unpaid organic promotion; a material monetization,
+promotion, attribution, or usage-limit change reopens the licensing decision.
 At 10:40–10:41 +05:00, GitHub Pages showed a successful DNS check with
 `Enforce HTTPS` enabled. The Let's Encrypt certificate validates for both
 `nimbo.uz` and `www.nimbo.uz`; WHOIS, `.uz` delegation, Cloudflare records,

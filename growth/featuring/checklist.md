@@ -29,8 +29,9 @@ store upload, nomination, promotional-content event, or featuring request.
 
 ## Fail-closed gates
 
-- [ ] `open_meteo_promotion_clearance` is `pass` with an unambiguous written
-      answer or an approved customer/self-hosted endpoint is in use.
+- [x] `open_meteo_promotion_clearance` is `pass`: OpenMeteo GmbH confirmed in
+      ticket `234272` that the exact unpaid, non-monetized organic-promotion
+      scope may use the non-commercial API.
 - [ ] The iOS production crash is diagnosed, fixed where actionable, and the
       stability gate is `pass`.
 - [ ] Required physical iPhone, Android tablet, widget, and paired-watch paths

@@ -5,10 +5,10 @@ monitor and daily snapshots are in place, but the required rank surfaces fail
 and the Top-10 streak is zero. Current phone vc8 and Apple build 6 cannot
 complete their protected private-signing operations and therefore have no
 source-synced signed artifact, matching hash, or physical QA; signed phone vc7
-and Apple build 5 are historical evidence only. The Open-Meteo clarification
-has been sent but written provider clearance is still missing. The iOS crash
-diagnostic, complete device matrix, and reconciled console exports are still
-missing. A build, a Pages
+and Apple build 5 are historical evidence only. OpenMeteo GmbH has confirmed
+the exact unpaid, non-monetized organic-promotion scope for the non-commercial
+API. The iOS crash diagnostic, complete device matrix, and reconciled console
+exports are still missing. A build, a Pages
 deployment, or historical device evidence does not close those gates.
 
 ## Evidence model
@@ -21,6 +21,7 @@ deployment, or historical device evidence does not close those gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
+| Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |
 | Provider capacity | [legal/open-meteo-capacity-contingency-2026-08-29.md](legal/open-meteo-capacity-contingency-2026-08-29.md) | Source-derived request model, implemented cache gate, official limits, and the no-key-in-client boundary |
 | Android emulator QA | [quality/android-emulator-smoke-2026-08-28.md](quality/android-emulator-smoke-2026-08-28.md) | API 24/36 live, denied-location, search, offline/error, recovery, and cold-start evidence |
@@ -50,9 +51,10 @@ incompleteness does not fail a decisive goal snapshot. It refuses to silently
 overwrite a day unless `--replace` is provided. The second command writes the
 current decision record in `growth/reports/`.
 
-The Codex task has an active local heartbeat named `Nimbo UZ rank monitor` on a
-temporary hourly cadence while provider, crash, and release-access blockers are
-unresolved. It refreshes the public rank/evaluation state when needed; on
+The Codex task has an active local heartbeat named
+`Nimbo UZ rank and domain monitor` on a temporary hourly cadence while crash
+and release-access blockers are unresolved. It refreshes the public
+rank/evaluation state when needed; on
 Mondays it also imports a new user-supplied, valid seven-day console CSV when
 one is present. It never bypasses authentication or 2FA. The optional macOS launchd template in
 [automation](automation) remains uninstalled, avoiding a duplicate machine

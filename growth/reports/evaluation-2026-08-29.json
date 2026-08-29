@@ -147,9 +147,9 @@
       {
         "id": "open_meteo_promotion_clearance",
         "required": "pass",
-        "actual": "pending",
-        "status": "fail",
-        "reason": "The authenticated Gmail thread and broad Open-Meteo searches were checked read-only at 2026-08-29 13:12 +05:00. The clarification sent to info@open-meteo.com at 06:05:07 remains the only indexed matching message and has label SENT; no inbound Open-Meteo reply is indexed in this account. This does not prove delivery or cover another account or a future/unindexed reply. Written clearance remains absent."
+        "actual": "pass",
+        "status": "pass",
+        "reason": "The complete authenticated Gmail record was checked read-only on 2026-08-29. The 06:05:07 +05:00 request described Nimbo as free and non-monetized, with no subscriptions, advertising, paid features, affiliate links, accounts, analytics SDK, or sale of user data, and limited promotion to unpaid localized posts, one personalized contact plus at most one follow-up, genuine Apple/Google editorial submissions, and ordinary unpaid links. At 17:25 +05:00, Nicoletta Addimando via OpenMeteo GmbH replied in ticket 234272 and explicitly confirmed that under those terms Nimbo is entitled to use the non-commercial API. This pass is limited to that exact scope and the published Free API limits; monetization, paid promotion, attribution removal, limit changes, or other material facts require a new licensing decision."
       },
       {
         "id": "release_artifact_source_sync",

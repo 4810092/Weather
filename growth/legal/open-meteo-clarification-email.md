@@ -1,9 +1,11 @@
 # Open-Meteo promotion clarification — sent 2026-08-29
 
-Status: sent at `2026-08-29 06:05:07 +05:00`; a read-only authenticated Gmail
-thread and broad Open-Meteo search recheck at
-`2026-08-29 12:35:12 +05:00` found no inbound response. The provider gate
-remains `pending` until an unambiguous written answer is recorded.
+Status: **confirmed**. Sent at `2026-08-29 06:05:07 +05:00`; OpenMeteo GmbH
+replied at `2026-08-29 17:25 +05:00` in ticket `234272`. A read-only
+authenticated Gmail inspection verified both the complete original terms and
+the complete reply. Nicoletta Addimando via OpenMeteo confirmed that under
+those terms Nimbo is entitled to use the non-commercial API. The provider gate
+is `pass` for the exact unpaid, non-monetized organic-promotion scope below.
 To: `info@open-meteo.com`
 Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), re-checked immediately before sending on 2026-08-29.
 Subject: Clarification on non-commercial organic promotion for Nimbo
@@ -41,7 +43,23 @@ Khasan Ganikhodjaev
 Nimbo maintainer
 https://github.com/4810092/Weather
 
-## Send gate
+## Written decision
+
+- The reply is an explicit Free/non-commercial API permission for the activity
+  described in the original message: localized educational/product posts, one
+  personalized contact plus at most one follow-up, genuine Apple/Google
+  editorial submissions, and ordinary unpaid links.
+- The confirmed facts include a free app with no subscriptions, advertising,
+  paid features, affiliate links, accounts, analytics SDK, or sale of user
+  data, plus the stated attribution and published Free API limits.
+- This permission does not authorize monetization, paid ads, sponsorships,
+  referral or affiliate revenue, exceeding published limits, removing required
+  attribution, or embedding a future commercial customer key in the clients.
+  Any such change requires a new provider/licensing decision.
+- No reply was sent and no endpoint, account, API key, or provider setting was
+  changed during the read-only verification.
+
+## Send history
 
 - The 2026-08-29 terms still list apps without subscriptions or advertising as
   non-commercial examples, but separately classify integration into
@@ -51,9 +69,11 @@ https://github.com/4810092/Weather
 - The Gmail provider returned a successful sent-message result from the
   authenticated maintainer account. A pre-send search found no earlier thread
   to or from the provider contact, so no duplicate was sent.
-- At the dated recheck, the sent clarification remained the only indexed
+- At the earlier dated recheck, the sent clarification remained the only indexed
   matching message and had label `SENT`. Exact sender, domain, subject, and
   broad `Open-Meteo` searches returned no inbound message. This covers only
   Gmail-indexed state in the authenticated maintainer account and does not
   prove delivery or exclude another account or a future/not-yet-indexed reply.
-- Save the sent timestamp and full written reply; do not mark the provider gate `pass` based on silence or an ambiguous answer.
+- The later full reply is unambiguous when read together with the full original
+  message; that written answer, rather than the earlier silence, closes the
+  provider gate for the exact stated scope.

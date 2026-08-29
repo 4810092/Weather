@@ -148,7 +148,6 @@
     }
   ],
   "blocking_gates": [
-    "Open-Meteo promotion clearance",
     "iOS crash diagnosis",
     "source-synced signed Android phone 1.1.0 (8) artifact and physical smoke",
     "source-synced signed Wear OS 1.1.0 (1000008) artifact and physical smoke",

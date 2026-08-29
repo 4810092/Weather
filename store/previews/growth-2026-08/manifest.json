@@ -18,7 +18,6 @@
     "android_physical_smoke",
     "ios_crash_gate",
     "ios_physical_smoke",
-    "open_meteo_promotion_clearance",
     "release_artifact_source_sync"
   ],
   "clips": [

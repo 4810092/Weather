@@ -127,12 +127,6 @@
   ],
   "blockers": [
     {
-      "id": "open_meteo_promotion_clearance",
-      "blocker_type": "operational_gate",
-      "status": "pending",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
       "id": "ios_crash_gate",
       "blocker_type": "operational_gate",
       "status": "blocked",
