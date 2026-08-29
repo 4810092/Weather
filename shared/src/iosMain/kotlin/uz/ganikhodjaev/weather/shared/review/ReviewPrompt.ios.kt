@@ -4,6 +4,7 @@ import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
 import platform.StoreKit.SKStoreReviewController
 import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationState
 import platform.UIKit.UISceneActivationStateForegroundActive
 import platform.UIKit.UIWindowScene
 import uz.ganikhodjaev.weather.shared.PlatformContext
@@ -33,7 +34,7 @@ internal actual fun considerReviewPrompt(
 }
 
 internal fun interface IosReviewRequester {
-    fun requestReviewInForegroundWindowScene(): Boolean
+    fun requestReviewWhenForeground(): Boolean
 }
 
 internal fun requestIosReviewPrompt(
@@ -42,25 +43,61 @@ internal fun requestIosReviewPrompt(
     requester: IosReviewRequester
 ): Boolean {
     val requestInvoked = runCatching {
-        requester.requestReviewInForegroundWindowScene()
+        requester.requestReviewWhenForeground()
     }.getOrDefault(false)
     if (!requestInvoked) return false
 
     // StoreKit decides whether a dialog is displayed. A true result records only
-    // that requestReview(in:) was invoked with a foreground-active UIWindowScene.
+    // that a platform review request was invoked while the app was foreground-active.
     return persistSuccessfulReviewRequest(stateStore, appVersion)
 }
 
 private object StoreKitReviewRequester : IosReviewRequester {
-    override fun requestReviewInForegroundWindowScene(): Boolean {
-        val foregroundScene = UIApplication.sharedApplication.connectedScenes
+    @Suppress("DEPRECATION")
+    override fun requestReviewWhenForeground(): Boolean {
+        val application = UIApplication.sharedApplication
+        val foregroundScene = application.connectedScenes
             .asSequence()
             .filterIsInstance<UIWindowScene>()
             .firstOrNull { it.activationState == UISceneActivationStateForegroundActive }
-            ?: return false
-        SKStoreReviewController.requestReviewInScene(foregroundScene)
-        return true
+        return when (
+            selectIosReviewRequestPath(
+                isApplicationActive = application.applicationState ==
+                    UIApplicationState.UIApplicationStateActive,
+                hasForegroundWindowScene = foregroundScene != null,
+                hasLegacyKeyWindow = application.keyWindow != null
+            )
+        ) {
+            IosReviewRequestPath.ForegroundWindowScene -> {
+                SKStoreReviewController.requestReviewInScene(requireNotNull(foregroundScene))
+                true
+            }
+            IosReviewRequestPath.LegacyKeyWindow -> {
+                // Nimbo intentionally uses the legacy AppDelegate window lifecycle on iOS 15+.
+                // That lifecycle has no UIWindowScene, so StoreKit's legacy request API is the
+                // only in-app review path that can present without a scene migration.
+                SKStoreReviewController.requestReview()
+                true
+            }
+            null -> false
+        }
     }
+}
+
+internal enum class IosReviewRequestPath {
+    ForegroundWindowScene,
+    LegacyKeyWindow
+}
+
+internal fun selectIosReviewRequestPath(
+    isApplicationActive: Boolean,
+    hasForegroundWindowScene: Boolean,
+    hasLegacyKeyWindow: Boolean
+): IosReviewRequestPath? {
+    if (!isApplicationActive) return null
+    if (hasForegroundWindowScene) return IosReviewRequestPath.ForegroundWindowScene
+    if (hasLegacyKeyWindow) return IosReviewRequestPath.LegacyKeyWindow
+    return null
 }
 
 private class IosReviewPromptPolicyStateStore(private val preferences: NSUserDefaults) :

@@ -29,18 +29,21 @@ enum class BackgroundRefreshOutcome {
 
 class BackgroundWeatherUpdater(platformContext: PlatformContext) {
     private val context = platformContext
-    private val repository = NimboContainer(platformContext).weatherRepository
+    private val container = NimboContainer(platformContext)
+    private val repository = container.weatherRepository
     private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    suspend fun refreshOutcome(): BackgroundRefreshOutcome =
-        refreshBackgroundWeather(repository) { snapshot ->
-            val units = repository.unitPreference().resolve(automaticUnitSystem())
-            publishWeatherSnapshot(
-                platformContext = context,
-                snapshot = snapshot,
-                displayUnits = units
-            )
-        }
+    suspend fun refreshOutcome(): BackgroundRefreshOutcome = refreshBackgroundWeather(
+        repository = repository,
+        attemptStore = container.automaticRefreshAttemptStore
+    ) { snapshot ->
+        val units = repository.unitPreference().resolve(automaticUnitSystem())
+        publishWeatherSnapshot(
+            platformContext = context,
+            snapshot = snapshot,
+            displayUnits = units
+        )
+    }
 
     suspend fun refresh(): Boolean = when (refreshOutcome()) {
         BackgroundRefreshOutcome.Updated,
@@ -90,6 +93,7 @@ internal suspend fun refreshBackgroundWeather(
     repository: WeatherDataSource,
     nowEpochSeconds: Long? = null,
     currentEpochSeconds: () -> Long = { Clock.System.now().epochSeconds },
+    attemptStore: AutomaticRefreshAttemptStore = InMemoryAutomaticRefreshAttemptStore(),
     publishSnapshot: suspend (WeatherSnapshot) -> Unit
 ): BackgroundRefreshOutcome {
     val location = repository.activeLocation()
@@ -99,6 +103,7 @@ internal suspend fun refreshBackgroundWeather(
             repository = repository,
             location = location,
             nowEpochSeconds = nowEpochSeconds ?: currentEpochSeconds(),
+            attemptStore = attemptStore,
             publishSnapshot = publishSnapshot
         )
     }
@@ -108,6 +113,7 @@ private suspend fun refreshBackgroundWeatherForLocation(
     repository: WeatherDataSource,
     location: Location,
     nowEpochSeconds: Long,
+    attemptStore: AutomaticRefreshAttemptStore,
     publishSnapshot: suspend (WeatherSnapshot) -> Unit
 ): BackgroundRefreshOutcome {
     val cachedSnapshot = try {
@@ -127,15 +133,27 @@ private suspend fun refreshBackgroundWeatherForLocation(
             classifyBackgroundRefreshFailure(error)
         }
     }
-    if (!AutomaticRefreshCoordinator.claimAutomaticAttempt(location.id, nowEpochSeconds)) {
-        if (cachedSnapshot == null) return BackgroundRefreshOutcome.NothingToRefresh
-        return try {
-            publishSnapshot(cachedSnapshot)
-            BackgroundRefreshOutcome.NothingToRefresh
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (error: Throwable) {
-            classifyBackgroundRefreshFailure(error)
+    val claim = AutomaticRefreshCoordinator.claimAutomaticAttempt(
+        location.id,
+        nowEpochSeconds,
+        attemptStore
+    )
+    val attemptToken = when (claim) {
+        is AutomaticRefreshClaimResult.Granted -> claim.token
+        AutomaticRefreshClaimResult.Cooldown -> {
+            return publishCachedSnapshot(
+                cachedSnapshot = cachedSnapshot,
+                outcome = BackgroundRefreshOutcome.NothingToRefresh,
+                publishSnapshot = publishSnapshot
+            )
+        }
+        AutomaticRefreshClaimResult.RetryDeferred,
+        AutomaticRefreshClaimResult.StoreUnavailable -> {
+            return publishCachedSnapshot(
+                cachedSnapshot = cachedSnapshot,
+                outcome = BackgroundRefreshOutcome.TransientFailure,
+                publishSnapshot = publishSnapshot
+            )
         }
     }
     val primaryOutcome = try {
@@ -146,6 +164,16 @@ private suspend fun refreshBackgroundWeatherForLocation(
     } catch (error: Throwable) {
         classifyBackgroundRefreshFailure(error)
     }
+    AutomaticRefreshCoordinator.finalizeAutomaticAttempt(
+        locationId = location.id,
+        token = attemptToken,
+        completion = if (primaryOutcome == BackgroundRefreshOutcome.TransientFailure) {
+            AutomaticRefreshAttemptCompletion.RetryPending
+        } else {
+            AutomaticRefreshAttemptCompletion.Cooldown
+        },
+        attemptStore = attemptStore
+    )
 
     if (primaryOutcome == BackgroundRefreshOutcome.Updated) {
         try {
@@ -169,6 +197,26 @@ private suspend fun refreshBackgroundWeatherForLocation(
         }
     }
     return primaryOutcome
+}
+
+private suspend fun publishCachedSnapshot(
+    cachedSnapshot: WeatherSnapshot?,
+    outcome: BackgroundRefreshOutcome,
+    publishSnapshot: suspend (WeatherSnapshot) -> Unit
+): BackgroundRefreshOutcome {
+    if (cachedSnapshot == null) return outcome
+    return try {
+        publishSnapshot(cachedSnapshot)
+        outcome
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (error: Throwable) {
+        if (outcome == BackgroundRefreshOutcome.TransientFailure) {
+            outcome
+        } else {
+            classifyBackgroundRefreshFailure(error)
+        }
+    }
 }
 
 internal fun classifyBackgroundRefreshFailure(error: Throwable): BackgroundRefreshOutcome = when {

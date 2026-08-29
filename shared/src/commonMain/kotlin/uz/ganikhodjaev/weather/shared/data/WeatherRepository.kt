@@ -5,8 +5,11 @@ import app.cash.sqldelight.coroutines.mapToList
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.model.AirQualityHour
@@ -44,7 +47,8 @@ internal interface WeatherDataSource {
 
 internal class WeatherRepository(
     private val database: NimboDatabase,
-    private val service: OpenMeteoService
+    private val service: OpenMeteoService,
+    private val observationEpochSeconds: Flow<Long> = weatherObservationEpochSeconds()
 ) : WeatherDataSource {
     private val queries = database.weatherQueries
 
@@ -74,117 +78,118 @@ internal class WeatherRepository(
         Location(id, name, country, latitude, longitude, timezone)
     }.executeAsList()
 
-    override fun observe(location: Location): Flow<WeatherSnapshot?> {
-        val now = Clock.System.now().epochSeconds
-        val timelineFlow = queries.selectTimeline(
-            location_id = location.id,
-            epoch_seconds = now - HISTORY_SECONDS,
-            epoch_seconds_ = now + TIMELINE_SECONDS
-        ) {
-                _,
-                epoch,
-                temperature,
-                apparent,
-                code,
-                rainChance,
-                rainMm,
-                wind,
-                gust,
-                humidity,
-                uv,
-                _,
-                fetchedAt
-            ->
-            WeatherHour(
-                epochSeconds = epoch,
-                temperatureC = temperature,
-                apparentTemperatureC = apparent,
-                weatherCode = code.toInt(),
-                precipitationProbability = rainChance.toInt(),
-                precipitationMm = rainMm,
-                windKph = wind,
-                gustKph = gust,
-                humidityPercent = humidity.toInt(),
-                uvIndex = uv,
-                fetchedAtEpochSeconds = fetchedAt
-            )
-        }.asFlow().mapToList(Dispatchers.Default)
-        val dailyFlow = queries.selectDailyForecast(location.id, now - SECONDS_PER_DAY) {
-                _,
-                epoch,
-                code,
-                max,
-                min,
-                apparentMax,
-                apparentMin,
-                rainChance,
-                rain,
-                wind,
-                gust,
-                uv,
-                sunrise,
-                sunset,
-                fetchedAt
-            ->
-            DailyForecast(
-                epoch,
-                code.toInt(),
-                max,
-                min,
-                apparentMax,
-                apparentMin,
-                rainChance.toInt(),
-                rain,
-                wind,
-                gust,
-                uv,
-                sunrise,
-                sunset,
-                fetchedAt
-            )
-        }.asFlow().mapToList(Dispatchers.Default)
-        val airFlow = queries.selectAirQuality(location.id, now - SECONDS_PER_HOUR) {
-                _,
-                epoch,
-                aqi,
-                pm25,
-                pm10,
-                dust,
-                ozone,
-                nitrogenDioxide,
-                fetchedAt
-            ->
-            AirQualityHour(
-                epoch,
-                aqi?.toInt(),
-                pm25,
-                pm10,
-                dust,
-                ozone,
-                nitrogenDioxide,
-                fetchedAt
-            )
-        }.asFlow().mapToList(Dispatchers.Default)
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    override fun observe(location: Location): Flow<WeatherSnapshot?> =
+        observationEpochSeconds.flatMapLatest { now ->
+            val timelineFlow = queries.selectTimeline(
+                location_id = location.id,
+                epoch_seconds = now - HISTORY_SECONDS,
+                epoch_seconds_ = now + TIMELINE_SECONDS
+            ) {
+                    _,
+                    epoch,
+                    temperature,
+                    apparent,
+                    code,
+                    rainChance,
+                    rainMm,
+                    wind,
+                    gust,
+                    humidity,
+                    uv,
+                    _,
+                    fetchedAt
+                ->
+                WeatherHour(
+                    epochSeconds = epoch,
+                    temperatureC = temperature,
+                    apparentTemperatureC = apparent,
+                    weatherCode = code.toInt(),
+                    precipitationProbability = rainChance.toInt(),
+                    precipitationMm = rainMm,
+                    windKph = wind,
+                    gustKph = gust,
+                    humidityPercent = humidity.toInt(),
+                    uvIndex = uv,
+                    fetchedAtEpochSeconds = fetchedAt
+                )
+            }.asFlow().mapToList(Dispatchers.Default)
+            val dailyFlow = queries.selectDailyForecast(location.id, now - SECONDS_PER_DAY) {
+                    _,
+                    epoch,
+                    code,
+                    max,
+                    min,
+                    apparentMax,
+                    apparentMin,
+                    rainChance,
+                    rain,
+                    wind,
+                    gust,
+                    uv,
+                    sunrise,
+                    sunset,
+                    fetchedAt
+                ->
+                DailyForecast(
+                    epoch,
+                    code.toInt(),
+                    max,
+                    min,
+                    apparentMax,
+                    apparentMin,
+                    rainChance.toInt(),
+                    rain,
+                    wind,
+                    gust,
+                    uv,
+                    sunrise,
+                    sunset,
+                    fetchedAt
+                )
+            }.asFlow().mapToList(Dispatchers.Default)
+            val airFlow = queries.selectAirQuality(location.id, now - SECONDS_PER_HOUR) {
+                    _,
+                    epoch,
+                    aqi,
+                    pm25,
+                    pm10,
+                    dust,
+                    ozone,
+                    nitrogenDioxide,
+                    fetchedAt
+                ->
+                AirQualityHour(
+                    epoch,
+                    aqi?.toInt(),
+                    pm25,
+                    pm10,
+                    dust,
+                    ozone,
+                    nitrogenDioxide,
+                    fetchedAt
+                )
+            }.asFlow().mapToList(Dispatchers.Default)
 
-        return combine(timelineFlow, dailyFlow, airFlow) { allHours, daily, airQuality ->
-            if (allHours.isEmpty()) return@combine null
-            val resolvedLocation = activeLocation()?.takeIf { it.id == location.id } ?: location
-            val current = allHours.minBy { abs(it.epochSeconds - Clock.System.now().epochSeconds) }
-            val fetchedAt = allHours.maxOf { it.fetchedAtEpochSeconds }
-            WeatherSnapshot(
-                location = resolvedLocation,
-                current = current,
-                timeline = timelineWithinHours(allHours, current.epochSeconds, hours = 24) {
-                    it.epochSeconds
-                },
-                recentHistory = allHours.filter { it.epochSeconds < current.epochSeconds },
-                dailyForecast = daily,
-                airQuality = airQuality,
-                fetchedAtEpochSeconds = fetchedAt,
-                isStale = Clock.System.now().epochSeconds - fetchedAt > STALE_AFTER_SECONDS
-            )
+            combine(timelineFlow, dailyFlow, airFlow) { allHours, daily, airQuality ->
+                if (allHours.isEmpty()) return@combine null
+                val resolvedLocation = activeLocation()?.takeIf { it.id == location.id } ?: location
+                val current = allHours.minBy { abs(it.epochSeconds - now) }
+                val fetchedAt = allHours.maxOf { it.fetchedAtEpochSeconds }
+                WeatherSnapshot(
+                    location = resolvedLocation,
+                    current = current,
+                    timeline = timelineWithinHours(allHours, current.epochSeconds, hours = 24) {
+                        it.epochSeconds
+                    },
+                    recentHistory = allHours.filter { it.epochSeconds < current.epochSeconds },
+                    dailyForecast = daily,
+                    airQuality = airQuality,
+                    fetchedAtEpochSeconds = fetchedAt,
+                    isStale = now - fetchedAt > STALE_AFTER_SECONDS
+                )
+            }
         }
-    }
 
     override suspend fun refreshPrimary(location: Location): Long {
         val response = service.forecast(location, pastDays = 1, forecastDays = 10)
@@ -366,6 +371,18 @@ internal class WeatherRepository(
         const val MAX_SAVED_LOCATIONS = 10
     }
 }
+
+private fun weatherObservationEpochSeconds(): Flow<Long> = flow {
+    while (true) {
+        val now = Clock.System.now().epochSeconds
+        emit(now)
+        val secondsIntoInterval = now % OBSERVATION_REEVALUATION_SECONDS
+        val secondsUntilNextInterval = OBSERVATION_REEVALUATION_SECONDS - secondsIntoInterval
+        delay(secondsUntilNextInterval * 1_000L)
+    }
+}
+
+private const val OBSERVATION_REEVALUATION_SECONDS = 15L * 60L
 
 internal fun ForecastResponse.toDailyRows(fetchedAt: Long): List<DailyForecast> {
     val requiredSize = listOf(

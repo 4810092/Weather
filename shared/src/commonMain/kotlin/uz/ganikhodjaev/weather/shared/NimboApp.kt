@@ -48,7 +48,8 @@ fun NimboApp(platformContext: PlatformContext) {
             locationProvider,
             automaticUnits,
             onboardingStateStore,
-            scope
+            scope,
+            automaticRefreshAttemptStore = container.automaticRefreshAttemptStore
         )
     }
     val state by stateHolder.state.collectAsState()

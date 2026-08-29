@@ -44,26 +44,30 @@ search result slices for all five generic queries. A bounded absence means only
 - Local review state requiring at least three successful foreground forecasts
   across two local days. Platform bookkeeping is fail-closed: Android records a
   version only after both Play request and launch tasks complete successfully,
-  using a durable success write; iOS records it only after
-  `requestReview(in:)` is invoked with a foreground-active `UIWindowScene`.
-  Request failure or a missing foreground scene remains retryable. Apple and
-  Google still decide whether any review dialog is displayed; invocation is not
-  claimed as display.
+  using a durable success write. iOS prefers `requestReview(in:)` with a
+  foreground-active `UIWindowScene`; the app's legacy AppDelegate lifecycle can
+  fall back to `requestReview()` only while the application is active and has a
+  key window. Request failure or a missing active presentation surface remains
+  retryable. Apple and Google still decide whether any review dialog is
+  displayed; invocation is not claimed as display.
 - Localized share CTA with a canonical platform store link and no coordinates,
   identifiers, or analytics parameters.
 - Android background retry for transient failures, with permanent and no-work
-  outcomes kept distinct.
+  outcomes kept distinct. A durable retry-pending state preserves WorkManager
+  backoff without making another provider call before the one-hour cooldown.
 - Automatic provider refreshes are cache-gated to one hour per location across
   foreground activation, foreground checks, Android/iOS background work, and
-  failed attempts. Cross-path requests coalesce per process; manual refresh and
-  a first uncached location remain immediate.
+  failed attempts. Cooldown/retry state survives cold starts; cross-path
+  requests coalesce per process; manual refresh and a first uncached location
+  remain immediate.
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  Phone vc8 now has bounded current-commit API 25 debug/source evidence, but no
-  upload-signed artifact or matching release-certificate physical pass. Apple
-  build 6 still has no current signed artifact or physical result. Neither is
-  an uploadable artifact.
+  The bounded phone vc8 API 25 debug/source evidence is scoped to commit
+  `2004e4f` and is historical after the current runtime changes. There is no
+  upload-signed current phone artifact or matching release-certificate physical
+  pass. Apple build 6 also has no current signed artifact or physical result.
+  Neither is an uploadable artifact.
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.

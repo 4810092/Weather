@@ -7,9 +7,9 @@ import kotlin.test.assertTrue
 
 class ReviewPromptIosTest {
     @Test
-    fun missingForegroundWindowSceneDoesNotMarkVersion() {
+    fun unavailableForegroundPresentationDoesNotMarkVersion() {
         val stateStore = RecordingStateStore(eligibleState())
-        val requester = SceneAwareRequester(foregroundWindowSceneAvailable = false)
+        val requester = RecordingRequester(requestInvoked = false)
 
         val invoked = requestIosReviewPrompt(stateStore, APP_VERSION, requester)
 
@@ -20,11 +20,26 @@ class ReviewPromptIosTest {
     }
 
     @Test
+    fun storeKitFailureDoesNotConsumeTheVersion() {
+        val stateStore = RecordingStateStore(eligibleState())
+
+        val invoked = requestIosReviewPrompt(
+            stateStore = stateStore,
+            appVersion = APP_VERSION,
+            requester = IosReviewRequester { error("StoreKit unavailable") }
+        )
+
+        assertFalse(invoked)
+        assertTrue(stateStore.read().successfullyRequestedVersions.isEmpty())
+        assertEquals(0, stateStore.successfulPersistenceCount)
+    }
+
+    @Test
     fun foregroundStoreKitInvocationMarksVersionWithoutClaimingDialogDisplay() {
         val stateStore = RecordingStateStore(
             eligibleState().copy(successfullyRequestedVersions = listOf(PREVIOUS_VERSION))
         )
-        val requester = SceneAwareRequester(foregroundWindowSceneAvailable = true)
+        val requester = RecordingRequester(requestInvoked = true)
 
         val invoked = requestIosReviewPrompt(stateStore, APP_VERSION, requester)
 
@@ -37,13 +52,68 @@ class ReviewPromptIosTest {
         assertEquals(1, stateStore.successfulPersistenceCount)
     }
 
-    private class SceneAwareRequester(private val foregroundWindowSceneAvailable: Boolean) :
-        IosReviewRequester {
+    @Test
+    fun foregroundSceneTakesPriorityOverLegacyWindow() {
+        assertEquals(
+            IosReviewRequestPath.ForegroundWindowScene,
+            selectIosReviewRequestPath(
+                isApplicationActive = true,
+                hasForegroundWindowScene = true,
+                hasLegacyKeyWindow = true
+            )
+        )
+    }
+
+    @Test
+    fun activeLegacyWindowIsAReviewFallbackWhenNoSceneExists() {
+        assertEquals(
+            IosReviewRequestPath.LegacyKeyWindow,
+            selectIosReviewRequestPath(
+                isApplicationActive = true,
+                hasForegroundWindowScene = false,
+                hasLegacyKeyWindow = true
+            )
+        )
+    }
+
+    @Test
+    fun inactiveApplicationNeverRequestsReview() {
+        assertEquals(
+            null,
+            selectIosReviewRequestPath(
+                isApplicationActive = false,
+                hasForegroundWindowScene = true,
+                hasLegacyKeyWindow = true
+            )
+        )
+        assertEquals(
+            null,
+            selectIosReviewRequestPath(
+                isApplicationActive = false,
+                hasForegroundWindowScene = false,
+                hasLegacyKeyWindow = true
+            )
+        )
+    }
+
+    @Test
+    fun activeApplicationWithoutAReviewSurfaceRemainsRetryable() {
+        assertEquals(
+            null,
+            selectIosReviewRequestPath(
+                isApplicationActive = true,
+                hasForegroundWindowScene = false,
+                hasLegacyKeyWindow = false
+            )
+        )
+    }
+
+    private class RecordingRequester(private val requestInvoked: Boolean) : IosReviewRequester {
         var storeKitInvocationCount = 0
             private set
 
-        override fun requestReviewInForegroundWindowScene(): Boolean {
-            if (!foregroundWindowSceneAvailable) return false
+        override fun requestReviewWhenForeground(): Boolean {
+            if (!requestInvoked) return false
             storeKitInvocationCount += 1
             return true
         }

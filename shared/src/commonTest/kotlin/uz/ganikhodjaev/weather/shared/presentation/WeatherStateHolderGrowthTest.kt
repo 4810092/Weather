@@ -20,8 +20,14 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshAttemptPhase
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshAttemptState
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshAttemptStore
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshClaimResult
 import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
+import uz.ganikhodjaev.weather.shared.InMemoryAutomaticRefreshAttemptStore
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
@@ -473,18 +479,156 @@ class WeatherStateHolderGrowthTest {
         }
     }
 
+    @Test
+    fun persistedAutomaticCooldownDoesNotBlockManualRefreshAfterColdStart() = runBlocking {
+        val recentAttemptAt = 40_000L
+        val attemptStore = InMemoryAutomaticRefreshAttemptStore()
+        attemptStore.writeDurably(
+            TASHKENT.id,
+            AutomaticRefreshAttemptState(
+                token = 1L,
+                attemptedAtEpochSeconds = recentAttemptAt,
+                phase = AutomaticRefreshAttemptPhase.Cooldown
+            )
+        )
+        AutomaticRefreshCoordinator.resetAttemptHistoryForTests()
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = 1L)
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { recentAttemptAt + 1L },
+            automaticRefreshAttemptStore = attemptStore
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            yield()
+            assertEquals(0, repository.refreshCallCount)
+
+            holder.refresh()
+            val manualRefresh = repository.nextRefresh()
+            assertEquals(1, repository.refreshCallCount)
+            manualRefresh.succeed(forecastId = recentAttemptAt + 2L)
+            val refreshed = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                !it.isRefreshing && it.weather.fetchedAtEpochSeconds == recentAttemptAt + 2L
+            }
+            assertEquals(recentAttemptAt + 2L, refreshed.weather.fetchedAtEpochSeconds)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun automaticStoreFailureDoesNotBlockManualRefresh() = runBlocking {
+        val nowEpochSeconds = 50_000L
+        val attemptStore = ThrowingAutomaticRefreshAttemptStore()
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = 1L)
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds },
+            automaticRefreshAttemptStore = attemptStore
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            yield()
+            assertEquals(0, repository.refreshCallCount)
+
+            holder.refresh()
+            val manualRefresh = repository.nextRefresh()
+            assertEquals(1, repository.refreshCallCount)
+            manualRefresh.succeed(forecastId = nowEpochSeconds)
+            holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                !it.isRefreshing && it.weather.fetchedAtEpochSeconds == nowEpochSeconds
+            }
+            assertTrue(attemptStore.writeCount >= 1)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun deletingSavedLocationRemovesItsAutomaticRefreshCooldown() = runBlocking {
+        val nowEpochSeconds = 60_000L
+        val attemptStore = InMemoryAutomaticRefreshAttemptStore()
+        AutomaticRefreshCoordinator.recordManualAttempt(
+            locationId = BUKHARA.id,
+            nowEpochSeconds = nowEpochSeconds,
+            attemptStore = attemptStore
+        )
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = nowEpochSeconds),
+            initialSavedLocations = listOf(TASHKENT, BUKHARA)
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds },
+            automaticRefreshAttemptStore = attemptStore
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            holder.showLocationPicker()
+            holder.deleteSavedLocation(BUKHARA)
+
+            withTimeout(5_000L) {
+                while (
+                    attemptStore.read(BUKHARA.id) != null ||
+                    AutomaticRefreshCoordinator.retainsLocationForTests(BUKHARA.id)
+                ) {
+                    yield()
+                }
+            }
+            assertFalse(BUKHARA in repository.savedLocations())
+            assertIs<AutomaticRefreshClaimResult.Granted>(
+                AutomaticRefreshCoordinator.claimAutomaticAttempt(
+                    locationId = BUKHARA.id,
+                    nowEpochSeconds = nowEpochSeconds + 1L,
+                    attemptStore = attemptStore
+                )
+            )
+            Unit
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
     private fun createStateHolder(
         repository: WeatherDataSource,
         locationProvider: DeviceLocationProvider,
         onboardingStateStore: OnboardingStateStore,
         scope: CoroutineScope,
-        currentEpochSeconds: () -> Long = { Clock.System.now().epochSeconds }
+        currentEpochSeconds: () -> Long = { Clock.System.now().epochSeconds },
+        automaticRefreshAttemptStore: AutomaticRefreshAttemptStore =
+            InMemoryAutomaticRefreshAttemptStore()
     ) = WeatherStateHolder(
         repository = repository,
         locationProvider = locationProvider,
         automaticUnitSystem = UnitSystem.Metric,
         onboardingStateStore = onboardingStateStore,
         scope = scope,
+        automaticRefreshAttemptStore = automaticRefreshAttemptStore,
         currentEpochSeconds = currentEpochSeconds
     )
 
@@ -512,11 +656,35 @@ class WeatherStateHolderGrowthTest {
         }
     }
 
+    private class ThrowingAutomaticRefreshAttemptStore : AutomaticRefreshAttemptStore {
+        var writeCount = 0
+            private set
+
+        override suspend fun read(locationId: String): AutomaticRefreshAttemptState? = null
+
+        override suspend fun writeDurably(
+            locationId: String,
+            state: AutomaticRefreshAttemptState
+        ): Boolean {
+            writeCount += 1
+            throw IllegalStateException("preferences unavailable")
+        }
+
+        override fun writeBestEffort(locationId: String, state: AutomaticRefreshAttemptState) {
+            writeCount += 1
+            throw IllegalStateException("preferences unavailable")
+        }
+
+        override suspend fun removeDurably(locationId: String): Boolean = false
+    }
+
     private class ScriptedWeatherDataSource(
         initialActiveLocation: Location? = null,
-        initialSnapshot: WeatherSnapshot? = null
+        initialSnapshot: WeatherSnapshot? = null,
+        initialSavedLocations: List<Location> = listOfNotNull(initialActiveLocation)
     ) : WeatherDataSource {
         private val weather = mutableMapOf<String, MutableStateFlow<WeatherSnapshot?>>()
+        private val saved = initialSavedLocations.toMutableList()
         private val refreshRequests = Channel<RefreshRequest>(Channel.UNLIMITED)
         private val searchRequests = Channel<SearchRequest>(Channel.UNLIMITED)
         private var active = initialActiveLocation
@@ -542,7 +710,7 @@ class WeatherStateHolderGrowthTest {
 
         override fun activeLocation(): Location? = active
 
-        override fun savedLocations(): List<Location> = listOfNotNull(active)
+        override fun savedLocations(): List<Location> = saved.toList()
 
         override fun observe(location: Location): Flow<WeatherSnapshot?> {
             observeFailure?.let { error ->
@@ -582,13 +750,19 @@ class WeatherStateHolderGrowthTest {
 
         override suspend fun setActiveLocation(location: Location) {
             active = location
+            saved.removeAll { it.id == location.id }
+            saved += location
             weather.getOrPut(location.id) { MutableStateFlow(null) }
         }
 
-        override fun deleteLocation(locationId: String) = Unit
+        override fun deleteLocation(locationId: String) {
+            saved.removeAll { it.id == locationId }
+        }
 
         override fun updateLocationDetails(location: Location) {
             active = location
+            val savedIndex = saved.indexOfFirst { it.id == location.id }
+            if (savedIndex >= 0) saved[savedIndex] = location
         }
 
         override fun unitPreference(): UnitPreference = preference

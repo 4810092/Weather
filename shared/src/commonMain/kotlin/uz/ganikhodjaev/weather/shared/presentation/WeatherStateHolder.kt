@@ -14,7 +14,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshAttemptCompletion
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshAttemptStore
+import uz.ganikhodjaev.weather.shared.AutomaticRefreshClaimResult
 import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
+import uz.ganikhodjaev.weather.shared.BackgroundRefreshOutcome
+import uz.ganikhodjaev.weather.shared.InMemoryAutomaticRefreshAttemptStore
+import uz.ganikhodjaev.weather.shared.classifyBackgroundRefreshFailure
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.isAutomaticRefreshDue
@@ -79,6 +85,8 @@ internal class WeatherStateHolder(
     private val automaticUnitSystem: UnitSystem,
     private val onboardingStateStore: OnboardingStateStore,
     private val scope: CoroutineScope,
+    private val automaticRefreshAttemptStore: AutomaticRefreshAttemptStore =
+        InMemoryAutomaticRefreshAttemptStore(),
     private val currentEpochSeconds: () -> Long = {
         kotlin.time.Clock.System.now().epochSeconds
     }
@@ -169,6 +177,12 @@ internal class WeatherStateHolder(
         if (location.id == activeLocation?.id) return
         repository.deleteLocation(location.id)
         mutableState.value = current.copy(savedLocations = repository.savedLocations())
+        scope.launch {
+            AutomaticRefreshCoordinator.removeAttemptState(
+                locationId = location.id,
+                attemptStore = automaticRefreshAttemptStore
+            )
+        }
     }
 
     fun showLocationPicker() {
@@ -415,30 +429,37 @@ internal class WeatherStateHolder(
         nowEpochSeconds: Long
     ) {
         if (!isCurrentActivation(generation, location)) return
-        if (!forceRefresh) {
-            val cachedSnapshot = try {
-                repository.observe(location).first()
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (error: Throwable) {
-                logFailure("cached weather freshness check", error)
-                return
-            }
-            val refreshDue = cachedSnapshot?.isAutomaticRefreshDue(
-                nowEpochSeconds
-            ) ?: true
-            if (!refreshDue) return
-            if (!AutomaticRefreshCoordinator.claimAutomaticAttempt(
-                    location.id,
-                    nowEpochSeconds
-                )
-            ) {
-                return
-            }
-        }
         val gate = refreshGate
         if (gate.generation != generation || !gate.mutex.tryLock()) return
         try {
+            val automaticAttemptToken = if (!forceRefresh) {
+                val cachedSnapshot = try {
+                    repository.observe(location).first()
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (error: Throwable) {
+                    logFailure("cached weather freshness check", error)
+                    return
+                }
+                val refreshDue = cachedSnapshot?.isAutomaticRefreshDue(
+                    nowEpochSeconds
+                ) ?: true
+                if (!refreshDue) return
+                when (
+                    val claim = AutomaticRefreshCoordinator.claimAutomaticAttempt(
+                        location.id,
+                        nowEpochSeconds,
+                        automaticRefreshAttemptStore
+                    )
+                ) {
+                    is AutomaticRefreshClaimResult.Granted -> claim.token
+                    AutomaticRefreshClaimResult.Cooldown,
+                    AutomaticRefreshClaimResult.RetryDeferred,
+                    AutomaticRefreshClaimResult.StoreUnavailable -> return
+                }
+            } else {
+                null
+            }
             val current = mutableState.value
             if (current is WeatherUiState.Content) {
                 mutableState.value = current.copy(
@@ -449,9 +470,42 @@ internal class WeatherStateHolder(
             }
             try {
                 if (forceRefresh) {
-                    AutomaticRefreshCoordinator.recordAttempt(location.id, nowEpochSeconds)
+                    AutomaticRefreshCoordinator.recordManualAttempt(
+                        location.id,
+                        nowEpochSeconds,
+                        automaticRefreshAttemptStore
+                    )
                 }
-                val successfulForecastId = repository.refreshPrimary(location)
+                val successfulForecastId = try {
+                    repository.refreshPrimary(location)
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (error: Throwable) {
+                    automaticAttemptToken?.let { token ->
+                        AutomaticRefreshCoordinator.finalizeAutomaticAttempt(
+                            locationId = location.id,
+                            token = token,
+                            completion = if (
+                                classifyBackgroundRefreshFailure(error) ==
+                                BackgroundRefreshOutcome.TransientFailure
+                            ) {
+                                AutomaticRefreshAttemptCompletion.RetryPending
+                            } else {
+                                AutomaticRefreshAttemptCompletion.Cooldown
+                            },
+                            attemptStore = automaticRefreshAttemptStore
+                        )
+                    }
+                    throw error
+                }
+                automaticAttemptToken?.let { token ->
+                    AutomaticRefreshCoordinator.finalizeAutomaticAttempt(
+                        locationId = location.id,
+                        token = token,
+                        completion = AutomaticRefreshAttemptCompletion.Cooldown,
+                        attemptStore = automaticRefreshAttemptStore
+                    )
+                }
                 if (!isCurrentActivation(generation, location)) return
                 pendingSuccessfulForecast = PendingSuccessfulForecast(
                     generation = generation,

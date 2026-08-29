@@ -41,11 +41,15 @@ an automatic provider refresh only when the cached primary forecast is at least
 one hour old. Android periodic work and the earliest iOS background request are
 also moved to one hour, and background execution publishes a fresh cached
 snapshot without calling the provider. Failed automatic attempts are also
-limited to once per hour per location, while cache-read failures fail closed
-without a provider call. Manual refresh and first-location load remain
-immediate. Foreground and platform background paths share a process-wide,
-per-location single-flight lock and re-read the cache after acquiring it, so an
-hour boundary cannot start duplicate automatic refreshes in the same process.
+limited to once per hour per location. A durable `InFlight` / `Cooldown` /
+`RetryPending` record survives a cold start: transient background work keeps
+returning retry during the remaining cooldown without spending another
+provider call, then permits one new attempt when the hour is due. Cache-read or
+durable-state failures fail closed without a provider call. Manual refresh and
+first-location load remain immediate. Foreground and platform background paths
+share a process-wide, per-location single-flight lock and re-read the cache
+after acquiring it, so an hour boundary cannot start duplicate automatic
+refreshes in the same process.
 Future cache/attempt timestamps caused by a wall-clock correction are treated
 as due instead of suppressing refresh indefinitely.
 
@@ -62,9 +66,10 @@ definition or an explicit Open-Meteo answer, not only this formula.
 ## Verification
 
 - Shared tests cover fresh-cache activation/background skips, the exact
-  one-hour boundary, per-location failed-attempt cooldown, manual retry,
-  different-location independence, cache-read failure, future timestamps, and
-  concurrent automatic-path coalescing.
+  one-hour boundary, durable transient retry deferral and the later real retry,
+  stale completion tokens, manual retry, deletion cleanup, different-location
+  independence, cache/state failure, future timestamps, and concurrent
+  automatic-path coalescing.
 - `ktlintCheck`, all shared Android-host/iOS Simulator tests, Android unit
   tests, SQLDelight migration verification, and phone/Wear release bundle builds
   pass locally.
