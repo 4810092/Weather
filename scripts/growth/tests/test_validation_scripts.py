@@ -39,6 +39,8 @@ from scripts.check_store_metadata import (
     GOOGLE_CUSTOM_LISTING_FIELDS,
     GOOGLE_CUSTOM_LOCALIZATION_FIELDS,
     GOOGLE_UZ_COUNTRY_LISTING_ID,
+    RU_APP_STORE_SUBTITLE,
+    RU_TITLE,
     configured_generic_terms,
     validate_cpp_upload_mapping,
     validate_google_uz_upload_mapping,
@@ -75,6 +77,20 @@ class ValidationScriptsTest(unittest.TestCase):
     def upload_manifest(self) -> dict:
         return json.loads(
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
+        )
+
+    def test_app_store_default_has_query_first_russian_override(self) -> None:
+        listing = next(
+            listing
+            for listing in self.metadata()["listings"]
+            if listing["id"] == "app-store-default"
+        )
+        self.assertEqual(
+            listing["overrides"]["ru-RU"],
+            {
+                "title": RU_TITLE,
+                "subtitle": RU_APP_STORE_SUBTITLE,
+            },
         )
 
     def test_ios_widget_matches_app_floor_with_guarded_newer_surfaces(self) -> None:

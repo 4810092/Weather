@@ -69,6 +69,13 @@ sequence is: submit the base 1.1.0 keywords, wait for base-version approval, and
 only then assign Custom Product Page keywords. The installed app continues to
 use its complete Uzbek localization.
 
+The default App Store draft preserves the global English name `Nimbo Weather`.
+Its Russian override uses `Nimbo: Погода и прогноз` and `Лучшее время для
+прогулки`, keeping the generic query terms in a visible indexed field and the
+implemented Best Time Outside benefit in the subtitle. This is versioned input
+only; it is not evidence that either value is saved in App Store Connect or
+public in the UZ storefront.
+
 Apple's keyword limit is 100 UTF-8 bytes, not 100 Unicode characters. The JSON
 Schema retains a portable 100-character ceiling, and
 `scripts/check_store_metadata.py` applies the stricter byte count to base and

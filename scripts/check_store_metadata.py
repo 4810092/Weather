@@ -113,6 +113,7 @@ UZ_TITLE = "Nimbo: Ob-havo va prognoz"
 UZ_SHORT = "Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping."
 RU_TITLE = "Nimbo: Погода и прогноз"
 RU_SHORT = "Прогноз погоды: найдите лучшее время, чтобы выйти на улицу."
+RU_APP_STORE_SUBTITLE = "Лучшее время для прогулки"
 EXPECTED_PUBLIC_URLS = {
     "marketing": "https://nimbo.uz/",
     "support": "https://nimbo.uz/support/",
@@ -1115,6 +1116,14 @@ def main() -> int:
     ):
         failures.append(
             "app-store-default must preserve the global title Nimbo Weather"
+        )
+    if app_default.get("overrides", {}).get("ru-RU") != {
+        "title": RU_TITLE,
+        "subtitle": RU_APP_STORE_SUBTITLE,
+    }:
+        failures.append(
+            "app-store-default must preserve the query-first Russian title and "
+            "Best Time Outside subtitle"
         )
 
     app_uz = listing_by_id.get("app-store-uz-custom-product-page", {})

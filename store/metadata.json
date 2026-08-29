@@ -170,6 +170,10 @@
       "overrides": {
         "en-US": {
           "title": "Nimbo Weather"
+        },
+        "ru-RU": {
+          "title": "Nimbo: Погода и прогноз",
+          "subtitle": "Лучшее время для прогулки"
         }
       },
       "custom_listing": null,

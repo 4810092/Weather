@@ -60,10 +60,12 @@ These observations support retaining `Ob-havo` in the title. They do not prove
 that metadata alone will produce a Top-10 position, and they do not justify
 keyword stuffing or unsupported feature claims.
 
-The same evidence supports changing the base Apple subtitles to
-`Local forecast, made familiar` and `Понятный прогноз погоды`. The revision
-adds high-frequency functional language while keeping Nimbo's distinctive
-comprehension promise. The candidate base keyword fields deliberately retain
+The same evidence supports keeping `Local forecast, made familiar` as the
+English Apple subtitle and adding a Russian App Store override with title
+`Nimbo: Погода и прогноз` and subtitle `Лучшее время для прогулки`. The Russian
+override moves the absent-query terms `погода` and `прогноз` into the strongest
+visible metadata field while preserving Nimbo's implemented, differentiated
+Best Time Outside benefit. The candidate base keyword fields deliberately retain
 `weather` / `forecast` and `погода` / `прогноз` because the prepared Custom
 Product Page assignment contract requires every planned target to exist in the
 approved base keyword pool. Both fields remain within Apple's 100-byte limit;

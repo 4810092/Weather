@@ -17,8 +17,9 @@ Its existence is not evidence of review, publication, or end-user availability.
 - The public default page reports `Nimbo Weather`, subtitle
   `Weather made familiar`, and public version `1.0.1`. The title still matches
   the repository draft. A later public-store audit refined the unpublished
-  English subtitle to `Local forecast, made familiar` and the Russian subtitle
-  to `Понятный прогноз погоды`; neither revision is proven public.
+  English subtitle to `Local forecast, made familiar`. The Russian App Store
+  draft now overrides the title with `Nimbo: Погода и прогноз` and the subtitle
+  with `Лучшее время для прогулки`; none of those revisions is proven public.
 - The public model exposes one iPhone image at 1320×2868, one iPad image at
   2064×2752, and one Watch image at 416×496. It does not expose the prepared
   six-story captioned growth set.
@@ -62,12 +63,15 @@ The Google UZ country listing exists as an unpublished Console draft with its
 localized feature graphics and six captioned screenshot stories, but its Uzbek
 short description must still be synchronized with the newer repository
 candidate. Submission, review, publication, and end-user availability remain
-pending. Apple default title/subtitle work is already live, so re-submitting the
-same values is not treated as growth progress.
+pending. The public Apple page still trails the prepared English subtitle and
+Russian query-first title/subtitle; the repository draft is not treated as
+deployed growth progress.
 
-Release upload and publication remain blocked by the provider, crash,
-source-signed artifact, and remaining physical-device gates. Saving the Google
-listing as a project-only draft did not cross those gates. Google Console is
-currently authenticated, while App Store Connect is not. The public Apple page
+Release upload and publication remain blocked by the crash, source-signed
+artifact, and remaining physical-device gates. Open-Meteo clearance passes for
+the exact unpaid, non-monetized organic-promotion scope; saving the Google
+listing as a project-only draft did not cross the remaining gates. Google
+Console is currently authenticated, while App Store Connect is not. The public
+Apple page
 still reports `1.0.1` and Google reports `1.0.2`; neither proves that the
 repository's `1.1.0` candidate, revised copy, or creatives are deployed.
