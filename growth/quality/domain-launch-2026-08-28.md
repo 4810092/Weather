@@ -71,6 +71,24 @@ the `www` `CNAME` records. However, both `.uz` registry authorities and the
 Cloudflare and Google public resolvers still return DNSSEC-validated `NXDOMAIN`,
 so the parent delegation and public TLS endpoint remain absent.
 
+At `2026-08-29 07:43 +05:00`, domain-specific WHOIS still reported
+`NIMBO.UZ` as `EXPIRED`. A fresh trace ended at the DNSSEC-signed `.uz` denial
+of delegation, while direct queries to the assigned Cloudflare nameservers
+continued to return the prepared child zone. A direct GitHub Pages edge probe
+for `https://nimbo.uz/` failed certificate-name validation, so certificate
+issuance is not claimed. Because the registrar's documented average activation
+window had elapsed, one concise support follow-up referencing ticket `#1665`
+was sent at approximately `07:45` to the registrar's official support routes.
+It requested activation/delegation or an exact remaining owner action. No DNS
+record was changed, no duplicate ticket was created, and no human reply is yet
+recorded.
+
+At `2026-08-29 08:12 +05:00`, a new read-only recheck again found
+domain-specific WHOIS status `EXPIRED`, DNSSEC-authenticated parent
+non-delegation, no public `A` or `AAAA` answer, and no resolvable HTTPS host.
+The registrar follow-up remains the latest owner action; no further message or
+DNS change was made.
+
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
 `nimbo.uz`. The registry has therefore not published a delegation. The

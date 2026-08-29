@@ -43,7 +43,7 @@ the transitive `1.0.0`/`1.1.0` requests to `1.9.0`, and both generated AAB
 `dependencies.pb` manifests contain `fragment 1.9.0`:
 
 - phone AAB SHA-256:
-  `12da2a0d69d6ff5b5925a03cec419d7ae988e1092b5748f0662c795ea31771cc`
+  `a631c67df19761964d25dd6fbbdc89b7d9c0ee6d8544ebc23113bcee52043ed9`
 - Wear OS AAB SHA-256:
   `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6`
 
@@ -52,8 +52,9 @@ will remain visible until a newer accepted bundle replaces phone `1.0.2 (6)`.
 
 ## Edge-to-edge recommendations
 
-Current commit `80cdd608b93056edd05e29873da43834a916cd3a` closes the
-app-owned findings behind the two Play recommendations:
+Current commit `f97238beb8d99cea5ed19883b1528dca4923baee` contains commits
+`5ada89f` and `80cdd60`, which close the app-owned findings behind the two Play
+recommendations:
 
 - the phone themes no longer configure deprecated `statusBarColor`,
   `navigationBarColor`, or redundant `windowLightStatusBar` attributes;
@@ -63,10 +64,15 @@ app-owned findings behind the two Play recommendations:
 - light mode supplies a dark navigation fallback for API 24–25, where dark
   navigation icons are unavailable.
 
-Repository checks pass across 620 source paths, the current unsigned AAB above
-passes Bundletool validation, and the exact debug bytes passed physical API 25
-three-button contrast plus API 36 portrait, IME, dark/light, true-offline, and
-landscape side-cutout/three-button runtime paths. See
+The exact current unsigned AAB above passes Bundletool validation with package
+`uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
+targetSdk `36`, and zero signature entries. Matching-source `f97238b` debug APK
+SHA-256 `7b2f2c12d56fdda293f19317ef6eb6da153213f84b1daeef11fd35f8e9e30edb`
+passed bounded physical API 25 and API 36 emulator QA for legacy navigation
+contrast, IME resize, true-offline fallback/recovery, dark landscape, and
+process stability. The debug result is not a Play-processed artifact, but the
+edge-to-edge source closure is now current rather than inherited only from the
+historical commit-80 run. See
 `android-current-head-device-smoke-2026-08-29.md`.
 
 This is source and bounded-runtime closure, not Play Console closure. The cards

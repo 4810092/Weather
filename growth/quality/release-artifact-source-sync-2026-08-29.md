@@ -10,57 +10,73 @@ before the current review-prompt and background-refresh hardening. Their hashes,
 signature evidence, and bounded device results remain valid only for those
 historical bytes. They cannot be reused as evidence for the current source.
 
-The current source identities are therefore Android phone `1.1.0 (8)` and
+The current product commit is
+`f97238beb8d99cea5ed19883b1528dca4923baee`; its source identities are Android phone `1.1.0 (8)` and
 Apple app/widget/watch `1.1.0 (6)`. The Wear OS source is unchanged and remains
 `1.1.0 (1000008)`. `iosApp/project.yml` is the Apple version source; the
 committed Xcode project was regenerated from it with XcodeGen 2.45.3.
 
-| Surface | Current source identity | Source sync | Current SHA-256 | Current signing evidence | Current physical QA |
+| Surface | Current source identity | Source sync | Current local evidence SHA-256 | Current signing evidence | Current physical QA |
 | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (8)` | **BLOCKED** | `null` | `null` | `null` |
+| Android phone/tablet | `1.1.0 (8)` | **BLOCKED** | unsigned AAB `a631c67df19761964d25dd6fbbdc89b7d9c0ee6d8544ebc23113bcee52043ed9` | 0 signature entries; not upload-signed | bounded current-source debug QA on physical API 25 and API 36 emulator; no signed/full matrix |
 | Wear OS | `1.1.0 (1000008)` | **VERIFIED-CURRENT** | `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6` | retained signed AAB evidence | no physical-watch pass |
-| Apple app/widget/watch | `1.1.0 (6)` | **BLOCKED** | `null` | `null` | `null` |
+| Apple app/widget/watch | `1.1.0 (6)` | **BLOCKED** | app `67a99d6cfc04302c54aeb71fed0a78a6e3c6c9d9aaaca7bb4d0f1e13ed62bb58`; widget `3c65e9c8716a0f0426e19f2682b0d0ab1f1c0c0975106e773694d22600f72a4e`; watch `75a329ed9ad25ae8fe25dcdb54afcd0b5828a9975d2056a9ec28bc079761713a` | simulator-only; no development or distribution signature | no physical Apple pass |
 
-The current phone and Apple rows stay blocked until new artifacts are built
-from the current source, signed with the accepted identities, hashed, and
-tested on the required physical devices. Signing metadata and protected local
-material are present, but current non-interactive private operations fail: the
-Android `security` secret lookup exits with status `51`, while Apple archive
-signing returns `errSecInternalComponent`. See
-`growth/quality/signing-readiness-2026-08-29.md`. No placeholder hash or
-inherited QA claim is recorded.
+The current phone and Apple rows stay blocked until uploadable release artifacts
+are built from the current source, signed with the accepted identities, hashed,
+and tested on the required physical devices. The exact-current Apple hashes are
+from arm64 Release simulator builds made with `CODE_SIGNING_ALLOWED=NO`; they are
+not archives or upload candidates. Signing metadata and protected local material
+are present, but current non-interactive private operations fail: the Android
+`security` secret lookup exits with status `51`, while Apple archive signing
+returns `errSecInternalComponent`. See
+`growth/quality/signing-readiness-2026-08-29.md`. The Android hash above is
+explicitly local unsigned evidence, not a promoted upload artifact. No
+placeholder hash or inherited QA claim is recorded.
 
 ## Local source-identity checks
 
-- `:app:bundleRelease` and `:wearApp:bundleRelease` completed. Bundletool reads
-  version codes `8` and `1000008` from the resulting local bundles. Jarsigner
-  reports those Gradle outputs as unsigned, so they are not substituted for the
-  manifest's required upload-signed artifacts and no current SHA is promoted.
-- An isolated exact-HEAD phone rebuild at
-  `80cdd608b93056edd05e29873da43834a916cd3a` produced unsigned AAB SHA-256
-  `12da2a0d69d6ff5b5925a03cec419d7ae988e1092b5748f0662c795ea31771cc`;
-  Bundletool validation passed and the embedded package/version/minSdk/targetSdk
-  are `uz.ganikhodjaev.weather`, `1.1.0 (8)`, 24, and 36. The ignored local
-  copy remains explicitly named `nimbo-phone-1.1.0-vc8-unsigned-head.aab` and
-  is not promoted into the upload manifest.
-- Xcode build settings report marketing version `1.1.0` and build `6`. Exact
-  current commit `80cdd608b93056edd05e29873da43834a916cd3a` passes a clean
-  unsigned arm64 Release simulator build. The app and widget binaries are
-  unsigned, expand to build 6, and have SHA-256 values
-  `6be0ce6bfe0ede43ca9caa70180f428626a37188b2e551e35deda3b7c6f19956`
-  and `23899278a6e02caff65a1c93209450015fd6b6c6b79fb200c271b46d615f5dd2`.
-  This proves source/project consistency only, not an archive, distribution
-  signature, or device pass.
+- An isolated exact-commit phone rebuild at
+  `f97238beb8d99cea5ed19883b1528dca4923baee` produced
+  `build/release/nimbo-phone-1.1.0-vc8-unsigned-f97238b.aab` with SHA-256
+  `a631c67df19761964d25dd6fbbdc89b7d9c0ee6d8544ebc23113bcee52043ed9`.
+  Bundletool 1.18.3 validation passed; its manifest reports package
+  `uz.ganikhodjaev.weather`, versionCode `8`, versionName `1.1.0`, minSdk `24`,
+  and targetSdk `36`. Archive inspection reports zero signature entries. The
+  companion mapping file
+  `build/release/nimbo-phone-1.1.0-vc8-mapping-f97238b.txt` has SHA-256
+  `b25870ff3173eb6bccd0ee6bceffba098685d11aa828d27dc9f7a1965ec2c6c7`.
+  Both ignored local files are evidence only and are not referenced by the
+  upload manifest.
+- The Wear release bundle remains versionCode `1000008`; its retained signed
+  evidence is unchanged. It is not a substitute for the blocked phone row.
+- Exact commit `f97238beb8d99cea5ed19883b1528dca4923baee` passed clean arm64
+  Release simulator builds with `CODE_SIGNING_ALLOWED=NO`. The executable
+  evidence is:
+
+  | Product | Exact executable path | Bundle identity | Minimum OS | SHA-256 |
+  | --- | --- | --- | --- | --- |
+  | iOS app | `build/DerivedData-f972-current/Build/Products/Release-iphonesimulator/NimboSimulator.app/NimboSimulator` | `uz.ganikhodjaev.weather`, `1.1.0 (6)` | iOS 15.0 | `67a99d6cfc04302c54aeb71fed0a78a6e3c6c9d9aaaca7bb4d0f1e13ed62bb58` |
+  | embedded widget | `build/DerivedData-f972-current/Build/Products/Release-iphonesimulator/NimboSimulator.app/PlugIns/NimboWidget.appex/NimboWidget` | `uz.ganikhodjaev.weather.widget`, `1.1.0 (6)` | iOS 17.0 | `3c65e9c8716a0f0426e19f2682b0d0ab1f1c0c0975106e773694d22600f72a4e` |
+  | watch app | `build/DerivedData-f972-current/Build/Products/Release-watchsimulator/NimboWatch.app/NimboWatch` | `uz.ganikhodjaev.weather.watchkitapp`, `1.1.0 (6)` | watchOS 10.0 | `75a329ed9ad25ae8fe25dcdb54afcd0b5828a9975d2056a9ec28bc079761713a` |
+
+  All three are thin arm64 simulator Mach-O executables. The bundles have no
+  `_CodeSignature` directory; the executables contain only Xcode's embedded
+  ad-hoc linker signature (`TeamIdentifier=not set`, no bound `Info.plist`, no
+  sealed resources), not a development or distribution signature. Therefore
+  they are simulator-only, not uploadable, and do not provide an xcarchive,
+  exported IPA, dSYM validation, or physical Apple smoke evidence.
 - A later current-source signing readiness pass confirmed compatible Apple
   profiles and visible identities, but both the full archive and an isolated
   watch archive failed at `codesign`; neither produced an xcarchive.
-- A single exact-current-HEAD archive retry again failed at widget CodeSign
+- A single commit-80 archive retry again failed at widget CodeSign
   with `errSecInternalComponent`, without a provisioning or compile failure;
   no xcarchive was produced.
-- The provider-capacity change passes shared Android-host and iOS Simulator
+- The provider-capacity change passed shared Android-host and iOS Simulator
   tests, Kotlin formatting, SQLDelight migration verification, Android phone
-  and Wear release bundle builds, and unsigned iOS/watchOS Release simulator
-  builds. These checks do not create signed artifacts or physical-device proof.
+  and Wear release bundle builds, and `CODE_SIGNING_ALLOWED=NO` iOS/watchOS
+  Release simulator builds with only linker-generated ad-hoc signatures. These
+  checks do not create distribution-signed artifacts or physical-device proof.
 - The earlier API 25 debug/source smoke is now historical because it predates
   the provider-throttling and cross-path single-flight changes.
 - Commit `2004e4f237ce4f176a106d465ecc21b2dc36d741` then passed a bounded
@@ -72,15 +88,27 @@ inherited QA claim is recorded.
   physical gates. That result is historical for the current source, which now
   also changes durable automatic-refresh state and retry handling, saved-location
   cleanup, repository observation windows, and the iOS review-request path.
-- Commit `80cdd608b93056edd05e29873da43834a916cd3a` now has the bounded
-  current-source device pass. The exact debug APK SHA-256 is
+- Commit `80cdd608b93056edd05e29873da43834a916cd3a` has a bounded historical
+  device pass. The exact debug APK SHA-256 is
   `e10aa48ffb5ea7ee2e6a9b43031e623731788a936e23dc94a3480386074d32bc`;
   the installed bytes matched on the physical API 25 phone and API 36 emulator.
   Live and cached weather, true offline fallback and recovery, share chooser,
   legacy navigation contrast, IME resize, light/dark rendering, and landscape
-  cutout/three-button paths passed without a captured crash or ANR. This closes
-  the stale-source gap for bounded debug phone behavior, but not the missing
-  upload signature, tablet/widget path, or paired physical Wear OS matrix.
+  cutout/three-button paths passed without a captured crash or ANR. The later
+  `f97238b` shared review-policy change makes this result historical for the
+  current product. It still supports the inherited edge-to-edge implementation
+  but does not close current physical QA, the missing upload signature,
+  tablet/widget paths, or the paired physical Wear OS matrix.
+- Current commit `f97238beb8d99cea5ed19883b1528dca4923baee` was rebuilt as
+  debug APK SHA-256
+  `7b2f2c12d56fdda293f19317ef6eb6da153213f84b1daeef11fd35f8e9e30edb`.
+  That matching-source APK passed bounded QA on the dedicated physical API 25
+  phone and API 36 emulator, including onboarding, live city selection/search,
+  share chooser, legacy navigation contrast, true-offline cache/error/recovery,
+  IME resize, dark landscape, and process stability. It remains debug-signed,
+  did not force a Store review prompt, and does not close the upload-signed,
+  tablet/widget, or physical Wear OS requirements. See
+  `growth/quality/android-current-head-device-smoke-2026-08-29.md`.
 
 ## Preserved historical candidates
 
