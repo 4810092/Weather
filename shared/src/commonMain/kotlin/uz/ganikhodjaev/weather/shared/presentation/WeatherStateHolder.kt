@@ -465,7 +465,8 @@ internal class WeatherStateHolder(
                 mutableState.value = current.copy(
                     weather = current.weather.advancedToNow(),
                     isRefreshing = true,
-                    refreshMessage = null
+                    refreshMessage = null,
+                    reviewEligibleForecastId = null
                 )
             }
             try {

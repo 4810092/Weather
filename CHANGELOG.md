@@ -16,6 +16,8 @@ This file records public product and repository checkpoints supported by source 
 - Harden Android edge-to-edge rendering with all-side safe-drawing insets,
   removal of deprecated system-bar theme attributes, and a readable API 24–25
   three-button navigation fallback.
+- Prevent a failed forecast refresh from reusing stale review-prompt
+  eligibility; a new successful forecast is required before prompting again.
 - Improve open-source onboarding, architecture/reference documentation, contributor workflows, dependency updates, CI hardening, and security reporting.
 - Add GitHub prerelease objects for the existing `v1.0.0-rc.1` and `v1.0.0-rc.2` tags without changing tag history.
 

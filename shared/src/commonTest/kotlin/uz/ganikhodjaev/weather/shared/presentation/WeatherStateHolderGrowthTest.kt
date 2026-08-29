@@ -480,6 +480,46 @@ class WeatherStateHolderGrowthTest {
     }
 
     @Test
+    fun failedRefreshClearsStaleReviewEligibility() = runBlocking {
+        val initialForecastId = 35_000L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = 1L)
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { initialForecastId }
+        )
+
+        try {
+            holder.start()
+            repository.nextRefresh().succeed(forecastId = initialForecastId)
+            holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.reviewEligibleForecastId == initialForecastId && !it.isRefreshing
+            }
+
+            holder.refresh()
+            val failedRefresh = repository.nextRefresh()
+            val refreshing = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.isRefreshing
+            }
+            assertNull(refreshing.reviewEligibleForecastId)
+
+            failedRefresh.fail(IllegalStateException("offline"))
+            val failed = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.refreshMessage == UiMessage.RefreshFailedShowingSaved
+            }
+            assertNull(failed.reviewEligibleForecastId)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
     fun persistedAutomaticCooldownDoesNotBlockManualRefreshAfterColdStart() = runBlocking {
         val recentAttemptAt = 40_000L
         val attemptStore = InMemoryAutomaticRefreshAttemptStore()
