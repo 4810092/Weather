@@ -29,6 +29,13 @@ and watch
 `0ebc1c8f49f390e57bee86420b5be977ead8f086cb4b9a7ed0ab6849c26068c7`.
 Their UUID-matched dSYMs verify and the app passed 40 bounded cold launches,
 but all three remain ad-hoc simulator products rather than uploadable archives.
+GitHub Actions run `33243395554` succeeded on commit `79290c6` and retained
+only the unsigned Android/Wear build artifacts and iOS simulator test results;
+that workflow proof does not close signing, upload, review, or publication
+gates. Google Play Custom Store Listing `4834799756935529888` now persists as
+an Uzbekistan-only `Draft` with Uzbek fallback and separate Russian copy and
+creatives. It was not submitted for review or published, and public production
+remains `1.0.2 (6)`.
 The exact `df5f824` debug APK passed bounded fresh-install physical API 25 QA
 and a same-certificate preserved-data update on physical API 36; pulled bytes
 matched on both, and the exercised support/rating paths produced no matching

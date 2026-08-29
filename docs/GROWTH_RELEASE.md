@@ -23,7 +23,7 @@ and their overview populations are not claimed to be UZ-only.
 | iOS quality | One crash is shown on August 25 under version 1.0.1. Device detail is suppressed as insufficient data and no crash report or stack trace is exposed, so the crash gate remains blocked. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Play overview | The 28-day view shows 21 installations, 14 first launches, and 11 MAU. Ratings and Android vitals are suppressed as insufficient data; there are no unpublished Play changes. |
+| Play overview | The August 28 28-day view showed 21 installations, 14 first launches, and 11 MAU; ratings and Android vitals were suppressed as insufficient data. A later August 29 action saved UZ custom listing `4834799756935529888` only as an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
@@ -99,15 +99,18 @@ search result slices for all five generic queries. A bounded absence means only
   the post-throttle `97c26cb` debug APK separately passes API 25 live,
   provider-blocked fresh-cache cold start, manual bypass, recovery, and cleanup.
   Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
-  onboarding, live weather, and support/Play destination smoke. Physical
-  tablet, widget, and paired Wear OS coverage remain required.
-- Metadata schema v2, an Uzbek Google custom listing, separate Russian copy, an
+  onboarding, live weather, and support/Play destination smoke plus a
+  same-certificate preserved-data update on physical API 36; pulled bytes match
+  on both. Physical tablet, widget, and paired Wear OS coverage remain required.
+- Metadata schema v2, an Uzbek Google custom listing persisted as unpublished
+  Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ
   Android captures prove Best Time, 10-day/AQI, and offline claims. The watch
   story uses locale-matched simulator/emulator captures. The Apple Watch capture
   is build-5 UI evidence and cannot satisfy build-6 QA; neither platform capture
-  is physical-watch QA. The uncaptured home-screen widget story remains excluded.
+  is physical-watch QA. The draft was not submitted for review or published.
+  The uncaptured home-screen widget story remains excluded.
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
   source-backed growth dashboard. GitHub Pages is deployed and configured for
   `nimbo.uz`; future site/dashboard changes on `master` deploy automatically.

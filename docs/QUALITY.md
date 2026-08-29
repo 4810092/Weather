@@ -16,6 +16,17 @@ Nimbo’s quality evidence has four layers: deterministic shared tests, actual S
 
 See [TESTING.md](TESTING.md) for commands, exact scope, and known automation gaps.
 
+## Dated CI evidence — 2026-08-29
+
+GitHub Actions run `33243395554` succeeded on exact commit
+`79290c6e7cfd3c1ef5e31a557ac7b09840cc72aa` in `13m38s`.
+`android-and-shared` completed in `1m49s`; `ios` completed in `13m33s`. The run
+retained `android-release-unsigned`, `wear-release-unsigned`, and
+`ios-simulator-test-results`. These prove the automated workflow only: the
+Android/Wear bundles are unsigned and the iOS artifact is test output, so this
+is not signing, store upload, review, publication, or public-availability
+evidence.
+
 ## Runtime and product protections
 
 - Cached database flows are observed before network refresh.

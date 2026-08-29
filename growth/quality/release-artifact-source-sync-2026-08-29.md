@@ -24,11 +24,12 @@ phone `1.1.0 (8)`, Apple app/widget/watch `1.1.0 (6)`, and Wear OS
   above. Archive inspection found zero signature entries.
 - Exact debug APK SHA-256
   `fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753`
-  was installed fresh on the dedicated physical API 25 phone; pulled installed
-  bytes matched. It passed no-location Tashkent onboarding, live weather, and
-  localized support/Play destination checks with no rating or data submitted.
-  Broader API 25/API 36 runtime evidence remains scoped to the preceding
-  `97c26cb` commit. This is debug-signed bounded QA.
+  was installed fresh on the dedicated physical API 25 phone and applied as a
+  same-certificate preserved-data update on the physical API 36 Samsung; pulled
+  installed bytes matched on both. The exercised paths covered no-location
+  Tashkent onboarding, retained-state cold start, live weather, localized
+  support and Play destinations, and bounded logs with zero matching
+  FATAL/ANR lines. This is debug-signed bounded QA, not signed-release proof.
 - The Apple executables above are thin arm64 simulator products for iOS 15.0,
   iOS 17.0 widget, and watchOS 10.0. They have no Team Identifier, bound
   Info.plist, or sealed resources. The iOS app passed 40 cold-launch/terminate
@@ -47,6 +48,24 @@ phone `1.1.0 (8)`, Apple app/widget/watch `1.1.0 (6)`, and Wear OS
   `51`. Apple private-key use reports `errSecAuthFailed (-25293)`, and a GUI
   Xcode archive fails at `NimboWidget` CodeSign without producing an archive.
   Existing credentials and identities were not printed, replaced, or reset.
+
+## Dated CI evidence
+
+GitHub Actions run `33243395554` succeeded on commit
+`79290c6e7cfd3c1ef5e31a557ac7b09840cc72aa` in `13m38s`.
+`android-and-shared` completed in `1m49s`; `ios` completed in `13m33s`. The run
+retained these workflow artifacts:
+
+| Workflow artifact | Archive digest (SHA-256) | Boundary |
+| --- | --- | --- |
+| `android-release-unsigned` | `4573dcd34ffac59466220aa0680c5cf5b05cf4b1225815b4eb35ba1246e18bfa` | Artifact archive digest, not the inner phone AAB identity; unsigned build only. |
+| `wear-release-unsigned` | `db56216882cfc61e4ff532d7e4929fdb66284478f3cb83a3e9387aaa588d5c6e` | Artifact archive digest, not the inner Wear AAB identity; unsigned build only. |
+| `ios-simulator-test-results` | `7754a95741e88087724a4ff1c004425809f754135eb7ccae9c90970468f18917` | Simulator test-output archive, not a distribution archive. |
+
+Commit `79290c6` changes growth documentation, metadata, and creatives while the
+exact product source remains `df5f824`. This CI run proves the automated
+workflow only; it is not signing, store upload, review, publication, or
+end-user-availability evidence and does not close this gate.
 
 See `growth/quality/current-source-crash-hardening-2026-08-29.md` and
 `growth/quality/signing-readiness-2026-08-29.md` for the bounded evidence.

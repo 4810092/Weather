@@ -1,11 +1,15 @@
 # Public store deployment gap — 2026-08-29
 
-Status: **candidate ASO package is prepared but not public**.
+Status: **candidate ASO package is prepared; the Google UZ listing is saved as
+an unpublished draft**.
 
 The public Apple and Google product pages were checked read-only at
 `2026-08-29 12:29:59 +05:00`. No console setting, listing, release, experiment,
 or asset was changed. Public pages prove only what was visible at that capture;
-they do not prove whether an unaddressable private custom page exists.
+they did not prove whether an unaddressable private custom page existed. A later
+authenticated Console observation at `2026-08-29 13:59:40 +05:00` confirmed
+Google listing `4834799756935529888` exists as `Draft` and remains unpublished.
+Its existence is not evidence of review, publication, or end-user availability.
 
 ## App Store UZ
 
@@ -34,8 +38,11 @@ Public evidence:
 
 The public page exposes five phone, four unique tablet, and one Wear creative.
 The prepared six-story captioned UZ/RU sets and localized UZ/RU feature
-graphics are not public. The visible public feature graphic materially differs
-from all three versioned candidate graphics.
+graphics are not public. They are now persisted in authenticated Console draft
+`4834799756935529888`, targeted only to Uzbekistan at `100%`, with `en-US`
+carrying the Uzbek fallback and `ru-RU` carrying the Russian payload. That
+percentage is listing targeting, not release rollout. The visible public feature
+graphic materially differs from all three versioned candidate graphics.
 
 Public evidence:
 <https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather&hl=uz&gl=UZ>
@@ -44,13 +51,15 @@ and
 
 ## Decision
 
-The highest-impact unpublished ASO change is the Google UZ country listing,
-followed by its localized feature graphics and the six captioned screenshot
-stories on both stores. Apple default title/subtitle work is already live, so
-re-submitting the same values is not treated as growth progress.
+The highest-impact Google UZ country-listing change now exists as an unpublished
+Console draft with its localized feature graphics and six captioned screenshot
+stories. Submission, review, publication, and end-user availability remain
+pending. Apple default title/subtitle work is already live, so re-submitting the
+same values is not treated as growth progress.
 
-Upload and publication remain blocked by the provider, crash, source-signed
-artifact, and remaining physical-device gates. Google Console is currently
-authenticated, while App Store Connect is not. The public Apple page still
-reports `1.0.1` and Google reports `1.0.2`; neither proves that the repository's
-`1.1.0` candidate, revised copy, or creatives are deployed.
+Release upload and publication remain blocked by the provider, crash,
+source-signed artifact, and remaining physical-device gates. Saving the Google
+listing as a project-only draft did not cross those gates. Google Console is
+currently authenticated, while App Store Connect is not. The public Apple page
+still reports `1.0.1` and Google reports `1.0.2`; neither proves that the
+repository's `1.1.0` candidate, revised copy, or creatives are deployed.

@@ -1,10 +1,11 @@
 # Google Play Console evidence — 2026-08-29
 
-Status: **authenticated read-only point-in-time observation** for Nimbo
-(`uz.ganikhodjaev.weather`). The capture was completed at
+Status: **authenticated dated Console evidence** for Nimbo
+(`uz.ganikhodjaev.weather`). The initial read-only capture was completed at
 `2026-08-29 08:41:37 +05:00` (`2026-08-29T03:41:37Z`). No Console setting,
 release, rollout, policy declaration, review response, report, or export was
-created or changed.
+created or changed during that capture. A later, separately timestamped
+project-only custom-listing draft save is recorded below.
 
 ## Current production and publishing state
 
@@ -132,6 +133,32 @@ Implementation references:
 - <https://developer.android.com/develop/ui/compose/system/setup-e2e>
 - <https://developer.android.com/jetpack/androidx/releases/activity>
 
+## UZ custom store listing draft
+
+At `2026-08-29 13:59:40 +05:00`, a later authenticated Console check
+confirmed Custom Store Listing ID `4834799756935529888`, reference name
+`Uzbekistan country — Best Time Outside`, with status `Draft`. It was saved
+using the project-only action and was not submitted for review or published.
+Country targeting is Uzbekistan (`UZ`) at `100%`; that percentage describes
+custom-listing targeting, not a production-release rollout. The listing has no
+end date.
+
+The default store locale is `en-US`, carrying the Uzbek audience copy and
+assets as the `uz-UZ` fallback, with a separate `ru-RU` payload carrying the
+Russian copy and assets. The persisted creative payload is:
+
+| Console locale | Audience payload | Feature graphic | Ordered phone screenshots |
+| --- | --- | --- | --- |
+| `en-US` | Uzbek (`uz-UZ` fallback) | `store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg` | `01-best-time.png`, `02-recent-comparison.png`, `03-timeline.png`, `04-details.png`, `05-offline-privacy.png`, `06-watch.png` under `store/creatives/growth-2026-08/google-play/uz-UZ/` |
+| `ru-RU` | Russian | `store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg` | The same six filenames and order under `store/creatives/growth-2026-08/google-play/ru-RU/` |
+
+Both locales use `store/assets/google-play/icon-512.png`; the saved Wear assets
+are `store/screenshots/google-play/wear-os-uz-UZ/01-current.png` and
+`store/screenshots/google-play/wear-os-ru-RU/01-current.png`, respectively.
+The Publishing overview still showed the latest publication on
+`2026-08-27`; no release, rollout, experiment, review submission, or public
+listing was created by this action.
+
 ## Evidence URLs
 
 - Production:
@@ -148,6 +175,8 @@ Implementation references:
   <https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/statistics>
 - Crash and ANR issues:
   <https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/vitals/crashes>
+- UZ custom store listing draft:
+  <https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/store-listings/4834799756935529888>
 
 ## Importer boundary
 
