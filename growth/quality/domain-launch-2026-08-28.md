@@ -56,6 +56,11 @@ authoritative `.uz` query and the Cloudflare and Google public resolvers still
 returned `NXDOMAIN`, so public DNS and TLS remain blocked on registrar/registry
 activation rather than on missing zone content.
 
+At `2026-08-29 05:56 +05:00`, one authenticated registrar support ticket
+(`#1665`) was created with status `Новый`, asking Arsenal-D to complete the
+registration/delegation or identify any remaining owner action. The ticket list
+was checked first and contained no existing duplicate for this activation issue.
+
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
 `nimbo.uz`. The registry has therefore not published a delegation. The
