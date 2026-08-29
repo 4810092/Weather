@@ -12,7 +12,11 @@
 		08EE66A56C5333E205527804 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF84B6288C5AC833098734B0 /* Assets.xcassets */; };
 		4A523AC15AB86652A6EE3440 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EFA9E48629C064B5474F0FB0 /* Localizable.strings */; };
 		50DB898C4C877A9D72E1974B /* NimboWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 156F45D187CAA50FF28B2530 /* NimboWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		568405BE3564213D4C272699 /* SurfaceWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */; };
+		57976273DD8B94A4426367FA /* SurfaceWeatherStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BD268F282A95CF8326A04F /* SurfaceWeatherStateTests.swift */; };
 		60427AAF71FD68031010D1DC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CAA8A89B05E98D201329CC1C /* PrivacyInfo.xcprivacy */; };
+		69ED9FE403C795AE2477FEA2 /* SurfaceWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */; };
+		73681A30467095C79E981AA2 /* SurfaceWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */; };
 		81AC8CC8AB0C1F1480E9AE57 /* NimboWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 753A9D0BF72E362D648C8992 /* NimboWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9ABC290677F949583EA23F2C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF84B6288C5AC833098734B0 /* Assets.xcassets */; };
 		A79D05F41441716BC37C2313 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9680E68A02B4A0067E1CE041 /* InfoPlist.strings */; };
@@ -22,7 +26,9 @@
 		D47DAD3F9B3B77120390A6FB /* NimboWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09292B255824A10E056980F /* NimboWatchApp.swift */; };
 		DB357857E2D4205BF6AC46F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF84B6288C5AC833098734B0 /* Assets.xcassets */; };
 		F2099737A801374701BDE615 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301FBBF5FFF6CB821055122F /* AppDelegate.swift */; };
+		F42FE8CEDC5C6BBB4161AA9B /* SurfaceWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */; };
 		F752C50CFECE734CC7B98DAF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CAA8A89B05E98D201329CC1C /* PrivacyInfo.xcprivacy */; };
+		F9A6F069B57A635E5D4C3A88 /* SurfaceWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +111,7 @@
 		72F4D2EE0A5B6D99C642A8C0 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		753A9D0BF72E362D648C8992 /* NimboWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NimboWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		77B8714E4315D089998334CE /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		82BD268F282A95CF8326A04F /* SurfaceWeatherStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceWeatherStateTests.swift; sourceTree = "<group>"; };
 		8749DD9CFA84EE721326A76F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9071D41D0953CE763054EB1F /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		99D06D4794F10C64EFB51B8A /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -119,17 +126,28 @@
 		D11383B653C4E103BD858F06 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DEB0FA8265F06BB9430A5817 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E07E23EFCD1EBCE864F4B90E /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceWeatherState.swift; sourceTree = "<group>"; };
 		E310D56EF5363C230FB35101 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ECB3DA47782A208E27A93C3D /* uz */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uz; path = uz.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ED111A7E468547AF5EF244BE /* NimboSurfaceTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NimboSurfaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED8ABA335701FD3A3B6865CA /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EF84B6288C5AC833098734B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F387184973DD51AA1A49A953 /* uz */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uz; path = uz.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		266EC29E753CAC4A7CC4FFAF /* NimboSurfaceTests */ = {
+			isa = PBXGroup;
+			children = (
+				82BD268F282A95CF8326A04F /* SurfaceWeatherStateTests.swift */,
+			);
+			path = NimboSurfaceTests;
+			sourceTree = "<group>";
+		};
 		2EBC31CF747F0446AEA48F9A /* NimboSurfaces */ = {
 			isa = PBXGroup;
 			children = (
+				E2C2EBDCA226418C9F349EB1 /* SurfaceWeatherState.swift */,
 				EFA9E48629C064B5474F0FB0 /* Localizable.strings */,
 			);
 			path = NimboSurfaces;
@@ -140,6 +158,7 @@
 			children = (
 				2952D07834ACFE65A984004A /* Nimbo.app */,
 				58BED825A8E35842845117CA /* NimboSimulator.app */,
+				ED111A7E468547AF5EF244BE /* NimboSurfaceTests.xctest */,
 				156F45D187CAA50FF28B2530 /* NimboWatch.app */,
 				753A9D0BF72E362D648C8992 /* NimboWidget.appex */,
 			);
@@ -173,6 +192,7 @@
 			children = (
 				6E9F1D2E423005960CE6F7B7 /* Nimbo */,
 				2EBC31CF747F0446AEA48F9A /* NimboSurfaces */,
+				266EC29E753CAC4A7CC4FFAF /* NimboSurfaceTests */,
 				A01B38FA4262FA5DB3B68837 /* NimboWatch */,
 				6A02141AE20F9CA2FB571995 /* NimboWidget */,
 				63D88498F944E45E19205861 /* Products */,
@@ -252,6 +272,23 @@
 			productReference = 2952D07834ACFE65A984004A /* Nimbo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DFF7F3186E48921DC418F245 /* NimboSurfaceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAD6BB49BEA68B9948D933DA /* Build configuration list for PBXNativeTarget "NimboSurfaceTests" */;
+			buildPhases = (
+				4E2B91333E8C279862BA8C73 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NimboSurfaceTests;
+			packageProductDependencies = (
+			);
+			productName = NimboSurfaceTests;
+			productReference = ED111A7E468547AF5EF244BE /* NimboSurfaceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F03B22F74B7FAD9BB70C6DAA /* NimboWidget */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D1895D70EB625F5BB4164E57 /* Build configuration list for PBXNativeTarget "NimboWidget" */;
@@ -291,6 +328,10 @@
 						DevelopmentTeam = 5SWEZ7HTYP;
 						ProvisioningStyle = Automatic;
 					};
+					DFF7F3186E48921DC418F245 = {
+						DevelopmentTeam = 5SWEZ7HTYP;
+						ProvisioningStyle = Automatic;
+					};
 					F03B22F74B7FAD9BB70C6DAA = {
 						DevelopmentTeam = 5SWEZ7HTYP;
 						ProvisioningStyle = Automatic;
@@ -325,6 +366,7 @@
 			targets = (
 				9A090189304C1E0366FD1D45 /* Nimbo */,
 				7AA7857B515F20EF2E780B40 /* NimboSimulator */,
+				DFF7F3186E48921DC418F245 /* NimboSurfaceTests */,
 				8F92D291BF734E5B93FB2FAB /* NimboWatch */,
 				F03B22F74B7FAD9BB70C6DAA /* NimboWidget */,
 			);
@@ -418,6 +460,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D47DAD3F9B3B77120390A6FB /* NimboWatchApp.swift in Sources */,
+				69ED9FE403C795AE2477FEA2 /* SurfaceWeatherState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +469,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2099737A801374701BDE615 /* AppDelegate.swift in Sources */,
+				568405BE3564213D4C272699 /* SurfaceWeatherState.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E2B91333E8C279862BA8C73 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				73681A30467095C79E981AA2 /* SurfaceWeatherState.swift in Sources */,
+				57976273DD8B94A4426367FA /* SurfaceWeatherStateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +487,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				067F27C73FD7C2C8B2B0068E /* AppDelegate.swift in Sources */,
+				F42FE8CEDC5C6BBB4161AA9B /* SurfaceWeatherState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +496,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9BB3BF58B54FC5DB479006D /* NimboWidget.swift in Sources */,
+				F9A6F069B57A635E5D4C3A88 /* SurfaceWeatherState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,6 +784,25 @@
 			};
 			name = Debug;
 		};
+		B00A2A0A9ECC0CB0BD0CFBD8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "uz.ganikhodjaev.weather.surface-tests";
+				PRODUCT_MODULE_NAME = NimboSurfaceTests;
+				PRODUCT_NAME = NimboSurfaceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		CF77844BE477BA13E441D37B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -791,6 +865,25 @@
 			};
 			name = Release;
 		};
+		DC70C5C3B5CDBD2566AA964A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "uz.ganikhodjaev.weather.surface-tests";
+				PRODUCT_MODULE_NAME = NimboSurfaceTests;
+				PRODUCT_NAME = NimboSurfaceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F66882FCE9A791E1CD4D1206 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -837,6 +930,15 @@
 			buildConfigurations = (
 				6F5418C76BF39DBCC917E0AD /* Debug */,
 				38574ECCE4856AAA0C189ED9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CAD6BB49BEA68B9948D933DA /* Build configuration list for PBXNativeTarget "NimboSurfaceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B00A2A0A9ECC0CB0BD0CFBD8 /* Debug */,
+				DC70C5C3B5CDBD2566AA964A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

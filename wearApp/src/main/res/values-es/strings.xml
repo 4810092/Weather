@@ -4,4 +4,5 @@
     <string name="temperature_range">↑%1$d°  ↓%2$d°</string>
     <string name="details">Lluvia %1$d%%</string>
     <string name="details_with_aqi">Lluvia %1$d%% · ICA %2$d</string>
+    <string name="saved_weather">Tiempo guardado · actualización necesaria</string>
 </resources>

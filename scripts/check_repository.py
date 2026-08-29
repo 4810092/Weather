@@ -166,8 +166,8 @@ for required_widget_contract in (
 generated_xcode_project = (
     ROOT / "iosApp/Nimbo.xcodeproj/project.pbxproj"
 ).read_text()
-if generated_xcode_project.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;") != 4:
-    fail("generated Xcode project must keep app and widget at iOS 15")
+if generated_xcode_project.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;") != 6:
+    fail("generated Xcode project must keep app, widget, and surface tests at iOS 15")
 if "IPHONEOS_DEPLOYMENT_TARGET = 17.0;" in generated_xcode_project:
     fail("generated Xcode project still contains the obsolete iOS 17 widget floor")
 
@@ -385,6 +385,17 @@ location_feature = next(
 )
 if location_feature is None or location_feature.get(android_required) != "false":
     fail("optional city-search flow requires android.hardware.location to be optional")
+
+widget_info = ET.parse(ROOT / "app/src/main/res/xml/weather_widget_info.xml").getroot()
+android_update_period = "{http://schemas.android.com/apk/res/android}updatePeriodMillis"
+if widget_info.get(android_update_period) != "1800000":
+    fail("Android widget must re-render local freshness at the 30-minute system interval")
+widget_provider = (
+    ROOT
+    / "app/src/main/java/uz/ganikhodjaev/weather/WeatherWidgetProvider.kt"
+).read_text()
+if "Wearable." in widget_provider or "OpenMeteo" in widget_provider:
+    fail("Android widget periodic re-render must remain local-only")
 
 wear_manifest = ET.parse(ROOT / "wearApp/src/main/AndroidManifest.xml").getroot()
 wear_application = wear_manifest.find("application")

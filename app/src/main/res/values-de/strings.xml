@@ -5,4 +5,5 @@
     <string name="widget_temperature_range">↑%1$d°  ↓%2$d°</string>
     <string name="widget_rain">Regen %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
+    <string name="saved_weather">Gespeichertes Wetter · Aktualisierung nötig</string>
 </resources>

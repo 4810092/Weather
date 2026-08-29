@@ -8,8 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
+import uz.ganikhodjaev.weather.surface.SurfaceWeatherRenderModel
+import uz.ganikhodjaev.weather.surface.SurfaceWeatherState
+import uz.ganikhodjaev.weather.surface.buildSurfaceWeatherRenderModel
 
 class WeatherWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -17,10 +18,18 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
+        updateWidgets(context, appWidgetManager, appWidgetIds)
+    }
+
+    private fun updateWidgets(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        val nowEpochSeconds = System.currentTimeMillis() / 1_000L
         appWidgetIds.forEach { appWidgetId ->
-            appWidgetManager.updateAppWidget(appWidgetId, views(context))
+            appWidgetManager.updateAppWidget(appWidgetId, views(context, nowEpochSeconds))
         }
-        syncWithWatch(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -28,63 +37,13 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         if (intent.action == ACTION_WIDGET_DATA_CHANGED) {
             val manager = AppWidgetManager.getInstance(context)
             val component = ComponentName(context, WeatherWidgetProvider::class.java)
-            onUpdate(context, manager, manager.getAppWidgetIds(component))
+            updateWidgets(context, manager, manager.getAppWidgetIds(component))
         }
     }
 
-    private fun syncWithWatch(context: Context) {
+    private fun views(context: Context, nowEpochSeconds: Long): RemoteViews {
         val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-        if (!preferences.contains(KEY_UPDATED_AT)) return
-        val request = PutDataMapRequest.create(WEATHER_DATA_PATH).apply {
-            dataMap.putString(KEY_LOCATION, preferences.getString(KEY_LOCATION, "") ?: "")
-            dataMap.putInt(KEY_TEMPERATURE, preferences.getInt(KEY_TEMPERATURE, 0))
-            dataMap.putString(
-                KEY_TEMPERATURE_UNIT,
-                preferences.getString(KEY_TEMPERATURE_UNIT, "°C") ?: "°C"
-            )
-            dataMap.putInt(KEY_WEATHER_CODE, preferences.getInt(KEY_WEATHER_CODE, -1))
-            dataMap.putInt(KEY_RAIN_CHANCE, preferences.getInt(KEY_RAIN_CHANCE, 0))
-            dataMap.putInt(KEY_AQI, preferences.getInt(KEY_AQI, -1))
-            dataMap.putBoolean(
-                KEY_HAS_DAILY_RANGE,
-                preferences.getBoolean(KEY_HAS_DAILY_RANGE, false)
-            )
-            if (preferences.getBoolean(KEY_HAS_DAILY_RANGE, false)) {
-                dataMap.putInt(
-                    KEY_TEMPERATURE_MAX,
-                    preferences.getInt(KEY_TEMPERATURE_MAX, 0)
-                )
-                dataMap.putInt(
-                    KEY_TEMPERATURE_MIN,
-                    preferences.getInt(KEY_TEMPERATURE_MIN, 0)
-                )
-            }
-            dataMap.putLong(KEY_UPDATED_AT, preferences.getLong(KEY_UPDATED_AT, 0))
-        }.asPutDataRequest().setUrgent()
-        Wearable.getDataClient(context).putDataItem(request)
-    }
-
-    private fun views(context: Context): RemoteViews {
-        val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-        val location = preferences.getString(KEY_LOCATION, null)
-            ?: context.getString(R.string.widget_open_nimbo)
-        val temperature = preferences.getInt(KEY_TEMPERATURE, Int.MIN_VALUE)
-        val temperatureUnit = preferences.getString(KEY_TEMPERATURE_UNIT, "°C") ?: "°C"
-        val weatherCode = preferences.getInt(KEY_WEATHER_CODE, -1)
-        val rainChance = preferences.getInt(KEY_RAIN_CHANCE, 0)
-        val aqi = preferences.getInt(KEY_AQI, -1)
-        val hasDailyRange = preferences.getBoolean(KEY_HAS_DAILY_RANGE, false)
-        val maximum = preferences.getInt(KEY_TEMPERATURE_MAX, 0)
-        val minimum = preferences.getInt(KEY_TEMPERATURE_MIN, 0)
-        val details = buildString {
-            append(weatherSymbol(weatherCode))
-            append("  ·  ")
-            append(context.getString(R.string.widget_rain, rainChance))
-            if (aqi >= 0) {
-                append("  ·  ")
-                append(context.getString(R.string.widget_aqi, aqi))
-            }
-        }
+        val model = buildSurfaceWeatherRenderModel(preferences.all, nowEpochSeconds)
         val openApp = PendingIntent.getActivity(
             context,
             0,
@@ -92,22 +51,57 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         return RemoteViews(context.packageName, R.layout.weather_widget).apply {
-            setTextViewText(R.id.widget_location, location)
-            setTextViewText(
-                R.id.widget_temperature,
-                if (temperature == Int.MIN_VALUE) "—°" else "$temperature$temperatureUnit"
-            )
-            setTextViewText(
-                R.id.widget_temperature_range,
-                context.getString(R.string.widget_temperature_range, maximum, minimum)
-            )
-            setViewVisibility(
-                R.id.widget_temperature_range,
-                if (hasDailyRange) View.VISIBLE else View.GONE
-            )
-            setTextViewText(R.id.widget_details, details)
+            if (model.state == SurfaceWeatherState.Empty) {
+                setTextViewText(R.id.widget_location, context.getString(R.string.widget_open_nimbo))
+                setViewVisibility(R.id.widget_temperature, View.GONE)
+                setViewVisibility(R.id.widget_temperature_range, View.GONE)
+                setViewVisibility(R.id.widget_details, View.GONE)
+                setViewVisibility(R.id.widget_status, View.GONE)
+            } else {
+                renderWeather(context, model)
+            }
             setOnClickPendingIntent(R.id.widget_root, openApp)
         }
+    }
+
+    private fun RemoteViews.renderWeather(context: Context, model: SurfaceWeatherRenderModel) {
+        val temperature = requireNotNull(model.temperature)
+        val temperatureUnit = requireNotNull(model.temperatureUnit)
+        val maximum = model.temperatureMaximum
+        val minimum = model.temperatureMinimum
+        val details = buildString {
+            append(weatherSymbol(requireNotNull(model.weatherCode)))
+            append("  ·  ")
+            append(context.getString(R.string.widget_rain, requireNotNull(model.rainChance)))
+            model.airQuality?.let { airQuality ->
+                append("  ·  ")
+                append(context.getString(R.string.widget_aqi, airQuality))
+            }
+        }
+
+        setTextViewText(R.id.widget_location, requireNotNull(model.location))
+        setTextViewText(R.id.widget_temperature, "$temperature$temperatureUnit")
+        setViewVisibility(R.id.widget_temperature, View.VISIBLE)
+        if (model.showsDailyRange) {
+            setTextViewText(
+                R.id.widget_temperature_range,
+                context.getString(
+                    R.string.widget_temperature_range,
+                    requireNotNull(maximum),
+                    requireNotNull(minimum)
+                )
+            )
+            setViewVisibility(R.id.widget_temperature_range, View.VISIBLE)
+        } else {
+            setViewVisibility(R.id.widget_temperature_range, View.GONE)
+        }
+        setTextViewText(R.id.widget_details, details)
+        setViewVisibility(R.id.widget_details, View.VISIBLE)
+        setTextViewText(R.id.widget_status, context.getString(R.string.saved_weather))
+        setViewVisibility(
+            R.id.widget_status,
+            if (model.showsStaleStatus) View.VISIBLE else View.GONE
+        )
     }
 
     private fun weatherSymbol(code: Int): String = when (code) {
@@ -124,17 +118,6 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
     private companion object {
         const val PREFERENCES_NAME = "nimbo_surface_weather"
-        const val KEY_LOCATION = "location"
-        const val KEY_TEMPERATURE = "temperature_c"
-        const val KEY_TEMPERATURE_UNIT = "temperature_unit"
-        const val KEY_WEATHER_CODE = "weather_code"
-        const val KEY_RAIN_CHANCE = "rain_chance"
-        const val KEY_AQI = "aqi"
-        const val KEY_HAS_DAILY_RANGE = "has_daily_range"
-        const val KEY_TEMPERATURE_MAX = "temperature_max"
-        const val KEY_TEMPERATURE_MIN = "temperature_min"
-        const val KEY_UPDATED_AT = "updated_at"
-        const val WEATHER_DATA_PATH = "/nimbo/weather"
         const val ACTION_WIDGET_DATA_CHANGED =
             "uz.ganikhodjaev.weather.action.WIDGET_DATA_CHANGED"
     }

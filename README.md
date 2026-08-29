@@ -93,6 +93,7 @@ See [Architecture](docs/ARCHITECTURE.md), [cache/history ADR](docs/adr/0005-cach
 
 ```text
 app/       Android phone/tablet shell, WorkManager refresh, and home widget
+androidSurfaceContract/  Pure render-state contract shared by the Android widget and Wear OS
 shared/    KMP data/domain/presentation code, Compose UI, resources, SQL, and tests
 iosApp/    iOS/iPadOS shell, WidgetKit extension, watchOS app, and Xcode project
 wearApp/   Wear OS companion application
@@ -165,6 +166,7 @@ python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
   :shared:testAndroidHostTest \
   :shared:iosSimulatorArm64Test \
   :app:testDebugUnitTest \
+  :wearApp:testDebugUnitTest \
   :shared:verifySqlDelightMigration \
   :app:bundleRelease \
   :wearApp:bundleRelease

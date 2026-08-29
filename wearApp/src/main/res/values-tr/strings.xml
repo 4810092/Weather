@@ -4,4 +4,5 @@
     <string name="temperature_range">↑%1$d°  ↓%2$d°</string>
     <string name="details">Yağış %1$d%%</string>
     <string name="details_with_aqi">Yağış %1$d%% · HKA %2$d</string>
+    <string name="saved_weather">Kayıtlı hava durumu · güncelleme gerekli</string>
 </resources>

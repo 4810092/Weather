@@ -62,6 +62,7 @@ jobs:
           :shared:allTests
           :shared:testAndroidHostTest
           :app:testDebugUnitTest
+          :wearApp:testDebugUnitTest
           :shared:verifySqlDelightMigration
           :app:bundleRelease
           :wearApp:bundleRelease
@@ -92,6 +93,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Run shared iOS Simulator tests
         run: ./gradlew :shared:iosSimulatorArm64Test
+      - name: Run iOS glanceable-surface state tests
+        run: bash scripts/test_ios_surfaces.sh
       - uses: actions/upload-artifact@v7
         if: always()
         with:

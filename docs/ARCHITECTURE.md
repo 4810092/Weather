@@ -104,9 +104,10 @@ The fixture is release evidence, not sample user data. It contains generated wea
 
 | Path | Responsibility |
 | --- | --- |
+| `androidSurfaceContract/` | Pure cache-validation and Empty/Fresh/Stale render contract compiled and tested by both Android widget surfaces. |
 | `shared/` | Common models, provider client, repository, SQLDelight, domain engines, state, resources, shared Compose UI, and Android/iOS adapters. |
 | `app/` | Android phone/tablet entry point, background refresh scheduling, home widget, Wear data publication, packaging, and immutable app ID. |
-| `iosApp/` | UIKit entry point, shared Compose controller, background refresh registration, WidgetKit, watchOS, Xcode schemes, bundle IDs, and signing configuration. |
+| `iosApp/` | UIKit entry point, shared Compose controller, background refresh registration, the shared Apple Empty/Fresh/Stale surface contract, WidgetKit, watchOS, Xcode schemes, bundle IDs, and signing configuration. |
 | `wearApp/` | Phone-dependent Wear OS surface receiving the latest compact snapshot. |
 | `store/` | Version-controlled listing inputs, privacy declarations, artwork, and validated screenshots. |
 

@@ -9,6 +9,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from xml.etree import ElementTree
 
 from PIL import Image
 
@@ -89,7 +90,7 @@ class ValidationScriptsTest(unittest.TestCase):
             project,
             r'(?ms)^  NimboWidget:\n.*?^    deploymentTarget: "15\.0"',
         )
-        self.assertEqual(generated.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;"), 4)
+        self.assertEqual(generated.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;"), 6)
         self.assertNotIn("IPHONEOS_DEPLOYMENT_TARGET = 17.0;", generated)
         for compatibility_contract in (
             "if #available(iOS 16.0, *)",
@@ -99,6 +100,21 @@ class ValidationScriptsTest(unittest.TestCase):
             ".supportedFamilies(supportedWidgetFamilies)",
         ):
             self.assertIn(compatibility_contract, widget)
+
+    def test_android_widget_rechecks_freshness_without_provider_work(self) -> None:
+        widget_info = ElementTree.parse(
+            ROOT / "app/src/main/res/xml/weather_widget_info.xml"
+        ).getroot()
+        update_period = (
+            "{http://schemas.android.com/apk/res/android}updatePeriodMillis"
+        )
+        self.assertEqual(widget_info.get(update_period), "1800000")
+
+        provider = (
+            ROOT / "app/src/main/java/uz/ganikhodjaev/weather/WeatherWidgetProvider.kt"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("Wearable.", provider)
+        self.assertNotIn("OpenMeteo", provider)
 
     def test_store_inspection_decodes_pixels_and_rejects_truncation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -963,7 +979,9 @@ class ValidationScriptsTest(unittest.TestCase):
         self.assertIn("command -v ffprobe", ci)
         self.assertIn("command -v ffmpeg", ci)
         self.assertIn(":app:testDebugUnitTest", ci)
+        self.assertIn(":wearApp:testDebugUnitTest", ci)
         self.assertIn("./gradlew :shared:iosSimulatorArm64Test", ci)
+        self.assertIn("bash scripts/test_ios_surfaces.sh", ci)
         self.assertIn("shared/build/test-results/iosSimulatorArm64Test", ci)
         self.assertIn("shared/build/reports/tests/iosSimulatorArm64Test", ci)
 

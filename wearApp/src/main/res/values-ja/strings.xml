@@ -4,4 +4,5 @@
     <string name="temperature_range">↑%1$d°  ↓%2$d°</string>
     <string name="details">降水確率 %1$d%%</string>
     <string name="details_with_aqi">降水確率 %1$d%% · AQI %2$d</string>
+    <string name="saved_weather">保存済みの天気 · 更新が必要です</string>
 </resources>

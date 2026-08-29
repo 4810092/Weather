@@ -16,60 +16,97 @@ private struct WatchWeatherView: View {
     @ObservedObject var weather: WatchWeatherModel
 
     var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            WatchWeatherContent(state: weather.state(at: context.date))
+        }
+    }
+}
+
+private struct WatchWeatherContent: View {
+    let state: SurfaceWeatherState
+
+    var body: some View {
         Group {
-            if weather.hasData {
-                VStack(spacing: 4) {
-                    Text(weather.location.isEmpty ? "Nimbo" : weather.location)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                    Text("\(weather.temperature)\(weather.temperatureUnit)")
-                        .font(.system(size: 42, weight: .light, design: .rounded))
-                        .monospacedDigit()
-                    if weather.hasDailyRange {
-                        Text("↑\(weather.maximum)°   ↓\(weather.minimum)°")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                            .accessibilityLabel(weather.dailyRangeAccessibilityLabel)
-                    }
-                    Text("\(weather.symbol)  ·  \(weather.rainLabel)")
-                        .font(.caption2)
-                    if weather.airQuality >= 0 {
-                        Text("AQI \(weather.airQuality)")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            } else {
-                VStack(spacing: 8) {
-                    Text("Nimbo")
-                        .font(.headline)
-                    Text(String(localized: "Open Nimbo on your phone"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .accessibilityElement(children: .combine)
+            switch state {
+            case .empty:
+                Text(String(localized: "Open Nimbo on your phone"))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityElement(children: .combine)
+            case let .fresh(snapshot):
+                weather(snapshot, isStale: false)
+            case let .stale(snapshot):
+                weather(snapshot, isStale: true)
             }
         }
         .multilineTextAlignment(.center)
         .padding(.horizontal, 8)
     }
+
+    private func weather(
+        _ snapshot: SurfaceWeatherSnapshot,
+        isStale: Bool
+    ) -> some View {
+        VStack(spacing: isStale ? 2 : 4) {
+            Text(snapshot.location)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+            Text("\(snapshot.temperature)\(snapshot.temperatureUnit)")
+                .font(.system(size: 42, weight: .light, design: .rounded))
+                .monospacedDigit()
+            if snapshot.hasDailyRange {
+                Text("↑\(snapshot.maximum ?? 0)°   ↓\(snapshot.minimum ?? 0)°")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+                    .accessibilityLabel(dailyRangeAccessibilityLabel(snapshot))
+            }
+            Text("\(symbol(snapshot.weatherCode))  ·  \(rainLabel(snapshot))")
+                .font(.caption2)
+            if let airQuality = snapshot.airQuality {
+                Text("AQI \(airQuality)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            if isStale {
+                Text(String(localized: "Saved weather · update needed"))
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+            }
+        }
+    }
+
+    private func symbol(_ weatherCode: Int) -> String {
+        switch weatherCode {
+        case 0: "☀︎"
+        case 1, 2: "🌤"
+        case 3: "☁︎"
+        case 45, 48: "≋"
+        case 51...67, 80...82: "☔︎"
+        case 71...77, 85, 86: "❄︎"
+        case 95...99: "ϟ"
+        default: ""
+        }
+    }
+
+    private func rainLabel(_ snapshot: SurfaceWeatherSnapshot) -> String {
+        "\(String(localized: "Rain")) \(snapshot.rainChance)%"
+    }
+
+    private func dailyRangeAccessibilityLabel(_ snapshot: SurfaceWeatherSnapshot) -> String {
+        let high = String(localized: "High")
+        let low = String(localized: "Low")
+        return "\(high) \(snapshot.maximum ?? 0)°, \(low) \(snapshot.minimum ?? 0)°"
+    }
 }
 
 @MainActor
 private final class WatchWeatherModel: NSObject, ObservableObject, WCSessionDelegate {
-    @Published private(set) var location = ""
-    @Published private(set) var temperature = 0
-    @Published private(set) var temperatureUnit = "°C"
-    @Published private(set) var weatherCode = -1
-    @Published private(set) var rainChance = 0
-    @Published private(set) var airQuality = -1
-    @Published private(set) var hasDailyRange = false
-    @Published private(set) var maximum = 0
-    @Published private(set) var minimum = 0
-    @Published private(set) var hasData = false
+    @Published private(set) var snapshot: SurfaceWeatherSnapshot?
 
     override init() {
         super.init()
@@ -85,6 +122,13 @@ private final class WatchWeatherModel: NSObject, ObservableObject, WCSessionDele
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
+        guard
+            activationState == .activated,
+            error == nil,
+            !session.receivedApplicationContext.isEmpty
+        else {
+            return
+        }
         let payload = WeatherPayload(session.receivedApplicationContext)
         Task { @MainActor in
             apply(payload)
@@ -101,89 +145,58 @@ private final class WatchWeatherModel: NSObject, ObservableObject, WCSessionDele
         }
     }
 
-    nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
-        guard session.isReachable else { return }
-        let payload = WeatherPayload(session.receivedApplicationContext)
-        Task { @MainActor in
-            apply(payload)
-        }
-    }
-
     private func apply(_ payload: WeatherPayload) {
         let defaults = UserDefaults.standard
-        defaults.set(payload.location, forKey: "location")
-        defaults.set(payload.temperature, forKey: "temperature_c")
-        defaults.set(payload.temperatureUnit, forKey: "temperature_unit")
-        defaults.set(payload.weatherCode, forKey: "weather_code")
-        defaults.set(payload.rainChance, forKey: "rain_chance")
-        defaults.set(payload.airQuality, forKey: "aqi")
-        defaults.set(payload.hasDailyRange, forKey: "has_daily_range")
-        defaults.set(payload.maximum, forKey: "temperature_max")
-        defaults.set(payload.minimum, forKey: "temperature_min")
-        defaults.set(payload.updatedAt, forKey: "updated_at")
-        readDefaults()
+        if let snapshot = payload.snapshot {
+            snapshot.write(to: defaults)
+        } else {
+            // An empty or malformed latest phone payload must not leave an old
+            // snapshot presented as current weather.
+            SurfaceWeatherStateReader.removeSnapshot(from: defaults)
+        }
+        self.snapshot = payload.snapshot
     }
 
     private func readDefaults() {
-        let defaults = UserDefaults.standard
-        location = defaults.string(forKey: "location") ?? ""
-        temperature = defaults.integer(forKey: "temperature_c")
-        temperatureUnit = defaults.string(forKey: "temperature_unit") ?? "°C"
-        weatherCode = defaults.integer(forKey: "weather_code")
-        rainChance = defaults.integer(forKey: "rain_chance")
-        airQuality = defaults.object(forKey: "aqi") == nil ? -1 : defaults.integer(forKey: "aqi")
-        hasDailyRange = defaults.bool(forKey: "has_daily_range")
-        maximum = defaults.integer(forKey: "temperature_max")
-        minimum = defaults.integer(forKey: "temperature_min")
-        hasData = defaults.integer(forKey: "updated_at") > 0
+        snapshot = SurfaceWeatherStateReader.snapshot(from: UserDefaults.standard)
     }
 
-    var symbol: String {
-        switch weatherCode {
-        case 0: "☀︎"
-        case 1, 2: "🌤"
-        case 3: "☁︎"
-        case 45, 48: "≋"
-        case 51...67, 80...82: "☔︎"
-        case 71...77, 85, 86: "❄︎"
-        case 95...99: "ϟ"
-        default: ""
-        }
-    }
-
-    var rainLabel: String {
-        "\(String(localized: "Rain")) \(rainChance)%"
-    }
-
-    var dailyRangeAccessibilityLabel: String {
-        let high = String(localized: "High")
-        let low = String(localized: "Low")
-        return "\(high) \(maximum)°, \(low) \(minimum)°"
+    func state(at date: Date) -> SurfaceWeatherState {
+        SurfaceWeatherStateReader.state(for: snapshot, now: date)
     }
 }
 
 private struct WeatherPayload: Sendable {
-    let location: String
-    let temperature: Int
-    let temperatureUnit: String
-    let weatherCode: Int
-    let rainChance: Int
-    let airQuality: Int
-    let hasDailyRange: Bool
-    let maximum: Int
-    let minimum: Int
-    let updatedAt: Int
+    let snapshot: SurfaceWeatherSnapshot?
 
     init(_ context: [String: Any]) {
-        location = context["location"] as? String ?? ""
-        temperature = context["temperature_c"] as? Int ?? 0
-        temperatureUnit = context["temperature_unit"] as? String ?? "°C"
-        weatherCode = context["weather_code"] as? Int ?? -1
-        rainChance = context["rain_chance"] as? Int ?? 0
-        airQuality = context["aqi"] as? Int ?? -1
-        hasDailyRange = context["has_daily_range"] as? Bool ?? false
-        maximum = context["temperature_max"] as? Int ?? 0
-        minimum = context["temperature_min"] as? Int ?? 0
-        updatedAt = context["updated_at"] as? Int ?? 0
+        snapshot = SurfaceWeatherStateReader.snapshot(from: context)
     }
 }
+
+#if DEBUG
+private struct WatchWeatherContentPreviews: PreviewProvider {
+    private static let freshSnapshot = SurfaceWeatherSnapshot(
+        updatedAt: .now,
+        location: "Tashkent",
+        temperature: 24,
+        temperatureUnit: "°C",
+        weatherCode: 1,
+        rainChance: 10,
+        airQuality: 42,
+        maximum: 27,
+        minimum: 18
+    )
+
+    static var previews: some View {
+        Group {
+            WatchWeatherContent(state: .empty)
+                .previewDisplayName("Empty")
+            WatchWeatherContent(state: .fresh(freshSnapshot))
+                .previewDisplayName("Fresh")
+            WatchWeatherContent(state: .stale(freshSnapshot))
+                .previewDisplayName("Stale")
+        }
+    }
+}
+#endif

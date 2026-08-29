@@ -129,18 +129,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         WidgetCenter.shared.reloadAllTimelines()
         guard WCSession.isSupported() else { return }
         let defaults = UserDefaults(suiteName: nimboAppGroup)
-        let context: [String: Any] = [
-            "location": defaults?.string(forKey: "location") ?? "",
-            "temperature_c": defaults?.integer(forKey: "temperature_c") ?? 0,
-            "temperature_unit": defaults?.string(forKey: "temperature_unit") ?? "°C",
-            "weather_code": defaults?.integer(forKey: "weather_code") ?? -1,
-            "rain_chance": defaults?.integer(forKey: "rain_chance") ?? 0,
-            "aqi": defaults?.integer(forKey: "aqi") ?? -1,
-            "has_daily_range": defaults?.bool(forKey: "has_daily_range") ?? false,
-            "temperature_max": defaults?.integer(forKey: "temperature_max") ?? 0,
-            "temperature_min": defaults?.integer(forKey: "temperature_min") ?? 0,
-            "updated_at": defaults?.integer(forKey: "updated_at") ?? 0
-        ]
+        let snapshot = SurfaceWeatherStateReader.snapshot(from: defaults)
+        let context = snapshot?.applicationContext ?? [:]
         try? WCSession.default.updateApplicationContext(context)
     }
 

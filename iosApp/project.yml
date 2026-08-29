@@ -23,6 +23,7 @@ targets:
       - path: Nimbo
         excludes:
           - Info.plist
+      - path: NimboSurfaces/SurfaceWeatherState.swift
     info:
       path: Nimbo/Info.plist
       properties:
@@ -106,6 +107,7 @@ targets:
       - path: Nimbo
         excludes:
           - Info.plist
+      - path: NimboSurfaces/SurfaceWeatherState.swift
     info:
       path: NimboSimulator/Info.plist
       properties:
@@ -179,6 +181,19 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: uz.ganikhodjaev.weather.watchkitapp
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         SKIP_INSTALL: true
+  NimboSurfaceTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: NimboSurfaceTests
+      - path: NimboSurfaces/SurfaceWeatherState.swift
+    settings:
+      base:
+        PRODUCT_NAME: NimboSurfaceTests
+        PRODUCT_MODULE_NAME: NimboSurfaceTests
+        PRODUCT_BUNDLE_IDENTIFIER: uz.ganikhodjaev.weather.surface-tests
+        GENERATE_INFOPLIST_FILE: true
 schemes:
   Nimbo:
     build:
@@ -208,3 +223,11 @@ schemes:
         NimboWidget: all
     run:
       config: Debug
+  NimboSurfaceTests:
+    build:
+      targets:
+        NimboSurfaceTests: [test]
+    test:
+      config: Debug
+      targets:
+        - NimboSurfaceTests

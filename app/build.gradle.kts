@@ -37,6 +37,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    sourceSets {
+        getByName("main").kotlin.directories.add(
+            rootProject.layout.projectDirectory
+                .dir("androidSurfaceContract/src/main/kotlin")
+                .asFile.path
+        )
+        getByName("test").kotlin.directories.add(
+            rootProject.layout.projectDirectory
+                .dir("androidSurfaceContract/src/test/kotlin")
+                .asFile.path
+        )
+    }
 }
 
 dependencies {
@@ -45,6 +58,5 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.work.runtime)
-    implementation(libs.play.services.wearable)
     testImplementation(kotlin("test-junit"))
 }

@@ -58,6 +58,7 @@ Run the checks that cover your change locally; CI runs the complete pull-request
   :shared:allTests \
   :shared:testAndroidHostTest \
   :app:testDebugUnitTest \
+  :wearApp:testDebugUnitTest \
   :shared:verifySqlDelightMigration \
   :app:assembleDebug \
   :app:bundleRelease \
@@ -67,9 +68,13 @@ Run the checks that cover your change locally; CI runs the complete pull-request
 
 The release bundles exercise R8/resource shrinking and lint-vital tasks. They are unsigned development artifacts unless maintainer signing is supplied outside Git.
 
+The phone and Wear unit-test tasks both execute the shared Android surface contract. Fixed timestamps cover empty and partial payloads, real zero values, the strict six-hour stale boundary, bounded clock skew, malformed future timestamps, and the visibility flags consumed by both UIs.
+
 ## Apple gate
 
-The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md) and mirror the two CI builds. The macOS job explicitly runs `:shared:iosSimulatorArm64Test`, then retains its JUnit XML and HTML report for seven days.
+Run `bash scripts/test_ios_surfaces.sh` for the deterministic Swift Empty/Fresh/Stale contract. Its 18 XCTest cases cover missing and malformed payloads, strict integer storage types, valid zero values, AQI sentinels, daily-range consistency, the strict six-hour boundary, bounded future clock skew and clock rollback, cache clearing, and WidgetKit's cache-only boundary reload date.
+
+The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md) and mirror the two CI builds. The macOS job runs both `:shared:iosSimulatorArm64Test` and the Swift surface suite, then retains the shared Kotlin JUnit XML and HTML report for seven days.
 
 ## SQLDelight migrations
 
