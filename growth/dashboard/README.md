@@ -41,20 +41,23 @@ alter their normal UI pixels. Product commit `9c2dce4` also closes three
 deterministic storage-failure exception escapes and adds four
 throwing-repository regressions.
 
-An exact-source debug APK
+Exact-current debug APK and installed bytes
+`52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
+passed a clean physical General Mobile API 25 smoke in Russian: Tashkent
+without location permission, live forecast, truthful late-day Best Time,
+durable-tip persistence, offline cache, recovery, process health, and cleanup
+passed, with zero product-scoped fatal/ANR/SSL/CertPath/trust-anchor matches.
+The exact-source API 24 emulator APK
 `168bb6acdb95453a8dfd141947edbcb9292b756fd3429fffa56fc4baf125dbec`
-passed a fresh no-snapshot API 24 emulator smoke: built and installed bytes
-matched, and live forecast, persisted tip acknowledgement, offline cache,
-recovery, process health, and the product-scoped fatal/TLS/ANR filter passed.
-This is exact-source emulator regression evidence, not physical or signed
-release evidence. The API 25 physical result remains pinned to prior source
-`9342824`; prior widget and API 37 round-Wear evidence also remains historical.
-None of this is source-synced signed physical proof. Google Play Custom Store Listing
+retains its fresh live/cache/recovery pass. These are debug regression results,
+not upload-signed release proof. Prior widget and API 37 round-Wear evidence
+remains historical. Google Play Custom Store Listing
 `4834799756935529888` persists as an Uzbekistan-only `Draft` with Uzbek fallback
 and separate Russian copy and creatives. It was not submitted for review or
 published, and public production remains `1.0.2 (6)`.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
-is still missing despite the bounded exact API 24 emulator pass. Android Keychain
+is still missing despite the bounded exact API 24 emulator and API 25 physical
+debug passes. Android Keychain
 metadata and the existing mode-600 keystore are present, but the protected value
 was not retrieved and upload signing remains unavailable. At 20:44 +05:00 the
 iPad was again available and paired, but lock-state and DDI queries failed

@@ -38,15 +38,18 @@ The exact product commit is
   temporary checkouts were removed. The current `9c2dce4` standalone refresh
   did not read Keychain values or retry signing; it reproduced the unsigned
   hashes above with exact embedded VCS metadata.
-- Prior-product debug APK SHA-256
+- Exact-product debug APK SHA-256
+  `52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
+  passed fresh-install physical API 25 Russian onboarding, Tashkent without
+  location permission, live forecast, the late-day Best Time boundary,
+  first-forecast-tip acknowledgement/cold-start suppression, cached offline
+  fallback, and fresh network recovery. Pulled installed bytes matched and the
+  exercised post-recovery log path had zero matching fatal, ANR, TLS, CertPath,
+  or trust-anchor entries. This closes the stale-product physical-phone gap for
+  source `9c2dce4`; debug signing still does not satisfy upload signing or the
+  full release-device matrix. The earlier APK
   `40f3d15d9eed33761c4e53c86ed91ac26411817811fb93792e1eb65ef0a69227`
-  passed fresh-install physical API 25 Russian onboarding and the exact durable
-  first-forecast-tip path. The CTA opened the existing cancelable picker,
-  retained Tashkent, persisted acknowledgement, and stayed suppressed after a
-  cold start. Pulled installed bytes matched and the exercised log path had zero
-  matching fatal/ANR entries. That result is scoped to product source `9342824`;
-  debug signing does not satisfy upload signing or the full release-device
-  matrix.
+  remains prior-product evidence for source `9342824` only.
 
 ### Wear OS
 
