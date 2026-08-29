@@ -29,34 +29,38 @@ from a successful build or an older artifact.
 
 ### Current evidence boundary
 
-- Android phone and Wear bundles compile from the exact product commit, but the
-  current outputs are not upload-signed. The exact-current phone debug bytes
-  have bounded physical API 25/API 36 evidence; current signed-release tablet,
-  widget, and paired Wear OS coverage is absent.
-- Apple app, widget, and watch compile from exact product commit `fc07dd1` for
-  the simulator and have matching hash/UUID/dSYM evidence. The widget now emits
-  an iOS 15 minimum load command and the exact host passed install/launch checks
-  on available iOS 18.1 and 26.5 simulators. Build 6 still has no
-  distribution-signed archive or IPA, no iOS 15/16 runtime widget render, and no
-  physical iPhone, iPad, widget, or paired-watch result.
+- Android phone and Wear bundles compile from product commit `ee7c36f` and
+  embed that full revision, but both exact outputs have zero signature entries.
+  API 24 phone-widget and API 37 round-Wear emulator checks cover the new
+  Empty/Fresh/Stale contract; current upload-signed tablet, physical widget,
+  and paired Wear OS coverage is absent.
+- Apple app, widget, and watch compile from product commit `ee7c36f` for the
+  simulator and have matching hash/UUID/dSYM evidence. The app and widget emit
+  iOS 15 minimum load commands, the watch emits watchOS 10, and 18 deterministic
+  surface tests pass. Build 6 still has no distribution-signed archive or IPA,
+  no iOS 15/16 runtime widget render, and no physical iPhone, iPad, widget, or
+  paired-watch result.
 - Unit, host, simulator, repository, localization, migration, R8, and unsigned
   release-build checks are useful regression evidence. They are not signing,
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
   [`growth/quality/release-artifact-source-sync-2026-08-29.md`](../growth/quality/release-artifact-source-sync-2026-08-29.md).
-  The newer exact product-source Apple simulator hashes and their non-transferable
-  runtime boundary are recorded separately in
-  [`growth/quality/ios-widget-compatibility-2026-08-29.md`](../growth/quality/ios-widget-compatibility-2026-08-29.md).
+  The exact product-commit Android emulator matrix and Apple simulator/test
+  boundary are recorded separately in
+  [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).
+  Earlier iOS 15 compatibility investigation remains in
+  [`growth/quality/ios-widget-compatibility-2026-08-29.md`](../growth/quality/ios-widget-compatibility-2026-08-29.md)
+  and is not exact-current runtime proof.
 
 ### Required current physical matrix
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — only bounded exact-current debug evidence exists |
-| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no exact-current signed physical result |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — no exact-current signed physical-watch result |
-| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-source simulator integration passes on iOS 18.1/26.5, but older-runtime rendering, signing, and physical evidence are absent |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — product-commit emulator widget evidence exists, but current signed physical phone coverage does not |
+| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — API 24 emulator widget contract passes; no current signed physical tablet/widget result |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — API 37 round emulator render passes; no exact-current signed physical-watch or paired handoff result |
+| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-source simulator builds and 18 surface tests pass, but older-runtime rendering, signing, and physical evidence are absent |
 | Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — no current physical-watch result |
 
 ## Historical evidence — non-transferable

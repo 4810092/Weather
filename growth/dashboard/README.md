@@ -10,41 +10,37 @@ Public outreach and acquisition scaling remain gated on provider clearance, cras
 On 2026-08-29 the auxiliary Apple
 `Toshkent ob-havo` search returned only one unique app, below the 10-app
 completeness floor, while all required goal surfaces were complete and failed;
-the streak is therefore correctly zero. Exact commit `df5f824` resolves to
+the streak is therefore correctly zero. Product commit `ee7c36f` resolves to
 phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Its
 Bundletool-validated phone AAB
-`8e590cca0d7e9945874c58a412520142e9d965584236f73cb2836f98a9b9bb19`
+`e16da522aca84776419a999db82a9ddb5a42b15660516bfe6f1fd65cf5a3edcb`
 and mapping
-`1e87fc59cbfae641bd70e980d33d9696284494f08aff0240d35995d912dc7846`
-embed the exact revision, but the AAB has zero signature entries. The fresh
-Wear AAB
-`d4df3f2a4f7c315b8afd309ea9cd5d04825c8c9662faa2a7155faf982a155637`
-also embeds `df5f824` and has zero signature entries; the retained signed Wear
+`7e678576d95e36dd8e27cab78a565a47a1539a3caf6f769a283f9aca415a324f`
+embed the exact revision, but the AAB has zero signature entries. The Wear AAB
+`d1088ec635b69258baf5aaa42e42423b930a97a3077f059a2ae59c6d06061e71`
+also embeds `ee7c36f` and has zero signature entries; the retained signed Wear
 bundle still embeds historical revision `4d9492a`. Exact Apple simulator
 executables are app
-`d293763bc3dcf0eee73ebac9db1d5f0e4eda7aca7849c6000e3caf714041f5d9`,
+`279185d6778c7819d889a1f769d8ce2eb10b861790ed4ef2cc833044946aad90`,
 widget
-`74b6c6af76d5dc01efb61c2cd66c4fa4b28975704b690bc1371ea21579fd533b`,
+`bd651c05eb19551853fd5dde604fafdc7233f1615f21a9462b20f45199dc3209`,
 and watch
-`0ebc1c8f49f390e57bee86420b5be977ead8f086cb4b9a7ed0ab6849c26068c7`.
-Their UUID-matched dSYMs verify and the app passed 40 bounded cold launches,
-but all three remain ad-hoc simulator products rather than uploadable archives.
-GitHub Actions run `33243395554` succeeded on commit `79290c6` and retained
-only the unsigned Android/Wear build artifacts and iOS simulator test results;
-that workflow proof does not close signing, upload, review, or publication
-gates. Google Play Custom Store Listing `4834799756935529888` now persists as
-an Uzbekistan-only `Draft` with Uzbek fallback and separate Russian copy and
+`14c419fb71f35097c0fe4396183acb1d701ef229ea55f3608a2982d5bab5c493`.
+Their UUID-matched dSYMs verify, 18 Swift surface tests pass, and the Release
+simulator builds succeed, but all three remain ad-hoc simulator products rather
+than uploadable archives. A clean Gradle gate parsed 232 test executions with
+zero failures. API 24 widget and API 37 round-Wear emulator scenarios pass the
+strict Empty/Fresh/Stale contract; this is not source-synced signed physical
+proof. Google Play Custom Store Listing `4834799756935529888` persists as an
+Uzbekistan-only `Draft` with Uzbek fallback and separate Russian copy and
 creatives. It was not submitted for review or published, and public production
 remains `1.0.2 (6)`.
-The exact `df5f824` debug APK passed bounded fresh-install physical API 25 QA
-and a same-certificate preserved-data update on physical API 36; pulled bytes
-matched on both, and the exercised support/rating paths produced no matching
-fatal or ANR log entry. Exact-current tablet, widget, signed-release, and paired
-Wear OS coverage remains missing. The iPad
-CoreDevice/DDI path is usable again, but no exact-current signed Apple build
-exists, so it cannot provide current physical proof. The historical iOS crash
-still lacks a symbolicated report; 212 passing tests, current-source hardening,
-and the simulator loop cannot be attributed to that event and do not close the
+Historical physical Android evidence remains scoped to commit `df5f824`.
+Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
+is missing. The iPad CoreDevice/DDI path is usable, but no exact-current signed
+Apple build exists, so it cannot provide current physical proof. The historical
+iOS crash still lacks a symbolicated report; current-source hardening, tests,
+and simulator builds cannot be attributed to that event and do not close the
 crash gate. The authenticated Gmail thread and broad Open-Meteo searches were
 checked read-only at 13:12 +05:00: the 06:05:07 clarification remains the
 only indexed matching message with label `SENT`, and no inbound Open-Meteo
