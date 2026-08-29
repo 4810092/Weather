@@ -55,7 +55,9 @@ inherited QA claim is recorded.
   recovery, and cleanup. Its APK hash is
   `1d3ade497395c349d0fda77e72f76e494da230933d9aa011ac71bb475f48a31e`.
   Debug signing does not satisfy the upload-signed vc8 or release-certificate
-  physical gates.
+  physical gates. That result is historical for the current source, which now
+  also changes durable automatic-refresh state and retry handling, saved-location
+  cleanup, repository observation windows, and the iOS review-request path.
 
 ## Preserved historical candidates
 

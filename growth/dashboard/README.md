@@ -10,8 +10,8 @@ The dashboard is intentionally `blocked`. On 2026-08-29 the auxiliary Apple
 completeness floor, while all required goal surfaces were complete and failed;
 the streak is therefore correctly zero. Current phone vc8 and Apple build 6
 cannot complete their protected private-signing operations and lack signed
-artifacts plus matching release-certificate physical QA; phone vc8 has only a
-bounded current-commit API 25 debug/source pass. The retained signed Wear
+artifacts plus matching release-certificate physical QA; the bounded phone vc8
+API 25 debug/source pass is now historical because runtime source changed. The retained signed Wear
 artifact is current but lacks physical-watch QA. The iOS crash lacks a symbolicated report, and
 `nimbo.uz` is still waiting for registrar activation. Missing
 evidence remains explicit rather than silently becoming a zero or pass.

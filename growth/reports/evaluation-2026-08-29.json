@@ -163,14 +163,14 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Current commit 2004e4f phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke for clean onboarding, live weather, a fresh-cache cold start with provider access blocked and no automatic refresh failure, explicit manual-refresh failure/recovery, and cleanup. The APK is debug-signed; there is still no upload-signed current artifact or release-certificate physical pass. Signed vc7 is historical; physical tablet, widget, and Wear OS coverage also remains required."
+        "reason": "Commit 2004e4f phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke. That result is now historical: current source changes durable automatic-refresh state, transient retry handling, saved-location cleanup, and repository observation windows, with no matching physical pass. There is still no upload-signed current artifact or release-certificate physical result; signed vc7 is historical, and physical tablet, widget, and Wear OS coverage remains required."
       },
       {
         "id": "ios_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Current Apple 1.1.0 (6) has only an unsigned arm64 simulator build and no distribution-signed archive, artifact hash, or physical result. The build-5 iPad install and build-4 bounded runtime evidence are historical and do not transfer; current iPhone, iPad, widget, and watch coverage remains required."
+        "reason": "Current Apple 1.1.0 (6) source changes the foreground review-request path, durable automatic-refresh state, saved-location cleanup, and repository observation windows. It has no distribution-signed archive, artifact hash, or matching physical result. Unsigned simulator builds are build-only evidence; the build-5 iPad install and build-4 runtime evidence are historical. Current iPhone, iPad, widget, and watch coverage remains required."
       },
       {
         "id": "domain_activation",

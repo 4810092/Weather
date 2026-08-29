@@ -39,6 +39,12 @@ At `2026-08-29 03:07 +05:00`, the authenticated registrar list still showed
 still returned DNSSEC-authenticated `NXDOMAIN`. The Cloudflare dashboard showed
 the zone as `pending` and its authoritative DNS table contained no records.
 
+At `2026-08-29 05:22 +05:00`, the registry authority plus Cloudflare and Google
+public resolvers still returned DNSSEC-authenticated `NXDOMAIN`, HTTPS could not
+resolve the host, WHOIS still reported the domain record as `EXPIRED`, and the
+Cloudflare zone still displayed "Waiting for your registrar to propagate your
+new nameservers". No DNS record was created while delegation remained absent.
+
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
 `nimbo.uz`. The registry has therefore not published a delegation. The
