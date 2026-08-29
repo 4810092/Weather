@@ -24,6 +24,18 @@ ExportOptions maps the same three bundle IDs. This closes the deterministic
 configuration blocker only. It does not prove private-key access, archive,
 export, or physical QA.
 
+At `2026-08-30 04:57 +05:00`, a bounded post-correction private-key preflight
+copied `/usr/bin/true` into a disposable owner-local temporary directory and
+asked `codesign` to replace its signature with the installed manifest-pinned
+Apple Distribution identity, with timestamping disabled. `codesign` exited `1`
+with `errSecInternalComponent`; no signed temporary result survived, and the
+temporary files and directory were removed. This proves that noninteractive
+private-key use remains blocked even after the profile-map correction. No app
+archive, export, upload, device install, or credential mutation was attempted.
+Keychain Access independently showed the selected login keychain action as
+`Unlock Keychain “login”…`, confirming that it remained locked. The unlock item
+was not invoked and no password or biometric prompt was opened.
+
 ## Source and toolchain
 
 - The repository was clean at HEAD

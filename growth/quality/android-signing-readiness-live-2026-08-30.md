@@ -79,6 +79,10 @@ Keychain rejects both protected reads. The narrow unblock is successful
 authorization of that Keychain; the accepted upload keystore, alias, and
 certificate must not be replaced or reset.
 
+A post-audit read-only Keychain Access inspection independently exposed
+`Unlock Keychain “login”…` for the selected login keychain. The unlock action
+was not invoked and no password or biometric prompt was opened.
+
 After both exact protected lookups return status 0, resolve the current full
 revision only through `verify_release_artifacts.py --print-source-revision`,
 build from a standalone checkout detached at that revision, and retain outputs under a new
