@@ -37,7 +37,12 @@ python3 scripts/growth/monitor_public_rank.py
 python3 scripts/growth/evaluate_growth.py --replace
 ```
 
-The first command writes `growth/data/public-rank/YYYY-MM-DD.json` and returns non-zero when a required source failed; a complete day that misses the rank targets is a valid snapshot and returns zero. It refuses to silently overwrite a day unless `--replace` is provided. The second command writes the current decision record in `growth/reports/`.
+The first command writes `growth/data/public-rank/YYYY-MM-DD.json`. It returns
+zero when the required goal evidence is decisive, whether the result is pass or
+fail, and non-zero only when that result remains unknown. Auxiliary diagnostic
+incompleteness does not fail a decisive goal snapshot. It refuses to silently
+overwrite a day unless `--replace` is provided. The second command writes the
+current decision record in `growth/reports/`.
 
 The Codex task has an active local heartbeat named `Nimbo UZ rank monitor` on a
 temporary hourly cadence while domain activation and release-access blockers

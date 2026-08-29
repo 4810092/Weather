@@ -336,7 +336,49 @@ def _minimum_unique_apps(framework: dict[str, Any]) -> int:
     return raw
 
 
-def evaluate_day(snapshot: dict[str, Any], framework: dict[str, Any]) -> dict[str, Any]:
+def _rank_requirement_status(
+    surface: dict[str, Any],
+    *,
+    maximum_rank: int,
+    minimum_unique_apps: int,
+) -> str:
+    """Return pass/fail/unknown for one bounded rank requirement."""
+
+    if not _surface_complete(surface, minimum_unique_apps):
+        return "unknown"
+    rank = surface.get("target_rank")
+    if rank is None:
+        return "fail"
+    if isinstance(rank, bool) or not isinstance(rank, int) or rank < 1:
+        return "unknown"
+    return "pass" if rank <= maximum_rank else "fail"
+
+
+def _conjunction_status(statuses: Iterable[str]) -> str:
+    """Combine required conditions without letting unknown hide a proven failure."""
+
+    values = list(statuses)
+    if any(status == "fail" for status in values):
+        return "fail"
+    if values and all(status == "pass" for status in values):
+        return "pass"
+    return "unknown"
+
+
+def _monitor_exit_code(snapshot: dict[str, Any]) -> int:
+    """Fail observation only when the required daily goal cannot be decided."""
+
+    evaluation = snapshot.get("evaluation")
+    status = evaluation.get("status") if isinstance(evaluation, dict) else None
+    return 0 if status in {"pass", "fail"} else 1
+
+
+def evaluate_day(
+    snapshot: dict[str, Any],
+    framework: dict[str, Any],
+    *,
+    expected_query_ids: Iterable[str] | None = None,
+) -> dict[str, Any]:
     requirements = framework["primary_goal"]["daily_requirements"]
     max_rank = int(requirements["google_weather_category_rank_lte"])
     required_profiles = requirements["google_required_profiles"]
@@ -349,62 +391,112 @@ def evaluate_day(snapshot: dict[str, Any], framework: dict[str, Any]) -> dict[st
     google_categories = snapshot["surfaces"]["google"]["category"]
     google_searches = snapshot["surfaces"]["google"]["search"]
 
-    required_surface_list = [apple_category]
-    required_surface_list.extend(google_categories[profile] for profile in required_profiles)
-    for profile in required_profiles:
-        required_surface_list.extend(google_searches[profile].values())
-    complete = _all_surfaces_complete(required_surface_list, minimum_unique_apps)
-
-    apple_rank = apple_category.get("target_rank")
-    apple_top10 = (
-        _surface_complete(apple_category, minimum_unique_apps)
-        and apple_rank is not None
-        and apple_rank <= int(requirements["apple_weather_chart_rank_lte"])
+    apple_status = _rank_requirement_status(
+        apple_category,
+        maximum_rank=int(requirements["apple_weather_chart_rank_lte"]),
+        minimum_unique_apps=minimum_unique_apps,
     )
+    apple_top10 = apple_status == "pass"
 
     google_category_by_profile: dict[str, bool] = {}
+    google_category_status_by_profile: dict[str, str] = {}
     for profile in required_profiles:
         surface = google_categories[profile]
-        rank = surface.get("target_rank")
-        google_category_by_profile[profile] = (
-            _surface_complete(surface, minimum_unique_apps)
-            and rank is not None
-            and rank <= max_rank
+        profile_status = _rank_requirement_status(
+            surface,
+            maximum_rank=max_rank,
+            minimum_unique_apps=minimum_unique_apps,
         )
-    google_category_top10 = all(google_category_by_profile.values())
+        google_category_status_by_profile[profile] = profile_status
+        google_category_by_profile[profile] = profile_status == "pass"
+    google_category_status = _conjunction_status(
+        google_category_status_by_profile.values()
+    )
+    google_category_top10 = google_category_status == "pass"
 
-    query_ids = next(iter(google_searches.values())).keys() if google_searches else []
+    if expected_query_ids is None:
+        methodology = snapshot.get("methodology")
+        captured_query_ids = (
+            methodology.get("fixed_query_ids")
+            if isinstance(methodology, dict)
+            else None
+        )
+        if isinstance(captured_query_ids, list):
+            expected_query_ids = captured_query_ids
+        else:
+            # Schema-v1 snapshots predate fixed_query_ids but contain every query
+            # under each profile. Keep those snapshots evaluable by inferring the
+            # expected set from their captured surfaces.
+            expected_query_ids = (
+                query_id
+                for profile in required_profiles
+                for query_id in google_searches.get(profile, {})
+            )
+    query_ids = sorted(
+        {
+            query_id
+            for query_id in expected_query_ids
+            if isinstance(query_id, str) and query_id
+        }
+    )
     qualifying_queries: list[str] = []
+    unresolved_queries: list[str] = []
+    rejected_queries: list[str] = []
     query_profile_counts: dict[str, int] = {}
+    query_unknown_profile_counts: dict[str, int] = {}
+    query_statuses: dict[str, str] = {}
     for query_id in query_ids:
-        count = 0
+        confirmed_top10 = 0
+        unknown_profiles = 0
         for profile in required_profiles:
-            surface = google_searches[profile][query_id]
-            rank = surface.get("target_rank")
-            if (
-                _surface_complete(surface, minimum_unique_apps)
-                and rank is not None
-                and rank <= query_max_rank
-            ):
-                count += 1
-        query_profile_counts[query_id] = count
-        if count >= query_quorum:
+            surface = google_searches.get(profile, {}).get(query_id, {})
+            profile_status = _rank_requirement_status(
+                surface,
+                maximum_rank=query_max_rank,
+                minimum_unique_apps=minimum_unique_apps,
+            )
+            if profile_status == "unknown":
+                unknown_profiles += 1
+            elif profile_status == "pass":
+                confirmed_top10 += 1
+        query_profile_counts[query_id] = confirmed_top10
+        query_unknown_profile_counts[query_id] = unknown_profiles
+        if confirmed_top10 >= query_quorum:
+            query_statuses[query_id] = "pass"
             qualifying_queries.append(query_id)
-    generic_query_goal = len(qualifying_queries) >= query_required
+        elif confirmed_top10 + unknown_profiles < query_quorum:
+            query_statuses[query_id] = "fail"
+            rejected_queries.append(query_id)
+        else:
+            query_statuses[query_id] = "unknown"
+            unresolved_queries.append(query_id)
 
-    requirements_pass = apple_top10 and google_category_top10 and generic_query_goal
-    status = "pass" if complete and requirements_pass else "fail" if complete else "unknown"
+    if len(qualifying_queries) >= query_required:
+        generic_query_status = "pass"
+    elif len(qualifying_queries) + len(unresolved_queries) < query_required:
+        generic_query_status = "fail"
+    else:
+        generic_query_status = "unknown"
+
+    status = _conjunction_status(
+        (apple_status, google_category_status, generic_query_status)
+    )
+    complete = status != "unknown"
+    requirements_pass = status == "pass"
     reasons: list[str] = []
-    if not complete:
-        reasons.append(
-            "one or more required public surfaces failed or observed fewer than "
-            f"{minimum_unique_apps} unique apps"
-        )
-    if not apple_top10:
+    if apple_status == "unknown":
+        reasons.append("Apple UZ Weather chart evidence is incomplete")
+    elif apple_status == "fail":
         reasons.append("Apple UZ Weather chart is not verified in the top 10")
-    if not google_category_top10:
+    if google_category_status == "unknown":
+        reasons.append("Google UZ Weather category evidence is incomplete")
+    elif google_category_status == "fail":
         reasons.append("Google UZ Weather category is not top 10 in all fixed profiles")
-    if not generic_query_goal:
+    if generic_query_status == "unknown":
+        reasons.append(
+            "generic-query evidence is incomplete and could change the two-query quorum"
+        )
+    elif generic_query_status == "fail":
         reasons.append(
             f"only {len(qualifying_queries)} generic queries meet the top-10 profile quorum"
         )
@@ -413,11 +505,19 @@ def evaluate_day(snapshot: dict[str, Any], framework: dict[str, Any]) -> dict[st
         "status": status,
         "complete": complete,
         "apple_weather_chart_top10": apple_top10,
+        "apple_weather_chart_status": apple_status,
         "google_weather_category_top10_all_profiles": google_category_top10,
+        "google_weather_category_status": google_category_status,
         "google_category_top10_by_profile": google_category_by_profile,
+        "google_category_status_by_profile": google_category_status_by_profile,
         "google_generic_top10_queries": qualifying_queries,
         "google_generic_top10_query_count": len(qualifying_queries),
+        "google_generic_query_status": generic_query_status,
+        "google_generic_unresolved_queries": unresolved_queries,
+        "google_generic_rejected_queries": rejected_queries,
+        "google_query_statuses": query_statuses,
         "google_query_top10_profile_counts": query_profile_counts,
+        "google_query_unknown_profile_counts": query_unknown_profile_counts,
         "requirements_pass": requirements_pass,
         "reasons": reasons,
     }
@@ -580,6 +680,7 @@ def capture(config: dict[str, Any], framework: dict[str, Any]) -> dict[str, Any]
             "cookie_jar": False,
             "google_country_parameter": country,
             "fixed_google_profiles": [profile["id"] for profile in config["google_profiles"]],
+            "fixed_query_ids": [query["id"] for query in config["queries"]],
             "position_semantics": "first unique app identifier in source response order",
             "absence_semantics": "greater than observed_count, not globally unranked",
             "caveats": [
@@ -599,6 +700,9 @@ def capture(config: dict[str, Any], framework: dict[str, Any]) -> dict[str, Any]
     snapshot["capture_complete"] = _all_surfaces_complete(
         all_surfaces, minimum_unique_apps
     )
+    # Keep the original field as a compatibility alias for schema-v1 consumers.
+    # It describes every configured diagnostic surface, not goal decisiveness.
+    snapshot["diagnostic_capture_complete"] = snapshot["capture_complete"]
     snapshot["source_errors"] = []
     for surface in all_surfaces:
         if surface.get("status") != "ok":
@@ -609,7 +713,12 @@ def capture(config: dict[str, Any], framework: dict[str, Any]) -> dict[str, Any]
                     "error": surface.get("error"),
                 }
             )
-    snapshot["evaluation"] = evaluate_day(snapshot, framework)
+    snapshot["evaluation"] = evaluate_day(
+        snapshot,
+        framework,
+        expected_query_ids=(query["id"] for query in config["queries"]),
+    )
+    snapshot["goal_evidence_complete"] = snapshot["evaluation"]["complete"]
     return snapshot
 
 
@@ -657,10 +766,10 @@ def main(argv: list[str] | None = None) -> int:
     write_json(output, snapshot)
     print(
         f"Wrote {output} ({snapshot['evaluation']['status']}; "
-        f"capture_complete={snapshot['capture_complete']}; "
-        f"goal_surfaces_complete={snapshot['evaluation']['complete']})."
+        f"diagnostic_capture_complete={snapshot['diagnostic_capture_complete']}; "
+        f"goal_evidence_complete={snapshot['goal_evidence_complete']})."
     )
-    return 0 if snapshot["capture_complete"] else 1
+    return _monitor_exit_code(snapshot)
 
 
 if __name__ == "__main__":

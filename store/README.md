@@ -48,11 +48,33 @@ each of the 13 app languages. All were captured from current production UI with
 a populated local database; no UI was invented.
 
 Google Play and App Store Connect do not offer Uzbek as a product-page locale.
-The UZ Google custom-listing draft therefore records Uzbek audience copy with an
-`en-US` store-locale fallback, alongside a separate Russian localization. The
-UZ App Store Custom Product Page draft uses the same explicit fallback. This
-mapping is data for a manual console update; the installed app continues to use
-its complete Uzbek localization.
+The publishable Google package therefore contains one Custom Store Listing,
+`google-play-uz-country-listing`, targeting country `UZ` only. It declares
+`en-US` as the default store locale and maps it to Uzbek audience copy/assets
+(`audience_locale: uz-UZ`), with a separate `ru-RU` locale. Its full descriptions
+are exact copies of `metadata.localizations.uz-UZ.description` and
+`metadata.localizations.ru-RU.description`; the upload manifest records these
+sources explicitly. `uz-UZ` is never declared as a Google Play product-page
+locale. The five generic queries from `growth/config.json` remain monitoring and
+Apple candidate terms; no global Google keyword-targeted listing is packaged.
+
+The UZ App Store Custom Product Page draft uses the same explicit fallback: its
+`en-US` payload maps to Uzbek copy/assets, while its `ru-RU` payload maps to
+Russian copy/assets. Its keyword lists are planned candidates, not proof that
+the terms can already be assigned. Apple only offers terms from the latest
+approved base version, so the assignment gate remains blocked and the required
+sequence is: submit the base 1.1.0 keywords, wait for base-version approval, and
+only then assign Custom Product Page keywords. The installed app continues to
+use its complete Uzbek localization.
+
+Apple's keyword limit is 100 UTF-8 bytes, not 100 Unicode characters. The JSON
+Schema retains a portable 100-character ceiling, and
+`scripts/check_store_metadata.py` applies the stricter byte count to base and
+override keyword fields.
+
+Current contracts: [Apple platform-version metadata](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/),
+[Apple Custom Product Page keyword assignment](https://developer.apple.com/help/app-store-connect/create-custom-product-pages/configure-multiple-product-page-versions/),
+and [Google custom-listing targeting](https://support.google.com/googleplay/android-developer/answer/9867158?hl=en-GB).
 
 ## Growth creative set
 
@@ -102,7 +124,7 @@ to historical build 5 and do not establish current build-6 or physical-watch
 QA.
 
 `scripts/check_store_metadata.py` validates schema version, locale coverage,
-platform/storefront relationships, approved UZ/RU copy, text limits, experiment
+platform/storefront relationships, exact UZ/RU candidate copy, text limits, experiment
 gates, creative references, HTTPS support URLs, exact source identities, and
 fail-closed artifact state. A blocked current artifact cannot carry a SHA,
 signing evidence, or physical-QA evidence. `scripts/check_store_assets.py`

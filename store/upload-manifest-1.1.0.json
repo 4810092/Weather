@@ -79,7 +79,19 @@
       ],
       "audience_locale": "uz-UZ",
       "store_locale_fallback": "en-US",
-      "asset_root": "store/creatives/growth-2026-08/app-store/uz-UZ"
+      "keyword_assignment_gate": {
+        "status": "blocked-pending-base-version-approval",
+        "candidate_source_version": "1.1.0",
+        "required_sequence": [
+          "submit-base-version-keywords",
+          "wait-for-base-version-approval",
+          "assign-custom-product-page-keywords"
+        ]
+      },
+      "localized_asset_roots": {
+        "en-US": "store/creatives/growth-2026-08/app-store/uz-UZ",
+        "ru-RU": "store/creatives/growth-2026-08/app-store/ru-RU"
+      }
     },
     {
       "listing_id": "google-play-default",
@@ -102,14 +114,28 @@
       "feature_graphic": "store/assets/google-play/feature-graphic-en-US-1024x500.jpg"
     },
     {
-      "listing_id": "google-play-uz-custom-listing",
+      "listing_id": "google-play-uz-country-listing",
       "store_locales": [
-        "uz-UZ",
+        "en-US",
         "ru-RU"
       ],
-      "asset_root": "store/creatives/growth-2026-08/google-play",
+      "default_store_locale": "en-US",
+      "targeting": {
+        "type": "country",
+        "country_targets": [
+          "UZ"
+        ]
+      },
+      "full_description_sources": {
+        "en-US": "metadata.localizations.uz-UZ.description",
+        "ru-RU": "metadata.localizations.ru-RU.description"
+      },
+      "localized_asset_roots": {
+        "en-US": "store/creatives/growth-2026-08/google-play/uz-UZ",
+        "ru-RU": "store/creatives/growth-2026-08/google-play/ru-RU"
+      },
       "feature_graphics": {
-        "uz-UZ": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
+        "en-US": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
         "ru-RU": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg"
       }
     }
@@ -120,6 +146,7 @@
     "source-synced signed Android phone 1.1.0 (8) artifact and physical smoke",
     "source-synced signed Apple 1.1.0 (6) artifact and physical runtime matrix",
     "physical tablet, widget, and Wear OS smoke",
+    "App Store base 1.1.0 keyword approval before CPP keyword assignment",
     "authenticated App Store Connect and Google Play upload paths",
     "public nimbo.uz DNS and TLS"
   ],

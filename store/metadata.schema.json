@@ -163,7 +163,8 @@
         "keywords": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 100
+          "maxLength": 100,
+          "description": "App Store keyword CSV. The validator additionally enforces Apple's 100 UTF-8-byte limit."
         },
         "description": {
           "type": "string",
@@ -355,7 +356,8 @@
         "keywords": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 100
+          "maxLength": 100,
+          "description": "App Store keyword CSV. The validator additionally enforces Apple's 100 UTF-8-byte limit."
         },
         "description": {
           "type": "string",
@@ -375,7 +377,8 @@
       "required": [
         "name",
         "status",
-        "country_targets",
+        "default_store_locale",
+        "targeting",
         "localizations"
       ],
       "properties": {
@@ -390,13 +393,29 @@
             "archived"
           ]
         },
-        "country_targets": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^[A-Z]{2}$"
+        "default_store_locale": {
+          "const": "en-US"
+        },
+        "targeting": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "country_targets"
+          ],
+          "properties": {
+            "type": {
+              "const": "country"
+            },
+            "country_targets": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              }
+            }
           }
         },
         "localizations": {
@@ -406,11 +425,17 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
+              "audience_locale",
               "store_locale_fallback",
               "title",
-              "short_description"
+              "short_description",
+              "full_description"
             ],
             "properties": {
+              "audience_locale": {
+                "type": "string",
+                "minLength": 2
+              },
               "store_locale_fallback": {
                 "type": "string",
                 "minLength": 2
@@ -424,6 +449,11 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 80
+              },
+              "full_description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
               }
             }
           }
@@ -438,8 +468,8 @@
         "status",
         "audience_locale",
         "store_locale_fallback",
-        "promotional_text",
-        "keyword_targets"
+        "keyword_assignment_gate",
+        "localizations"
       ],
       "properties": {
         "reference_name": {
@@ -462,18 +492,62 @@
           "type": "string",
           "minLength": 2
         },
-        "promotional_text": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 170
+        "keyword_assignment_gate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "candidate_source_version",
+            "required_sequence"
+          ],
+          "properties": {
+            "status": {
+              "const": "blocked-pending-base-version-approval"
+            },
+            "candidate_source_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required_sequence": {
+              "const": [
+                "submit-base-version-keywords",
+                "wait-for-base-version-approval",
+                "assign-custom-product-page-keywords"
+              ]
+            }
+          }
         },
-        "keyword_targets": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
+        "localizations": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "audience_locale",
+              "promotional_text",
+              "planned_keyword_targets"
+            ],
+            "properties": {
+              "audience_locale": {
+                "type": "string",
+                "minLength": 2
+              },
+              "promotional_text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 170
+              },
+              "planned_keyword_targets": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
           }
         }
       }

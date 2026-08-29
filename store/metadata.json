@@ -16,7 +16,7 @@
       "title": "Nimbo",
       "subtitle": "Weather made familiar",
       "short_description": "Understand the hours ahead through weather you have recently felt.",
-      "keywords": "weather,forecast,hourly,offline,temperature,rain,wind,local",
+      "keywords": "weather,forecast,ob havo,Toshkent ob-havo,prognoz,hourly,offline,temperature,rain,wind,local",
       "description": "Weather is easier to understand when it feels familiar.\n\nNimbo shows current conditions and the next 24 hours alongside recent weather from the same place. See whether the hours ahead will feel warmer, cooler, wetter, or much the same as yesterday.\n\n• A clear current-weather summary\n• A chronological −24 / NOW / +24 timeline\n• Comparisons with yesterday and recent days\n• Best Time Outside based on comfort and weather hazards\n• Cached weather when your connection is unavailable\n• Home-screen widgets and companion apps for Apple Watch and Wear OS\n• Automatic, metric, or imperial units\n\nNo account, ads, or analytics. Approximate location is optional; city search works without location permission.\n\nWeather and place data are provided by Open-Meteo. Historical values are model and reanalysis data, not verified station observations.",
       "release_notes": "Widgets and companion apps for Apple Watch and Wear OS make Nimbo glanceable. Also includes a 10-day forecast, air quality, automatic refresh, sharing, saved places, offline cache, and 13 languages."
     },
@@ -24,7 +24,7 @@
       "title": "Nimbo",
       "subtitle": "Погода, которую легко понять",
       "short_description": "Поймите погоду на ближайшие часы через знакомые недавние ощущения.",
-      "keywords": "погода,прогноз,почасовой,офлайн,температура,дождь,ветер",
+      "keywords": "погода,прогноз,ob havo,Toshkent ob-havo,weather,prognoz,почасовой",
       "description": "Погоду легче понять, когда есть знакомое сравнение.\n\nNimbo показывает текущие условия и ближайшие 24 часа рядом с недавней погодой в том же месте. Сразу видно, будут ли следующие часы теплее, прохладнее, дождливее или примерно такими же, как вчера.\n\n• Понятная сводка о погоде сейчас\n• Хронологическая шкала −24 / СЕЙЧАС / +24\n• Сравнение со вчерашним днём и недавними днями\n• Лучшее время для прогулки с учётом комфорта и опасных условий\n• Сохранённая погода без подключения к сети\n• Виджеты и приложения-компаньоны для Apple Watch и Wear OS\n• Автоматические, метрические или имперские единицы\n\nБез аккаунта, рекламы и аналитики. Приблизительное местоположение необязательно: город можно найти без разрешения геолокации.\n\nДанные о погоде и местах предоставляет Open-Meteo. Исторические значения основаны на моделях и реанализе, а не на подтверждённых наблюдениях конкретной метеостанции.",
       "release_notes": "Виджеты и приложения для Apple Watch и Wear OS показывают Nimbo с первого взгляда. Также добавлены прогноз на 10 дней, качество воздуха, автообновление, отправка погоды, сохранённые места, офлайн-кэш и 13 языков."
     },
@@ -96,7 +96,7 @@
       "title": "Nimbo",
       "subtitle": "मौसम, जिसे समझना आसान हो",
       "short_description": "हाल में महसूस किए मौसम से तुलना कर आने वाले घंटों को समझें।",
-      "keywords": "मौसम,पूर्वानुमान,घंटेवार,ऑफलाइन,तापमान,बारिश,हवा",
+      "keywords": "मौसम,पूर्वानुमान,घंटेवार,बारिश,हवा",
       "description": "जाना-पहचाना संदर्भ मिले तो मौसम समझना आसान होता है।\n\nNimbo वर्तमान स्थिति और अगले 24 घंटों को उसी स्थान के हाल के मौसम के साथ दिखाता है। तुरंत जानें कि आगे का समय कल से अधिक गर्म, ठंडा, बरसाती या लगभग वैसा ही लगेगा।\n\n• वर्तमान मौसम का साफ़ सारांश\n• क्रमवार −24 / अभी / +24 समयरेखा\n• कल और हाल के दिनों से तुलना\n• आराम और मौसम के खतरों के आधार पर बाहर जाने का अच्छा समय\n• इंटरनेट न होने पर सहेजा गया मौसम\n• Apple Watch और Wear OS के लिए विजेट व साथी ऐप\n• स्वचालित, मीट्रिक या इम्पीरियल इकाइयाँ\n\nकोई खाता, विज्ञापन या उपयोग विश्लेषण नहीं। अनुमानित स्थान वैकल्पिक है और स्थान अनुमति के बिना शहर खोजा जा सकता है।\n\nमौसम और स्थान डेटा Open-Meteo देता है। ऐतिहासिक मान मॉडल और पुनर्विश्लेषण डेटा हैं, किसी खास स्टेशन के सत्यापित प्रेक्षण नहीं।",
       "release_notes": "Nimbo पेश है: हाल में महसूस किए मौसम से तुलना करके अगले 24 घंटे आसानी से समझें। ऑफलाइन कैश, हाल के दिनों का संदर्भ, बाहर जाने का अच्छा समय और 13 भाषाएँ शामिल हैं।"
     },
@@ -196,12 +196,38 @@
         "status": "draft",
         "audience_locale": "uz-UZ",
         "store_locale_fallback": "en-US",
-        "promotional_text": "Tashqariga chiqish uchun eng yaxshi vaqtni toping va keyingi soatlarni yaqindagi ob-havo bilan solishtiring.",
-        "keyword_targets": [
-          "ob havo",
-          "Toshkent ob-havo",
-          "prognoz"
-        ]
+        "keyword_assignment_gate": {
+          "status": "blocked-pending-base-version-approval",
+          "candidate_source_version": "1.1.0",
+          "required_sequence": [
+            "submit-base-version-keywords",
+            "wait-for-base-version-approval",
+            "assign-custom-product-page-keywords"
+          ]
+        },
+        "localizations": {
+          "en-US": {
+            "audience_locale": "uz-UZ",
+            "promotional_text": "Tashqariga chiqish uchun eng yaxshi vaqtni toping va keyingi soatlarni yaqindagi ob-havo bilan solishtiring.",
+            "planned_keyword_targets": [
+              "ob havo",
+              "weather",
+              "Toshkent ob-havo",
+              "prognoz"
+            ]
+          },
+          "ru-RU": {
+            "audience_locale": "ru-RU",
+            "promotional_text": "Найдите лучшее время выйти на улицу и сравните ближайшие часы с недавней погодой.",
+            "planned_keyword_targets": [
+              "ob havo",
+              "погода",
+              "weather",
+              "Toshkent ob-havo",
+              "prognoz"
+            ]
+          }
+        }
       },
       "creative_set": "growth-2026-08",
       "experiment": null,
@@ -238,31 +264,39 @@
       "privacy_url": "https://nimbo.uz/privacy/"
     },
     {
-      "id": "google-play-uz-custom-listing",
+      "id": "google-play-uz-country-listing",
       "platform": "google-play",
       "storefront": "UZ",
       "listing_type": "custom-listing",
       "localization_refs": [
-        "uz-UZ",
+        "en-US",
         "ru-RU"
       ],
       "overrides": {},
       "custom_listing": {
-        "name": "Uzbekistan — Best Time Outside",
+        "name": "Uzbekistan country — Best Time Outside",
         "status": "draft",
-        "country_targets": [
-          "UZ"
-        ],
+        "default_store_locale": "en-US",
+        "targeting": {
+          "type": "country",
+          "country_targets": [
+            "UZ"
+          ]
+        },
         "localizations": {
-          "uz-UZ": {
+          "en-US": {
+            "audience_locale": "uz-UZ",
             "store_locale_fallback": "en-US",
             "title": "Nimbo: Ob-havo va prognoz",
-            "short_description": "Tashqariga chiqish uchun eng yaxshi vaqtni toping."
+            "short_description": "Tashqariga chiqish uchun eng yaxshi vaqtni toping.",
+            "full_description": "Tanish taqqoslash bo‘lsa, ob-havoni tushunish osonroq.\n\nNimbo hozirgi holat va keyingi 24 soatni shu joydagi yaqin kunlar ob-havosi bilan yonma-yon ko‘rsatadi. Oldindagi soatlar kechagidan issiqroq, salqinroq, yomg‘irliroq yoki deyarli bir xil bo‘lishini tezda biling.\n\n• Hozirgi ob-havoning aniq xulosasi\n• Ketma-ket −24 / HOZIR / +24 vaqt chizig‘i\n• Kecha va yaqin kunlar bilan taqqoslash\n• Qulaylik va ob-havo xavflariga ko‘ra tashqariga chiqish uchun yaxshi vaqt\n• Internet bo‘lmaganda saqlangan ob-havo\n• Apple Watch va Wear OS uchun vidjetlar hamda hamroh ilovalar\n• Avtomatik, metrik yoki imperial birliklar\n\nHisob, reklama va tahlil yo‘q. Taxminiy joylashuv ixtiyoriy; joylashuv ruxsatisiz shahar qidirish mumkin.\n\nOb-havo va joy ma’lumotlarini Open-Meteo taqdim etadi. Tarixiy qiymatlar model va reanaliz ma’lumotlari bo‘lib, muayyan stansiyaning tasdiqlangan kuzatuvlari emas."
           },
           "ru-RU": {
+            "audience_locale": "ru-RU",
             "store_locale_fallback": "ru-RU",
             "title": "Nimbo: Погода и прогноз",
-            "short_description": "Найдите лучшее время, чтобы выйти на улицу."
+            "short_description": "Найдите лучшее время, чтобы выйти на улицу.",
+            "full_description": "Погоду легче понять, когда есть знакомое сравнение.\n\nNimbo показывает текущие условия и ближайшие 24 часа рядом с недавней погодой в том же месте. Сразу видно, будут ли следующие часы теплее, прохладнее, дождливее или примерно такими же, как вчера.\n\n• Понятная сводка о погоде сейчас\n• Хронологическая шкала −24 / СЕЙЧАС / +24\n• Сравнение со вчерашним днём и недавними днями\n• Лучшее время для прогулки с учётом комфорта и опасных условий\n• Сохранённая погода без подключения к сети\n• Виджеты и приложения-компаньоны для Apple Watch и Wear OS\n• Автоматические, метрические или имперские единицы\n\nБез аккаунта, рекламы и аналитики. Приблизительное местоположение необязательно: город можно найти без разрешения геолокации.\n\nДанные о погоде и местах предоставляет Open-Meteo. Исторические значения основаны на моделях и реанализе, а не на подтверждённых наблюдениях конкретной метеостанции."
           }
         }
       },

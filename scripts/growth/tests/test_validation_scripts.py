@@ -30,7 +30,22 @@ from scripts.check_store_assets import (
     load_creative_manifest,
     validate_store_image,
 )
-from scripts.check_store_metadata import validate_upload_artifacts
+from scripts.check_store_metadata import (
+    APPLE_CPP_FIELDS,
+    APPLE_CPP_LOCALIZATION_FIELDS,
+    APPLE_UTF8_BYTE_FIELDS,
+    GOOGLE_CUSTOM_LISTING_FIELDS,
+    GOOGLE_CUSTOM_LOCALIZATION_FIELDS,
+    GOOGLE_UZ_COUNTRY_LISTING_ID,
+    configured_generic_terms,
+    validate_cpp_upload_mapping,
+    validate_google_uz_upload_mapping,
+    validate_listing_localization_refs,
+    validate_listing_payload_ids,
+    validate_text_fields,
+    validate_upload_artifacts,
+    validate_uz_store_targeting,
+)
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -52,6 +67,9 @@ def portable_report(payload: dict) -> str:
 
 
 class ValidationScriptsTest(unittest.TestCase):
+    def metadata(self) -> dict:
+        return json.loads((ROOT / "store/metadata.json").read_text(encoding="utf-8"))
+
     def upload_manifest(self) -> dict:
         return json.loads(
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
@@ -278,6 +296,447 @@ class ValidationScriptsTest(unittest.TestCase):
         validate_upload_artifacts(manifest, "1.1.0", failures)
         self.assertTrue(
             any("declared build 5 differs from source 6" in item for item in failures)
+        )
+
+    def test_apple_keyword_limit_uses_utf8_bytes(self) -> None:
+        failures: list[str] = []
+        validate_text_fields(
+            "synthetic",
+            {"keywords": "я" * 51},
+            {"keywords": 100},
+            failures,
+            utf8_byte_fields=APPLE_UTF8_BYTE_FIELDS,
+        )
+        self.assertEqual(
+            failures,
+            ["synthetic:keywords: 102 UTF-8 bytes > 100"],
+        )
+
+        failures = []
+        validate_text_fields(
+            "synthetic",
+            {"keywords": "a" * 100},
+            {"keywords": 100},
+            failures,
+            utf8_byte_fields=APPLE_UTF8_BYTE_FIELDS,
+        )
+        self.assertEqual(failures, [])
+
+    def test_uz_store_targeting_copy_and_apple_candidates_match_contract(self) -> None:
+        metadata = self.metadata()
+        generic_terms = configured_generic_terms()
+        failures: list[str] = []
+        validate_uz_store_targeting(metadata, generic_terms, failures)
+        self.assertEqual(failures, [])
+
+        google_custom_ids = {
+            listing["id"]
+            for listing in metadata["listings"]
+            if listing["platform"] == "google-play"
+            and listing["listing_type"] == "custom-listing"
+        }
+        self.assertEqual(google_custom_ids, {GOOGLE_UZ_COUNTRY_LISTING_ID})
+
+        schema = json.loads(
+            (ROOT / "store/metadata.schema.json").read_text(encoding="utf-8")
+        )
+        custom_listing_schema = schema["$defs"]["customListing"]
+        self.assertEqual(
+            set(custom_listing_schema["properties"]["targeting"]["properties"]),
+            {"type", "country_targets"},
+        )
+        self.assertEqual(
+            schema["$defs"]["customProductPage"]["properties"]
+            ["keyword_assignment_gate"]["properties"]["status"],
+            {"const": "blocked-pending-base-version-approval"},
+        )
+
+        impossible_combination = copy.deepcopy(metadata)
+        country_listing = next(
+            listing
+            for listing in impossible_combination["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_listing["custom_listing"]["targeting"][
+            "search_keyword_targets"
+        ] = generic_terms
+        failures = []
+        validate_uz_store_targeting(
+            impossible_combination, generic_terms, failures
+        )
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: targeting must be country UZ only",
+            failures,
+        )
+
+        wrong_default = copy.deepcopy(metadata)
+        country_listing = next(
+            listing
+            for listing in wrong_default["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_listing["custom_listing"]["default_store_locale"] = "ru-RU"
+        failures = []
+        validate_uz_store_targeting(wrong_default, generic_terms, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: default_store_locale must be en-US",
+            failures,
+        )
+
+        wrong_description = copy.deepcopy(metadata)
+        country_listing = next(
+            listing
+            for listing in wrong_description["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_listing["custom_listing"]["localizations"]["en-US"][
+            "full_description"
+        ] += " Changed."
+        failures = []
+        validate_uz_store_targeting(wrong_description, generic_terms, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: localized copy or "
+            "audience/store-locale mapping differs",
+            failures,
+        )
+
+        oversized_description = copy.deepcopy(metadata)
+        country_listing = next(
+            listing
+            for listing in oversized_description["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_listing["custom_listing"]["localizations"]["en-US"][
+            "full_description"
+        ] = "x" * 4001
+        failures = []
+        validate_uz_store_targeting(
+            oversized_description, generic_terms, failures
+        )
+        self.assertTrue(
+            any("full_description: 4001 characters > 4000" in item for item in failures)
+        )
+
+        invalid_apple = copy.deepcopy(metadata)
+        invalid_apple["localizations"]["en-US"]["keywords"] = "weather,forecast"
+        failures = []
+        validate_uz_store_targeting(invalid_apple, generic_terms, failures)
+        self.assertTrue(
+            any(
+                "planned targets missing from the candidate base Apple keyword pool"
+                in item
+                for item in failures
+            )
+        )
+
+        premature_apple_assignment = copy.deepcopy(metadata)
+        cpp_listing = next(
+            listing
+            for listing in premature_apple_assignment["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp_listing["custom_product_page"]["keyword_assignment_gate"][
+            "status"
+        ] = "assigned"
+        failures = []
+        validate_uz_store_targeting(
+            premature_apple_assignment, generic_terms, failures
+        )
+        self.assertIn(
+            "App Store UZ custom product page keyword assignment must remain "
+            "blocked until the candidate base version is approved",
+            failures,
+        )
+
+    def test_store_payload_shapes_match_json_schema(self) -> None:
+        schema = json.loads(
+            (ROOT / "store/metadata.schema.json").read_text(encoding="utf-8")
+        )
+        contracts = (
+            (schema["$defs"]["customListing"], GOOGLE_CUSTOM_LISTING_FIELDS),
+            (
+                schema["$defs"]["customListing"]["properties"]["localizations"]
+                ["additionalProperties"],
+                GOOGLE_CUSTOM_LOCALIZATION_FIELDS,
+            ),
+            (schema["$defs"]["customProductPage"], APPLE_CPP_FIELDS),
+            (
+                schema["$defs"]["customProductPage"]["properties"][
+                    "localizations"
+                ]["additionalProperties"],
+                APPLE_CPP_LOCALIZATION_FIELDS,
+            ),
+        )
+        for payload_schema, expected_fields in contracts:
+            with self.subTest(fields=sorted(expected_fields)):
+                self.assertFalse(payload_schema["additionalProperties"])
+                self.assertEqual(set(payload_schema["required"]), expected_fields)
+                self.assertEqual(set(payload_schema["properties"]), expected_fields)
+
+    def test_store_payload_shapes_fail_closed(self) -> None:
+        generic_terms = configured_generic_terms()
+
+        extra_cpp_field = self.metadata()
+        cpp = next(
+            listing["custom_product_page"]
+            for listing in extra_cpp_field["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp["localizations"]["en-US"]["keyword_targets"] = ["weather"]
+        failures: list[str] = []
+        validate_uz_store_targeting(extra_cpp_field, generic_terms, failures)
+        self.assertIn(
+            "app-store-uz-custom-product-page.en-US: expected exactly "
+            f"{sorted(APPLE_CPP_LOCALIZATION_FIELDS)}",
+            failures,
+        )
+
+        extra_cpp_payload_field = self.metadata()
+        cpp = next(
+            listing["custom_product_page"]
+            for listing in extra_cpp_payload_field["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp["keyword_targets"] = ["weather"]
+        failures = []
+        validate_uz_store_targeting(
+            extra_cpp_payload_field, generic_terms, failures
+        )
+        self.assertIn(
+            "App Store UZ custom product page fields must be exact and explicit",
+            failures,
+        )
+
+        missing_cpp_field = self.metadata()
+        cpp = next(
+            listing["custom_product_page"]
+            for listing in missing_cpp_field["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp["localizations"]["en-US"].pop("planned_keyword_targets")
+        failures = []
+        validate_uz_store_targeting(missing_cpp_field, generic_terms, failures)
+        self.assertIn(
+            "app-store-uz-custom-product-page.en-US: expected exactly "
+            f"{sorted(APPLE_CPP_LOCALIZATION_FIELDS)}",
+            failures,
+        )
+
+        extra_google_field = self.metadata()
+        custom_listing = next(
+            listing["custom_listing"]
+            for listing in extra_google_field["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        custom_listing["localizations"]["en-US"]["unsupported"] = True
+        failures = []
+        validate_uz_store_targeting(extra_google_field, generic_terms, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}.en-US: expected exactly "
+            f"{sorted(GOOGLE_CUSTOM_LOCALIZATION_FIELDS)}",
+            failures,
+        )
+
+        empty_google_name = self.metadata()
+        custom_listing = next(
+            listing["custom_listing"]
+            for listing in empty_google_name["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        custom_listing["name"] = "  "
+        failures = []
+        validate_uz_store_targeting(empty_google_name, generic_terms, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: custom listing name must be non-empty",
+            failures,
+        )
+
+        empty_cpp_name = self.metadata()
+        cpp = next(
+            listing["custom_product_page"]
+            for listing in empty_cpp_name["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp["reference_name"] = ""
+        failures = []
+        validate_uz_store_targeting(empty_cpp_name, generic_terms, failures)
+        self.assertIn(
+            "App Store UZ custom product page reference_name must be non-empty",
+            failures,
+        )
+
+    def test_listing_localization_refs_reject_duplicates(self) -> None:
+        failures: list[str] = []
+        validate_listing_localization_refs(
+            "synthetic",
+            ["en-US", "en-US"],
+            {"en-US", "ru-RU"},
+            failures,
+        )
+        self.assertEqual(
+            failures,
+            ["synthetic: localization_refs must be unique"],
+        )
+
+    def test_cpp_upload_assets_are_explicit_per_store_locale(self) -> None:
+        metadata = self.metadata()
+        manifest = self.upload_manifest()
+        failures: list[str] = []
+        validate_cpp_upload_mapping(metadata, manifest, failures)
+        self.assertEqual(failures, [])
+
+        invalid = copy.deepcopy(manifest)
+        cpp_payload = next(
+            payload
+            for payload in invalid["listing_payloads"]
+            if payload["listing_id"] == "app-store-uz-custom-product-page"
+        )
+        cpp_payload["localized_asset_roots"].pop("ru-RU")
+        failures = []
+        validate_cpp_upload_mapping(metadata, invalid, failures)
+        self.assertIn(
+            "App Store UZ upload locale, copy, and localized asset mappings differ",
+            failures,
+        )
+
+        ambiguous = copy.deepcopy(manifest)
+        cpp_payload = next(
+            payload
+            for payload in ambiguous["listing_payloads"]
+            if payload["listing_id"] == "app-store-uz-custom-product-page"
+        )
+        cpp_payload["asset_root"] = cpp_payload["localized_asset_roots"]["en-US"]
+        failures = []
+        validate_cpp_upload_mapping(metadata, ambiguous, failures)
+        self.assertIn(
+            "App Store UZ upload requires exactly one explicit localized asset map",
+            failures,
+        )
+
+        duplicated = copy.deepcopy(manifest)
+        duplicated["listing_payloads"].append(copy.deepcopy(cpp_payload))
+        failures = []
+        validate_cpp_upload_mapping(metadata, duplicated, failures)
+        self.assertIn(
+            "App Store UZ upload requires exactly one CPP payload; found 2",
+            failures,
+        )
+
+    def test_google_uz_country_upload_resolves_copy_and_supported_locales(self) -> None:
+        metadata = self.metadata()
+        manifest = self.upload_manifest()
+        failures: list[str] = []
+        validate_google_uz_upload_mapping(metadata, manifest, failures)
+        self.assertEqual(failures, [])
+        self.assertFalse(
+            any(
+                payload.get("targeting", {}).get("type") == "search-keywords"
+                for payload in manifest["listing_payloads"]
+            )
+        )
+
+        impossible_combination = copy.deepcopy(manifest)
+        country_payload = next(
+            payload
+            for payload in impossible_combination["listing_payloads"]
+            if payload["listing_id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_payload["targeting"]["search_keyword_targets"] = (
+            configured_generic_terms()
+        )
+        failures = []
+        validate_google_uz_upload_mapping(
+            metadata, impossible_combination, failures
+        )
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: upload targeting differs from metadata",
+            failures,
+        )
+
+        unsupported_locale = copy.deepcopy(manifest)
+        country_payload = next(
+            payload
+            for payload in unsupported_locale["listing_payloads"]
+            if payload["listing_id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_payload["store_locales"][0] = "uz-UZ"
+        failures = []
+        validate_google_uz_upload_mapping(metadata, unsupported_locale, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: upload store locales must be en-US "
+            "plus ru-RU",
+            failures,
+        )
+
+        wrong_assets = copy.deepcopy(manifest)
+        country_payload = next(
+            payload
+            for payload in wrong_assets["listing_payloads"]
+            if payload["listing_id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_payload["localized_asset_roots"]["en-US"] = (
+            country_payload["localized_asset_roots"]["ru-RU"]
+        )
+        failures = []
+        validate_google_uz_upload_mapping(metadata, wrong_assets, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: en-US must map to Uzbek assets and "
+            "ru-RU to Russian assets",
+            failures,
+        )
+
+        wrong_copy_sources = copy.deepcopy(manifest)
+        country_payload = next(
+            payload
+            for payload in wrong_copy_sources["listing_payloads"]
+            if payload["listing_id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_payload["full_description_sources"]["en-US"] = (
+            "metadata.localizations.en-US.description"
+        )
+        failures = []
+        validate_google_uz_upload_mapping(metadata, wrong_copy_sources, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: full description source mapping "
+            "must resolve UZ and RU base copy",
+            failures,
+        )
+
+        wrong_copy = copy.deepcopy(metadata)
+        country_listing = next(
+            listing
+            for listing in wrong_copy["listings"]
+            if listing["id"] == GOOGLE_UZ_COUNTRY_LISTING_ID
+        )
+        country_listing["custom_listing"]["localizations"]["en-US"][
+            "full_description"
+        ] += " Changed."
+        failures = []
+        validate_google_uz_upload_mapping(wrong_copy, manifest, failures)
+        self.assertIn(
+            f"{GOOGLE_UZ_COUNTRY_LISTING_ID}: en-US full description does not "
+            "resolve uz-UZ base copy",
+            failures,
+        )
+
+    def test_listing_payload_ids_reject_duplicates(self) -> None:
+        manifest = self.upload_manifest()
+        expected_ids = {
+            listing["id"] for listing in self.metadata()["listings"]
+        }
+        failures: list[str] = []
+        validate_listing_payload_ids(manifest, expected_ids, failures)
+        self.assertEqual(failures, [])
+
+        duplicated = copy.deepcopy(manifest)
+        duplicated["listing_payloads"].append(
+            copy.deepcopy(duplicated["listing_payloads"][0])
+        )
+        failures = []
+        validate_listing_payload_ids(duplicated, expected_ids, failures)
+        self.assertIn(
+            "upload manifest duplicate listing payload ids: ['app-store-default']",
+            failures,
         )
 
     def test_featuring_operational_blockers_use_canonical_gate_ids(self) -> None:

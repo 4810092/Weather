@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from scripts.growth.monitor_public_rank import (
+    _monitor_exit_code,
     _rank_surface,
     evaluate_day,
     parse_apple_chart,
@@ -15,6 +16,47 @@ from scripts.growth.common import GROWTH_ROOT, load_json
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
+
+
+def goal_snapshot() -> dict:
+    queries = ["ob-havo", "pogoda", "weather", "toshkent-ob-havo", "prognoz"]
+    profiles = ["uz-UZ", "ru-UZ", "en-UZ"]
+    google_search = {
+        profile: {
+            query: {
+                "status": "ok",
+                "unique_observed_count": 10,
+                "target_rank": 5
+                if query in {"ob-havo", "pogoda"} and profile != "en-UZ"
+                else None,
+            }
+            for query in queries
+        }
+        for profile in profiles
+    }
+    return {
+        "methodology": {"fixed_query_ids": queries},
+        "surfaces": {
+            "apple": {
+                "category": {
+                    "status": "ok",
+                    "unique_observed_count": 10,
+                    "target_rank": 7,
+                }
+            },
+            "google": {
+                "category": {
+                    profile: {
+                        "status": "ok",
+                        "unique_observed_count": 10,
+                        "target_rank": 8,
+                    }
+                    for profile in profiles
+                },
+                "search": google_search,
+            },
+        }
+    }
 
 
 class PublicRankParserTest(unittest.TestCase):
@@ -95,43 +137,8 @@ class PublicRankParserTest(unittest.TestCase):
 
     def test_daily_goal_requires_category_and_query_quorum(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")
-        queries = ["ob-havo", "pogoda", "weather", "toshkent-ob-havo", "prognoz"]
-        profiles = ["uz-UZ", "ru-UZ", "en-UZ"]
-        google_search = {
-            profile: {
-                query: {
-                    "status": "ok",
-                    "unique_observed_count": 10,
-                    "target_rank": 5
-                    if query in {"ob-havo", "pogoda"} and profile != "en-UZ"
-                    else None,
-                }
-                for query in queries
-            }
-            for profile in profiles
-        }
-        snapshot = {
-            "surfaces": {
-                "apple": {
-                    "category": {
-                        "status": "ok",
-                        "unique_observed_count": 10,
-                        "target_rank": 7,
-                    }
-                },
-                "google": {
-                    "category": {
-                        profile: {
-                            "status": "ok",
-                            "unique_observed_count": 10,
-                            "target_rank": 8,
-                        }
-                        for profile in profiles
-                    },
-                    "search": google_search,
-                },
-            }
-        }
+        snapshot = goal_snapshot()
+        google_search = snapshot["surfaces"]["google"]["search"]
         result = evaluate_day(snapshot, framework)
         self.assertEqual(result["status"], "pass")
         self.assertEqual(result["google_generic_top10_query_count"], 2)
@@ -146,9 +153,158 @@ class PublicRankParserTest(unittest.TestCase):
         snapshot["surfaces"]["google"]["category"]["uz-UZ"][
             "unique_observed_count"
         ] = 10
+        google_search["uz-UZ"]["weather"]["target_rank"] = 5
         google_search["en-UZ"]["weather"]["status"] = "error"
         result = evaluate_day(snapshot, framework)
+        self.assertEqual(result["status"], "pass")
+        self.assertEqual(result["google_generic_query_status"], "pass")
+        self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
+        self.assertIn("weather", result["google_generic_unresolved_queries"])
+
+    def test_generic_quorum_is_fail_when_only_one_query_can_still_qualify(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        snapshot = goal_snapshot()
+        google_search = snapshot["surfaces"]["google"]["search"]
+        for searches in google_search.values():
+            for surface in searches.values():
+                surface["target_rank"] = None
+        google_search["uz-UZ"]["weather"]["target_rank"] = 5
+        google_search["en-UZ"]["weather"]["status"] = "error"
+
+        result = evaluate_day(snapshot, framework)
+
+        self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
+        self.assertEqual(result["google_generic_query_status"], "fail")
+        self.assertEqual(result["status"], "fail")
+        self.assertTrue(result["complete"])
+
+    def test_generic_quorum_stays_unknown_when_missing_evidence_can_change_result(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        snapshot = goal_snapshot()
+        google_search = snapshot["surfaces"]["google"]["search"]
+        for profile, searches in google_search.items():
+            for query, surface in searches.items():
+                surface["target_rank"] = (
+                    5 if query == "ob-havo" and profile != "en-UZ" else None
+                )
+        google_search["uz-UZ"]["weather"]["target_rank"] = 5
+        google_search["en-UZ"]["weather"]["status"] = "error"
+
+        result = evaluate_day(snapshot, framework)
+
+        self.assertEqual(result["google_generic_top10_queries"], ["ob-havo"])
+        self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
+        self.assertEqual(result["google_generic_query_status"], "unknown")
         self.assertEqual(result["status"], "unknown")
+        self.assertFalse(result["complete"])
+
+    def test_entirely_missing_configured_queries_stay_unknown(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        snapshot = goal_snapshot()
+        google_search = snapshot["surfaces"]["google"]["search"]
+        for profile in google_search:
+            google_search[profile] = {"ob-havo": google_search[profile]["ob-havo"]}
+
+        result = evaluate_day(snapshot, framework)
+
+        self.assertEqual(result["google_generic_top10_queries"], ["ob-havo"])
+        self.assertEqual(result["google_query_statuses"]["pogoda"], "unknown")
+        self.assertEqual(result["google_query_unknown_profile_counts"]["pogoda"], 3)
+        self.assertEqual(result["google_generic_query_status"], "unknown")
+        self.assertEqual(result["status"], "unknown")
+        self.assertFalse(result["complete"])
+
+    def test_legacy_snapshot_infers_expected_queries_from_present_surfaces(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        snapshot = goal_snapshot()
+        snapshot.pop("methodology")
+
+        result = evaluate_day(snapshot, framework)
+
+        self.assertEqual(result["status"], "pass")
+        self.assertEqual(result["google_generic_top10_query_count"], 2)
+
+    def test_malformed_methodology_falls_back_without_crashing(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        snapshot = goal_snapshot()
+        snapshot["methodology"] = None
+
+        result = evaluate_day(snapshot, framework)
+
+        self.assertEqual(result["status"], "pass")
+        self.assertEqual(result["google_generic_top10_query_count"], 2)
+
+    def test_non_positive_or_boolean_ranks_never_count_as_top10(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        for malformed_rank in (True, 0, -1):
+            with self.subTest(malformed_rank=malformed_rank):
+                snapshot = goal_snapshot()
+                snapshot["surfaces"]["apple"]["category"][
+                    "target_rank"
+                ] = malformed_rank
+
+                result = evaluate_day(snapshot, framework)
+
+                self.assertEqual(result["apple_weather_chart_status"], "unknown")
+                self.assertEqual(result["status"], "unknown")
+                self.assertFalse(result["complete"])
+
+    def test_malformed_query_rank_is_unknown_not_qualifying(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        for malformed_rank in (True, 0, -1):
+            with self.subTest(malformed_rank=malformed_rank):
+                snapshot = goal_snapshot()
+                google_search = snapshot["surfaces"]["google"]["search"]
+                google_search["ru-UZ"]["ob-havo"]["target_rank"] = malformed_rank
+
+                result = evaluate_day(snapshot, framework)
+
+                self.assertEqual(result["google_query_statuses"]["ob-havo"], "unknown")
+                self.assertNotIn("ob-havo", result["google_generic_top10_queries"])
+
+    def test_monitor_exit_ignores_auxiliary_diagnostic_incompleteness(self) -> None:
+        snapshot = {
+            "capture_complete": False,
+            "diagnostic_capture_complete": False,
+            "evaluation": {"status": "fail"},
+        }
+        self.assertEqual(_monitor_exit_code(snapshot), 0)
+        snapshot["evaluation"]["status"] = "pass"
+        self.assertEqual(_monitor_exit_code(snapshot), 0)
+        snapshot["evaluation"]["status"] = "unknown"
+        self.assertEqual(_monitor_exit_code(snapshot), 1)
+        for malformed in (
+            {},
+            {"evaluation": {}},
+            {"evaluation": {"status": "bogus"}},
+            {"evaluation": None},
+        ):
+            with self.subTest(malformed=malformed):
+                self.assertEqual(_monitor_exit_code(malformed), 1)
+
+    def test_proven_required_failure_wins_over_another_unknown_surface(self) -> None:
+        framework = load_json(GROWTH_ROOT / "kpi-framework.json")
+        cases = ("apple", "google-category")
+        for failure_component in cases:
+            with self.subTest(failure_component=failure_component):
+                snapshot = goal_snapshot()
+                apple = snapshot["surfaces"]["apple"]["category"]
+                google_categories = snapshot["surfaces"]["google"]["category"]
+                if failure_component == "apple":
+                    apple["target_rank"] = 50
+                    google_categories["uz-UZ"]["status"] = "error"
+                else:
+                    google_categories["uz-UZ"]["target_rank"] = 50
+                    apple["status"] = "error"
+
+                result = evaluate_day(snapshot, framework)
+
+                self.assertEqual(result["status"], "fail")
+                self.assertTrue(result["complete"])
+                self.assertEqual(
+                    _monitor_exit_code({"evaluation": result}),
+                    0,
+                )
 
     def test_daily_goal_rejects_a_minimum_depth_below_ten(self) -> None:
         framework = copy.deepcopy(load_json(GROWTH_ROOT / "kpi-framework.json"))

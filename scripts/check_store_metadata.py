@@ -44,6 +44,54 @@ LOCALIZATION_LIMITS = {
     "description": 4000,
     "release_notes": 500,
 }
+APPLE_UTF8_BYTE_FIELDS = frozenset({"keywords"})
+CPP_LOCALIZED_ASSET_ROOTS = {
+    "en-US": "store/creatives/growth-2026-08/app-store/uz-UZ",
+    "ru-RU": "store/creatives/growth-2026-08/app-store/ru-RU",
+}
+APPLE_CPP_ASSIGNMENT_SEQUENCE = [
+    "submit-base-version-keywords",
+    "wait-for-base-version-approval",
+    "assign-custom-product-page-keywords",
+]
+APPLE_CPP_FIELDS = frozenset(
+    {
+        "reference_name",
+        "status",
+        "audience_locale",
+        "store_locale_fallback",
+        "keyword_assignment_gate",
+        "localizations",
+    }
+)
+APPLE_CPP_LOCALIZATION_FIELDS = frozenset(
+    {"audience_locale", "promotional_text", "planned_keyword_targets"}
+)
+GOOGLE_UZ_COUNTRY_LISTING_ID = "google-play-uz-country-listing"
+GOOGLE_CUSTOM_LISTING_FIELDS = frozenset(
+    {"name", "status", "default_store_locale", "targeting", "localizations"}
+)
+GOOGLE_CUSTOM_LOCALIZATION_FIELDS = frozenset(
+    {
+        "audience_locale",
+        "store_locale_fallback",
+        "title",
+        "short_description",
+        "full_description",
+    }
+)
+GOOGLE_UZ_LOCALIZED_ASSET_ROOTS = {
+    "en-US": "store/creatives/growth-2026-08/google-play/uz-UZ",
+    "ru-RU": "store/creatives/growth-2026-08/google-play/ru-RU",
+}
+GOOGLE_UZ_FEATURE_GRAPHICS = {
+    "en-US": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
+    "ru-RU": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg",
+}
+GOOGLE_UZ_FULL_DESCRIPTION_SOURCES = {
+    "en-US": "metadata.localizations.uz-UZ.description",
+    "ru-RU": "metadata.localizations.ru-RU.description",
+}
 LISTING_FIELDS = {
     "id",
     "platform",
@@ -63,6 +111,8 @@ PLATFORMS = {"app-store", "google-play"}
 LISTING_TYPES = {"default", "custom-listing", "custom-product-page"}
 UZ_TITLE = "Nimbo: Ob-havo va prognoz"
 UZ_SHORT = "Tashqariga chiqish uchun eng yaxshi vaqtni toping."
+RU_TITLE = "Nimbo: Погода и прогноз"
+RU_SHORT = "Найдите лучшее время, чтобы выйти на улицу."
 EXPECTED_PUBLIC_URLS = {
     "marketing": "https://nimbo.uz/",
     "support": "https://nimbo.uz/support/",
@@ -88,6 +138,7 @@ def validate_text_fields(
     failures: list[str],
     *,
     exact: bool = True,
+    utf8_byte_fields: frozenset[str] = frozenset(),
 ) -> None:
     if not isinstance(fields, dict):
         failures.append(f"{owner}: expected an object")
@@ -102,8 +153,482 @@ def validate_text_fields(
         if not isinstance(value, str) or not value.strip():
             failures.append(f"{owner}:{field}: empty or not a string")
             continue
-        if len(value) > limits[field]:
-            failures.append(f"{owner}:{field}: {len(value)} > {limits[field]}")
+        measured_length = (
+            len(value.encode("utf-8")) if field in utf8_byte_fields else len(value)
+        )
+        if measured_length > limits[field]:
+            unit = " UTF-8 bytes" if field in utf8_byte_fields else " characters"
+            failures.append(
+                f"{owner}:{field}: {measured_length}{unit} > {limits[field]}"
+            )
+
+
+def validate_listing_localization_refs(
+    owner: str,
+    refs: object,
+    known_locales: set[str],
+    failures: list[str],
+) -> None:
+    if (
+        not isinstance(refs, list)
+        or not refs
+        or not all(isinstance(ref, str) and ref for ref in refs)
+    ):
+        failures.append(f"{owner}: localization_refs contain unknown or empty values")
+        return
+    if len(refs) != len(set(refs)):
+        failures.append(f"{owner}: localization_refs must be unique")
+    if not set(refs).issubset(known_locales):
+        failures.append(f"{owner}: localization_refs contain unknown or empty values")
+
+
+def configured_generic_terms(root: Path = ROOT) -> list[str]:
+    config = json.loads((root / "growth/config.json").read_text(encoding="utf-8"))
+    return [
+        query["term"] for query in config["queries"] if query.get("branded") is False
+    ]
+
+
+def apple_keyword_tokens(value: object) -> set[str]:
+    if not isinstance(value, str):
+        return set()
+    return {token.strip().casefold() for token in value.split(",") if token.strip()}
+
+
+def validate_uz_store_targeting(
+    metadata: object,
+    generic_terms: list[str],
+    failures: list[str],
+) -> None:
+    if not isinstance(metadata, dict):
+        failures.append("UZ store targeting: metadata must be an object")
+        return
+    listings = metadata.get("listings", [])
+    if not isinstance(listings, list):
+        failures.append("UZ store targeting: listings must be an array")
+        return
+    listing_by_id = {
+        listing.get("id"): listing
+        for listing in listings
+        if isinstance(listing, dict) and isinstance(listing.get("id"), str)
+    }
+    expected_terms = [term for term in generic_terms if isinstance(term, str)]
+    expected_folded = {term.casefold() for term in expected_terms}
+
+    google_custom_listing_ids = {
+        listing.get("id")
+        for listing in listings
+        if isinstance(listing, dict)
+        and listing.get("platform") == "google-play"
+        and listing.get("listing_type") == "custom-listing"
+    }
+    if google_custom_listing_ids != {GOOGLE_UZ_COUNTRY_LISTING_ID}:
+        failures.append(
+            "Publishable Google metadata must contain only the UZ country custom listing"
+        )
+    base_localizations = metadata.get("localizations", {})
+    if not isinstance(base_localizations, dict):
+        base_localizations = {}
+    uz_base = base_localizations.get("uz-UZ", {})
+    ru_base = base_localizations.get("ru-RU", {})
+    expected_google_locales = {
+        "en-US": {
+            "audience_locale": "uz-UZ",
+            "store_locale_fallback": "en-US",
+            "title": UZ_TITLE,
+            "short_description": UZ_SHORT,
+            "full_description": (
+                uz_base.get("description") if isinstance(uz_base, dict) else None
+            ),
+        },
+        "ru-RU": {
+            "audience_locale": "ru-RU",
+            "store_locale_fallback": "ru-RU",
+            "title": RU_TITLE,
+            "short_description": RU_SHORT,
+            "full_description": (
+                ru_base.get("description") if isinstance(ru_base, dict) else None
+            ),
+        },
+    }
+    listing_id = GOOGLE_UZ_COUNTRY_LISTING_ID
+    listing = listing_by_id.get(listing_id, {})
+    if not isinstance(listing, dict):
+        listing = {}
+    if (
+        listing.get("platform") != "google-play"
+        or listing.get("listing_type") != "custom-listing"
+        or listing.get("storefront") != "UZ"
+    ):
+        failures.append(f"{listing_id}: platform, type, or storefront differs")
+    if listing.get("localization_refs") != ["en-US", "ru-RU"]:
+        failures.append(f"{listing_id}: store locales must be en-US plus ru-RU")
+    custom_listing = listing.get("custom_listing", {})
+    if (
+        not isinstance(custom_listing, dict)
+        or set(custom_listing) != GOOGLE_CUSTOM_LISTING_FIELDS
+    ):
+        failures.append(f"{listing_id}: custom listing fields must be exact and explicit")
+        custom_listing = {}
+    custom_listing_name = custom_listing.get("name")
+    if not isinstance(custom_listing_name, str) or not custom_listing_name.strip():
+        failures.append(f"{listing_id}: custom listing name must be non-empty")
+    if custom_listing.get("status") != "draft":
+        failures.append(f"{listing_id}: custom listing must remain a draft")
+    if custom_listing.get("default_store_locale") != "en-US":
+        failures.append(f"{listing_id}: default_store_locale must be en-US")
+    if custom_listing.get("targeting") != {
+        "type": "country",
+        "country_targets": ["UZ"],
+    }:
+        failures.append(f"{listing_id}: targeting must be country UZ only")
+    custom_localizations = custom_listing.get("localizations", {})
+    if custom_localizations != expected_google_locales:
+        failures.append(
+            f"{listing_id}: localized copy or audience/store-locale mapping differs"
+        )
+    if isinstance(custom_localizations, dict):
+        for store_locale, payload in custom_localizations.items():
+            if not isinstance(payload, dict):
+                failures.append(f"{listing_id}.{store_locale}: expected an object")
+                continue
+            if set(payload) != GOOGLE_CUSTOM_LOCALIZATION_FIELDS:
+                failures.append(
+                    f"{listing_id}.{store_locale}: expected exactly "
+                    f"{sorted(GOOGLE_CUSTOM_LOCALIZATION_FIELDS)}"
+                )
+            validate_text_fields(
+                f"{listing_id}.{store_locale}",
+                {
+                    "title": payload.get("title"),
+                    "short_description": payload.get("short_description"),
+                    "full_description": payload.get("full_description"),
+                },
+                {"title": 30, "short_description": 80, "full_description": 4000},
+                failures,
+            )
+
+    apple_listing = listing_by_id.get("app-store-uz-custom-product-page", {})
+    apple_cpp = (
+        apple_listing.get("custom_product_page", {})
+        if isinstance(apple_listing, dict)
+        else {}
+    )
+    if not isinstance(apple_cpp, dict) or set(apple_cpp) != APPLE_CPP_FIELDS:
+        failures.append(
+            "App Store UZ custom product page fields must be exact and explicit"
+        )
+        apple_cpp = {}
+    reference_name = apple_cpp.get("reference_name")
+    if not isinstance(reference_name, str) or not reference_name.strip():
+        failures.append(
+            "App Store UZ custom product page reference_name must be non-empty"
+        )
+    expected_assignment_gate = {
+        "status": "blocked-pending-base-version-approval",
+        "candidate_source_version": metadata.get("product", {}).get("release"),
+        "required_sequence": APPLE_CPP_ASSIGNMENT_SEQUENCE,
+    }
+    if apple_cpp.get("keyword_assignment_gate") != expected_assignment_gate:
+        failures.append(
+            "App Store UZ custom product page keyword assignment must remain blocked "
+            "until the candidate base version is approved"
+        )
+    cpp_localizations = apple_cpp.get("localizations", {})
+    if not isinstance(cpp_localizations, dict) or set(cpp_localizations) != {
+        "en-US",
+        "ru-RU",
+    }:
+        failures.append(
+            "App Store UZ custom product page requires explicit en-US and ru-RU "
+            "localization payloads"
+        )
+        return
+
+    expected_audience_locales = {"en-US": "uz-UZ", "ru-RU": "ru-RU"}
+    targeted_folded: set[str] = set()
+    for store_locale, payload in cpp_localizations.items():
+        owner = f"app-store-uz-custom-product-page.{store_locale}"
+        if not isinstance(payload, dict):
+            failures.append(f"{owner}: expected an object")
+            continue
+        if set(payload) != APPLE_CPP_LOCALIZATION_FIELDS:
+            failures.append(
+                f"{owner}: expected exactly {sorted(APPLE_CPP_LOCALIZATION_FIELDS)}"
+            )
+        if payload.get("audience_locale") != expected_audience_locales[store_locale]:
+            failures.append(f"{owner}: audience locale mapping differs")
+        validate_text_fields(
+            owner,
+            {"promotional_text": payload.get("promotional_text")},
+            {"promotional_text": 170},
+            failures,
+        )
+        targets = payload.get("planned_keyword_targets")
+        if (
+            not isinstance(targets, list)
+            or not targets
+            or not all(isinstance(target, str) and target.strip() for target in targets)
+        ):
+            failures.append(
+                f"{owner}: planned_keyword_targets must be a non-empty string list"
+            )
+            continue
+        normalized_targets = {target.casefold() for target in targets}
+        if len(normalized_targets) != len(targets):
+            failures.append(
+                f"{owner}: planned_keyword_targets must be unique ignoring case"
+            )
+        base_payload = (
+            base_localizations.get(store_locale, {})
+            if isinstance(base_localizations, dict)
+            else {}
+        )
+        base_keywords = apple_keyword_tokens(
+            base_payload.get("keywords") if isinstance(base_payload, dict) else None
+        )
+        missing_from_candidate_pool = normalized_targets - base_keywords
+        if missing_from_candidate_pool:
+            failures.append(
+                f"{owner}: planned targets missing from the candidate base Apple "
+                f"keyword pool: {sorted(missing_from_candidate_pool)}"
+            )
+        targeted_folded.update(normalized_targets)
+    if targeted_folded != expected_folded:
+        failures.append(
+            "App Store UZ custom product page planned keyword union must exactly match "
+            "the configured generic queries"
+        )
+
+
+def validate_cpp_upload_mapping(
+    metadata: object,
+    upload_manifest: object,
+    failures: list[str],
+    *,
+    root: Path = ROOT,
+) -> None:
+    if not isinstance(metadata, dict) or not isinstance(upload_manifest, dict):
+        failures.append("App Store CPP upload mapping requires object inputs")
+        return
+    listings = metadata.get("listings", [])
+    if not isinstance(listings, list):
+        failures.append("App Store CPP upload mapping requires a listings array")
+        return
+    cpp_listing = next(
+        (
+            listing
+            for listing in listings
+            if isinstance(listing, dict)
+            and listing.get("id") == "app-store-uz-custom-product-page"
+        ),
+        {},
+    )
+    payloads = upload_manifest.get("listing_payloads", [])
+    if not isinstance(payloads, list):
+        failures.append("App Store CPP upload mapping requires a payload array")
+        return
+    cpp_uploads = [
+        payload
+        for payload in payloads
+        if isinstance(payload, dict)
+        and payload.get("listing_id") == "app-store-uz-custom-product-page"
+    ]
+    if len(cpp_uploads) != 1:
+        failures.append(
+            "App Store UZ upload requires exactly one CPP payload; "
+            f"found {len(cpp_uploads)}"
+        )
+    cpp_upload = cpp_uploads[0] if cpp_uploads else {}
+    expected_upload_fields = {
+        "listing_id",
+        "store_locales",
+        "audience_locale",
+        "store_locale_fallback",
+        "keyword_assignment_gate",
+        "localized_asset_roots",
+    }
+    if set(cpp_upload) != expected_upload_fields:
+        failures.append(
+            "App Store UZ upload requires exactly one explicit localized asset map"
+        )
+    cpp_metadata = (
+        cpp_listing.get("custom_product_page", {})
+        if isinstance(cpp_listing, dict)
+        else {}
+    )
+    if not isinstance(cpp_metadata, dict):
+        cpp_metadata = {}
+    if cpp_upload.get("keyword_assignment_gate") != cpp_metadata.get(
+        "keyword_assignment_gate"
+    ):
+        failures.append(
+            "App Store UZ upload keyword assignment gate differs from metadata"
+        )
+    metadata_locales = set(cpp_metadata.get("localizations", {}))
+    upload_locales = set(cpp_upload.get("store_locales", []))
+    localized_asset_roots = cpp_upload.get("localized_asset_roots")
+    if not isinstance(localized_asset_roots, dict):
+        failures.append(
+            "App Store UZ upload requires localized_asset_roots for every store locale"
+        )
+        return
+    if (
+        metadata_locales != upload_locales
+        or set(localized_asset_roots) != upload_locales
+    ):
+        failures.append(
+            "App Store UZ upload locale, copy, and localized asset mappings differ"
+        )
+    if localized_asset_roots != CPP_LOCALIZED_ASSET_ROOTS:
+        failures.append(
+            "App Store UZ upload must map en-US to Uzbek assets and ru-RU to Russian assets"
+        )
+    for locale, relative in localized_asset_roots.items():
+        if not isinstance(relative, str) or not (root / relative).is_dir():
+            failures.append(
+                f"App Store UZ upload: missing localized asset root {locale}: {relative}"
+            )
+
+
+def validate_google_uz_upload_mapping(
+    metadata: object,
+    upload_manifest: object,
+    failures: list[str],
+    *,
+    root: Path = ROOT,
+) -> None:
+    if not isinstance(metadata, dict) or not isinstance(upload_manifest, dict):
+        failures.append("Google UZ upload mapping requires object inputs")
+        return
+    listings = metadata.get("listings", [])
+    payloads = upload_manifest.get("listing_payloads", [])
+    if not isinstance(listings, list) or not isinstance(payloads, list):
+        failures.append("Google UZ upload mapping requires listing and payload arrays")
+        return
+    listing_by_id = {
+        listing.get("id"): listing
+        for listing in listings
+        if isinstance(listing, dict) and isinstance(listing.get("id"), str)
+    }
+    expected_fields = {
+        "listing_id",
+        "store_locales",
+        "default_store_locale",
+        "targeting",
+        "full_description_sources",
+        "localized_asset_roots",
+        "feature_graphics",
+    }
+    listing_id = GOOGLE_UZ_COUNTRY_LISTING_ID
+    matched_payloads = [
+        payload
+        for payload in payloads
+        if isinstance(payload, dict) and payload.get("listing_id") == listing_id
+    ]
+    if len(matched_payloads) != 1:
+        failures.append(
+            f"{listing_id}: upload requires exactly one payload; "
+            f"found {len(matched_payloads)}"
+        )
+    payload = matched_payloads[0] if matched_payloads else {}
+    if set(payload) != expected_fields:
+        failures.append(
+            f"{listing_id}: upload fields must use explicit locale, copy, and targeting maps"
+        )
+    if payload.get("store_locales") != ["en-US", "ru-RU"]:
+        failures.append(f"{listing_id}: upload store locales must be en-US plus ru-RU")
+    if payload.get("default_store_locale") != "en-US":
+        failures.append(f"{listing_id}: upload default_store_locale must be en-US")
+    listing = listing_by_id.get(listing_id, {})
+    custom_listing = (
+        listing.get("custom_listing", {}) if isinstance(listing, dict) else {}
+    )
+    expected_targeting = (
+        custom_listing.get("targeting", {})
+        if isinstance(custom_listing, dict)
+        else {}
+    )
+    if payload.get("targeting") != expected_targeting:
+        failures.append(f"{listing_id}: upload targeting differs from metadata")
+    if payload.get("full_description_sources") != GOOGLE_UZ_FULL_DESCRIPTION_SOURCES:
+        failures.append(
+            f"{listing_id}: full description source mapping must resolve UZ and RU base copy"
+        )
+    metadata_localizations = metadata.get("localizations", {})
+    custom_localizations = (
+        custom_listing.get("localizations", {})
+        if isinstance(custom_listing, dict)
+        else {}
+    )
+    source_locales = {"en-US": "uz-UZ", "ru-RU": "ru-RU"}
+    for store_locale, source_locale in source_locales.items():
+        source_payload = (
+            metadata_localizations.get(source_locale, {})
+            if isinstance(metadata_localizations, dict)
+            else {}
+        )
+        store_payload = (
+            custom_localizations.get(store_locale, {})
+            if isinstance(custom_localizations, dict)
+            else {}
+        )
+        if (
+            not isinstance(source_payload, dict)
+            or not isinstance(store_payload, dict)
+            or store_payload.get("full_description")
+            != source_payload.get("description")
+        ):
+            failures.append(
+                f"{listing_id}: {store_locale} full description does not resolve "
+                f"{source_locale} base copy"
+            )
+    if payload.get("localized_asset_roots") != GOOGLE_UZ_LOCALIZED_ASSET_ROOTS:
+        failures.append(
+            f"{listing_id}: en-US must map to Uzbek assets and ru-RU to Russian assets"
+        )
+    if payload.get("feature_graphics") != GOOGLE_UZ_FEATURE_GRAPHICS:
+        failures.append(f"{listing_id}: localized Google Play feature graphics differ")
+    for locale, relative in GOOGLE_UZ_LOCALIZED_ASSET_ROOTS.items():
+        if not (root / relative).is_dir():
+            failures.append(
+                f"{listing_id}: missing localized asset root {locale}: {relative}"
+            )
+    for locale, relative in GOOGLE_UZ_FEATURE_GRAPHICS.items():
+        if not (root / relative).is_file():
+            failures.append(
+                f"{listing_id}: missing feature graphic {locale}: {relative}"
+            )
+
+
+def validate_listing_payload_ids(
+    upload_manifest: object,
+    expected_listing_ids: set[str],
+    failures: list[str],
+) -> None:
+    if not isinstance(upload_manifest, dict):
+        failures.append("upload manifest must be an object")
+        return
+    payloads = upload_manifest.get("listing_payloads", [])
+    if not isinstance(payloads, list):
+        failures.append("upload manifest listing_payloads must be an array")
+        return
+    payload_ids = [
+        payload.get("listing_id")
+        for payload in payloads
+        if isinstance(payload, dict)
+    ]
+    duplicates = sorted(
+        {
+            listing_id
+            for listing_id in payload_ids
+            if isinstance(listing_id, str) and payload_ids.count(listing_id) > 1
+        }
+    )
+    if duplicates:
+        failures.append(f"upload manifest duplicate listing payload ids: {duplicates}")
+    if set(payload_ids) != expected_listing_ids:
+        failures.append("upload manifest must resolve every listing exactly once")
 
 
 def read_source_integer(
@@ -398,7 +923,13 @@ def main() -> int:
             f"extra={sorted(set(localizations) - EXPECTED_LOCALES)}"
         )
     for locale, fields in localizations.items():
-        validate_text_fields(locale, fields, LOCALIZATION_LIMITS, failures)
+        validate_text_fields(
+            locale,
+            fields,
+            LOCALIZATION_LIMITS,
+            failures,
+            utf8_byte_fields=APPLE_UTF8_BYTE_FIELDS,
+        )
         if isinstance(fields, dict):
             lowered = " ".join(str(value) for value in fields.values()).lower()
             for forbidden in ("ai weather", "most accurate", "самый точный"):
@@ -520,14 +1051,7 @@ def main() -> int:
         if listing["listing_type"] not in LISTING_TYPES:
             failures.append(f"{owner}: invalid listing_type")
         refs = listing["localization_refs"]
-        if (
-            not isinstance(refs, list)
-            or not refs
-            or not set(refs).issubset(localizations)
-        ):
-            failures.append(
-                f"{owner}: localization_refs contain unknown or empty values"
-            )
+        validate_listing_localization_refs(owner, refs, set(localizations), failures)
         for locale, overrides in listing["overrides"].items():
             if locale not in refs:
                 failures.append(f"{owner}: override locale {locale} is not referenced")
@@ -537,6 +1061,7 @@ def main() -> int:
                 LOCALIZATION_LIMITS,
                 failures,
                 exact=False,
+                utf8_byte_fields=APPLE_UTF8_BYTE_FIELDS,
             )
         if listing["creative_set"] not in creative_sets:
             failures.append(f"{owner}: unknown creative_set")
@@ -590,40 +1115,14 @@ def main() -> int:
             "app-store-default must preserve the global title Nimbo Weather"
         )
 
-    google_uz = listing_by_id.get("google-play-uz-custom-listing", {})
-    custom_listing = google_uz.get("custom_listing", {})
-    if google_uz.get("storefront") != "UZ" or custom_listing.get("country_targets") != [
-        "UZ"
-    ]:
-        failures.append("google-play-uz-custom-listing must target only UZ")
-    custom_locales = custom_listing.get("localizations", {})
-    if set(custom_locales) != {"uz-UZ", "ru-RU"}:
-        failures.append(
-            "Google UZ custom listing must contain separate Uzbek and Russian copy"
-        )
-    else:
-        uz_copy = custom_locales["uz-UZ"]
-        ru_copy = custom_locales["ru-RU"]
-        if (
-            uz_copy.get("title") != UZ_TITLE
-            or uz_copy.get("short_description") != UZ_SHORT
-        ):
-            failures.append(
-                "Google UZ title or short description differs from the approved copy"
-            )
-        for locale, copy in (("uz-UZ", uz_copy), ("ru-RU", ru_copy)):
-            validate_text_fields(
-                f"google-play-uz-custom-listing.{locale}",
-                {
-                    "title": copy.get("title"),
-                    "short_description": copy.get("short_description"),
-                },
-                {"title": 30, "short_description": 80},
-                failures,
-            )
-
     app_uz = listing_by_id.get("app-store-uz-custom-product-page", {})
     cpp = app_uz.get("custom_product_page", {})
+    if not isinstance(cpp, dict) or set(cpp) != APPLE_CPP_FIELDS:
+        failures.append(
+            "App Store UZ custom product page requires exact localized copy and "
+            "keyword fields"
+        )
+        cpp = {}
     if app_uz.get("storefront") != "UZ" or cpp.get("status") != "draft":
         failures.append("App Store UZ custom product page must remain a UZ draft")
     if (
@@ -633,12 +1132,7 @@ def main() -> int:
         failures.append(
             "App Store UZ custom product page must record the unsupported-locale fallback"
         )
-    if len(cpp.get("promotional_text", "")) > 170:
-        failures.append(
-            "App Store custom product page promotional text exceeds 170 characters"
-        )
-    if not cpp.get("keyword_targets"):
-        failures.append("App Store UZ custom product page requires keyword targets")
+    validate_uz_store_targeting(metadata, configured_generic_terms(), failures)
 
     upload_manifest_path = ROOT / f"store/upload-manifest-{product_release}.json"
     if not isinstance(product_release, str) or not upload_manifest_path.is_file():
@@ -654,14 +1148,10 @@ def main() -> int:
         if upload_manifest.get("metadata") != "store/metadata.json":
             failures.append("upload manifest must reference store/metadata.json")
         validate_upload_artifacts(upload_manifest, product_release, failures)
+        validate_cpp_upload_mapping(metadata, upload_manifest, failures)
+        validate_google_uz_upload_mapping(metadata, upload_manifest, failures)
         payloads = upload_manifest.get("listing_payloads", [])
-        payload_ids = {
-            payload.get("listing_id")
-            for payload in payloads
-            if isinstance(payload, dict)
-        }
-        if payload_ids != set(listing_by_id):
-            failures.append("upload manifest must resolve every listing exactly once")
+        validate_listing_payload_ids(upload_manifest, set(listing_by_id), failures)
         for payload in payloads:
             if not isinstance(payload, dict):
                 failures.append("upload manifest listing payload must be an object")
@@ -707,14 +1197,6 @@ def main() -> int:
         ):
             failures.append(
                 "Google Play default upload must use the en-US feature graphic"
-            )
-        play_uz = payload_by_id.get("google-play-uz-custom-listing", {})
-        if play_uz.get("feature_graphics") != {
-            "uz-UZ": "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg",
-            "ru-RU": "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg",
-        }:
-            failures.append(
-                "Google Play UZ upload must map the UZ and RU feature graphics"
             )
     if failures:
         print("Store metadata check failed:", file=sys.stderr)
