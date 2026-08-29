@@ -239,6 +239,7 @@ def validate_content_calendar(
     if not required_publication_gates:
         raise ValueError("publication gate registry cannot be empty")
     blockers_by_article: dict[str, tuple[str, ...]] = {}
+    planned_dates_by_article: dict[str, dt.date] = {}
     for row in rows:
         article = article_by_id[row["content_id"]]
         locale = row["locale"]
@@ -298,11 +299,24 @@ def validate_content_calendar(
                     f"article {article['id']}: publication blocked by {failing}"
                 )
         try:
-            dt.date.fromisoformat(row.get("planned_date", ""))
-        except ValueError:
+            planned_date = dt.date.fromisoformat(row.get("planned_date", ""))
+        except (TypeError, ValueError):
             raise ValueError(
                 f"calendar {article['id']}.{locale}: planned_date must be ISO"
             ) from None
+        if planned_date.strftime("%Y-%m") != article["target_month"]:
+            raise ValueError(
+                f"calendar {article['id']}.{locale}: planned_date differs from "
+                "target_month"
+            )
+        previous_date = planned_dates_by_article.setdefault(
+            article["id"],
+            planned_date,
+        )
+        if previous_date != planned_date:
+            raise ValueError(
+                f"calendar {article['id']}: localized planned dates differ"
+            )
 
 
 def asset_prefix(output: Path, current: Path) -> str:
@@ -620,6 +634,12 @@ def load_articles(*, include_drafts: bool) -> list[dict[str, object]]:
                 ) from None
         elif published_on is not None:
             raise ValueError(f"article {article_id}: blocked draft cannot be dated")
+        target_month = article.get("target_month")
+        if not isinstance(target_month, str) or not re.fullmatch(
+            r"\d{4}-(?:0[1-9]|1[0-2])",
+            target_month,
+        ):
+            raise ValueError(f"article {article_id}: target_month must be YYYY-MM")
         sources = article.get("source_urls")
         if not isinstance(sources, list) or not sources:
             raise ValueError(f"article {article_id}: source URLs are required")

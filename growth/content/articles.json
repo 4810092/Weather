@@ -21,7 +21,7 @@
           "sections": [
             {
               "title": "Bir raqam emas, kun yo‘nalishini ko‘ring",
-              "text": "Avval joriy va his qilinadigan haroratni tekshiring, so‘ng 24 soatlik vaqt chizig‘ida keyingi soatlar qanday o‘zgarishini ko‘ring. O‘n kunlik kartalarda har bir kun uchun maksimal UV ham ko‘rsatiladi. Bu ma’lumotlar biror soatni mutlaq xavfsiz deb e’lon qilmaydi; ular variantlarni bir xil ekranda solishtirish uchun kontekstdir."
+              "text": "Avval joriy va his qilinadigan haroratni tekshiring, so‘ng «24 soat oldin · hozir · 24 soat keyin» markazlashtirilgan vaqt chizig‘ida keyingi soatlar qanday o‘zgarishini ko‘ring. O‘n kunlik kartalarda har bir kun uchun maksimal UV ham ko‘rsatiladi. Bu ma’lumotlar biror soatni mutlaq xavfsiz deb e’lon qilmaydi; ular variantlarni bir xil ekranda solishtirish uchun kontekstdir."
             },
             {
               "title": "UV indeksi nimani anglatadi",
@@ -33,7 +33,7 @@
             },
             {
               "title": "Chiqishdan oldin yangilang",
-              "text": "Prognozni yangilang va uning vaqt tamg‘asini tekshiring. Internet bo‘lmasa, Nimbo oxirgi saqlangan prognozni ko‘rsatishi mumkin — uni yangi o‘lchov deb qabul qilmang. Keskin yoki xavfli sharoitlarda mahalliy rasmiy ogohlantirishlar va sog‘liq bo‘yicha vakolatli manbalarga amal qiling."
+              "text": "Prognozni yangilashga urinib ko‘ring. Yangilash muvaffaqiyatsiz bo‘lsa, Nimbo saqlangan ob-havo ko‘rsatilayotganini bildiradi — uni yangi o‘lchov deb qabul qilmang. Keskin yoki xavfli sharoitlarda mahalliy rasmiy ogohlantirishlar va sog‘liq bo‘yicha vakolatli manbalarga amal qiling."
             }
           ],
           "disclaimer": "Nimbo umumiy ob-havo rejalashtirish kontekstini beradi. U tibbiy maslahat, favqulodda vaziyat ogohlantirishi, aniq mahalliy o‘lchov yoki xavfsizlik kafolati emas; prognozlar o‘zgarishi mumkin.",
@@ -49,7 +49,7 @@
           "sections": [
             {
               "title": "Смотрите направление дня, а не одну цифру",
-              "text": "Сначала проверьте текущую и ощущаемую температуру, затем посмотрите на 24-часовой шкале, как меняются следующие часы. В карточках десятидневного прогноза указан максимальный UV для каждого дня. Эти данные не объявляют какой-либо час абсолютно безопасным: это контекст для сравнения вариантов на одном экране."
+              "text": "Сначала проверьте текущую и ощущаемую температуру, затем посмотрите на шкале «24 часа назад · сейчас · 24 часа вперёд», как меняются следующие часы. В карточках десятидневного прогноза указан максимальный UV для каждого дня. Эти данные не объявляют какой-либо час абсолютно безопасным: это контекст для сравнения вариантов на одном экране."
             },
             {
               "title": "Что означает UV-индекс",
@@ -61,7 +61,7 @@
             },
             {
               "title": "Обновите данные перед выходом",
-              "text": "Обновите прогноз и проверьте время данных. Без интернета Nimbo может показывать последний сохранённый прогноз — не принимайте его за новое измерение. При резких или опасных условиях следуйте местным официальным предупреждениям и рекомендациям компетентных источников по здоровью."
+              "text": "Попробуйте обновить прогноз. Если обновление не удалось, Nimbo сообщает, что показывает сохранённую погоду, — не принимайте её за новое измерение. При резких или опасных условиях следуйте местным официальным предупреждениям и рекомендациям компетентных источников по здоровью."
             }
           ],
           "disclaimer": "Nimbo даёт общий контекст для планирования по погоде. Это не медицинская рекомендация, не экстренное предупреждение, не точное локальное измерение и не гарантия безопасности; прогноз может меняться.",
@@ -77,7 +77,7 @@
           "sections": [
             {
               "title": "Read the direction of the day, not one number",
-              "text": "Start with current and apparent temperature, then use the 24-hour timeline to see how the next hours change. The 10-day cards show the maximum UV value for each day. These values do not declare any hour absolutely safe; they are context for comparing options on the same screen."
+              "text": "Start with current and apparent temperature, then use the 48-hour timeline spanning 24 hours before and after now to see how the next hours change. The 10-day cards show the maximum UV value for each day. These values do not declare any hour absolutely safe; they are context for comparing options on the same screen."
             },
             {
               "title": "What the UV index means",
@@ -89,7 +89,7 @@
             },
             {
               "title": "Refresh before you leave",
-              "text": "Refresh the forecast and check its timestamp. When offline, Nimbo may show the last saved forecast; do not treat it as a new measurement. For severe or dangerous conditions, follow local official alerts and guidance from competent health authorities."
+              "text": "Try to refresh the forecast. If the refresh fails, Nimbo says that it is showing saved weather; do not treat it as a new measurement. For severe or dangerous conditions, follow local official alerts and guidance from competent health authorities."
             }
           ],
           "disclaimer": "Nimbo provides general weather-planning context. It is not medical advice, an emergency alert, an exact local measurement, or a safety guarantee; forecasts can change.",
@@ -123,15 +123,15 @@
             },
             {
               "title": "Keyingi o‘zgarishni vaqt chizig‘ida toping",
-              "text": "24 soatlik vaqt chizig‘i va keyingi 12 soatdagi sezilarli yog‘in yoki his qilinadigan harorat o‘zgarishi haqidagi signal bugungi reja uchun qisqa ufq beradi. O‘n kunlik prognoz esa keyingi kunlarni ko‘rishga yordam beradi, lekin uzoqroq ufqdagi noaniqlik yo‘qolmaydi."
+              "text": "«24 soat oldin · hozir · 24 soat keyin» markazlashtirilgan vaqt chizig‘i va keyingi 12 soatdagi sezilarli yog‘in yoki his qilinadigan harorat o‘zgarishi haqidagi signal bugungi reja uchun qisqa ufq beradi. O‘n kunlik prognoz esa keyingi kunlarni ko‘rishga yordam beradi, lekin uzoqroq ufqdagi noaniqlik yo‘qolmaydi."
             },
             {
               "title": "AQI — alohida prognoz konteksti",
-              "text": "Nimbo Open-Meteo’dan AQI va ifloslantiruvchi moddalar prognozi kontekstini oladi. Open-Meteo bu ma’lumotni 11 km aniqlikdagi prognoz sifatida tavsiflaydi; bu siz turgan joydagi sensor o‘lchovi emas. WHO havo sifati qo‘llanmalari alohida ifloslantiruvchilar va o‘rtacha davrlar uchun sog‘liqka asoslangan tavsiyalardir; ularni bitta AQI raqami bilan tenglashtirmang."
+              "text": "Nimbo Open-Meteo’dan AQI va ifloslantiruvchi moddalar prognozi kontekstini oladi. Open-Meteo O‘zbekiston uchun qo‘llanadigan global CAMS prognozining fazoviy aniqligini taxminan 45 km deb ko‘rsatadi; bu siz turgan joydagi sensor o‘lchovi emas. WHO havo sifati qo‘llanmalari alohida ifloslantiruvchilar va o‘rtacha davrlar uchun sog‘liqka asoslangan tavsiyalardir; ularni bitta AQI raqami bilan tenglashtirmang."
             },
             {
               "title": "Signallarni birlashtiring, lekin cheklovlarni saqlang",
-              "text": "Harorat taqqoslashini, yog‘in va shamol prognozini hamda AQI kontekstini yonma-yon ko‘ring. Ma’lumot vaqti va internet holatini tekshiring. Havo sifati yoki sog‘liq bo‘yicha shaxsiy qaror kerak bo‘lsa, mahalliy rasmiy manba va malakali tibbiy mutaxassis tavsiyasiga murojaat qiling."
+              "text": "Harorat taqqoslashini, yog‘in va shamol prognozini hamda AQI kontekstini yonma-yon ko‘ring. Ishonishdan oldin prognozni yangilashga urinib ko‘ring; yangilash amalga oshmasa, Nimbo saqlangan ob-havo ko‘rsatilayotganini bildiradi. Havo sifati yoki sog‘liq bo‘yicha shaxsiy qaror kerak bo‘lsa, mahalliy rasmiy manba va malakali tibbiy mutaxassis tavsiyasiga murojaat qiling."
             }
           ],
           "disclaimer": "AQI va ob-havo qiymatlari prognoz kontekstidir, shaxsiy ekspozitsiya o‘lchovi yoki tibbiy tashxis emas. Nimbo favqulodda ogohlantirish va xavfsizlik kafolatini bermaydi.",
@@ -151,15 +151,15 @@
             },
             {
               "title": "Найдите следующее изменение на временной шкале",
-              "text": "24-часовая шкала и сигнал о заметных осадках или изменении ощущаемой температуры в следующие 12 часов дают короткий горизонт для сегодняшнего плана. Десятидневный прогноз помогает посмотреть дальше, но не устраняет неопределённость более дальнего прогноза."
+              "text": "Шкала «24 часа назад · сейчас · 24 часа вперёд» и сигнал о заметных осадках или изменении ощущаемой температуры в следующие 12 часов дают короткий горизонт для сегодняшнего плана. Десятидневный прогноз помогает посмотреть дальше, но не устраняет неопределённость более дальнего прогноза."
             },
             {
               "title": "AQI — отдельный прогнозный контекст",
-              "text": "Nimbo получает у Open-Meteo прогнозный контекст AQI и загрязняющих веществ. Open-Meteo описывает эти данные как прогноз с разрешением 11 км, а не показание датчика в вашей точке. Рекомендации WHO по качеству воздуха относятся к отдельным загрязнителям и периодам усреднения; их нельзя приравнивать к одному числу AQI."
+              "text": "Nimbo получает у Open-Meteo прогнозный контекст AQI и загрязняющих веществ. Для глобального прогноза CAMS, применимого к Узбекистану, Open-Meteo указывает пространственное разрешение около 45 км; это не показание датчика в вашей точке. Рекомендации WHO по качеству воздуха относятся к отдельным загрязнителям и периодам усреднения; их нельзя приравнивать к одному числу AQI."
             },
             {
               "title": "Соберите сигналы вместе, сохраняя ограничения",
-              "text": "Смотрите рядом сравнение температуры, прогноз осадков и ветра и контекст AQI. Проверяйте время данных и подключение. Если требуется личное решение о здоровье или качестве воздуха, используйте местные официальные источники и рекомендации квалифицированного медицинского специалиста."
+              "text": "Смотрите рядом сравнение температуры, прогноз осадков и ветра и контекст AQI. Перед использованием попробуйте обновить прогноз; если обновление не удалось, Nimbo сообщает, что показывает сохранённую погоду. Если требуется личное решение о здоровье или качестве воздуха, используйте местные официальные источники и рекомендации квалифицированного медицинского специалиста."
             }
           ],
           "disclaimer": "AQI и погодные значения — прогнозный контекст, а не измерение личного воздействия и не медицинский диагноз. Nimbo не заменяет экстренные предупреждения и не гарантирует безопасность.",
@@ -179,20 +179,409 @@
             },
             {
               "title": "Find the next change on the timeline",
-              "text": "The 24-hour timeline and a signal for meaningful precipitation or apparent-temperature change over the next 12 hours provide a short horizon for today's plan. The 10-day forecast helps you look farther ahead, but it does not remove uncertainty from a longer-range forecast."
+              "text": "The 48-hour timeline spanning 24 hours before and after now, together with a signal for meaningful precipitation or apparent-temperature change over the next 12 hours, provides a short horizon for today's plan. The 10-day forecast helps you look farther ahead, but it does not remove uncertainty from a longer-range forecast."
             },
             {
               "title": "AQI is separate forecast context",
-              "text": "Nimbo obtains forecast AQI and pollutant context from Open-Meteo. Open-Meteo describes these data as an 11 km-resolution forecast, not a sensor reading at your exact position. WHO air-quality guidelines are health-based recommendations for individual pollutants and averaging periods; they are not the same thing as one AQI number."
+              "text": "Nimbo obtains forecast AQI and pollutant context from Open-Meteo. For the global CAMS forecast applicable to Uzbekistan, Open-Meteo documents spatial resolution of about 45 km; this is not a sensor reading at your exact position. WHO air-quality guidelines are health-based recommendations for individual pollutants and averaging periods; they are not the same thing as one AQI number."
             },
             {
               "title": "Combine the signals while keeping their limits",
-              "text": "View the temperature comparison, precipitation and wind forecast, and AQI context side by side. Check the data timestamp and connection state. When you need a personal health or air-quality decision, use local official sources and advice from a qualified health professional."
+              "text": "View the temperature comparison, precipitation and wind forecast, and AQI context side by side. Try to refresh before relying on them; if the refresh fails, Nimbo says that it is showing saved weather. When you need a personal health or air-quality decision, use local official sources and advice from a qualified health professional."
             }
           ],
           "disclaimer": "AQI and weather values are forecast context, not a personal-exposure measurement or medical diagnosis. Nimbo does not replace emergency alerts or guarantee safety.",
           "cta_title": "See yesterday, now, and the hours ahead",
           "cta_text": "Open your city in Nimbo, compare it with yesterday, and check AQI context separately."
+        }
+      }
+    },
+    {
+      "id": "october-rain-windows",
+      "slug": "october-rain-windows",
+      "status": "draft-blocked",
+      "target_month": "2026-10",
+      "published_on": null,
+      "source_urls": [
+        "https://open-meteo.com/en/docs",
+        "https://github.com/4810092/Weather/blob/master/docs/INSIGHT_ENGINE.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Oktabr yomg‘iri: tashqariga chiqish vaqtini qanday solishtirish",
+          "description": "Yog‘in ehtimoli, yaqin soatlar va saqlangan prognoz holatini birga ko‘rib, kuzgi tashqi ishlar uchun mosroq oynani solishtirish qo‘llanmasi.",
+          "eyebrow": "Mavsumiy qo‘llanma · Oktabr",
+          "headline": "Yog‘in ehtimoli — aniq vaqtda yomg‘ir yog‘ishiga va’da emas",
+          "lead": "Kuzgi rejani bitta foizga bog‘lamang. Yaqin soatlarni, his qilinadigan harorat va shamolni birga ko‘ring va prognozni yangilashga urinib ko‘ring.",
+          "sections": [
+            {
+              "title": "Yaqin soatlarni birma-bir ko‘ring",
+              "text": "Nimbo’ning «24 soat oldin · hozir · 24 soat keyin» markazlashtirilgan vaqt chizig‘ida kerakli soatni tanlab, o‘sha soat uchun his qilinadigan harorat, yog‘in ehtimoli va shamolni ko‘rish mumkin. Bu kunlik umumiy belgidan ko‘ra rejangizga yaqinroq kontekst beradi, lekin aniq manzildagi natijani kafolatlamaydi."
+            },
+            {
+              "title": "Ehtimol va miqdor bir xil signal emas",
+              "text": "Open-Meteo hujjatlarida yog‘in ehtimoli foizda, yog‘in miqdori esa oldingi soat uchun yig‘indi sifatida beriladi. Nimbo’ning tushuntiriladigan rejalashtirish mexanizmi ikkala qiymatni ham baholaydi. Yuqori foiz aniq nuqtada yog‘in muqarrar degani emas, past foiz esa quruq qolish kafolati emas."
+            },
+            {
+              "title": "To‘liq ikki soatlik oynani tekshiring",
+              "text": "Best Time Outside faqat mahalliy kunning qolgan qismidagi uzluksiz ikki soatlik oynalarni solishtiradi. Kuchli yog‘in yoki momaqaldiroq kabi belgilangan xavf omili uchrasa, oyna tavsiyadan chiqariladi; mos oyna qolmasa, ilova sabablarni ko‘rsatadi. Bu rejalashtirish signali, xavfsizlik xulosasi emas."
+            },
+            {
+              "title": "Chiqishdan oldin prognozni yangilang",
+              "text": "Prognozni yangilashga urinib ko‘ring. Yangilash amalga oshmasa, Nimbo saqlangan ob-havo ko‘rsatilayotganini bildiradi; uni yangi kuzatuv deb qabul qilmang. Kuchli yoki xavfli ob-havoda mahalliy rasmiy ogohlantirishlarga amal qiling."
+            }
+          ],
+          "disclaimer": "Yog‘in qiymatlari model prognozi bo‘lib, aniq joydagi kuzatuv yoki quruq va xavfsiz sharoit kafolati emas. Nimbo favqulodda ogohlantirish xizmatini almashtirmaydi.",
+          "cta_title": "Keyingi soatlarni solishtiring",
+          "cta_text": "Nimbo’da shaharingizni oching va tashqi rejangizga yaqin ikki soatlik oynalarni tekshiring."
+        },
+        "ru": {
+          "title": "Октябрьский дождь: как сравнить время для выхода",
+          "description": "Гид по выбору более подходящего окна для осенних дел на улице с учётом вероятности осадков, ближайших часов и статуса сохранённого прогноза.",
+          "eyebrow": "Сезонный гид · Октябрь",
+          "headline": "Вероятность осадков — не обещание дождя в точное время",
+          "lead": "Не привязывайте осенний план к одному проценту. Смотрите рядом ближайшие часы, ощущаемую температуру и ветер и попробуйте обновить прогноз.",
+          "sections": [
+            {
+              "title": "Просмотрите ближайшие часы по отдельности",
+              "text": "На шкале Nimbo «24 часа назад · сейчас · 24 часа вперёд» можно выбрать нужный час и увидеть для него ощущаемую температуру, вероятность осадков и ветер. Это даёт контекст, более близкий к вашему плану, чем общий значок на день, но не гарантирует результат в конкретной точке."
+            },
+            {
+              "title": "Вероятность и количество — разные сигналы",
+              "text": "В документации Open-Meteo вероятность осадков указана в процентах, а количество — как сумма за предыдущий час. Объяснимый механизм планирования Nimbo оценивает оба значения. Высокий процент не означает неизбежные осадки именно в вашей точке, а низкий не гарантирует, что будет сухо."
+            },
+            {
+              "title": "Проверьте целое двухчасовое окно",
+              "text": "Best Time Outside сравнивает только непрерывные двухчасовые окна, оставшиеся в местном дне. Если встречается заданный фактор риска, например сильные осадки или гроза, окно исключается; когда подходящих окон нет, приложение показывает причины. Это сигнал для планирования, а не вывод о безопасности."
+            },
+            {
+              "title": "Обновите прогноз перед выходом",
+              "text": "Попробуйте обновить прогноз. Если обновление не удалось, Nimbo сообщает, что показывает сохранённую погоду; не считайте её новым наблюдением. При сильной или опасной погоде следуйте местным официальным предупреждениям."
+            }
+          ],
+          "disclaimer": "Значения осадков — модельный прогноз, а не наблюдение в точной точке и не гарантия сухих или безопасных условий. Nimbo не заменяет экстренные предупреждения.",
+          "cta_title": "Сравните следующие часы",
+          "cta_text": "Откройте свой город в Nimbo и проверьте двухчасовые окна, близкие к вашему плану."
+        },
+        "en": {
+          "title": "October rain: how to compare times to go outside",
+          "description": "A guide to comparing more suitable windows for autumn outdoor tasks using precipitation probability, upcoming hours, and the saved-forecast status.",
+          "eyebrow": "Seasonal guide · October",
+          "headline": "Precipitation probability is not a promise of rain at an exact time",
+          "lead": "Do not anchor an autumn plan to one percentage. View the upcoming hours alongside apparent temperature and wind, and try to refresh the forecast.",
+          "sections": [
+            {
+              "title": "Inspect the upcoming hours individually",
+              "text": "On Nimbo’s 48-hour timeline spanning 24 hours before and after now, select an hour to see its apparent temperature, precipitation probability, and wind. This is context closer to your plan than one daily symbol, but it does not guarantee the outcome at a specific point."
+            },
+            {
+              "title": "Probability and amount are different signals",
+              "text": "Open-Meteo documents precipitation probability as a percentage and precipitation amount as a sum over the preceding hour. Nimbo’s explainable planning engine evaluates both values. A high percentage does not make precipitation inevitable at your exact point, while a low one does not guarantee dry conditions."
+            },
+            {
+              "title": "Check the complete two-hour window",
+              "text": "Best Time Outside compares only complete, contiguous two-hour windows left in the location’s local day. A window is excluded when it contains a defined hazard factor such as heavy precipitation or a thunderstorm; if none qualifies, the app reports the reasons. This is a planning signal, not a safety conclusion."
+            },
+            {
+              "title": "Refresh before you leave",
+              "text": "Try to refresh the forecast. If the refresh fails, Nimbo says that it is showing saved weather; do not treat it as a new observation. Follow local official warnings during severe or dangerous weather."
+            }
+          ],
+          "disclaimer": "Precipitation values are model forecasts, not observations at your exact point or guarantees of dry or safe conditions. Nimbo does not replace emergency alerts.",
+          "cta_title": "Compare the hours ahead",
+          "cta_text": "Open your city in Nimbo and check the two-hour windows closest to your outdoor plan."
+        }
+      }
+    },
+    {
+      "id": "october-wind-gusts",
+      "slug": "october-wind-gusts",
+      "status": "draft-blocked",
+      "target_month": "2026-10",
+      "published_on": null,
+      "source_urls": [
+        "https://open-meteo.com/en/docs",
+        "https://github.com/4810092/Weather/blob/master/docs/INSIGHT_ENGINE.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Oktabr shamoli: tezlik, kuchayish va his qilinadigan harorat",
+          "description": "Kuzgi shamolli kunni rejalashtirishda soatlik shamol, his qilinadigan harorat va ikki soatlik oynalarni birga o‘qish qo‘llanmasi.",
+          "eyebrow": "Mavsumiy qo‘llanma · Oktabr",
+          "headline": "Shamolni haroratdan alohida ko‘rmang",
+          "lead": "Bir xil havo harorati shamol, namlik va quyosh ta’sirida boshqacha his qilinishi mumkin. Soatlarni almashtirib ko‘ring va rejangizga mos davrni bir nechta signal bo‘yicha solishtiring.",
+          "sections": [
+            {
+              "title": "Havo harorati va his qilinadigan haroratni ajrating",
+              "text": "Open-Meteo his qilinadigan haroratni shamol sovutishi, nisbiy namlik va quyosh nurlanishini birlashtiradigan ko‘rsatkich sifatida tavsiflaydi. Nimbo joriy holatda va tanlangan soatda bu qiymatni ko‘rsatadi. U shaxsiy sezgini yoki kiyim tanlovini aniq bashorat qilmaydi."
+            },
+            {
+              "title": "Soatlik shamolni rejangiz vaqtida tekshiring",
+              "text": "«24 soat oldin · hozir · 24 soat keyin» markazlashtirilgan vaqt chizig‘ida rejalashtirilgan soatni tanlang va shamol qiymatini yaqin soatlar bilan solishtiring. Faqat joriy qiymatga qarash keyingi o‘zgarishni yashirishi mumkin. Prognoz model natijasi bo‘lgani uchun aniq ko‘cha yoki hovlidagi shamol undan farq qilishi mumkin."
+            },
+            {
+              "title": "Best Time Outside shamolni ham hisobga oladi",
+              "text": "Nimbo ikki soatlik oynalarni baholashda barqaror shamolga alohida og‘irlik beradi va belgilangan kuchli shamol yoki kuchayish chegarasi o‘tilgan oynalarni chiqarib tashlaydi. Chegaralar ochiq va deterministik, biroq ular barcha mahalliy xavflarni aniqlamaydi va rasmiy ogohlantirish o‘rnini bosmaydi."
+            },
+            {
+              "title": "Mahalliy sharoitni qayta tekshiring",
+              "text": "Chiqishdan oldin prognozni yangilashga urinib ko‘ring. Yangilash amalga oshmasa, Nimbo saqlangan ob-havo ko‘rsatilayotganini bildiradi. Mahalliy rasmiy xabarlarni ham tekshiring: daraxtlar, binolar va relyef shamolni joyning o‘zida o‘zgartirishi mumkin; Nimbo aniq nuqtadagi o‘lchov yoki xavfsizlik kafolati bermaydi."
+            }
+          ],
+          "disclaimer": "Shamol va his qilinadigan harorat prognoz kontekstidir. Ular aniq joydagi o‘lchov, shaxsiy tavsiya, favqulodda ogohlantirish yoki xavfsizlik kafolati emas.",
+          "cta_title": "Shamolli soatlarni solishtiring",
+          "cta_text": "Nimbo’da shaharingizning vaqt chizig‘ini oching va shamol bilan his qilinadigan haroratni birga tekshiring."
+        },
+        "ru": {
+          "title": "Октябрьский ветер: скорость, порывы и ощущаемая температура",
+          "description": "Гид по совместному чтению почасового ветра, ощущаемой температуры и двухчасовых окон при планировании ветреного осеннего дня.",
+          "eyebrow": "Сезонный гид · Октябрь",
+          "headline": "Не рассматривайте ветер отдельно от температуры",
+          "lead": "Одинаковая температура воздуха может ощущаться по-разному из-за ветра, влажности и солнца. Переключайте часы и сравнивайте период для своего плана по нескольким сигналам.",
+          "sections": [
+            {
+              "title": "Разделяйте температуру воздуха и ощущаемую",
+              "text": "Open-Meteo описывает ощущаемую температуру как показатель, объединяющий охлаждение ветром, относительную влажность и солнечное излучение. Nimbo показывает это значение сейчас и для выбранного часа. Оно не предсказывает точно личные ощущения или подходящую одежду."
+            },
+            {
+              "title": "Проверьте почасовой ветер на время своего плана",
+              "text": "Выберите запланированный час на шкале «24 часа назад · сейчас · 24 часа вперёд» и сравните ветер с соседними часами. Одно текущее значение может скрыть следующее изменение. Поскольку это результат модели, ветер на конкретной улице или во дворе может отличаться от прогноза."
+            },
+            {
+              "title": "Best Time Outside тоже учитывает ветер",
+              "text": "При оценке двухчасовых окон Nimbo отдельно взвешивает устойчивый ветер и исключает окна, пересекающие заданные пороги сильного ветра или порывов. Пороги открыты и детерминированы, но не выявляют все локальные риски и не заменяют официальные предупреждения."
+            },
+            {
+              "title": "Повторно проверьте местные условия",
+              "text": "Перед выходом попробуйте обновить прогноз. Если обновление не удалось, Nimbo сообщает, что показывает сохранённую погоду. Проверьте также местные официальные сообщения: деревья, здания и рельеф могут менять ветер на месте; Nimbo не даёт измерение в точной точке или гарантию безопасности."
+            }
+          ],
+          "disclaimer": "Ветер и ощущаемая температура — прогнозный контекст. Это не измерение в точной точке, не персональная рекомендация, не экстренное предупреждение и не гарантия безопасности.",
+          "cta_title": "Сравните ветреные часы",
+          "cta_text": "Откройте шкалу своего города в Nimbo и проверьте ветер вместе с ощущаемой температурой."
+        },
+        "en": {
+          "title": "October wind: speed, gusts, and apparent temperature",
+          "description": "A guide to reading hourly wind, apparent temperature, and two-hour windows together when planning a windy autumn day.",
+          "eyebrow": "Seasonal guide · October",
+          "headline": "Do not read wind separately from temperature",
+          "lead": "The same air temperature can feel different as wind, humidity, and sunshine change. Move across the hours and compare a period for your plan using several signals.",
+          "sections": [
+            {
+              "title": "Separate air temperature from apparent temperature",
+              "text": "Open-Meteo describes apparent temperature as a value combining wind chill, relative humidity, and solar radiation. Nimbo shows it for current conditions and a selected hour. It does not precisely predict personal sensation or the clothing that is right for you."
+            },
+            {
+              "title": "Check hourly wind at the time of your plan",
+              "text": "Select the planned hour on the 48-hour timeline spanning 24 hours before and after now, and compare its wind value with nearby hours. One current value can hide the next change. Because this is model output, wind on a particular street or in a courtyard may differ from the forecast."
+            },
+            {
+              "title": "Best Time Outside also accounts for wind",
+              "text": "When scoring two-hour windows, Nimbo gives sustained wind its own weight and excludes windows that cross defined strong-wind or gust thresholds. The thresholds are explicit and deterministic, but they cannot identify every local hazard and do not replace official warnings."
+            },
+            {
+              "title": "Recheck local conditions",
+              "text": "Try to refresh before leaving. If the refresh fails, Nimbo says that it is showing saved weather. Also check local official notices: trees, buildings, and terrain can alter wind at a specific place; Nimbo does not provide a point measurement or a safety guarantee."
+            }
+          ],
+          "disclaimer": "Wind and apparent temperature are forecast context. They are not exact point measurements, personal advice, emergency warnings, or safety guarantees.",
+          "cta_title": "Compare the windier hours",
+          "cta_text": "Open your city timeline in Nimbo and check wind together with apparent temperature."
+        }
+      }
+    },
+    {
+      "id": "november-cold-mornings",
+      "slug": "november-cold-mornings",
+      "status": "draft-blocked",
+      "target_month": "2026-11",
+      "published_on": null,
+      "source_urls": [
+        "https://open-meteo.com/en/docs",
+        "https://github.com/4810092/Weather/blob/master/docs/INSIGHT_ENGINE.md",
+        "https://github.com/4810092/Weather/blob/master/docs/adr/0005-cache-and-history.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Noyabr tonglari: sovuqroq vaqtni kontekst bilan rejalashtiring",
+          "description": "Havo harorati, his qilinadigan harorat, kechagi taqqoslash va yaqin soatlarni birga ko‘rib, noyabr tongini rejalashtirish qo‘llanmasi.",
+          "eyebrow": "Mavsumiy qo‘llanma · Noyabr",
+          "headline": "Tonggi reja uchun bitta minimal harorat yetarli emas",
+          "lead": "Joriy va his qilinadigan haroratni ajrating, shu vaqtni kechagi holat bilan solishtiring va chiqishdan oldingi yaqin soatlarni tekshiring.",
+          "sections": [
+            {
+              "title": "Havo harorati bilan his qilinadiganini birga o‘qing",
+              "text": "Open-Meteo his qilinadigan haroratni shamol, nisbiy namlik va quyosh nurlanishini hisobga oladigan ko‘rsatkich sifatida tavsiflaydi. Nimbo uni joriy harorat yonida ko‘rsatadi. Bu qo‘shimcha kontekst, biroq shaxsiy sovuq sezgisi yoki kiyim bo‘yicha ko‘rsatma emas."
+            },
+            {
+              "title": "Kechagi shu vaqtni boshlang‘ich nuqta qiling",
+              "text": "Nimbo joriy soatni taxminan 24 soat oldingi eng yaqin mavjud soat bilan taqqoslaydi. Farq ertalab bugun iliqroq yoki sovuqroq ekanini tushunishga yordam beradi. Tarix yetarli bo‘lmasa, ilova natijani o‘ylab topmaydi."
+            },
+            {
+              "title": "Yaqin ikki soatni to‘liq tekshiring",
+              "text": "Best Time Outside mahalliy kunning qolgan qismidagi uzluksiz ikki soatlik oynalarni his qilinadigan harorat, yog‘in, shamol va UV bo‘yicha baholaydi. Belgilangan keskin sovuq yoki boshqa xavf chegarasi o‘tilgan oynalar chiqarib tashlanadi. Natija umumiy rejalashtirish signali bo‘lib, xavfsizlik kafolati emas."
+            },
+            {
+              "title": "Saqlangan prognoz holatini tekshiring",
+              "text": "Tarmoq bo‘lmasa, Nimbo oxirgi saqlangan ma’lumotni ko‘rsatishi va uni yangilash kerakligini bildirishi mumkin. Tongda chiqishdan oldin prognozni yangilashga urinib ko‘ring. Keskin yoki xavfli sovuqda mahalliy rasmiy ogohlantirishlar va vakolatli sog‘liq manbalariga amal qiling."
+            }
+          ],
+          "disclaimer": "Harorat qiymatlari prognoz kontekstidir. Nimbo kiyim yoki sog‘liq bo‘yicha shaxsiy maslahat, aniq joydagi o‘lchov, favqulodda ogohlantirish yoki xavfsizlik kafolati bermaydi.",
+          "cta_title": "Tonggi soatlarni solishtiring",
+          "cta_text": "Nimbo’da shaharingizni oching va hozirgi, his qilinadigan hamda yaqin soatlardagi haroratni tekshiring."
+        },
+        "ru": {
+          "title": "Ноябрьские утра: планируйте холодное время с контекстом",
+          "description": "Гид по планированию ноябрьского утра с учётом температуры воздуха, ощущаемой температуры, сравнения со вчера и ближайших часов.",
+          "eyebrow": "Сезонный гид · Ноябрь",
+          "headline": "Для утреннего плана одной минимальной температуры недостаточно",
+          "lead": "Разделяйте текущую и ощущаемую температуру, сравнивайте этот час со вчерашним и проверяйте ближайшие часы перед выходом.",
+          "sections": [
+            {
+              "title": "Читайте температуру воздуха вместе с ощущаемой",
+              "text": "Open-Meteo описывает ощущаемую температуру как показатель, учитывающий ветер, относительную влажность и солнечное излучение. Nimbo показывает её рядом с текущей температурой. Это дополнительный контекст, а не инструкция по одежде или прогноз личного ощущения холода."
+            },
+            {
+              "title": "Используйте тот же час вчера как отправную точку",
+              "text": "Nimbo сравнивает текущий час с ближайшим доступным часом примерно 24 часа назад. Разница помогает понять, теплее или холоднее сегодня утром. Если истории недостаточно, приложение не придумывает результат."
+            },
+            {
+              "title": "Проверьте ближайшие два часа целиком",
+              "text": "Best Time Outside оценивает непрерывные двухчасовые окна, оставшиеся в местном дне, по ощущаемой температуре, осадкам, ветру и UV. Окна, пересекающие заданный порог экстремального холода или другой опасности, исключаются. Результат — общий сигнал для планирования, а не гарантия безопасности."
+            },
+            {
+              "title": "Проверьте статус сохранённого прогноза",
+              "text": "Без сети Nimbo может показывать последние сохранённые данные и сообщать, что их нужно обновить. Попробуйте обновить прогноз перед утренним выходом. При резком или опасном холоде следуйте местным официальным предупреждениям и рекомендациям компетентных источников по здоровью."
+            }
+          ],
+          "disclaimer": "Температурные значения — прогнозный контекст. Nimbo не даёт персональных советов по одежде или здоровью, точного измерения в вашей точке, экстренного предупреждения или гарантии безопасности.",
+          "cta_title": "Сравните утренние часы",
+          "cta_text": "Откройте свой город в Nimbo и проверьте текущую, ощущаемую температуру и ближайшие часы."
+        },
+        "en": {
+          "title": "November mornings: plan colder hours with context",
+          "description": "A guide to planning a November morning using air temperature, apparent temperature, yesterday’s comparison, and the upcoming hours.",
+          "eyebrow": "Seasonal guide · November",
+          "headline": "One daily minimum is not enough for a morning plan",
+          "lead": "Separate current and apparent temperature, compare this hour with yesterday, and inspect the upcoming hours before leaving.",
+          "sections": [
+            {
+              "title": "Read air and apparent temperature together",
+              "text": "Open-Meteo describes apparent temperature as a value accounting for wind, relative humidity, and solar radiation. Nimbo displays it alongside current temperature. It is added context, not an instruction about clothing or a prediction of your personal sensation of cold."
+            },
+            {
+              "title": "Use the same hour yesterday as a starting point",
+              "text": "Nimbo compares the current hour with the nearest available hour about 24 hours earlier. The difference helps show whether this morning is warmer or cooler. When history is insufficient, the app does not invent a result."
+            },
+            {
+              "title": "Check the next two hours as a complete window",
+              "text": "Best Time Outside scores complete two-hour windows left in the local day using apparent temperature, precipitation, wind, and UV. Windows crossing the defined extreme-cold threshold or another hazard threshold are excluded. The result is general planning guidance, not a safety guarantee."
+            },
+            {
+              "title": "Check the saved-forecast status",
+              "text": "Without a connection, Nimbo may show the last saved data and say that an update is needed. Try to refresh before a morning departure. During severe or dangerous cold, follow local official alerts and guidance from competent health authorities."
+            }
+          ],
+          "disclaimer": "Temperature values are forecast context. Nimbo does not provide personal clothing or health advice, an exact point measurement, an emergency alert, or a safety guarantee.",
+          "cta_title": "Compare the morning hours",
+          "cta_text": "Open your city in Nimbo and check current, apparent, and upcoming-hour temperatures."
+        }
+      }
+    },
+    {
+      "id": "november-ten-day-planning",
+      "slug": "november-ten-day-planning",
+      "status": "draft-blocked",
+      "target_month": "2026-11",
+      "published_on": null,
+      "source_urls": [
+        "https://open-meteo.com/en/docs",
+        "https://github.com/4810092/Weather/blob/master/docs/adr/0005-cache-and-history.md"
+      ],
+      "locales": {
+        "uz": {
+          "title": "Noyabrni 10 kun oldindan rejalashtirish: to‘g‘ri ufqni tanlang",
+          "description": "O‘n kunlik kun kartalari, hozir markazidagi 48 soatlik vaqt chizig‘i va saqlangan prognoz holatini vazifaga mos ravishda ishlatish qo‘llanmasi.",
+          "eyebrow": "Mavsumiy qo‘llanma · Noyabr",
+          "headline": "Hafta rejasini kunlik xulosa bilan boshlang, aniq vaqtni keyin tekshiring",
+          "lead": "Sovuqroq haftada avval kunlar orasidagi yo‘nalishni ko‘ring. Reja yaqinlashganda esa soatlik tafsilot va yangi prognozga qayting.",
+          "sections": [
+            {
+              "title": "Kunlarni bir xil ko‘rsatkichlarda solishtiring",
+              "text": "Nimbo’ning o‘n kunlik kartalari har bir kun uchun minimal va maksimal harorat, maksimal yog‘in ehtimoli hamda maksimal UV qiymatini ko‘rsatadi. Bu sayr, yo‘l yoki tashqi ish uchun qaysi kunlarni keyinroq batafsil ko‘rishni tanlashga yordam beradi."
+            },
+            {
+              "title": "Kunlik maksimumni aniq soat deb o‘qimang",
+              "text": "Open-Meteo kunlik qiymatlarni soatlik qatorlardan tuzilgan 24 soatlik agregatlar sifatida tavsiflaydi. Shuning uchun kun kartasidagi maksimal ehtimol yoki harorat qachon sodir bo‘lishini o‘zi aytmaydi. Rejangiz keyingi 24 soat oynasiga kirganda, aniqroq vaqt uchun «24 soat oldin · hozir · 24 soat keyin» markazlashtirilgan vaqt chizig‘iga qayting."
+            },
+            {
+              "title": "Reja yaqinlashganda qayta tekshiring",
+              "text": "Uzoqroq ufqni yo‘nalish va variantlarni saralash uchun ishlating, qat’iy va’da sifatida emas. Tadbir yoki safar keyingi 24 soat oynasiga kirganda prognozni yangilang va hozir markazidagi vaqt chizig‘ida soatlik o‘zgarishlarni qayta ko‘ring, chunki model prognozi o‘zgarishi mumkin."
+            },
+            {
+              "title": "Oflayn ma’lumotni yangi prognozdan ajrating",
+              "text": "Nimbo tarmoq uzilganda foydali ekran yo‘qolmasligi uchun oxirgi saqlangan prognozni ko‘rsatadi va eskirgan holatni belgilaydi. Saqlangan ma’lumot safar rejasini eslatishi mumkin, ammo yangi prognoz emas. Xavfli sharoitlarda mahalliy rasmiy manbalarni tekshiring."
+            }
+          ],
+          "disclaimer": "O‘n kunlik ko‘rinish model prognozi va rejalashtirish kontekstidir. U aniq natija, favqulodda ogohlantirish yoki xavfsizlik kafolati bermaydi; prognozlar o‘zgarishi mumkin.",
+          "cta_title": "Avval kunlarni, keyin yaqin soatlarni solishtiring",
+          "cta_text": "Nimbo’da o‘n kunlik kartalarni solishtiring; rejangiz keyingi 24 soat oynasiga kirganda hozir markazidagi 48 soatlik vaqt chizig‘iga qayting."
+        },
+        "ru": {
+          "title": "Планирование ноября на 10 дней: выбирайте правильный горизонт",
+          "description": "Гид по использованию десятидневных карточек, 48-часовой шкалы вокруг текущего момента и статуса сохранённого прогноза в зависимости от задачи.",
+          "eyebrow": "Сезонный гид · Ноябрь",
+          "headline": "Начните план недели с дневной сводки, а точное время проверьте позже",
+          "lead": "В более холодную неделю сначала оцените направление по дням. По мере приближения плана вернитесь к почасовым деталям и свежему прогнозу.",
+          "sections": [
+            {
+              "title": "Сравнивайте дни по одинаковым показателям",
+              "text": "Десятидневные карточки Nimbo показывают для каждого дня минимальную и максимальную температуру, максимальную вероятность осадков и максимальный UV. Это помогает выбрать дни, которые стоит подробнее проверить для прогулки, дороги или дела на улице."
+            },
+            {
+              "title": "Не читайте дневной максимум как точный час",
+              "text": "Open-Meteo описывает дневные значения как 24-часовые агрегаты, построенные из почасового ряда. Поэтому максимальная вероятность или температура в карточке дня сама по себе не сообщает время события. Когда план окажется в пределах следующих 24 часов, для более точного времени вернитесь к шкале «24 часа назад · сейчас · 24 часа вперёд»."
+            },
+            {
+              "title": "Перепроверяйте по мере приближения плана",
+              "text": "Используйте дальний горизонт для направления и отбора вариантов, а не как твёрдое обещание. Когда событие или поездка окажутся в пределах следующих 24 часов, обновите прогноз и снова посмотрите почасовые изменения на шкале вокруг текущего момента: модельный прогноз может измениться."
+            },
+            {
+              "title": "Отличайте офлайн-данные от нового прогноза",
+              "text": "Чтобы полезный экран не исчезал без сети, Nimbo показывает последний сохранённый прогноз и отмечает устаревшее состояние. Сохранённые данные могут напомнить план поездки, но не являются новым прогнозом. При опасных условиях проверяйте местные официальные источники."
+            }
+          ],
+          "disclaimer": "Десятидневный вид — модельный прогноз и контекст для планирования. Он не гарантирует результат или безопасность и не заменяет экстренные предупреждения; прогноз может меняться.",
+          "cta_title": "Сначала сравните дни, затем ближайшие часы",
+          "cta_text": "Сравните десятидневные карточки в Nimbo; когда план окажется в пределах следующих 24 часов, вернитесь к 48-часовой шкале вокруг текущего момента."
+        },
+        "en": {
+          "title": "Planning November across 10 days: choose the right horizon",
+          "description": "A guide to using 10-day cards, the 48-hour timeline centered on now, and the saved-forecast status according to the planning task.",
+          "eyebrow": "Seasonal guide · November",
+          "headline": "Start a weekly plan with daily summaries, then check the exact hours later",
+          "lead": "During a colder week, begin by reading the direction across days. As the plan approaches, return to hourly detail and a fresh forecast.",
+          "sections": [
+            {
+              "title": "Compare days using the same measures",
+              "text": "Nimbo’s 10-day cards show minimum and maximum temperature, maximum precipitation probability, and maximum UV for each day. This helps you choose which days deserve a closer look for a walk, a journey, or an outdoor task."
+            },
+            {
+              "title": "Do not read a daily maximum as an exact hour",
+              "text": "Open-Meteo describes daily values as 24-hour aggregations built from hourly data. A maximum probability or temperature on a daily card therefore does not identify when it occurs. When your plan enters the next-24-hour window, return to the 48-hour timeline spanning 24 hours before and after now for more precise timing."
+            },
+            {
+              "title": "Recheck as the plan approaches",
+              "text": "Use the longer horizon to understand direction and shortlist options, not as a firm promise. When the event or journey enters the next 24 hours, refresh and inspect the hourly changes on the timeline centered on now, because model forecasts can change."
+            },
+            {
+              "title": "Separate offline data from a new forecast",
+              "text": "To keep a useful screen available without a network, Nimbo shows the last saved forecast and marks stale state. Saved data may help recall a travel plan, but it is not a new forecast. Check local official sources during dangerous conditions."
+            }
+          ],
+          "disclaimer": "The 10-day view is model forecast context for planning. It does not guarantee an outcome or safety and does not replace emergency alerts; forecasts can change.",
+          "cta_title": "Compare days first, then nearby hours",
+          "cta_text": "Compare Nimbo’s 10-day cards; when your plan enters the next-24-hour window, return to the 48-hour timeline centered on now."
         }
       }
     }
