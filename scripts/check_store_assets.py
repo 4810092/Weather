@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -22,8 +24,23 @@ except ModuleNotFoundError:  # Direct execution: python3 scripts/check_store_ass
 
 ROOT = Path(__file__).resolve().parents[1]
 CREATIVE_MANIFEST = ROOT / "store/creative-sets/growth-2026-08.json"
+FEATURING_MANIFEST = ROOT / "growth/featuring/manifest.json"
 GOOGLE_PLAY_ICON = "store/assets/google-play/icon-512.png"
 GOOGLE_PLAY_ICON_MAX_BYTES = 1024 * 1024
+PROMOTIONAL_IMAGE_MAX_BYTES = 1024 * 1024
+
+EXPECTED_PROMOTIONAL_ASSETS = {
+    "google_major_update_primary": {
+        "role": "promotional_content_primary",
+        "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-primary-1920x1080.jpg",
+        "size": (1920, 1080),
+    },
+    "google_major_update_square": {
+        "role": "promotional_content_square",
+        "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-square-1080x1080.jpg",
+        "size": (1080, 1080),
+    },
+}
 
 STORE_LOCALES = (
     "en",
@@ -288,8 +305,80 @@ def load_creative_manifest() -> tuple[dict, list[str]]:
     return manifest, failures
 
 
+def load_promotional_asset_specs() -> tuple[dict[str, dict], list[str]]:
+    """Load and validate the unsubmitted Google promotional-image contract."""
+    failures: list[str] = []
+    try:
+        manifest = json.loads(FEATURING_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return {}, [f"featuring manifest: {error}"]
+    assets = manifest.get("assets")
+    if not isinstance(assets, list):
+        return {}, ["featuring manifest assets must be a list"]
+    indexed = {
+        asset.get("id"): asset
+        for asset in assets
+        if isinstance(asset, dict) and isinstance(asset.get("id"), str)
+    }
+    if len(indexed) != len(assets):
+        failures.append("featuring manifest assets must have unique string ids")
+    if set(indexed) != set(EXPECTED_PROMOTIONAL_ASSETS):
+        failures.append(
+            "featuring manifest must contain the primary and square Google assets"
+        )
+        return {}, failures
+
+    specs: dict[str, dict] = {}
+    for asset_id, expected in EXPECTED_PROMOTIONAL_ASSETS.items():
+        asset = indexed[asset_id]
+        relative = asset.get("path")
+        size = (asset.get("width"), asset.get("height"))
+        if asset.get("platform") != "google_play":
+            failures.append(f"{asset_id}: platform must be google_play")
+        if asset.get("role") != expected["role"]:
+            failures.append(f"{asset_id}: unexpected promotional role")
+        if relative != expected["path"]:
+            failures.append(f"{asset_id}: unexpected promotional path")
+        if size != expected["size"]:
+            failures.append(f"{asset_id}: unexpected promotional dimensions")
+        if asset.get("format") != "JPEG":
+            failures.append(f"{asset_id}: format must be JPEG")
+        if asset.get("max_bytes") != PROMOTIONAL_IMAGE_MAX_BYTES:
+            failures.append(f"{asset_id}: max_bytes must remain the 1 MiB guardrail")
+        if asset.get("locales") != ["uz", "ru", "en"]:
+            failures.append(f"{asset_id}: locales must be uz, ru, and en")
+        if asset.get("contains_text") is not False:
+            failures.append(f"{asset_id}: promotional image must remain text-free")
+        if asset.get("status") != "prepared-locally-unsubmitted":
+            failures.append(f"{asset_id}: status must preserve the upload boundary")
+        digest = asset.get("sha256")
+        if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+            failures.append(f"{asset_id}: invalid SHA-256")
+        if not isinstance(relative, str):
+            continue
+        path = ROOT / relative
+        if not path.is_file():
+            failures.append(f"missing {relative}")
+            continue
+        actual_digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != actual_digest:
+            failures.append(
+                f"{asset_id}: SHA-256 mismatch, expected {digest}, found {actual_digest}"
+            )
+        specs[relative] = {
+            "size": expected["size"],
+            "format": "JPEG",
+            "max_bytes": PROMOTIONAL_IMAGE_MAX_BYTES,
+        }
+    return specs, failures
+
+
 def main() -> int:
     manifest, failures = load_creative_manifest()
+    promotional_specs, promotional_failures = load_promotional_asset_specs()
+    failures.extend(promotional_failures)
+    for relative, specification in promotional_specs.items():
+        EXPECTED[relative] = (specification["size"], specification["format"])
     if manifest:
         failures.extend(validate_output_sha256_contract(manifest, root=ROOT))
         for feature in manifest["platforms"]["google-play"][
@@ -317,7 +406,9 @@ def main() -> int:
                 image_format,
                 require_alpha=relative == GOOGLE_PLAY_ICON,
                 max_bytes=(
-                    GOOGLE_PLAY_ICON_MAX_BYTES if relative == GOOGLE_PLAY_ICON else None
+                    GOOGLE_PLAY_ICON_MAX_BYTES
+                    if relative == GOOGLE_PLAY_ICON
+                    else promotional_specs.get(relative, {}).get("max_bytes")
                 ),
             )
         )
@@ -365,13 +456,27 @@ def main() -> int:
     if unexpected_creatives:
         failures.append(f"unvalidated creatives: {', '.join(unexpected_creatives)}")
 
+    promotional_root = ROOT / "growth/featuring/assets/google-play"
+    allowed_promotional = set(promotional_specs) | {
+        "growth/featuring/assets/google-play/README.md"
+    }
+    unexpected_promotional = sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in promotional_root.rglob("*")
+        if path.is_file() and path.relative_to(ROOT).as_posix() not in allowed_promotional
+    )
+    if unexpected_promotional:
+        failures.append(
+            f"unvalidated promotional assets: {', '.join(unexpected_promotional)}"
+        )
+
     if failures:
         print("Store asset validation failed:", file=sys.stderr)
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print(f"Store asset validation passed: {len(EXPECTED)} production images.")
+    print(f"Store asset validation passed: {len(EXPECTED)} versioned delivery images.")
     return 0
 
 

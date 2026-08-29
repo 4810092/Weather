@@ -67,9 +67,12 @@ store upload, nomination, promotional-content event, or featuring request.
       least four days for ordinary content review.
 - [ ] Re-count every localized tagline and description in the live console and
       verify that tagline and description are not duplicative.
-- [ ] Create and QA the currently required primary and square images under the
-      live size, file, text, safe-zone, and localization rules. No asset is
-      claimed complete by this package.
+- [x] Create and locally QA text-free primary and square candidates for size,
+      RGB JPEG format, file-size guardrail, safe zones, localization reuse, and
+      prohibited visual claims. Both remain unsubmitted.
+- [ ] Recheck both candidates against the live Console upload controls and crop
+      previews; adapt the square dimensions if the authenticated control
+      exposes a stricter requirement than the reviewed public Help text.
 - [ ] Confirm the exact event type and audience, then review every localized
       preview before submission.
 - [ ] Record separately: event draft, event submitted, content-quality result,
@@ -79,7 +82,8 @@ store upload, nomination, promotional-content event, or featuring request.
 ## External-action record
 
 - [x] Site publication performed by this package: **no**.
-- [x] Store asset or video creation performed by this package: **no**.
+- [x] Store asset creation performed by this package: **yes — two local,
+      unsubmitted Google candidates**; video creation: **no**.
 - [x] App Store Connect or Play Console mutation performed by this package:
       **no**.
 - [x] Outreach or provider email sent by this package: **no**.

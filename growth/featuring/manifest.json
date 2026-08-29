@@ -15,10 +15,48 @@
   "scope": {
     "copy_and_checklists": "prepared-locally",
     "site_publication": "not-performed",
-    "store_assets": "not-created-by-scope",
+    "store_assets": "prepared-locally-unsubmitted",
     "video": "not-created-by-scope",
     "store_console_changes": "not-performed"
   },
+  "assets": [
+    {
+      "id": "google_major_update_primary",
+      "platform": "google_play",
+      "role": "promotional_content_primary",
+      "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-primary-1920x1080.jpg",
+      "locales": [
+        "uz",
+        "ru",
+        "en"
+      ],
+      "width": 1920,
+      "height": 1080,
+      "format": "JPEG",
+      "max_bytes": 1048576,
+      "sha256": "9cecde83cae862dbb7627e9cf9481035cd2697300fd638b79c9ae44d3cdcd3ff",
+      "contains_text": false,
+      "status": "prepared-locally-unsubmitted"
+    },
+    {
+      "id": "google_major_update_square",
+      "platform": "google_play",
+      "role": "promotional_content_square",
+      "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-square-1080x1080.jpg",
+      "locales": [
+        "uz",
+        "ru",
+        "en"
+      ],
+      "width": 1080,
+      "height": 1080,
+      "format": "JPEG",
+      "max_bytes": 1048576,
+      "sha256": "754d7ac669ca11d8a5f45123e3e6adb377485fc42eff4b5ee15b6eed2a20f5fa",
+      "contains_text": false,
+      "status": "prepared-locally-unsubmitted"
+    }
+  ],
   "deliverables": [
     {
       "path": "growth/featuring/apple-2026-09.md",
@@ -29,6 +67,16 @@
       "path": "growth/featuring/google-2026-09.md",
       "platform": "google_play",
       "status": "draft-blocked"
+    },
+    {
+      "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-primary-1920x1080.jpg",
+      "platform": "google_play",
+      "status": "prepared-locally-unsubmitted"
+    },
+    {
+      "path": "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-square-1080x1080.jpg",
+      "platform": "google_play",
+      "status": "prepared-locally-unsubmitted"
     },
     {
       "path": "growth/content/calendar.csv",
@@ -113,12 +161,6 @@
       "blocker_type": "deliverable",
       "status": "blocked",
       "evidence": "growth/quality/internal-track-upload-2026-08-28.md"
-    },
-    {
-      "id": "deliverable.google_promotional_images",
-      "blocker_type": "deliverable",
-      "status": "missing",
-      "evidence": "growth/featuring/google-2026-09.md"
     }
   ],
   "prohibited_claims": [

@@ -28,6 +28,7 @@ from scripts.check_dashboard_report import (
 from scripts.check_store_assets import (
     inspect_image,
     load_creative_manifest,
+    load_promotional_asset_specs,
     validate_store_image,
 )
 from scripts.check_store_metadata import (
@@ -138,6 +139,29 @@ class ValidationScriptsTest(unittest.TestCase):
                     )
                 )
             )
+
+    def test_google_promotional_assets_are_hash_locked_and_unsubmitted(self) -> None:
+        specs, failures = load_promotional_asset_specs()
+        self.assertEqual(failures, [])
+        self.assertEqual(
+            set(specs),
+            {
+                "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-primary-1920x1080.jpg",
+                "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-square-1080x1080.jpg",
+            },
+        )
+        self.assertEqual(
+            specs[
+                "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-primary-1920x1080.jpg"
+            ]["size"],
+            (1920, 1080),
+        )
+        self.assertEqual(
+            specs[
+                "growth/featuring/assets/google-play/nimbo-1.1.0-quick-city-square-1080x1080.jpg"
+            ]["size"],
+            (1080, 1080),
+        )
 
     def test_creative_manifest_uses_locale_matched_watch_sources(self) -> None:
         manifest, failures = load_creative_manifest()
