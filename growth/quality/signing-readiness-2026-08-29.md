@@ -171,6 +171,10 @@ connectivity change does not clear signing or physical QA.
   artifacts cannot be produced until the existing login Keychain authorizes its
   protected values and private keys. It does not justify replacing the accepted
   Android upload identity or any Apple identity.
+- The authenticated GitHub repository settings were also checked read-only.
+  The repository and its `github-pages` environment contain no Actions secrets
+  or variables, so there is no existing CI-held signing fallback. No repository,
+  environment, workflow, secret, or variable setting was changed.
 
 ## Decision
 
