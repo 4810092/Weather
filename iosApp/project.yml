@@ -68,6 +68,11 @@ targets:
           - "-framework"
           - NimboShared
           - "-lsqlite3"
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather"
     dependencies:
       - target: NimboWidget
         embed: true
@@ -105,6 +110,11 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: uz.ganikhodjaev.weather.widget
         CODE_SIGN_ENTITLEMENTS: NimboWidget/NimboWidget.entitlements
         SKIP_INSTALL: true
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget"
   NimboSimulator:
     type: application
     platform: iOS
@@ -188,6 +198,11 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: uz.ganikhodjaev.weather.watchkitapp
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         SKIP_INSTALL: true
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp"
   NimboSurfaceTests:
     type: bundle.unit-test
     platform: iOS

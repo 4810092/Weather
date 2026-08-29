@@ -173,6 +173,33 @@ if generated_xcode_project.count("IPHONEOS_DEPLOYMENT_TARGET = 15.0;") != 6:
 if "IPHONEOS_DEPLOYMENT_TARGET = 17.0;" in generated_xcode_project:
     fail("generated Xcode project still contains the obsolete iOS 17 widget floor")
 
+apple_release_profiles = {
+    identity: f"iOS Team Store Provisioning Profile: {identity}",
+    f"{identity}.widget": f"iOS Team Store Provisioning Profile: {identity}.widget",
+    f"{identity}.watchkitapp": (
+        f"iOS Team Store Provisioning Profile: {identity}.watchkitapp"
+    ),
+}
+for bundle_id, profile_name in apple_release_profiles.items():
+    project_profile = f'PROVISIONING_PROFILE_SPECIFIER: "{profile_name}"'
+    generated_profile = f'PROVISIONING_PROFILE_SPECIFIER = "{profile_name}";'
+    if ios.count(project_profile) != 1:
+        fail(f"XcodeGen release signing must map {bundle_id} to its own profile")
+    if generated_xcode_project.count(generated_profile) != 1:
+        fail(f"generated Xcode release signing must map {bundle_id} to its own profile")
+
+export_options = plistlib.loads((ROOT / "iosApp/ExportOptions.plist").read_bytes())
+if export_options.get("method") != "app-store-connect":
+    fail("Apple export must target App Store Connect")
+if export_options.get("signingStyle") != "manual":
+    fail("Apple export must use deterministic manual signing")
+if export_options.get("signingCertificate") != "Apple Distribution":
+    fail("Apple export must use the Apple Distribution identity")
+if export_options.get("teamID") != "5SWEZ7HTYP":
+    fail("Apple export team changed")
+if export_options.get("provisioningProfiles") != apple_release_profiles:
+    fail("Apple export profile map must exactly cover app, widget, and watch")
+
 android_version = re.search(r"versionCode\s*=\s*([\d_]+)", android)
 wear_version = re.search(r"versionCode\s*=\s*([\d_]+)", wear)
 android_version_name = re.search(r'versionName\s*=\s*"([^"]+)"', android)

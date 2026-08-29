@@ -263,10 +263,9 @@ nimbo_source_revision="$(python3 scripts/verify_release_artifacts.py --print-sou
 xcodebuild -project iosApp/Nimbo.xcodeproj -scheme Nimbo \
   -configuration Release -destination 'generic/platform=iOS' \
   -archivePath build/Nimbo.xcarchive \
-  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='Apple Distribution' \
   DEVELOPMENT_TEAM=5SWEZ7HTYP \
   NIMBO_SOURCE_REVISION="$nimbo_source_revision" \
-  PROVISIONING_PROFILE_SPECIFIER='Nimbo App Store 1.0' archive
+  archive
 xcodebuild -exportArchive -archivePath build/Nimbo.xcarchive \
   -exportPath build/app-store-export \
   -exportOptionsPlist iosApp/ExportOptions.plist
@@ -276,6 +275,14 @@ The first command fails unless the manifest revision is a real commit and the
 actual tracked/untracked product bytes match it. Never replace it with an
 unvalidated `git rev-parse` value: the same validated full revision must be
 expanded into the signed app, widget, and watch Info.plists.
+
+Release signing is target-specific in `iosApp/project.yml` and the generated
+Xcode project. The app, WidgetKit extension, and watch app each select their own
+App Store provisioning profile; `iosApp/ExportOptions.plist` repeats that exact
+bundle-to-profile map and uses the Apple Distribution identity. Do not pass one
+global `PROVISIONING_PROFILE_SPECIFIER` on the command line: Xcode applies it to
+all embedded targets, where the main-app profile is invalid for the widget and
+watch bundle identifiers.
 
 On August 10, 2026 these commands produced and exported a valid arm64 App Store
 archive without requiring an Xcode account login. The archive and exported IPA

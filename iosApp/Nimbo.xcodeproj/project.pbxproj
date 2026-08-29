@@ -322,11 +322,9 @@
 					};
 					8F92D291BF734E5B93FB2FAB = {
 						DevelopmentTeam = 5SWEZ7HTYP;
-						ProvisioningStyle = Automatic;
 					};
 					9A090189304C1E0366FD1D45 = {
 						DevelopmentTeam = 5SWEZ7HTYP;
-						ProvisioningStyle = Automatic;
 					};
 					DFF7F3186E48921DC418F245 = {
 						DevelopmentTeam = 5SWEZ7HTYP;
@@ -334,7 +332,6 @@
 					};
 					F03B22F74B7FAD9BB70C6DAA = {
 						DevelopmentTeam = 5SWEZ7HTYP;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -674,7 +671,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Nimbo/Nimbo.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
@@ -690,6 +688,7 @@
 					NimboShared,
 					"-lsqlite3",
 				);
+				PROVISIONING_PROFILE_SPECIFIER = "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -699,6 +698,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = NimboWidget/NimboWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = NimboWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -709,6 +710,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = uz.ganikhodjaev.weather.widget;
 				PRODUCT_MODULE_NAME = NimboWidget;
 				PRODUCT_NAME = NimboWidget;
+				PROVISIONING_PROFILE_SPECIFIER = "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -748,10 +750,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = NimboWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = uz.ganikhodjaev.weather.watchkitapp;
 				PRODUCT_MODULE_NAME = NimboWatch;
 				PRODUCT_NAME = NimboWatch;
+				PROVISIONING_PROFILE_SPECIFIER = "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
