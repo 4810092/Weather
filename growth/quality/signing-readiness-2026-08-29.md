@@ -22,8 +22,19 @@ The exact product commit is
   and targetSdk `36`. Embedded VCS metadata identifies the full commit above.
 - Archive inspection reports zero signature entries. This is an unsigned local
   release artifact and cannot be uploaded.
-- A protected Android signing-value lookup through `security` exits with status
-  `51`; no secret was exposed and no credential mutation was attempted.
+- Both expected Android Keychain item metadata queries pass, and the existing
+  keystore is present with mode `600`. A protected signing-value lookup through
+  `security` still exits with status `51`; no password or private value was
+  retrieved, and no credential mutation was attempted.
+- A subsequent source-exact signing attempt used a detached standalone checkout
+  at `9342824` because AGP cannot resolve valid VCS metadata through this
+  repository's registered-worktree pointer. The standalone build reproduced the
+  authoritative unsigned phone and Wear AAB hashes and embedded the full exact
+  revision. Both password lookups again returned status `51`
+  (`errSecAuthFailed`); the planned JDK 17 `jarsigner` flow would have consumed
+  them only through protected environment variables, but it was not started.
+  No signed output was created or retained, and all shell variables and
+  temporary checkouts were removed.
 - Exact debug APK SHA-256
   `40f3d15d9eed33761c4e53c86ed91ac26411817811fb93792e1eb65ef0a69227`
   passed fresh-install physical API 25 Russian onboarding and the exact durable
@@ -97,6 +108,16 @@ therefore retained only as point-in-time history, not as current readiness. No
 exact-source Apple build was installed or physically exercised, and the device
 matrix cannot resume until signing succeeds and CoreDevice readiness is
 re-established at action time.
+
+At `2026-08-29 20:44 +05:00`, a new read-only recheck found the iPad available
+and paired in both CoreDevice and Xcode device discovery. It still was not
+action-ready: the lock-state and no-auto-mount DDI queries failed because the
+device had not been unlocked recently, so current DDI status could not be read.
+The iPhone and paired watch remained unavailable. Apple Development and
+Distribution identities for team `5SWEZ7HTYP` remained present; one historical
+duplicate Development certificate was revoked while the other same-label
+identity remained valid. No private-key operation was attempted, so this
+connectivity change does not clear signing or physical QA.
 
 ## Decision
 

@@ -29,7 +29,8 @@ simulator products now have recorded hashes, but all remain blocked without
 source-current distribution signing and matching physical-QA evidence. Wear
 application payload is
 unchanged, but its retained signed AAB embeds historical revision `4d9492a`, not
-the current `df5f824`; payload parity does not satisfy exact-source provenance.
+the current product source `9342824`; payload parity does not satisfy exact-source
+provenance.
 The exact boundary and preserved historical hashes are recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-29.md)
 and [upload manifest](../store/upload-manifest-1.1.0.json).

@@ -78,7 +78,10 @@ def generated_source_paths(manifest: dict) -> list[str]:
                     )
                 else:
                     relative = platform_data["phone_source"].format(
-                        source_locale=locale_data["source_locale"]
+                        source_locale=locale_data["source_locale"],
+                        source_name=story.get(
+                            "app_store_source_name", "01-current.png"
+                        ),
                     )
                 paths.add(relative)
     return sorted(paths)
@@ -362,7 +365,10 @@ def source_path(
         )
     else:
         template = manifest["platforms"][platform]["phone_source"]
-        relative = template.format(source_locale=locale_data["source_locale"])
+        relative = template.format(
+            source_locale=locale_data["source_locale"],
+            source_name=story.get("app_store_source_name", "01-current.png"),
+        )
     path = ROOT / relative
     if not path.is_file():
         raise FileNotFoundError(path)

@@ -33,7 +33,9 @@ from a successful build or an older artifact.
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 activation-path
   QA, including the durable first-forecast tip, its cancelable city-picker CTA,
-  persisted acknowledgement, and cold-start suppression. API 24
+  persisted acknowledgement, and cold-start suppression. A separate exact-
+  product, no-snapshot API 24 debug rerun passed clean live weather, tip
+  persistence, offline cache, recovery, and the TLS/fatal/ANR filter. API 24
   phone-widget and API 37 round-Wear Empty/Fresh/Stale checks remain prior
   regression evidence for `ee7c36f`; current upload-signed tablet, physical
   widget, and paired Wear OS coverage is absent.
@@ -61,7 +63,7 @@ from a successful build or an older artifact.
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — product-commit emulator widget evidence exists, but current signed physical phone coverage does not |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact-product API 24 emulator and physical API 25 debug evidence exists, but current signed physical phone coverage does not |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — API 24 emulator widget contract passes; no current signed physical tablet/widget result |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — API 37 round emulator render passes; no exact-current signed physical-watch or paired handoff result |
 | Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-source simulator builds and 18 surface tests pass, but older-runtime rendering, signing, and physical evidence are absent |

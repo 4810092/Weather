@@ -68,17 +68,19 @@ search result slices for all five generic queries. A bounded absence means only
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  The bounded phone vc8 API 25 debug/source evidence is scoped to commit
-  `2004e4f` and is historical after the current runtime changes. There is no
+  Exact product source `9342824` now has a bounded physical API 25 debug pass for
+  the first-forecast activation path and a fresh no-snapshot API 24 emulator pass
+  for live, cold-start, cached-offline, and recovery behavior. There is still no
   upload-signed current phone artifact or matching release-certificate physical
-  pass. Apple build 6 also has no current signed artifact or physical result.
-  Neither is an uploadable artifact.
+  matrix. Apple build 6 has exact Release-simulator hashes and localized phone
+  capture provenance, but no distribution-signed archive or physical result.
+  None of this evidence is an uploadable artifact.
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
 - The retained upload-signed Wear `1.1.0 (1000008)` artifact embeds revision
   `4d9492a`, so it is historical rather than source-current. The exact-current
-  Wear output embeds revision `df5f824` but is unsigned. The signed phone
+  Wear output embeds revision `9342824` but is unsigned. The signed phone
   `1.1.0 (7)` universal APK is likewise a preserved
   historical candidate; it passed physical API 25 clean install, live and
   cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
@@ -88,15 +90,21 @@ search result slices for all five generic queries. A bounded absence means only
   records the boundary.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
-  remains scoped to build 5. Current Apple build 6 has no signed archive, hash,
-  or physical runtime result and does not imply App Store Connect or TestFlight
-  upload.
+  remains scoped to build 5. Current Apple build 6 has no distribution-signed
+  archive or physical runtime result. Its exact-product ad-hoc simulator hash and
+  [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-29.md)
+  do not imply App Store Connect or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
-  remains API 30. The post-Fragment debug candidate passes API 24 quick-city/
-  live/cold/cache/recovery and API 36 Arabic RTL quick-city/live. An earlier
-  candidate passed API 36 English denied-location/search/cold-start. The exact
+  remains API 30. Exact product source `9342824` passes a clean, no-snapshot API
+  24 debug run covering no-permission quick-city, live weather, first-forecast
+  tip acknowledgement, online cold start, cached-offline refresh, recovery, and
+  process health; built and pulled-installed bytes match. The
+  [current API 24 evidence](../growth/quality/android-api24-current-product-smoke-2026-08-29.md)
+  remains explicitly unsigned and emulator-only. Earlier candidates
+  passed API 36 Arabic RTL quick-city/live and English denied-location/search/
+  cold-start. The exact
   historical signed phone vc7 passes the expanded physical API 25 matrix listed above;
-  the post-throttle `97c26cb` debug APK separately passes API 25 live,
+  the exact post-throttle source `2004e4f` debug APK separately passes API 25 live,
   provider-blocked fresh-cache cold start, manual bypass, recovery, and cleanup.
   Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
   onboarding, live weather, and support/Play destination smoke plus a
@@ -106,10 +114,13 @@ search result slices for all five generic queries. A bounded absence means only
   Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ
-  Android captures prove Best Time, 10-day/AQI, and offline claims. The watch
-  story uses locale-matched simulator/emulator captures. The Apple Watch capture
-  is build-5 UI evidence and cannot satisfy build-6 QA; neither platform capture
-  is physical-watch QA. The draft was not submitted for review or published.
+  Android captures prove Best Time, 10-day/AQI, and offline claims. Exact-current
+  Apple EN/RU/UZ phone sources now prove localized live product pixels for the
+  phone creative pack; their simulator provenance is not signing or physical QA.
+  The watch story uses locale-matched simulator/emulator captures. The Apple
+  Watch capture is build-5 UI evidence and cannot satisfy build-6 QA; neither
+  platform capture is physical-watch QA. The draft was not submitted for review
+  or published.
   The uncaptured home-screen widget story remains excluded.
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
   source-backed growth dashboard. GitHub Pages is deployed and configured for
@@ -136,9 +147,10 @@ recorded only after direct store evidence.
    symbolicate it against the retained build-4 archive and dSYM, reproduce where
    possible, fix it, and demonstrate the crash-free-session guardrail. Absence of
    a downloadable report is not a pass.
-2. Monitor the sent Open-Meteo clarification and record an unambiguous written
-   response. Promotion stays paused while the answer is missing. A
-   paid/customer credential must never be embedded in a mobile client.
+2. Preserve the 2026-08-29 OpenMeteo GmbH written clearance for the exact free,
+   non-monetized and unpaid-organic scope. Reopen the provider decision before
+   any monetization, paid promotion, attribution removal, or material usage
+   change. A paid/customer credential must never be embedded in a mobile client.
 3. Produce source-synced signed phone vc8, Wear vc1000008, and Apple build-6
    artifacts, then complete the remaining physical matrix. Historical phone
    vc7 passes General
@@ -147,11 +159,15 @@ recorded only after direct store evidence.
    removed after QA. A naturally scheduled background refresh passed on the
    earlier debug candidate. Historical Apple `1.1.0 (5)` installed on the iPad
    but could not launch while the device was locked and was removed; the older
-   bounded `1.0.1 (4)` iPad runtime pass remains separately scoped. Physical
-   QA for current phone `1.1.0 (8)` and Apple `1.1.0 (6)`, plus Android
-   tablet/Wear/widget, the unavailable iPhone/watch matrix, and the now
-   CoreDevice-usable iPad remains. The iPad connection/DDI sub-blocker is clear,
-   but no exact-current distribution-signed Apple build exists to install.
+   bounded `1.0.1 (4)` iPad runtime pass remains separately scoped. Full
+   signed-artifact physical QA for current phone `1.1.0 (8)` and Apple
+   `1.1.0 (6)`, plus Android
+   tablet/Wear/widget and the unavailable iPhone/watch matrix remains. At the
+   latest read-only check the iPad was discoverable and paired in both CoreDevice
+   and `xcdevice`, but it was locked; lock-state and no-auto-mount DDI queries
+   failed before current DDI readiness could be read. The iPad is therefore not
+   action-ready, and no exact-current distribution-signed Apple build exists to
+   install.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.

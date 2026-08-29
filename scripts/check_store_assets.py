@@ -181,6 +181,18 @@ def load_creative_manifest() -> tuple[dict, list[str]]:
         failures.append("creative manifest schema_version must be 1")
     if manifest.get("generated_by") != "scripts/build_store_creatives.py":
         failures.append("creative manifest must name the deterministic renderer")
+    capture_evidence = manifest.get("source_capture_evidence")
+    capture_path = Path(capture_evidence) if isinstance(capture_evidence, str) else None
+    if (
+        capture_path is None
+        or capture_path.is_absolute()
+        or ".." in capture_path.parts
+        or not capture_evidence.startswith("growth/quality/")
+        or not (ROOT / capture_path).is_file()
+    ):
+        failures.append(
+            "creative manifest must reference checked-in source capture evidence"
+        )
     platforms = manifest.get("platforms", {})
     if set(platforms) != {"app-store", "google-play"}:
         failures.append("creative manifest must cover App Store and Google Play")
@@ -223,6 +235,48 @@ def load_creative_manifest() -> tuple[dict, list[str]]:
         not str(name).endswith(".png") for name in filenames
     ):
         failures.append("creative story filenames must be six unique PNG names")
+
+    def valid_focus(value: object) -> bool:
+        if (
+            not isinstance(value, list)
+            or len(value) != 3
+            or any(
+                isinstance(item, bool) or not isinstance(item, (int, float))
+                for item in value
+            )
+        ):
+            return False
+        center_x, center_y, zoom = (float(item) for item in value)
+        return 0.0 <= center_x <= 1.0 and 0.0 <= center_y <= 1.0 and zoom >= 1.0
+
+    apple_story_compositions: list[tuple[str, tuple[float, float, float]]] = []
+    for index, story in enumerate(stories):
+        source_name = story.get("app_store_source_name", "01-current.png")
+        apple_focus = story.get("app_store_focus")
+        google_focus = story.get("google_focus")
+        if not isinstance(source_name, str) or not source_name.endswith(".png"):
+            failures.append(
+                f"{story.get('id', 'unknown')}: invalid App Store source/focus"
+            )
+        elif not valid_focus(apple_focus):
+            failures.append(
+                f"{story.get('id', 'unknown')}: invalid App Store source/focus"
+            )
+        elif index < 5:
+            apple_story_compositions.append(
+                (source_name, tuple(float(value) for value in apple_focus))
+            )
+        if not valid_focus(google_focus):
+            failures.append(
+                f"{story.get('id', 'unknown')}: invalid Google Play focus"
+            )
+    if len(apple_story_compositions) == 5 and len(
+        set(apple_story_compositions)
+    ) != 5:
+        failures.append(
+            "the first five App Store stories must use distinct source/focus "
+            "compositions"
+        )
     if set(manifest.get("excluded_until_captured", [])) != {"home-screen widgets"}:
         failures.append("uncaptured product surfaces must remain explicitly excluded")
 
@@ -288,7 +342,10 @@ def load_creative_manifest() -> tuple[dict, list[str]]:
                 else:
                     source_paths.add(
                         platform_data["phone_source"].format(
-                            source_locale=locale_data["source_locale"]
+                            source_locale=locale_data["source_locale"],
+                            source_name=story.get(
+                                "app_store_source_name", "01-current.png"
+                            ),
                         )
                     )
     for relative in source_paths:

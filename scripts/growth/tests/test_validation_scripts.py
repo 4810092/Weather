@@ -9,6 +9,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 from xml.etree import ElementTree
 
 from PIL import Image
@@ -226,6 +227,17 @@ class ValidationScriptsTest(unittest.TestCase):
             manifest["platforms"]["google-play"]["legacy_feature_graphic_locale"],
             "en-US",
         )
+        self.assertEqual(
+            manifest["source_capture_evidence"],
+            "growth/quality/apple-localized-current-product-capture-2026-08-29.md",
+        )
+        self.assertTrue((ROOT / manifest["source_capture_evidence"]).is_file())
+        self.assertTrue(
+            all(
+                story["app_store_source_name"] == "01-current.png"
+                for story in manifest["stories"]
+            )
+        )
         for locale, payload in manifest["locales"].items():
             expected_segment = "en" if locale == "en-US" else locale
             self.assertTrue(
@@ -244,6 +256,61 @@ class ValidationScriptsTest(unittest.TestCase):
         self.assertEqual(len(source_paths), 22)
         self.assertEqual(set(manifest["source_sha256"]), set(source_paths))
         self.assertEqual(validate_source_sha256_contract(manifest, root=ROOT), [])
+
+    def test_creative_manifest_rejects_duplicate_apple_story_compositions(self) -> None:
+        manifest, failures = load_creative_manifest()
+        self.assertEqual(failures, [])
+        duplicated = copy.deepcopy(manifest)
+        duplicated["stories"][1]["app_store_source_name"] = duplicated["stories"][0].get(
+            "app_store_source_name", "01-current.png"
+        )
+        duplicated["stories"][1]["app_store_focus"] = duplicated["stories"][0][
+            "app_store_focus"
+        ]
+
+        with mock.patch("scripts.check_store_assets.CREATIVE_MANIFEST") as manifest_path:
+            manifest_path.read_text.return_value = json.dumps(duplicated)
+            _, duplicate_failures = load_creative_manifest()
+
+        self.assertIn(
+            "the first five App Store stories must use distinct source/focus "
+            "compositions",
+            duplicate_failures,
+        )
+
+    def test_creative_manifest_rejects_out_of_range_story_focus(self) -> None:
+        manifest, failures = load_creative_manifest()
+        self.assertEqual(failures, [])
+        invalid_cases = (
+            ("app_store_focus", [-1, 0.5, 1], "invalid App Store source/focus"),
+            ("app_store_focus", [0.5, 2, 1], "invalid App Store source/focus"),
+            ("app_store_focus", [0.5, 0.5, 0], "invalid App Store source/focus"),
+            ("app_store_focus", [True, 0.5, 1], "invalid App Store source/focus"),
+            ("google_focus", [0.5, 0.5, 0], "invalid Google Play focus"),
+        )
+        with mock.patch("scripts.check_store_assets.CREATIVE_MANIFEST") as manifest_path:
+            for focus_key, focus, expected in invalid_cases:
+                with self.subTest(focus_key=focus_key, focus=focus):
+                    mutated = copy.deepcopy(manifest)
+                    mutated["stories"][0][focus_key] = focus
+                    manifest_path.read_text.return_value = json.dumps(mutated)
+                    _, invalid_failures = load_creative_manifest()
+                    self.assertTrue(
+                        any(expected in failure for failure in invalid_failures),
+                        invalid_failures,
+                    )
+
+    def test_creative_manifest_rejects_escaping_capture_evidence(self) -> None:
+        manifest, failures = load_creative_manifest()
+        self.assertEqual(failures, [])
+        manifest["source_capture_evidence"] = "growth/quality/../../README.md"
+        with mock.patch("scripts.check_store_assets.CREATIVE_MANIFEST") as manifest_path:
+            manifest_path.read_text.return_value = json.dumps(manifest)
+            _, invalid_failures = load_creative_manifest()
+        self.assertIn(
+            "creative manifest must reference checked-in source capture evidence",
+            invalid_failures,
+        )
 
     def test_creative_output_contract_rejects_path_set_mutations(self) -> None:
         manifest, failures = load_creative_manifest()

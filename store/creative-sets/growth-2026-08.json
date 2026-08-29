@@ -1,31 +1,32 @@
 {
   "schema_version": 1,
   "id": "growth-2026-08",
-  "revision": 4,
+  "revision": 5,
   "generated_by": "scripts/build_store_creatives.py",
+  "source_capture_evidence": "growth/quality/apple-localized-current-product-capture-2026-08-29.md",
   "output_sha256": {
     "store/assets/google-play/feature-graphic-1024x500.jpg": "e94c2b16dead89ebe512ec77e55c3766d698238427162b3e74047ac21f2362c4",
     "store/assets/google-play/feature-graphic-en-US-1024x500.jpg": "e94c2b16dead89ebe512ec77e55c3766d698238427162b3e74047ac21f2362c4",
     "store/assets/google-play/feature-graphic-ru-RU-1024x500.jpg": "768eac2539ceb9f2c5bea22a19ab0598a8b8efba6a92a1b22dd1289a283d5bc0",
     "store/assets/google-play/feature-graphic-uz-UZ-1024x500.jpg": "a3ef85c4d6518ccaa93848617bef4868164e19eff79ea7160060d56ffef44437",
-    "store/creatives/growth-2026-08/app-store/en-US/01-best-time.png": "7d259180db8de3d58b5ce1be98b97371de50ac76678a8614d9af48b9cc8a073b",
-    "store/creatives/growth-2026-08/app-store/en-US/02-recent-comparison.png": "280592df9c7038be1905e73545a82aa0b552a48cd3bea1351d6454be219ca934",
-    "store/creatives/growth-2026-08/app-store/en-US/03-timeline.png": "5dc4caa66a6b9f11c63a0078b30c51c66c38e49fdbbcaefc0af3406bb32465a1",
-    "store/creatives/growth-2026-08/app-store/en-US/04-details.png": "80a588812d4951b7255122250ddbf1e6f8a9283f2886bc9d23c256403e1a8b95",
-    "store/creatives/growth-2026-08/app-store/en-US/05-offline-privacy.png": "706f30bec429632a087413b7adfad473d4c21b8eb54cd867cbacdf3530f15124",
-    "store/creatives/growth-2026-08/app-store/en-US/06-watch.png": "838b01cb3e60d1dc62107f8108f4b8f0eb5250b169165158e728def8085b1276",
-    "store/creatives/growth-2026-08/app-store/ru-RU/01-best-time.png": "83f9560450f3bf8732604e91cf03989a3e0edd2619bc3d2f9c4d3163e0f1411a",
-    "store/creatives/growth-2026-08/app-store/ru-RU/02-recent-comparison.png": "9158bd2925eb50c3f0cbdb0c9df2ba4fd6ba5dd02496f42f67ca7c76189ac840",
-    "store/creatives/growth-2026-08/app-store/ru-RU/03-timeline.png": "0699243328f1adf5b144cfcaeb02ab699dd44ccb70b19b9321f7cafb9e73a6d3",
-    "store/creatives/growth-2026-08/app-store/ru-RU/04-details.png": "f1e803c5503c1997a63d1093c86550fed805a13a6453ae21cd31de0f5b13e25c",
-    "store/creatives/growth-2026-08/app-store/ru-RU/05-offline-privacy.png": "3f4e84b6a6b5232f66f67e7b0adc1fa1c0a7ef4195a633b28a82397c8cef18f8",
-    "store/creatives/growth-2026-08/app-store/ru-RU/06-watch.png": "f2b099842a5c3592d30bd3d967739111395b849c4586d72d011a1803c35e8653",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/01-best-time.png": "618d054c09da00eeb5d00b557bbf7927b4a11c4a4777bf142ee82b004e779ff2",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/02-recent-comparison.png": "51b4a705eefe186279857a802dd0ae767266bd9b89bbb5b7b5cfc3950e5b9e2c",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/03-timeline.png": "0437a04e264ef6a4cfbd76f1a4c990c06b4caf81699528ad7fe1e735092bdae3",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/04-details.png": "4e6c20f63fe1d2fd21310298b589d2dbf060665e6a9423e76331564c4dacbbe3",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/05-offline-privacy.png": "e86193c63aaa0a35834075ba57d4136acb41911fad48ffe9448225e40d2c1db2",
-    "store/creatives/growth-2026-08/app-store/uz-UZ/06-watch.png": "666a616ce42ac020b4f9c5d8548c8b6a0941a263cd9dd5ec090f505df3907f30",
+    "store/creatives/growth-2026-08/app-store/en-US/01-best-time.png": "ff50aeb27d07ece32f1a7cd1b9971ad5d4488ca5e3438ef7199378b8cb7a464b",
+    "store/creatives/growth-2026-08/app-store/en-US/02-recent-comparison.png": "8767194ae7e6732667148e64d33d64f18b456cf3950fc4ff9746cfb54425f08f",
+    "store/creatives/growth-2026-08/app-store/en-US/03-timeline.png": "d6a82be460afacab09b7ec9b1db5a3c46c9505719e3dfc2216e362f4b1d58284",
+    "store/creatives/growth-2026-08/app-store/en-US/04-details.png": "9530a2a95cafbe0d2a481e73aa8d1836f93328ef7e472a476120b81e77c14735",
+    "store/creatives/growth-2026-08/app-store/en-US/05-offline-privacy.png": "78a63391871138059945fef4dd94e11dc3f33bf0f4e9e638ff280201ad9b7fc2",
+    "store/creatives/growth-2026-08/app-store/en-US/06-watch.png": "3cf20782dee4b82f1c105db7b77b0004c126f9d4c7d02baf36a9c08da39e005e",
+    "store/creatives/growth-2026-08/app-store/ru-RU/01-best-time.png": "4299a3e52b98d9874362850aa78e3e4825ea332758ec8675db69620a0bc3c83d",
+    "store/creatives/growth-2026-08/app-store/ru-RU/02-recent-comparison.png": "acb80606adc76ba7ed564a70445a83b34b79c2f70f65fda00dd592528c4536e4",
+    "store/creatives/growth-2026-08/app-store/ru-RU/03-timeline.png": "bf81d0481e3cca4500f4f7a45a56548e694d916ea8f1c49dd6ed0a1e43363df0",
+    "store/creatives/growth-2026-08/app-store/ru-RU/04-details.png": "c536e2736f5ecbddce9d9699d9a57221ca4646e004fbbb654ed7dce662d0ebc9",
+    "store/creatives/growth-2026-08/app-store/ru-RU/05-offline-privacy.png": "daca8e973595ddd878af0efd3b11dcb69eeb100403cd4b45e00e4061974ee663",
+    "store/creatives/growth-2026-08/app-store/ru-RU/06-watch.png": "233d7f4e87ae9d82c37d172004be6a8b78245d98af546d8148c8e97afa2210eb",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/01-best-time.png": "39fb8de0a870c905685192f4e89e01630a32493c6d87a1e4ab4b8ac129f01ac0",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/02-recent-comparison.png": "aa9eff3f6d4b79fe584eee55c53290c143e7f6b8add5ffd640cf3efb8890c4f3",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/03-timeline.png": "ad06f2de0023d49b93d7313af4d71dad77d0dc0169df3a7c714d7da8a6b03ea5",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/04-details.png": "f33362629349104ebc76eec53b7a08a70a2f2ecf58876eb6b51813f087f23614",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/05-offline-privacy.png": "f40160672d7303911df5318e269380b541065e125460123db7559416d56de7e9",
+    "store/creatives/growth-2026-08/app-store/uz-UZ/06-watch.png": "3b14e9f9a021268c31235873510ea122aaa2c63646ed23b32120b0d2bf87f709",
     "store/creatives/growth-2026-08/google-play/en-US/01-best-time.png": "784296dad09cc27062d39190f2aa62670b062328845905a47bd836e337561edb",
     "store/creatives/growth-2026-08/google-play/en-US/02-recent-comparison.png": "153ceef2c0c93bf04891e74f8da22b3be68233923787b8b572e0d1eba6701487",
     "store/creatives/growth-2026-08/google-play/en-US/03-timeline.png": "91975ce47a16943af69986bbdf35a532f3143e8f85bdaf0f53ee88d40cf41927",
@@ -50,9 +51,9 @@
     "store/screenshots/app-store/apple-watch-en/01-current.jpg": "75061f4bc2759d9918bf27c7a86f4cbb3d66297af0911741b85c224735058a4d",
     "store/screenshots/app-store/apple-watch-ru-RU/01-current.png": "befd7d7939f8b6315e117a0f03a36cbea1041fdc2a15cac15e2d41d7fab1ce76",
     "store/screenshots/app-store/apple-watch-uz-UZ/01-current.png": "b4ae83a6062d515db9074ba4725bf218b719bf96366cd17a2e79514d4a448baa",
-    "store/screenshots/app-store/iphone-6.9-en/01-current.png": "5346d3b04fb1236f6d21e394daf67cd00b9cca8c7e0411b3f7aeeb3e34b64b0e",
-    "store/screenshots/app-store/iphone-6.9-ru-RU/01-current.png": "b4c1b031f050e52c13172e8bea8f443f5405cb888ac9cc6f8088f34caa97364c",
-    "store/screenshots/app-store/iphone-6.9-uz-UZ/01-current.png": "8bf947f5dc333e500a25b3ed6fb51f61f03ae8a715c1d3bb91243eefb5482377",
+    "store/screenshots/app-store/iphone-6.9-en/01-current.png": "6c8af5018c298a1238e0c93a10d6ef818c90c60dffcdf2db02dbeedf9c4b39ab",
+    "store/screenshots/app-store/iphone-6.9-ru-RU/01-current.png": "79fe25419364a76c75d452d328a86e2b7b2a3e8afb72025b2bc1fc95341afd73",
+    "store/screenshots/app-store/iphone-6.9-uz-UZ/01-current.png": "8150e5ccdb71d1bd2c2044d88beb96395206c7a2bdecbaed09ffaa8d6792ac61",
     "store/screenshots/google-play/phone-en/01-current.png": "aad1adc1af3e7f6f357411ef63d0ff3c9e49d96e2df666fc5efef7bfc28ae3ed",
     "store/screenshots/google-play/phone-en/02-timeline-selected.png": "32367f0f4aeb0769d67941957313d2be71e6d7e53e023fc4cf7c9814d571a2b8",
     "store/screenshots/google-play/phone-en/03-details.png": "5bc205abe1b6ff7a8d0a7dcbfdd49d950feafdb0ede101a7acf327bb8ba3dea3",
@@ -91,7 +92,7 @@
         2868
       ],
       "output_dir": "store/creatives/growth-2026-08/app-store",
-      "phone_source": "store/screenshots/app-store/iphone-6.9-{source_locale}/01-current.png"
+      "phone_source": "store/screenshots/app-store/iphone-6.9-{source_locale}/{source_name}"
     },
     "google-play": {
       "size": [
@@ -204,6 +205,7 @@
       "sequence": 1,
       "id": "best-time",
       "filename": "01-best-time.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "03-details.png",
       "google_focus": [
         0.5,
@@ -221,6 +223,7 @@
       "sequence": 2,
       "id": "recent-comparison",
       "filename": "02-recent-comparison.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "01-current.png",
       "google_focus": [
         0.5,
@@ -229,8 +232,8 @@
       ],
       "app_store_focus": [
         0.5,
-        0.5,
-        1.0
+        0.1,
+        1.1
       ],
       "evidence": "The production UI visibly compares current conditions with yesterday."
     },
@@ -238,6 +241,7 @@
       "sequence": 3,
       "id": "timeline",
       "filename": "03-timeline.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "02-timeline-selected.png",
       "google_focus": [
         0.5,
@@ -246,8 +250,8 @@
       ],
       "app_store_focus": [
         0.5,
-        0.5,
-        1.0
+        0.62,
+        1.08
       ],
       "evidence": "The production UI visibly labels its timeline as 24 hours before, now, and 24 hours ahead."
     },
@@ -255,6 +259,7 @@
       "sequence": 4,
       "id": "details",
       "filename": "04-details.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "03-details.png",
       "google_focus": [
         0.5,
@@ -264,14 +269,15 @@
       "app_store_focus": [
         0.5,
         0.5,
-        1.0
+        1.01
       ],
-      "evidence": "The localized Android release-candidate captures visibly show the 10-day forecast and air-quality card; App Store captions remain generic until matching Apple captures exist."
+      "evidence": "The localized Android release-candidate captures visibly show the 10-day forecast and air-quality card. The exact-product Apple sources show localized current conditions; dedicated Apple 10-day and air-quality states remain uncaptured, so the Apple caption stays generic."
     },
     {
       "sequence": 5,
       "id": "offline-privacy",
       "filename": "05-offline-privacy.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "05-offline-cache.png",
       "google_focus": [
         0.5,
@@ -281,7 +287,7 @@
       "app_store_focus": [
         0.5,
         0.5,
-        1.0
+        1.02
       ],
       "evidence": "The Android capture visibly reports a saved forecast; the no-account, no-ads, no-analytics Apple claim matches the audited store privacy declaration."
     },
@@ -289,6 +295,7 @@
       "sequence": 6,
       "id": "watch",
       "filename": "06-watch.png",
+      "app_store_source_name": "01-current.png",
       "google_source_name": "01-current.png",
       "google_focus": [
         0.5,

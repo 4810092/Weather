@@ -4,8 +4,11 @@ Current verdict (2026-08-29): **HOLD ACQUISITION**. The reproducible public
 monitor and daily snapshots are in place, but the required rank surfaces fail
 and the Top-10 streak is zero. Current phone vc8 and Apple build 6 cannot
 complete their protected private-signing operations and therefore have no
-source-synced signed artifact, matching hash, or physical QA; signed phone vc7
-and Apple build 5 are historical evidence only. OpenMeteo GmbH has confirmed
+source-synced signed artifact or matching release-certificate physical QA.
+Current Android product source has bounded debug API 24/API 25 evidence, and
+Apple build 6 has localized simulator-capture provenance; neither closes signing
+or the physical release matrix. Signed phone vc7 and Apple build 5 are historical
+evidence only. OpenMeteo GmbH has confirmed
 the exact unpaid, non-monetized organic-promotion scope for the non-commercial
 API. The iOS crash diagnostic, complete device matrix, and reconciled console
 exports are still missing. A build, a Pages
@@ -25,12 +28,14 @@ deployment, or historical device evidence does not close those gates.
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |
 | Provider capacity | [legal/open-meteo-capacity-contingency-2026-08-29.md](legal/open-meteo-capacity-contingency-2026-08-29.md) | Source-derived request model, implemented cache gate, official limits, and the no-key-in-client boundary |
 | Android emulator QA | [quality/android-emulator-smoke-2026-08-28.md](quality/android-emulator-smoke-2026-08-28.md) | API 24/36 live, denied-location, search, offline/error, recovery, and cold-start evidence |
+| Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact product-source no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
 | Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Clean API 25 live/search/cold-start evidence and uninstall boundary |
 | Trust and feedback QA | [quality/android-trust-feedback-smoke-2026-08-29.md](quality/android-trust-feedback-smoke-2026-08-29.md) | Exact-commit API 25 fresh-install plus API 36 preserved-data update, support/rate destinations, byte identity, and cleanup boundary |
 | Public ASO deployment gap | [quality/public-store-deployment-gap-2026-08-29.md](quality/public-store-deployment-gap-2026-08-29.md) | Dated public-store proof plus the authenticated unpublished Google UZ draft boundary |
 | UZ competitor ASO audit | [reports/aso-competitor-audit-2026-08-29.md](reports/aso-competitor-audit-2026-08-29.md) | Bounded official-store term evidence and the resulting truthful Apple/Google metadata revisions |
 | Provider-throttle physical QA | [quality/android-provider-throttle-smoke-2026-08-29.md](quality/android-provider-throttle-smoke-2026-08-29.md) | Current-commit API 25 fresh-cache skip, manual bypass, recovery, and cleanup evidence |
 | Apple runtime QA | [quality/apple-runtime-smoke-2026-08-28.md](quality/apple-runtime-smoke-2026-08-28.md) | Simulator and bounded iPad proof plus the explicit iPhone DDI blocker |
+| Apple exact-product capture provenance | [quality/apple-localized-current-product-capture-2026-08-29.md](quality/apple-localized-current-product-capture-2026-08-29.md) | EN/RU/UZ build-6 simulator phone pixels, source hashes, renderer boundary, and explicit non-signing/non-physical scope |
 | iOS 15 widget compatibility | [quality/ios-widget-compatibility-2026-08-29.md](quality/ios-widget-compatibility-2026-08-29.md) | Exact product-source minOS/UUID/hash proof plus available-runtime host integration and the explicit missing iOS 15/16 runtime boundary |
 
 The public monitor does not log in, use cookies, bypass access controls, or claim to reproduce personalized store UI. Google results remain sensitive to IP, compatibility, experiments, and server behavior. An absent target is recorded only as `> observed_count`.
