@@ -89,6 +89,49 @@ an empty issue list, and `No data` remain unavailable evidence rather than a
 numeric zero. Device D7 retention is likewise unavailable and cannot be graded
 pass or fail.
 
+## 13:12 refresh and technical-quality recommendations
+
+An authenticated read-only refresh at `2026-08-29 13:12 +05:00` confirmed
+that production remained `Active` at `Nimbo 1.0.2 (6)`, with no unpublished or
+under-review changes and no policy issues. Ratings remained `1.000` from one
+user. Android Vitals still did not expose a numeric crash or ANR rate, so the
+quality guardrails remain unknown rather than zero.
+
+Play displayed three recommendations against the processed public build:
+
+1. update an outdated `androidx.fragment` version;
+2. improve edge-to-edge coverage;
+3. remove unsupported edge-to-edge APIs or parameters.
+
+No additional runtime patch is justified in the current `1.1.0 (8)` source:
+
+- the exact-current dependency graph resolves `androidx.fragment:fragment` to
+  stable `1.9.0`; older `1.0.0` / `1.1.0` requests are transitive and resolve
+  to that override, and the exact-current AAB contains the `1.9.0` marker;
+- phone compileSdk/targetSdk are 36, `enableEdgeToEdge()` runs before content,
+  `adjustResize` is declared, and the root content applies
+  `WindowInsets.safeDrawing` on all sides;
+- app-owned themes no longer set deprecated status/navigation bar colors;
+  remaining system-bar compatibility calls in DEX belong to stable AndroidX
+  Activity `1.13.0`, while `isNavigationBarContrastEnforced=false` is an
+  officially documented three-button-navigation path.
+
+The recommendation cards therefore remain **open until Google Play processes
+version code 8**. If any card survives that upload, its expanded origin must be
+captured before changing code. A library-owned compatibility call is not by
+itself a reason to replace the current supported edge-to-edge implementation
+with manual deprecated APIs.
+
+Implementation references:
+
+- `gradle/libs.versions.toml`
+- `app/src/main/java/uz/ganikhodjaev/weather/MainActivity.kt`
+- `app/src/main/AndroidManifest.xml`
+- `shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/ui/WeatherScreen.kt`
+- <https://developer.android.com/jetpack/androidx/releases/fragment>
+- <https://developer.android.com/develop/ui/compose/system/setup-e2e>
+- <https://developer.android.com/jetpack/androidx/releases/activity>
+
 ## Evidence URLs
 
 - Production:

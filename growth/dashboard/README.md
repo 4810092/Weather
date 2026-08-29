@@ -29,14 +29,17 @@ and watch
 `0ebc1c8f49f390e57bee86420b5be977ead8f086cb4b9a7ed0ab6849c26068c7`.
 Their UUID-matched dSYMs verify and the app passed 40 bounded cold launches,
 but all three remain ad-hoc simulator products rather than uploadable archives.
-The exact `df5f824` debug APK passed bounded physical API 25 QA; broader API
-25/API 36 crash-path evidence remains historical to `97c26cb`. The iPad
+The exact `df5f824` debug APK passed bounded fresh-install physical API 25 QA
+and a same-certificate preserved-data update on physical API 36; pulled bytes
+matched on both, and the exercised support/rating paths produced no matching
+fatal or ANR log entry. Exact-current tablet, widget, signed-release, and paired
+Wear OS coverage remains missing. The iPad
 CoreDevice/DDI path is usable again, but no exact-current signed Apple build
 exists, so it cannot provide current physical proof. The historical iOS crash
 still lacks a symbolicated report; 212 passing tests, current-source hardening,
 and the simulator loop cannot be attributed to that event and do not close the
 crash gate. The authenticated Gmail thread and broad Open-Meteo searches were
-checked read-only at 12:35:12 +05:00: the 06:05:07 clarification remains the
+checked read-only at 13:12 +05:00: the 06:05:07 clarification remains the
 only indexed matching message with label `SENT`, and no inbound Open-Meteo
 reply is indexed in that account. This does not prove delivery or exclude
 another account or a later unindexed reply; written clearance remains absent.

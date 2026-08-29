@@ -1,6 +1,7 @@
 # Android trust and feedback smoke — 2026-08-29
 
-Status: **PASS within the exact debug/API 25 scope**.
+Status: **PASS within the exact debug/API 25 fresh-install and physical API 36
+preserved-data update scopes**.
 
 This does not close the release-device gate. The tested bytes use the Android
 debug certificate and are neither upload-signed nor Play-signed. No review,
@@ -44,11 +45,39 @@ evidence that the exact debug candidate failed its declared minSdk 24 runtime
 path. Store-derived compatibility must be rechecked after an exact-current
 signed upload.
 
+## Physical API 36 preserved-data update follow-up
+
+Target: Samsung SM-S908E, Android 16 / API 36, Russian. Execution window:
+`2026-08-29 13:14–13:18 +05:00`.
+
+The phone already contained a historical debuggable Nimbo `1.0.1 (5)`. Pulling
+that installed APK showed SHA-256
+`31231d419e6839d3accfc604fbec9042270a2e801fe65f6f193134f6bdb84443`
+and the same Android debug certificate as the exact candidate. This made a
+non-destructive `adb install -r` update possible without uninstalling the app
+or clearing its data.
+
+| Scenario | Result | Evidence observed |
+| --- | --- | --- |
+| Same-certificate update | PASS | `adb install -r` succeeded; `firstInstallTime` remained `2026-08-10 17:51:30`, while the package became `1.1.0 (8)`, minSdk 24, targetSdk 36 |
+| Exact installed bytes | PASS | Pulling the updated base APK produced `fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753`, identical to the local exact-product APK |
+| Preserved-state cold start | PASS | Tashkent opened with current conditions, yesterday comparison, best-time insight, timeline, and the one-time post-forecast tip; retained data remained usable |
+| Help path | PASS | `Помощь и обратная связь` opened the secure `https://nimbo.uz/support/` destination in Chrome |
+| Voluntary rating path | PASS | `Оценить Nimbo` opened the Play details surface for `uz.ganikhodjaev.weather`; no rating or review was entered |
+| Process stability | PASS within exercised paths | Filtered logcat contained no Nimbo fatal exception, process-crash, or ANR entry |
+
+The app was force-stopped after the run and intentionally left installed at
+the exact current debug bytes, preserving the pre-existing device data.
+Automatic rotation remained enabled in its original portrait state. This is
+still debug-certificate evidence, not Play-processed or upload-signed proof.
+
 ## Cleanup
 
-Nimbo was force-stopped and uninstalled after capture. Package path and process
-queries were empty, and all temporary device-side UI dumps were removed. The
-connected Samsung installation was not changed.
+On API 25, Nimbo was force-stopped and uninstalled after capture. Package path
+and process queries were empty, and all temporary device-side UI dumps were
+removed. The separate API 36 follow-up above updated the pre-existing
+same-certificate debug installation without clearing its data and left it
+force-stopped on the exact current bytes.
 
 The capture set was reviewed during the run. Representative transient hashes
 were footer PNG

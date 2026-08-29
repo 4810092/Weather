@@ -10,12 +10,12 @@
     "open_meteo_promotion_clearance": {
       "status": "pending",
       "blocks_publication": true,
-      "reason": "The authenticated Gmail thread and broad Open-Meteo searches were checked read-only at 2026-08-29 12:35:12 +05:00. The clarification sent to info@open-meteo.com at 06:05:07 remains the only indexed matching message and has label SENT; no inbound Open-Meteo reply is indexed in this account. This does not prove delivery or cover another account or a future/unindexed reply. Written clearance remains absent."
+      "reason": "The authenticated Gmail thread and broad Open-Meteo searches were checked read-only at 2026-08-29 13:12 +05:00. The clarification sent to info@open-meteo.com at 06:05:07 remains the only indexed matching message and has label SENT; no inbound Open-Meteo reply is indexed in this account. This does not prove delivery or cover another account or a future/unindexed reply. Written clearance remains absent."
     },
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Exact commit df5f824 debug APK SHA-256 fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753 passed fresh-install physical API 25 QA; pulled bytes matched. It passed no-location Tashkent onboarding, live weather, localized support and Play destination checks, and a bounded log with zero matching FATAL/ANR lines. Broader API 25/API 36 crash-path QA remains historical to 97c26cb. There is still no upload-signed vc8 or release-certificate result, and physical tablet, widget, and Wear OS coverage remains required."
+      "reason": "Exact commit df5f824 debug APK SHA-256 fb039c02964a0cbd49d9702998a2cba967c63bbc9ff368bcda9ea44936f0c753 passed fresh-install physical API 25 QA and a same-certificate preserved-data update on the physical API 36 Samsung; pulled bytes matched on both. The exercised paths covered no-location Tashkent onboarding, retained-state cold start, live weather, localized support and Play destinations, and bounded logs with zero matching FATAL/ANR lines. Broader exact-current tablet, widget, signed-release, and paired Wear OS coverage remains missing."
     },
     "ios_physical_smoke": {
       "status": "blocked",
@@ -35,7 +35,7 @@
     "store_policy_console_clearance": {
       "status": "pass",
       "blocks_publication": true,
-      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. The authenticated Google Play capture at 2026-08-29 08:41 +05:00 explicitly reported no policy issues and no unpublished changes; production remained active at 1.0.2 (6), 100%. This is point-in-time Console evidence, not a guarantee against later review. See growth/quality/store-policy-console-2026-08-28.md and growth/quality/google-play-console-2026-08-29.md."
+      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. The authenticated Google Play refresh at 2026-08-29 13:12 +05:00 explicitly reported no policy issues and no unpublished or under-review changes; production remained active at 1.0.2 (6), 100%. This is point-in-time Console evidence, not a guarantee against later review. See growth/quality/store-policy-console-2026-08-28.md and growth/quality/google-play-console-2026-08-29.md."
     }
   },
   "scale_status": "hold",
