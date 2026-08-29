@@ -29,6 +29,7 @@ REQUIRED = (
     "docs/ARCHITECTURE.md",
     "docs/DEVELOPMENT.md",
     "docs/TESTING.md",
+    "docs/QA_MATRIX.md",
     "docs/LOCALIZATION.md",
     "docs/PRIVACY.md",
     "docs/PROVIDERS.md",

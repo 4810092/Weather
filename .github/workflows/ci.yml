@@ -47,6 +47,7 @@ jobs:
       - name: Repository and localization checks
         run: |
           python3 scripts/check_repository.py
+          python3 scripts/check_release_qa_matrix.py
           python3 scripts/check_localizations.py
           python3 scripts/check_store_metadata.py
           python3 scripts/check_store_assets.py

@@ -1,0 +1,375 @@
+#!/usr/bin/env python3
+"""Fail closed when the human release QA matrix drifts from current authority."""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DOCUMENT = Path("docs/QA_MATRIX.md")
+UPLOAD_MANIFEST = Path("store/upload-manifest-1.1.0.json")
+QUALITY_GATES = Path("growth/quality/gates.json")
+CURRENT_BLOCK_START = "<!-- release-qa-current:start -->"
+CURRENT_BLOCK_END = "<!-- release-qa-current:end -->"
+HISTORICAL_HEADING = "## Historical evidence — non-transferable"
+VALID_SOURCE_SYNC = {"blocked", "verified-current"}
+VALID_GATE_STATUS = {"blocked", "pending", "unknown", "fail", "pass"}
+RELEASE_GATE = "release_artifact_source_sync"
+SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}\Z")
+
+SURFACES = (
+    {
+        "artifact": "android_phone",
+        "label": "Android phone/tablet",
+        "build_file": "app/build.gradle.kts",
+        "identity_field": "version_code",
+        "physical_gate": "android_physical_smoke",
+    },
+    {
+        "artifact": "wear_os",
+        "label": "Wear OS",
+        "build_file": "wearApp/build.gradle.kts",
+        "identity_field": "version_code",
+        "physical_gate": "android_physical_smoke",
+    },
+    {
+        "artifact": "apple",
+        "label": "Apple app/widget/watch",
+        "build_file": "iosApp/project.yml",
+        "identity_field": "build",
+        "physical_gate": "ios_physical_smoke",
+    },
+)
+
+
+def _load_json_object(path: Path, label: str, failures: list[str]) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        failures.append(f"{label}: cannot read JSON: {error}")
+        return {}
+    if not isinstance(payload, dict):
+        failures.append(f"{label}: root must be a JSON object")
+        return {}
+    return payload
+
+
+def _single_match(
+    text: str,
+    pattern: str,
+    label: str,
+    failures: list[str],
+) -> str | None:
+    matches = {match.replace("_", "") for match in re.findall(pattern, text)}
+    if len(matches) != 1:
+        failures.append(f"{label}: expected one unambiguous value, found {sorted(matches)}")
+        return None
+    return next(iter(matches))
+
+
+def _build_identities(root: Path, failures: list[str]) -> dict[str, tuple[str, int]]:
+    sources: dict[str, str] = {}
+    for relative in (
+        "app/build.gradle.kts",
+        "wearApp/build.gradle.kts",
+        "iosApp/project.yml",
+    ):
+        try:
+            sources[relative] = (root / relative).read_text(encoding="utf-8")
+        except OSError as error:
+            failures.append(f"{relative}: cannot read build identity: {error}")
+
+    if len(sources) != 3:
+        return {}
+
+    phone_name = _single_match(
+        sources["app/build.gradle.kts"],
+        r'versionName\s*=\s*"([^"]+)"',
+        "Android phone versionName",
+        failures,
+    )
+    phone_code = _single_match(
+        sources["app/build.gradle.kts"],
+        r"versionCode\s*=\s*([\d_]+)",
+        "Android phone versionCode",
+        failures,
+    )
+    wear_name = _single_match(
+        sources["wearApp/build.gradle.kts"],
+        r'versionName\s*=\s*"([^"]+)"',
+        "Wear OS versionName",
+        failures,
+    )
+    wear_code = _single_match(
+        sources["wearApp/build.gradle.kts"],
+        r"versionCode\s*=\s*([\d_]+)",
+        "Wear OS versionCode",
+        failures,
+    )
+    apple_name = _single_match(
+        sources["iosApp/project.yml"],
+        r"(?m)^\s*MARKETING_VERSION:\s*([^\s]+)\s*$",
+        "Apple MARKETING_VERSION",
+        failures,
+    )
+    apple_build = _single_match(
+        sources["iosApp/project.yml"],
+        r"(?m)^\s*CURRENT_PROJECT_VERSION:\s*([\d_]+)\s*$",
+        "Apple CURRENT_PROJECT_VERSION",
+        failures,
+    )
+    values = (phone_name, phone_code, wear_name, wear_code, apple_name, apple_build)
+    if any(value is None for value in values):
+        return {}
+    assert phone_name and phone_code and wear_name and wear_code and apple_name and apple_build
+    return {
+        "android_phone": (phone_name, int(phone_code)),
+        "wear_os": (wear_name, int(wear_code)),
+        "apple": (apple_name, int(apple_build)),
+    }
+
+
+def _gate_status(
+    gates: dict[str, Any],
+    gate_id: str,
+    failures: list[str],
+) -> str | None:
+    gate = gates.get(gate_id)
+    if not isinstance(gate, dict):
+        failures.append(f"quality gates: missing object {gate_id}")
+        return None
+    status = gate.get("status")
+    if status not in VALID_GATE_STATUS:
+        failures.append(f"quality gates: {gate_id} has invalid status {status!r}")
+        return None
+    if gate.get("blocks_publication") is not True:
+        failures.append(f"quality gates: {gate_id} must block publication")
+    reason = gate.get("reason")
+    if not isinstance(reason, str) or not reason.strip():
+        failures.append(f"quality gates: {gate_id} needs a non-empty reason")
+    return str(status)
+
+
+def _existing_repository_file(
+    root: Path,
+    value: object,
+    label: str,
+    failures: list[str],
+) -> bool:
+    if not isinstance(value, str) or not value.strip():
+        failures.append(f"{label} must be an existing repository-relative file path")
+        return False
+    relative = Path(value)
+    if relative.is_absolute() or ".." in relative.parts:
+        failures.append(f"{label} must be an existing repository-relative file path")
+        return False
+    repository = root.resolve()
+    candidate = (root / relative).resolve()
+    try:
+        candidate.relative_to(repository)
+    except ValueError:
+        failures.append(f"{label} resolves outside the repository: {value}")
+        return False
+    if not candidate.is_file():
+        failures.append(f"{label} is missing: {value}")
+        return False
+    return True
+
+
+def _historical_identity(
+    artifact: dict[str, Any],
+    field: str,
+    release: object,
+) -> str | None:
+    historical = artifact.get("historical_candidate")
+    if not isinstance(historical, dict):
+        return None
+    version = historical.get("version", release)
+    identity = historical.get(field)
+    if not isinstance(version, str) or not version or isinstance(identity, bool):
+        return None
+    if not isinstance(identity, int):
+        return None
+    return f"`{version} ({identity})`"
+
+
+def expected_current_block(
+    root: Path = ROOT,
+) -> tuple[str | None, list[str], list[str]]:
+    """Return authoritative Markdown, failures, and historical identities."""
+
+    failures: list[str] = []
+    manifest = _load_json_object(root / UPLOAD_MANIFEST, "upload manifest", failures)
+    gate_payload = _load_json_object(root / QUALITY_GATES, "quality gates", failures)
+    identities = _build_identities(root, failures)
+
+    release = manifest.get("release")
+    if not isinstance(release, str) or not release:
+        failures.append("upload manifest: release must be a non-empty string")
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, dict):
+        failures.append("upload manifest: artifacts must be an object")
+        artifacts = {}
+    gates = gate_payload.get("gates")
+    if not isinstance(gates, dict):
+        failures.append("quality gates: gates must be an object")
+        gates = {}
+
+    release_gate_status = _gate_status(gates, RELEASE_GATE, failures)
+    physical_gate_statuses = {
+        gate_id: _gate_status(gates, gate_id, failures)
+        for gate_id in {surface["physical_gate"] for surface in SURFACES}
+    }
+
+    rows: list[str] = []
+    historical_identities: list[str] = []
+    for surface in SURFACES:
+        artifact_id = surface["artifact"]
+        artifact = artifacts.get(artifact_id)
+        if not isinstance(artifact, dict):
+            failures.append(f"upload manifest: missing artifact object {artifact_id}")
+            continue
+        identity = identities.get(artifact_id)
+        if identity is None:
+            continue
+        version_name, build_number = identity
+        if release != version_name:
+            failures.append(
+                f"{artifact_id}: build version {version_name} differs from manifest release {release!r}"
+            )
+        field = surface["identity_field"]
+        declared_identity = artifact.get(field)
+        if declared_identity != build_number:
+            failures.append(
+                f"{artifact_id}: manifest {field} {declared_identity!r} differs from build {build_number}"
+            )
+
+        source_sync = artifact.get("source_sync")
+        if source_sync not in VALID_SOURCE_SYNC:
+            failures.append(f"{artifact_id}: invalid source_sync {source_sync!r}")
+            continue
+        _existing_repository_file(
+            root,
+            artifact.get("source_sync_evidence"),
+            f"{artifact_id}: source_sync_evidence",
+            failures,
+        )
+
+        historical_identity = _historical_identity(artifact, field, release)
+        if historical_identity is None:
+            failures.append(f"{artifact_id}: historical candidate identity is missing")
+        else:
+            historical_identities.append(historical_identity)
+
+        physical_gate = surface["physical_gate"]
+        physical_status = physical_gate_statuses.get(physical_gate)
+        if release_gate_status is None or physical_status is None:
+            continue
+        ready_authority = (
+            source_sync == "verified-current"
+            and release_gate_status == "pass"
+            and physical_status == "pass"
+        )
+        evidence_ready = True
+        if ready_authority:
+            sha256 = artifact.get("sha256")
+            if not isinstance(sha256, str) or SHA256_PATTERN.fullmatch(sha256) is None:
+                failures.append(
+                    f"{artifact_id}: READY requires sha256 to be 64 hexadecimal characters"
+                )
+                evidence_ready = False
+            evidence_ready = (
+                _existing_repository_file(
+                    root,
+                    artifact.get("signing_evidence"),
+                    f"{artifact_id}: READY signing_evidence",
+                    failures,
+                )
+                and evidence_ready
+            )
+            evidence_ready = (
+                _existing_repository_file(
+                    root,
+                    artifact.get("physical_qa_evidence"),
+                    f"{artifact_id}: READY physical_qa_evidence",
+                    failures,
+                )
+                and evidence_ready
+            )
+        ready = ready_authority and evidence_ready
+        status = "READY" if ready else "BLOCKED"
+        rows.append(
+            f"| {surface['label']} | `{version_name} ({build_number})` | "
+            f"`{source_sync}` | `{RELEASE_GATE}: {release_gate_status}` | "
+            f"`{physical_gate}: {physical_status}` | **{status}** |"
+        )
+
+    if failures:
+        return None, failures, historical_identities
+    block = "\n".join(
+        (
+            CURRENT_BLOCK_START,
+            "| Surface | Exact candidate | Manifest source sync | Release/source gate | Required physical QA | Fail-closed status |",
+            "| --- | --- | --- | --- | --- | --- |",
+            *rows,
+            CURRENT_BLOCK_END,
+        )
+    )
+    return block, failures, historical_identities
+
+
+def validate(root: Path = ROOT) -> list[str]:
+    expected, failures, historical_identities = expected_current_block(root)
+    if expected is None:
+        return failures
+
+    path = root / DOCUMENT
+    try:
+        document = path.read_text(encoding="utf-8")
+    except OSError as error:
+        return [*failures, f"{DOCUMENT}: cannot read: {error}"]
+
+    if document.count(CURRENT_BLOCK_START) != 1 or document.count(CURRENT_BLOCK_END) != 1:
+        failures.append(f"{DOCUMENT}: exact-current block markers must each appear once")
+    else:
+        start = document.index(CURRENT_BLOCK_START)
+        end = document.index(CURRENT_BLOCK_END, start) + len(CURRENT_BLOCK_END)
+        actual = document[start:end]
+        if actual != expected:
+            failures.append(
+                f"{DOCUMENT}: exact-current block differs from build/manifest/gate authority"
+            )
+
+    if document.count(HISTORICAL_HEADING) != 1:
+        failures.append(f"{DOCUMENT}: historical non-transferable heading must appear once")
+    else:
+        historical = document.split(HISTORICAL_HEADING, 1)[1]
+        for identity in historical_identities:
+            if identity not in historical:
+                failures.append(
+                    f"{DOCUMENT}: historical section is missing manifest identity {identity}"
+                )
+        if "cannot" not in historical.lower() or "exact-current" not in historical:
+            failures.append(
+                f"{DOCUMENT}: historical section must state that evidence cannot satisfy exact-current QA"
+            )
+    return failures
+
+
+def main() -> int:
+    failures = validate()
+    if failures:
+        for failure in failures:
+            print(f"release QA matrix check failed: {failure}", file=sys.stderr)
+        return 1
+    print("Release QA matrix check passed.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
