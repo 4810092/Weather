@@ -9,6 +9,9 @@ Update on 2026-08-30: the repository-only Uzbek-fallback title changed to
 below preserves the last authenticated Console observation and must not be
 read as proof that the newer title is saved, submitted, or public. See
 `growth/reports/google-play-uz-title-opportunity-2026-08-30.md`.
+An authenticated read-only recheck at `01:29 +05:00` confirmed that the
+Console form still held the previous title and that its Save button remained
+disabled; the newer title is repository-only.
 
 The public Apple and Google product pages were checked read-only at
 `2026-08-29 12:29:59 +05:00`. No console setting, listing, release, experiment,

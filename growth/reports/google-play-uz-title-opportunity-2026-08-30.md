@@ -55,3 +55,16 @@ review submission, publication, release, outreach message, paid campaign, or
 provider-scope change. The current public-claims audit was revised and its
 payload hash was repinned in the same repository change; any later payload
 drift must fail the gate until another explicit audit.
+
+## Console synchronization boundary
+
+At `2026-08-30 01:29 +05:00`, the authenticated Play Console form for custom
+listing `4834799756935529888` was checked read-only. It remained an Uzbekistan
+country-targeted `Черновик` last updated on August 29. The default `en-US`
+locale still contained the previous title `Nimbo: Ob-havo va prognoz`, while
+the audited 74/80 Uzbek short description, full description, six phone images,
+and one Wear OS image remained present. `Сохранить как проект` was disabled,
+confirming that the inspection left no unsaved form change.
+
+Therefore the new title is committed and validated in the repository but is
+not yet synchronized to the Console draft, submitted, reviewed, or public.
