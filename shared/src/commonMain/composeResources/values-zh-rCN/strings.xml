@@ -118,6 +118,7 @@
   <string name="location_permission_denied">未授予位置权限。请改为搜索城市。</string>
   <string name="location_services_disabled">位置服务已关闭。请搜索城市或在设置中开启位置服务。</string>
   <string name="location_unavailable">无法确定你的位置。请改为搜索城市。</string>
+  <string name="changes_could_not_be_saved">无法保存此更改。请重试。</string>
   <string name="refresh_failed_saved">无法刷新。正在显示已保存的天气。</string>
   <string name="weather_unavailable">天气暂不可用。请检查网络后重试。</string>
   <string name="app_start_unavailable">Nimbo 无法打开已保存的天气数据。请重试。</string>

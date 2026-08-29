@@ -9,6 +9,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Clock
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
@@ -32,8 +33,10 @@ import uz.ganikhodjaev.weather.shared.AutomaticRefreshCoordinator
 import uz.ganikhodjaev.weather.shared.InMemoryAutomaticRefreshAttemptStore
 import uz.ganikhodjaev.weather.shared.data.SavedLocationLimitReachedException
 import uz.ganikhodjaev.weather.shared.data.WeatherDataSource
+import uz.ganikhodjaev.weather.shared.location.DeviceCoordinates
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationProvider
 import uz.ganikhodjaev.weather.shared.location.DeviceLocationResult
+import uz.ganikhodjaev.weather.shared.location.DevicePlace
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.UnitSystem
@@ -691,6 +694,50 @@ class WeatherStateHolderGrowthTest {
     }
 
     @Test
+    fun failedDevicePlacePersistenceKeepsCoarseLocationWithoutEscaping() = runBlocking {
+        val persistenceFailure = IllegalStateException("database unavailable")
+        val repository = ScriptedWeatherDataSource(
+            updateLocationDetailsFailure = persistenceFailure
+        )
+        val coordinates = DeviceCoordinates(
+            latitude = 41.3111,
+            longitude = 69.2797,
+            timezone = "Asia/Tashkent"
+        )
+        val uncaughtFailure = CompletableDeferred<Throwable>()
+        val holderScope = CoroutineScope(
+            coroutineContext +
+                SupervisorJob() +
+                CoroutineExceptionHandler { _, error -> uncaughtFailure.complete(error) }
+        )
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(
+                result = DeviceLocationResult.Success(coordinates),
+                place = DevicePlace(name = "Toshkent", country = "Oʻzbekiston")
+            ),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope
+        )
+
+        try {
+            holder.start()
+            holder.useDeviceLocation()
+            withTimeout(5_000L) { repository.updateLocationDetailsAttempted.await() }
+            yield()
+
+            assertFalse(uncaughtFailure.isCompleted)
+            val active = requireNotNull(repository.activeLocation())
+            assertEquals("", active.name)
+            assertEquals("", active.country)
+            assertEquals(41.31, active.latitude)
+            assertEquals(69.28, active.longitude)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
     fun savedLocationLimitKeepsPickerUsableInsteadOfCrashing() = runBlocking {
         val repository = ScriptedWeatherDataSource(
             setActiveLocationFailure = SavedLocationLimitReachedException()
@@ -1313,6 +1360,120 @@ class WeatherStateHolderGrowthTest {
         }
     }
 
+    @Test
+    fun failedSavedLocationDeletionPreservesPickerStateAndShowsMessage() = runBlocking {
+        val nowEpochSeconds = 70_000L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = nowEpochSeconds),
+            initialSavedLocations = listOf(TASHKENT, BUKHARA),
+            deleteLocationFailure = IllegalStateException("database unavailable")
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds }
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            holder.showLocationPicker()
+            holder.deleteSavedLocation(BUKHARA)
+
+            val picker = assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+            assertEquals(listOf(TASHKENT, BUKHARA), picker.savedLocations)
+            assertEquals(UiMessage.ChangesCouldNotBeSaved, picker.message)
+            assertEquals(listOf(TASHKENT, BUKHARA), repository.savedLocations())
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun deletedLocationUsesFilteredPickerWhenRereadFailsAndClearsCooldown() = runBlocking {
+        val nowEpochSeconds = 75_000L
+        val attemptStore = InMemoryAutomaticRefreshAttemptStore()
+        AutomaticRefreshCoordinator.recordManualAttempt(
+            locationId = BUKHARA.id,
+            nowEpochSeconds = nowEpochSeconds,
+            attemptStore = attemptStore
+        )
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = nowEpochSeconds),
+            initialSavedLocations = listOf(TASHKENT, BUKHARA)
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds },
+            automaticRefreshAttemptStore = attemptStore
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            holder.showLocationPicker()
+            repository.failSavedLocationsWith(IllegalStateException("database read unavailable"))
+            holder.deleteSavedLocation(BUKHARA)
+
+            val picker = assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+            assertEquals(listOf(TASHKENT), picker.savedLocations)
+            assertNull(picker.message)
+            withTimeout(5_000L) {
+                while (
+                    attemptStore.read(BUKHARA.id) != null ||
+                    AutomaticRefreshCoordinator.retainsLocationForTests(BUKHARA.id)
+                ) {
+                    yield()
+                }
+            }
+            repository.clearSavedLocationsFailure()
+            assertEquals(listOf(TASHKENT), repository.savedLocations())
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun failedUnitPreferenceWritePreservesUnitsAndShowsMessage() = runBlocking {
+        val nowEpochSeconds = 80_000L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt = nowEpochSeconds),
+            setUnitPreferenceFailure = IllegalStateException("database unavailable")
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = RecordingOnboardingStore(),
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds }
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            holder.setUnitPreference(UnitPreference.Imperial)
+
+            val content = assertIs<WeatherUiState.Content>(holder.state.value)
+            assertEquals(UnitPreference.Automatic, content.unitPreference)
+            assertEquals(UnitSystem.Metric, content.displayUnits.system)
+            assertEquals(UiMessage.ChangesCouldNotBeSaved, content.refreshMessage)
+            assertEquals(UnitPreference.Automatic, repository.unitPreference())
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
     private fun createStateHolder(
         repository: WeatherDataSource,
         locationProvider: DeviceLocationProvider,
@@ -1332,7 +1493,8 @@ class WeatherStateHolderGrowthTest {
     )
 
     private class RecordingLocationProvider(
-        private val result: DeviceLocationResult = DeviceLocationResult.PermissionDenied
+        private val result: DeviceLocationResult = DeviceLocationResult.PermissionDenied,
+        private val place: DevicePlace? = null
     ) : DeviceLocationProvider {
         var requestCount = 0
             private set
@@ -1341,6 +1503,8 @@ class WeatherStateHolderGrowthTest {
             requestCount += 1
             return result
         }
+
+        override suspend fun resolvePlace(coordinates: DeviceCoordinates): DevicePlace? = place
     }
 
     private class RecordingOnboardingStore(initialState: OnboardingState = OnboardingState()) :
@@ -1433,7 +1597,10 @@ class WeatherStateHolderGrowthTest {
         initialActiveLocation: Location? = null,
         initialSnapshot: WeatherSnapshot? = null,
         initialSavedLocations: List<Location> = listOfNotNull(initialActiveLocation),
-        private val setActiveLocationFailure: Throwable? = null
+        private val setActiveLocationFailure: Throwable? = null,
+        private val updateLocationDetailsFailure: Throwable? = null,
+        private val deleteLocationFailure: Throwable? = null,
+        private val setUnitPreferenceFailure: Throwable? = null
     ) : WeatherDataSource {
         private val weather = mutableMapOf<String, MutableStateFlow<WeatherSnapshot?>>()
         private val saved = initialSavedLocations.toMutableList()
@@ -1444,6 +1611,7 @@ class WeatherStateHolderGrowthTest {
         private var observeFailure: Throwable? = null
         private var savedLocationsFailure: Throwable? = null
         val observeFailureReached = CompletableDeferred<Unit>()
+        val updateLocationDetailsAttempted = CompletableDeferred<Unit>()
         var refreshCallCount = 0
             private set
         var searchCallCount = 0
@@ -1471,6 +1639,10 @@ class WeatherStateHolderGrowthTest {
 
         fun failSavedLocationsWith(error: Throwable) {
             savedLocationsFailure = error
+        }
+
+        fun clearSavedLocationsFailure() {
+            savedLocationsFailure = null
         }
 
         fun emitSnapshot(snapshot: WeatherSnapshot) {
@@ -1535,10 +1707,13 @@ class WeatherStateHolderGrowthTest {
         }
 
         override fun deleteLocation(locationId: String) {
+            deleteLocationFailure?.let { throw it }
             saved.removeAll { it.id == locationId }
         }
 
         override fun updateLocationDetails(location: Location) {
+            updateLocationDetailsAttempted.complete(Unit)
+            updateLocationDetailsFailure?.let { throw it }
             active = location
             val savedIndex = saved.indexOfFirst { it.id == location.id }
             if (savedIndex >= 0) saved[savedIndex] = location
@@ -1547,6 +1722,7 @@ class WeatherStateHolderGrowthTest {
         override fun unitPreference(): UnitPreference = preference
 
         override fun setUnitPreference(preference: UnitPreference) {
+            setUnitPreferenceFailure?.let { throw it }
             this.preference = preference
         }
     }

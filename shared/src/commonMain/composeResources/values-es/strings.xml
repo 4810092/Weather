@@ -119,6 +119,7 @@
   <string name="location_permission_denied">No se concedió acceso a la ubicación. Busca una ciudad.</string>
   <string name="location_services_disabled">Los servicios de ubicación están desactivados. Busca una ciudad o actívalos en Ajustes.</string>
   <string name="location_unavailable">No se pudo determinar tu ubicación. Busca una ciudad.</string>
+  <string name="changes_could_not_be_saved">No se pudo guardar este cambio. Inténtalo de nuevo.</string>
   <string name="refresh_failed_saved">No se pudo actualizar. Se muestra el tiempo guardado.</string>
   <string name="weather_unavailable">El tiempo no está disponible. Comprueba la conexión e inténtalo de nuevo.</string>
   <string name="app_start_unavailable">Nimbo no pudo abrir los datos meteorológicos guardados. Inténtalo de nuevo.</string>

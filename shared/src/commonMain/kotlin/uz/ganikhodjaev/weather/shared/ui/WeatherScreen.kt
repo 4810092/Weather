@@ -1486,6 +1486,7 @@ private fun UiMessage.localized(): String = stringResource(
         UiMessage.LocationServicesDisabled -> Res.string.location_services_disabled
         UiMessage.LocationUnavailable -> Res.string.location_unavailable
         UiMessage.SavedLocationLimitReached -> Res.string.saved_location_limit_reached
+        UiMessage.ChangesCouldNotBeSaved -> Res.string.changes_could_not_be_saved
         UiMessage.RefreshFailedShowingSaved -> Res.string.refresh_failed_saved
         UiMessage.WeatherUnavailable -> Res.string.weather_unavailable
     }

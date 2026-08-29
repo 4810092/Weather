@@ -120,6 +120,7 @@
   <string name="location_permission_denied">L’accès à la position n’a pas été autorisé. Recherchez une ville.</string>
   <string name="location_services_disabled">Les services de localisation sont désactivés. Recherchez une ville ou activez-les dans Réglages.</string>
   <string name="location_unavailable">Impossible de déterminer votre position. Recherchez une ville.</string>
+  <string name="changes_could_not_be_saved">Impossible d’enregistrer cette modification. Réessayez.</string>
   <string name="refresh_failed_saved">Actualisation impossible. Affichage de la météo enregistrée.</string>
   <string name="weather_unavailable">La météo est indisponible. Vérifiez la connexion et réessayez.</string>
   <string name="app_start_unavailable">Nimbo n’a pas pu ouvrir les données météo enregistrées. Réessayez.</string>

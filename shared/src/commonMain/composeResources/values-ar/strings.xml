@@ -123,6 +123,7 @@
   <string name="location_permission_denied">لم يُمنح إذن الموقع. ابحث عن مدينة بدلًا من ذلك.</string>
   <string name="location_services_disabled">خدمات الموقع متوقفة. ابحث عن مدينة أو فعّلها من الإعدادات.</string>
   <string name="location_unavailable">تعذّر تحديد موقعك. ابحث عن مدينة بدلًا من ذلك.</string>
+  <string name="changes_could_not_be_saved">تعذّر حفظ هذا التغيير. حاول مرة أخرى.</string>
   <string name="refresh_failed_saved">تعذّر التحديث. يتم عرض الطقس المحفوظ.</string>
   <string name="weather_unavailable">الطقس غير متاح. تحقق من الاتصال وحاول مجددًا.</string>
   <string name="app_start_unavailable">تعذر على Nimbo فتح بيانات الطقس المحفوظة. حاول مرة أخرى.</string>

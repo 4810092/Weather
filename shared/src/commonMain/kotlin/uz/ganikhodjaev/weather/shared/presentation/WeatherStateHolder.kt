@@ -77,6 +77,7 @@ internal enum class UiMessage {
     LocationServicesDisabled,
     LocationUnavailable,
     SavedLocationLimitReached,
+    ChangesCouldNotBeSaved,
     RefreshFailedShowingSaved,
     WeatherUnavailable
 }
@@ -183,8 +184,22 @@ internal class WeatherStateHolder(
     fun deleteSavedLocation(location: Location) {
         val current = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         if (location.id == activeLocation?.id) return
-        repository.deleteLocation(location.id)
-        mutableState.value = current.copy(savedLocations = repository.savedLocations())
+        try {
+            repository.deleteLocation(location.id)
+        } catch (error: Throwable) {
+            logFailure("saved location deletion", error)
+            mutableState.value = current.copy(message = UiMessage.ChangesCouldNotBeSaved)
+            return
+        }
+        val savedLocations = try {
+            repository.savedLocations()
+        } catch (error: Throwable) {
+            // The delete already succeeded. Keep the picker accurate from its
+            // current snapshot and still clear per-location refresh bookkeeping.
+            logFailure("saved locations read after deletion", error)
+            current.savedLocations.filterNot { it.id == location.id }
+        }
+        mutableState.value = current.copy(savedLocations = savedLocations, message = null)
         scope.launch {
             AutomaticRefreshCoordinator.removeAttemptState(
                 locationId = location.id,
@@ -280,9 +295,20 @@ internal class WeatherStateHolder(
     }
 
     fun setUnitPreference(preference: UnitPreference) {
+        val current = mutableState.value as? WeatherUiState.Content
+        try {
+            repository.setUnitPreference(preference)
+        } catch (error: Throwable) {
+            logFailure("unit preference write", error)
+            if (current != null) {
+                mutableState.value = current.copy(
+                    refreshMessage = UiMessage.ChangesCouldNotBeSaved
+                )
+            }
+            return
+        }
         unitPreference = preference
-        repository.setUnitPreference(preference)
-        val current = mutableState.value as? WeatherUiState.Content ?: return
+        if (current == null) return
         mutableState.value = current.copy(
             unitPreference = preference,
             displayUnits = preference.resolve(automaticUnitSystem)
@@ -495,7 +521,16 @@ internal class WeatherStateHolder(
         if (resolvedLocation.name.isBlank() && resolvedLocation.country.isBlank()) return
         if (!isCurrentActivation(generation, location)) return
 
-        repository.updateLocationDetails(resolvedLocation)
+        try {
+            repository.updateLocationDetails(resolvedLocation)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Throwable) {
+            // Reverse-geocoding is optional enrichment. Keep the already persisted
+            // coarse-coordinate location usable when its label cannot be stored.
+            logFailure("device place persistence", error)
+            return
+        }
         if (!isCurrentActivation(generation, location)) return
         activeLocation = resolvedLocation
         val current = mutableState.value as? WeatherUiState.Content

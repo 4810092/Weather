@@ -119,6 +119,7 @@
   <string name="location_permission_denied">Standortzugriff wurde nicht erlaubt. Suche stattdessen nach einer Stadt.</string>
   <string name="location_services_disabled">Standortdienste sind deaktiviert. Suche eine Stadt oder aktiviere sie in den Einstellungen.</string>
   <string name="location_unavailable">Dein Standort konnte nicht ermittelt werden. Suche stattdessen nach einer Stadt.</string>
+  <string name="changes_could_not_be_saved">Diese Änderung konnte nicht gespeichert werden. Versuche es erneut.</string>
   <string name="refresh_failed_saved">Aktualisierung fehlgeschlagen. Gespeichertes Wetter wird angezeigt.</string>
   <string name="weather_unavailable">Wetter ist nicht verfügbar. Prüfe die Verbindung und versuche es erneut.</string>
   <string name="app_start_unavailable">Nimbo konnte die gespeicherten Wetterdaten nicht öffnen. Versuche es erneut.</string>

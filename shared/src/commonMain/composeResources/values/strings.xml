@@ -118,6 +118,7 @@
     <string name="location_permission_denied">Location access wasn’t granted. Search for a city instead.</string>
     <string name="location_services_disabled">Location services are off. Search for a city or enable them in Settings.</string>
     <string name="location_unavailable">Couldn’t determine your location. Search for a city instead.</string>
+    <string name="changes_could_not_be_saved">Couldn’t save that change. Try again.</string>
     <string name="refresh_failed_saved">Couldn’t refresh. Showing saved weather.</string>
     <string name="weather_unavailable">Weather is unavailable. Check your connection and try again.</string>
     <string name="app_start_unavailable">Nimbo couldn’t open its saved weather. Try again.</string>

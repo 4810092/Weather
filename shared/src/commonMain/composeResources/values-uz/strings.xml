@@ -119,6 +119,7 @@
   <string name="location_permission_denied">Joylashuvga ruxsat berilmadi. Shaharni qo‘lda qidiring.</string>
   <string name="location_services_disabled">Joylashuv xizmatlari o‘chiq. Shahar qidiring yoki ularni Sozlamalarda yoqing.</string>
   <string name="location_unavailable">Joylashuvingizni aniqlab bo‘lmadi. Shaharni qo‘lda qidiring.</string>
+  <string name="changes_could_not_be_saved">Bu o‘zgarishni saqlab bo‘lmadi. Qayta urinib ko‘ring.</string>
   <string name="refresh_failed_saved">Yangilab bo‘lmadi. Saqlangan ob-havo ko‘rsatilmoqda.</string>
   <string name="weather_unavailable">Ob-havo mavjud emas. Internetni tekshirib, qayta urining.</string>
   <string name="app_start_unavailable">Nimbo saqlangan ob-havo ma’lumotlarini ocha olmadi. Qayta urinib ko‘ring.</string>

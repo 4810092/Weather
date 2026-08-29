@@ -118,6 +118,7 @@
   <string name="location_permission_denied">位置情報が許可されませんでした。都市を検索してください。</string>
   <string name="location_services_disabled">位置情報サービスがオフです。都市を検索するか、設定でオンにしてください。</string>
   <string name="location_unavailable">現在地を特定できません。都市を検索してください。</string>
+  <string name="changes_could_not_be_saved">この変更を保存できませんでした。もう一度お試しください。</string>
   <string name="refresh_failed_saved">更新できませんでした。保存済みの天気を表示しています。</string>
   <string name="weather_unavailable">天気を取得できません。接続を確認して再試行してください。</string>
   <string name="app_start_unavailable">保存済みの天気データを開けませんでした。もう一度お試しください。</string>

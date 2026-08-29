@@ -119,6 +119,7 @@
   <string name="location_permission_denied">Konum erişimi verilmedi. Bunun yerine şehir arayın.</string>
   <string name="location_services_disabled">Konum hizmetleri kapalı. Bir şehir arayın veya Ayarlar’dan etkinleştirin.</string>
   <string name="location_unavailable">Konumunuz belirlenemedi. Bunun yerine şehir arayın.</string>
+  <string name="changes_could_not_be_saved">Bu değişiklik kaydedilemedi. Tekrar deneyin.</string>
   <string name="refresh_failed_saved">Yenilenemedi. Kayıtlı hava durumu gösteriliyor.</string>
   <string name="weather_unavailable">Hava durumu kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
   <string name="app_start_unavailable">Nimbo kayıtlı hava durumu verilerini açamadı. Tekrar deneyin.</string>
