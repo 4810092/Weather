@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-08-30",
+  "checkpoint_90_day": "2026-11-26",
+  "checkpoint_due": false,
+  "latest_weekly_period_end": "2026-08-30",
+  "top10_goal": {
+    "as_of_snapshot_present": true,
+    "current_config_fingerprint": "same-config",
+    "current_streak_days": 0,
+    "max_streak_days": 2,
+    "required_days": 7,
+    "goal_achieved": false,
+    "first_achieved_on": null,
+    "first_achieved_config_fingerprint": null
+  },
+  "rank_improvement": {
+    "config_fingerprint": "same-config",
+    "comparable_surfaces": [
+      {
+        "surface_id": "apple.category",
+        "baseline_date": "2026-08-23",
+        "baseline_rank": 15,
+        "current_date": "2026-08-30",
+        "current_rank": 9,
+        "improvement": 6
+      },
+      {
+        "surface_id": "google.category.uz-UZ",
+        "baseline_date": "2026-08-23",
+        "baseline_rank": 14,
+        "current_date": "2026-08-30",
+        "current_rank": 8,
+        "improvement": 6
+      },
+      {
+        "surface_id": "google.category.ru-UZ",
+        "baseline_date": "2026-08-23",
+        "baseline_rank": 18,
+        "current_date": "2026-08-30",
+        "current_rank": 12,
+        "improvement": 6
+      }
+    ],
+    "max_improvement": 6,
+    "caveat": "Only exact comparable observations are included."
+  },
+  "drivers": {
+    "results": [
+      {
+        "id": "apple_conversion_rate_pct",
+        "value": 14.0,
+        "operator": ">=",
+        "target": 15.0,
+        "denominator": 600.0,
+        "minimum_denominator": 500.0,
+        "sufficient": true,
+        "status": "fail"
+      },
+      {
+        "id": "google_store_listing_ctr_pct",
+        "value": 40.0,
+        "operator": ">=",
+        "target": 35.0,
+        "denominator": 600.0,
+        "minimum_denominator": 500.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "apple_first_launch_rate_pct",
+        "value": 85.0,
+        "operator": ">=",
+        "target": 80.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "apple_d7_retention_pct",
+        "value": 25.0,
+        "operator": ">=",
+        "target": 20.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "apple_dau_mau_pct",
+        "value": 30.0,
+        "operator": ">=",
+        "target": 20.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "google_first_launch_rate_pct",
+        "value": 90.0,
+        "operator": ">=",
+        "target": 80.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "google_d7_retention_pct",
+        "value": 25.0,
+        "operator": ">=",
+        "target": 20.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "google_dau_mau_pct",
+        "value": 25.0,
+        "operator": ">=",
+        "target": 20.0,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "apple_ratings_count",
+        "value": 25.0,
+        "operator": ">=",
+        "target": 25,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "apple_average_rating",
+        "value": 4.7,
+        "operator": ">=",
+        "target": 4.6,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "google_ratings_count",
+        "value": 30.0,
+        "operator": ">=",
+        "target": 25,
+        "sufficient": true,
+        "status": "pass"
+      },
+      {
+        "id": "google_average_rating",
+        "value": 4.8,
+        "operator": ">=",
+        "target": 4.6,
+        "sufficient": true,
+        "status": "pass"
+      }
+    ],
+    "sufficient_conversion_or_retention_below_target": [
+      "apple_conversion_rate_pct"
+    ],
+    "decision_exclusions": []
+  },
+  "guardrails": {
+    "scale_gates": [
+      {
+        "id": "ios_crash_gate",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Current crash evidence is reviewed."
+      },
+      {
+        "id": "open_meteo_promotion_clearance",
+        "required": "pass",
+        "actual": "pending",
+        "status": "fail",
+        "reason": "Written provider clearance is not yet recorded."
+      },
+      {
+        "id": "release_artifact_source_sync",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Source-current signed artifacts and hashes are recorded."
+      },
+      {
+        "id": "android_physical_smoke",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "The required Android physical matrix passed."
+      },
+      {
+        "id": "ios_physical_smoke",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "The required Apple physical matrix passed."
+      },
+      {
+        "id": "domain_activation",
+        "required": "pass",
+        "actual": "blocked",
+        "status": "fail",
+        "reason": "Public delegation and HTTPS are not verified."
+      },
+      {
+        "id": "store_policy_console_clearance",
+        "required": "pass",
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Both store consoles report no open policy action."
+      }
+    ],
+    "metric_guardrails": [
+      {
+        "id": "ios_crash_free_sessions_pct",
+        "metric_ids": ["ios_crash_free_sessions_pct"],
+        "values": [99.9],
+        "operator": ">=",
+        "threshold": 99.8,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "block_scale"
+      },
+      {
+        "id": "android_user_perceived_crash_rate_pct",
+        "metric_ids": ["android_user_perceived_crash_rate_pct"],
+        "values": [0.3],
+        "operator": "<",
+        "threshold": 1.09,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "block_scale"
+      },
+      {
+        "id": "android_user_perceived_anr_rate_pct",
+        "metric_ids": ["android_user_perceived_anr_rate_pct"],
+        "values": [0.1],
+        "operator": "<",
+        "threshold": 0.47,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "block_scale"
+      },
+      {
+        "id": "android_phone_model_crash_rate_pct",
+        "metric_ids": ["android_phone_model_crash_rate_pct"],
+        "values": [1.0],
+        "operator": "<",
+        "threshold": 8.0,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "review_required"
+      },
+      {
+        "id": "android_phone_model_anr_rate_pct",
+        "metric_ids": ["android_phone_model_anr_rate_pct"],
+        "values": [1.0],
+        "operator": "<",
+        "threshold": 8.0,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "review_required"
+      },
+      {
+        "id": "wear_model_crash_rate_pct",
+        "metric_ids": ["wear_model_crash_rate_pct"],
+        "values": [1.0],
+        "operator": "<",
+        "threshold": 4.0,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "review_required"
+      },
+      {
+        "id": "wear_model_anr_rate_pct",
+        "metric_ids": ["wear_model_anr_rate_pct"],
+        "values": [1.0],
+        "operator": "<",
+        "threshold": 5.0,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "review_required"
+      },
+      {
+        "id": "user_loss_rate_pct",
+        "metric_ids": ["apple_user_loss_rate_pct", "google_user_loss_rate_pct"],
+        "values": [],
+        "operator": "<",
+        "threshold": 5.0,
+        "critical": false,
+        "status": "unknown",
+        "unknown_policy": "report_unknown"
+      },
+      {
+        "id": "open_policy_issues",
+        "metric_ids": ["apple_policy_issues", "google_policy_issues"],
+        "values": [0.0, 0.0],
+        "operator": "==",
+        "threshold": 0,
+        "critical": true,
+        "status": "pass",
+        "unknown_policy": "block_scale"
+      }
+    ],
+    "critical_quality_gates_pass": false
+  },
+  "decision_90_day_rule": {
+    "decision": "hold_acquisition_and_fix_gate",
+    "reason": "At least one critical scale gate is failed.",
+    "paid_spend_authorized": false,
+    "external_action_authorized": false
+  }
+}

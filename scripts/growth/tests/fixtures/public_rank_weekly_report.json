@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-30",
+  "config_fingerprint": "same-config",
+  "surfaces": {
+    "apple": {
+      "category": {
+        "status": "ok",
+        "target_rank": 9,
+        "target_rank_bound": null
+      }
+    },
+    "google": {
+      "category": {
+        "uz-UZ": {
+          "status": "ok",
+          "target_rank": 8,
+          "target_rank_bound": null
+        },
+        "ru-UZ": {
+          "status": "ok",
+          "target_rank": 12,
+          "target_rank_bound": null
+        },
+        "en-UZ": {
+          "status": "ok",
+          "target_rank": null,
+          "target_rank_bound": ">30"
+        }
+      }
+    }
+  },
+  "capture_complete": true,
+  "diagnostic_capture_complete": true,
+  "goal_evidence_complete": true,
+  "evaluation": {
+    "status": "fail",
+    "complete": true,
+    "apple_weather_chart_top10": true,
+    "apple_weather_chart_status": "pass",
+    "google_weather_category_top10_all_profiles": false,
+    "google_weather_category_status": "fail",
+    "google_category_top10_by_profile": {
+      "uz-UZ": true,
+      "ru-UZ": false,
+      "en-UZ": false
+    },
+    "google_category_status_by_profile": {
+      "uz-UZ": "pass",
+      "ru-UZ": "fail",
+      "en-UZ": "fail"
+    },
+    "google_generic_top10_queries": ["weather"],
+    "google_generic_top10_query_count": 1,
+    "google_generic_query_status": "fail",
+    "requirements_pass": false,
+    "reasons": [
+      "Google UZ Weather category is not top 10 in all fixed profiles",
+      "only 1 generic query meets the top-10 profile quorum"
+    ]
+  }
+}
