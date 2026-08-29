@@ -62,16 +62,25 @@ sources explicitly. `uz-UZ` is never declared as a Google Play product-page
 locale. The five generic queries from `growth/config.json` remain monitoring and
 Apple candidate terms; no global Google keyword-targeted listing is packaged.
 
-The UZ App Store Custom Product Page draft uses the same explicit fallback: its
-`en-US` payload maps to Uzbek copy/assets, while its `ru-RU` payload maps to
-Russian copy/assets. Its keyword lists are planned candidates, not proof that
-the terms can already be assigned. Apple only offers terms from the latest
-approved base version, so the assignment gate remains blocked and the required
-sequence is: submit the base 1.1.0 keywords, wait for base-version approval, and
-only then assign Custom Product Page keywords. The installed app continues to
-use its complete Uzbek localization.
+Apple lists English (U.K.) as the default App Store language for Uzbekistan.
+The default App Store payload therefore includes an explicit `en-GB`
+localization, and the UZ Custom Product Page maps its `en-GB` payload to Uzbek
+copy/assets while `ru-RU` maps to Russian copy/assets. Its keyword lists are
+planned candidates, not proof that the terms can already be assigned. Apple
+only offers terms from the latest approved base version, so the assignment gate
+remains blocked and the required sequence is: submit the base 1.1.0 keywords,
+wait for base-version approval, and only then assign Custom Product Page
+keywords. The installed app continues to use its complete Uzbek localization.
+The upload manifest explicitly aliases default-listing `en-GB` screenshots and
+creatives to the existing `en-US` English assets; it does not imply that a new
+English UI capture was produced.
 
-The default App Store draft preserves the global English name `Nimbo Weather`.
+The default App Store draft preserves `Nimbo Weather` in both `en-GB` and
+`en-US`. Their subtitle is `Best time to go outside`, matching the implemented
+product label and the first benefit-led creative while leaving the generic
+`weather` / `forecast` terms in the title and keyword fields. The bounded
+routing and copy rationale is versioned in
+[`growth/reports/apple-uz-subtitle-opportunity-2026-08-30.md`](../growth/reports/apple-uz-subtitle-opportunity-2026-08-30.md).
 Its Russian override uses `Nimbo: Погода и прогноз` and `Лучшее время для
 прогулки`, keeping the generic query terms in a visible indexed field and the
 implemented Best Time Outside benefit in the subtitle. This is versioned input

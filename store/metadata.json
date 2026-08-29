@@ -1,7 +1,7 @@
 {
   "$schema": "./metadata.schema.json",
   "schema_version": 2,
-  "metadata_revision": "2026-08-29",
+  "metadata_revision": "2026-08-30",
   "product": {
     "id": "nimbo",
     "release": "1.1.0",
@@ -14,7 +14,15 @@
   "localizations": {
     "en-US": {
       "title": "Nimbo",
-      "subtitle": "Local forecast, made familiar",
+      "subtitle": "Best time to go outside",
+      "short_description": "Understand the hours ahead through weather you have recently felt.",
+      "keywords": "weather,forecast,ob havo,Toshkent ob-havo,prognoz,hourly,offline,temperature,rain,wind,local",
+      "description": "Weather is easier to understand when it feels familiar.\n\nSee your local weather forecast now, hour by hour, and for the next 10 days. Nimbo shows current conditions and the next 24 hours alongside recent weather from the same place, so you can tell whether the hours ahead will feel warmer, cooler, wetter, or much the same as yesterday.\n\n• A clear current-weather summary\n• A chronological −24 / NOW / +24 timeline\n• Comparisons with yesterday and recent days\n• Best Time Outside based on comfort and weather hazards\n• A 10-day forecast and air quality\n• Cached weather when your connection is unavailable\n• Home-screen widgets and companion apps for Apple Watch and Wear OS\n• Automatic, metric, or imperial units\n\nNo account, ads, or analytics. Approximate location is optional; city search works without location permission.\n\nWeather and place data are provided by Open-Meteo. Historical values are model and reanalysis data, not verified station observations.",
+      "release_notes": "Widgets and companion apps for Apple Watch and Wear OS make Nimbo glanceable. Also includes a 10-day forecast, air quality, automatic refresh, sharing, saved places, offline cache, and 13 languages."
+    },
+    "en-GB": {
+      "title": "Nimbo",
+      "subtitle": "Best time to go outside",
       "short_description": "Understand the hours ahead through weather you have recently felt.",
       "keywords": "weather,forecast,ob havo,Toshkent ob-havo,prognoz,hourly,offline,temperature,rain,wind,local",
       "description": "Weather is easier to understand when it feels familiar.\n\nSee your local weather forecast now, hour by hour, and for the next 10 days. Nimbo shows current conditions and the next 24 hours alongside recent weather from the same place, so you can tell whether the hours ahead will feel warmer, cooler, wetter, or much the same as yesterday.\n\n• A clear current-weather summary\n• A chronological −24 / NOW / +24 timeline\n• Comparisons with yesterday and recent days\n• Best Time Outside based on comfort and weather hazards\n• A 10-day forecast and air quality\n• Cached weather when your connection is unavailable\n• Home-screen widgets and companion apps for Apple Watch and Wear OS\n• Automatic, metric, or imperial units\n\nNo account, ads, or analytics. Approximate location is optional; city search works without location permission.\n\nWeather and place data are provided by Open-Meteo. Historical values are model and reanalysis data, not verified station observations.",
@@ -155,6 +163,7 @@
       "listing_type": "default",
       "localization_refs": [
         "en-US",
+        "en-GB",
         "ru-RU",
         "ar",
         "es-ES",
@@ -169,6 +178,9 @@
       ],
       "overrides": {
         "en-US": {
+          "title": "Nimbo Weather"
+        },
+        "en-GB": {
           "title": "Nimbo Weather"
         },
         "ru-RU": {
@@ -190,7 +202,7 @@
       "storefront": "UZ",
       "listing_type": "custom-product-page",
       "localization_refs": [
-        "en-US",
+        "en-GB",
         "ru-RU"
       ],
       "overrides": {},
@@ -199,7 +211,7 @@
         "reference_name": "uz-best-time-outside",
         "status": "draft",
         "audience_locale": "uz-UZ",
-        "store_locale_fallback": "en-US",
+        "store_locale_fallback": "en-GB",
         "keyword_assignment_gate": {
           "status": "blocked-pending-base-version-approval",
           "candidate_source_version": "1.1.0",
@@ -210,7 +222,7 @@
           ]
         },
         "localizations": {
-          "en-US": {
+          "en-GB": {
             "audience_locale": "uz-UZ",
             "promotional_text": "Tashqariga chiqish uchun eng yaxshi vaqtni toping va keyingi soatlarni yaqindagi ob-havo bilan solishtiring.",
             "planned_keyword_targets": [

@@ -8,7 +8,11 @@ created or changed.
 Update on 2026-08-30: the Uzbek-fallback title decision below was superseded
 by the newer, separately evidenced `Nimbo Weather: Ob-havo` decision in
 [`google-play-uz-title-opportunity-2026-08-30.md`](google-play-uz-title-opportunity-2026-08-30.md).
-The original decision remains here as a dated record rather than being
+The English Apple subtitle and UZ fallback decisions were separately
+superseded by the explicit `en-GB` / benefit-led `Best time to go outside`
+decision in
+[`apple-uz-subtitle-opportunity-2026-08-30.md`](apple-uz-subtitle-opportunity-2026-08-30.md).
+The original decisions remain here as a dated record rather than being
 silently rewritten.
 
 ## Decision

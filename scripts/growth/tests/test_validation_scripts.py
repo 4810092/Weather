@@ -36,7 +36,10 @@ from scripts.check_store_assets import (
 from scripts.check_store_metadata import (
     APPLE_CPP_FIELDS,
     APPLE_CPP_LOCALIZATION_FIELDS,
+    APP_STORE_DEFAULT_ASSET_LOCALE_ALIASES,
     APPLE_UTF8_BYTE_FIELDS,
+    APPLE_UZ_DEFAULT_LOCALE,
+    EN_APP_STORE_SUBTITLE,
     GOOGLE_CUSTOM_LISTING_FIELDS,
     GOOGLE_CUSTOM_LOCALIZATION_FIELDS,
     GOOGLE_UZ_COUNTRY_LISTING_ID,
@@ -44,6 +47,7 @@ from scripts.check_store_metadata import (
     RU_TITLE,
     configured_generic_terms,
     validate_cpp_upload_mapping,
+    validate_app_store_default_metadata,
     validate_google_uz_upload_mapping,
     validate_listing_localization_refs,
     validate_listing_payload_ids,
@@ -92,6 +96,74 @@ class ValidationScriptsTest(unittest.TestCase):
                 "title": RU_TITLE,
                 "subtitle": RU_APP_STORE_SUBTITLE,
             },
+        )
+
+    def test_app_store_default_has_benefit_led_english_subtitle(self) -> None:
+        metadata = self.metadata()
+        listing = next(
+            listing
+            for listing in metadata["listings"]
+            if listing["id"] == "app-store-default"
+        )
+        for locale in ("en-US", APPLE_UZ_DEFAULT_LOCALE):
+            with self.subTest(locale=locale):
+                self.assertEqual(
+                    listing["overrides"][locale]["title"], "Nimbo Weather"
+                )
+                self.assertEqual(
+                    metadata["localizations"][locale]["subtitle"],
+                    EN_APP_STORE_SUBTITLE,
+                )
+        self.assertLessEqual(len(EN_APP_STORE_SUBTITLE), 30)
+
+    def test_app_store_default_subtitle_drift_fails_contract(self) -> None:
+        metadata = self.metadata()
+        listing = next(
+            listing
+            for listing in metadata["listings"]
+            if listing["id"] == "app-store-default"
+        )
+        metadata["localizations"][APPLE_UZ_DEFAULT_LOCALE]["subtitle"] = (
+            "Generic weather"
+        )
+        failures: list[str] = []
+        validate_app_store_default_metadata(metadata, listing, failures)
+        self.assertIn(
+            "app-store-default must preserve the benefit-led en-GB subtitle",
+            failures,
+        )
+
+    def test_app_store_uz_cpp_uses_documented_default_locale(self) -> None:
+        metadata = self.metadata()
+        listing = next(
+            listing
+            for listing in metadata["listings"]
+            if listing["id"] == "app-store-uz-custom-product-page"
+        )
+        cpp = listing["custom_product_page"]
+        self.assertEqual(cpp["store_locale_fallback"], APPLE_UZ_DEFAULT_LOCALE)
+        self.assertEqual(
+            set(cpp["localizations"]),
+            {APPLE_UZ_DEFAULT_LOCALE, "ru-RU"},
+        )
+        payload = next(
+            payload
+            for payload in self.upload_manifest()["listing_payloads"]
+            if payload["listing_id"] == "app-store-uz-custom-product-page"
+        )
+        self.assertEqual(payload["store_locale_fallback"], APPLE_UZ_DEFAULT_LOCALE)
+        self.assertEqual(
+            set(payload["localized_asset_roots"]),
+            {APPLE_UZ_DEFAULT_LOCALE, "ru-RU"},
+        )
+        default_payload = next(
+            payload
+            for payload in self.upload_manifest()["listing_payloads"]
+            if payload["listing_id"] == "app-store-default"
+        )
+        self.assertEqual(
+            default_payload["asset_locale_aliases"],
+            APP_STORE_DEFAULT_ASSET_LOCALE_ALIASES,
         )
 
     def test_ios_widget_matches_app_floor_with_guarded_newer_surfaces(self) -> None:
@@ -616,7 +688,9 @@ class ValidationScriptsTest(unittest.TestCase):
         )
 
         invalid_apple = copy.deepcopy(metadata)
-        invalid_apple["localizations"]["en-US"]["keywords"] = "weather,forecast"
+        invalid_apple["localizations"][APPLE_UZ_DEFAULT_LOCALE]["keywords"] = (
+            "weather,forecast"
+        )
         failures = []
         validate_uz_store_targeting(invalid_apple, generic_terms, failures)
         self.assertTrue(
@@ -680,11 +754,13 @@ class ValidationScriptsTest(unittest.TestCase):
             for listing in extra_cpp_field["listings"]
             if listing["id"] == "app-store-uz-custom-product-page"
         )
-        cpp["localizations"]["en-US"]["keyword_targets"] = ["weather"]
+        cpp["localizations"][APPLE_UZ_DEFAULT_LOCALE]["keyword_targets"] = [
+            "weather"
+        ]
         failures: list[str] = []
         validate_uz_store_targeting(extra_cpp_field, generic_terms, failures)
         self.assertIn(
-            "app-store-uz-custom-product-page.en-US: expected exactly "
+            "app-store-uz-custom-product-page.en-GB: expected exactly "
             f"{sorted(APPLE_CPP_LOCALIZATION_FIELDS)}",
             failures,
         )
@@ -711,11 +787,13 @@ class ValidationScriptsTest(unittest.TestCase):
             for listing in missing_cpp_field["listings"]
             if listing["id"] == "app-store-uz-custom-product-page"
         )
-        cpp["localizations"]["en-US"].pop("planned_keyword_targets")
+        cpp["localizations"][APPLE_UZ_DEFAULT_LOCALE].pop(
+            "planned_keyword_targets"
+        )
         failures = []
         validate_uz_store_targeting(missing_cpp_field, generic_terms, failures)
         self.assertIn(
-            "app-store-uz-custom-product-page.en-US: expected exactly "
+            "app-store-uz-custom-product-page.en-GB: expected exactly "
             f"{sorted(APPLE_CPP_LOCALIZATION_FIELDS)}",
             failures,
         )
@@ -803,7 +881,9 @@ class ValidationScriptsTest(unittest.TestCase):
             for payload in ambiguous["listing_payloads"]
             if payload["listing_id"] == "app-store-uz-custom-product-page"
         )
-        cpp_payload["asset_root"] = cpp_payload["localized_asset_roots"]["en-US"]
+        cpp_payload["asset_root"] = cpp_payload["localized_asset_roots"][
+            APPLE_UZ_DEFAULT_LOCALE
+        ]
         failures = []
         validate_cpp_upload_mapping(metadata, ambiguous, failures)
         self.assertIn(

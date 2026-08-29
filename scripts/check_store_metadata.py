@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_LOCALES = {
     "en-US",
+    "en-GB",
     "ru-RU",
     "ar",
     "es-ES",
@@ -46,9 +47,10 @@ LOCALIZATION_LIMITS = {
 }
 APPLE_UTF8_BYTE_FIELDS = frozenset({"keywords"})
 CPP_LOCALIZED_ASSET_ROOTS = {
-    "en-US": "store/creatives/growth-2026-08/app-store/uz-UZ",
+    "en-GB": "store/creatives/growth-2026-08/app-store/uz-UZ",
     "ru-RU": "store/creatives/growth-2026-08/app-store/ru-RU",
 }
+APP_STORE_DEFAULT_ASSET_LOCALE_ALIASES = {"en-GB": "en-US"}
 APPLE_CPP_ASSIGNMENT_SEQUENCE = [
     "submit-base-version-keywords",
     "wait-for-base-version-approval",
@@ -113,6 +115,8 @@ UZ_TITLE = "Nimbo Weather: Ob-havo"
 UZ_SHORT = "Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping."
 RU_TITLE = "Nimbo: Погода и прогноз"
 RU_SHORT = "Прогноз погоды: найдите лучшее время, чтобы выйти на улицу."
+EN_APP_STORE_SUBTITLE = "Best time to go outside"
+APPLE_UZ_DEFAULT_LOCALE = "en-GB"
 RU_APP_STORE_SUBTITLE = "Лучшее время для прогулки"
 EXPECTED_PUBLIC_URLS = {
     "marketing": "https://nimbo.uz/",
@@ -194,6 +198,50 @@ def apple_keyword_tokens(value: object) -> set[str]:
     if not isinstance(value, str):
         return set()
     return {token.strip().casefold() for token in value.split(",") if token.strip()}
+
+
+def validate_app_store_default_metadata(
+    metadata: object,
+    app_default: object,
+    failures: list[str],
+) -> None:
+    if not isinstance(metadata, dict) or not isinstance(app_default, dict):
+        failures.append("app-store-default metadata must be an object")
+        return
+    localizations = metadata.get("localizations", {})
+    if not isinstance(localizations, dict):
+        failures.append("app-store-default localizations must be an object")
+        return
+    refs = app_default.get("localization_refs", [])
+    if APPLE_UZ_DEFAULT_LOCALE not in refs:
+        failures.append(
+            "app-store-default must include en-GB for the UZ default language"
+        )
+    overrides = app_default.get("overrides", {})
+    if not isinstance(overrides, dict):
+        failures.append("app-store-default overrides must be an object")
+        return
+    for locale in ("en-US", APPLE_UZ_DEFAULT_LOCALE):
+        if overrides.get(locale) != {"title": "Nimbo Weather"}:
+            failures.append(
+                f"app-store-default must preserve the Nimbo Weather title for {locale}"
+            )
+        localization = localizations.get(locale, {})
+        if (
+            not isinstance(localization, dict)
+            or localization.get("subtitle") != EN_APP_STORE_SUBTITLE
+        ):
+            failures.append(
+                f"app-store-default must preserve the benefit-led {locale} subtitle"
+            )
+    if overrides.get("ru-RU") != {
+        "title": RU_TITLE,
+        "subtitle": RU_APP_STORE_SUBTITLE,
+    }:
+        failures.append(
+            "app-store-default must preserve the query-first Russian title and "
+            "Best Time Outside subtitle"
+        )
 
 
 def validate_uz_store_targeting(
@@ -337,16 +385,19 @@ def validate_uz_store_targeting(
         )
     cpp_localizations = apple_cpp.get("localizations", {})
     if not isinstance(cpp_localizations, dict) or set(cpp_localizations) != {
-        "en-US",
+        APPLE_UZ_DEFAULT_LOCALE,
         "ru-RU",
     }:
         failures.append(
-            "App Store UZ custom product page requires explicit en-US and ru-RU "
+            "App Store UZ custom product page requires explicit en-GB and ru-RU "
             "localization payloads"
         )
         return
 
-    expected_audience_locales = {"en-US": "uz-UZ", "ru-RU": "ru-RU"}
+    expected_audience_locales = {
+        APPLE_UZ_DEFAULT_LOCALE: "uz-UZ",
+        "ru-RU": "ru-RU",
+    }
     targeted_folded: set[str] = set()
     for store_locale, payload in cpp_localizations.items():
         owner = f"app-store-uz-custom-product-page.{store_locale}"
@@ -483,7 +534,7 @@ def validate_cpp_upload_mapping(
         )
     if localized_asset_roots != CPP_LOCALIZED_ASSET_ROOTS:
         failures.append(
-            "App Store UZ upload must map en-US to Uzbek assets and ru-RU to Russian assets"
+            "App Store UZ upload must map en-GB to Uzbek assets and ru-RU to Russian assets"
         )
     for locale, relative in localized_asset_roots.items():
         if not isinstance(relative, str) or not (root / relative).is_dir():
@@ -1110,21 +1161,7 @@ def main() -> int:
                 )
 
     app_default = listing_by_id.get("app-store-default", {})
-    if (
-        app_default.get("overrides", {}).get("en-US", {}).get("title")
-        != "Nimbo Weather"
-    ):
-        failures.append(
-            "app-store-default must preserve the global title Nimbo Weather"
-        )
-    if app_default.get("overrides", {}).get("ru-RU") != {
-        "title": RU_TITLE,
-        "subtitle": RU_APP_STORE_SUBTITLE,
-    }:
-        failures.append(
-            "app-store-default must preserve the query-first Russian title and "
-            "Best Time Outside subtitle"
-        )
+    validate_app_store_default_metadata(metadata, app_default, failures)
 
     app_uz = listing_by_id.get("app-store-uz-custom-product-page", {})
     cpp = app_uz.get("custom_product_page", {})
@@ -1138,7 +1175,7 @@ def main() -> int:
         failures.append("App Store UZ custom product page must remain a UZ draft")
     if (
         cpp.get("audience_locale") != "uz-UZ"
-        or cpp.get("store_locale_fallback") != "en-US"
+        or cpp.get("store_locale_fallback") != APPLE_UZ_DEFAULT_LOCALE
     ):
         failures.append(
             "App Store UZ custom product page must record the unsupported-locale fallback"
@@ -1202,6 +1239,25 @@ def main() -> int:
             for payload in payloads
             if isinstance(payload, dict) and payload.get("listing_id") in listing_by_id
         }
+        app_store_default = payload_by_id.get("app-store-default", {})
+        if app_store_default.get("asset_locale_aliases") != (
+            APP_STORE_DEFAULT_ASSET_LOCALE_ALIASES
+        ):
+            failures.append(
+                "App Store default upload must explicitly reuse en-US assets for en-GB"
+            )
+        else:
+            app_store_locales = set(app_store_default.get("store_locales", []))
+            for target_locale, source_locale in (
+                APP_STORE_DEFAULT_ASSET_LOCALE_ALIASES.items()
+            ):
+                if (
+                    target_locale not in app_store_locales
+                    or source_locale not in app_store_locales
+                ):
+                    failures.append(
+                        "App Store default asset aliases must reference mapped locales"
+                    )
         play_default = payload_by_id.get("google-play-default", {})
         if play_default.get("feature_graphic") != (
             "store/assets/google-play/feature-graphic-en-US-1024x500.jpg"

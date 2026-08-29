@@ -64,6 +64,7 @@
       "listing_id": "app-store-default",
       "store_locales": [
         "en-US",
+        "en-GB",
         "ru-RU",
         "ar",
         "es-ES",
@@ -77,16 +78,19 @@
         "tr-TR"
       ],
       "asset_root": "store/screenshots/app-store",
-      "growth_creatives": "store/creatives/growth-2026-08/app-store"
+      "growth_creatives": "store/creatives/growth-2026-08/app-store",
+      "asset_locale_aliases": {
+        "en-GB": "en-US"
+      }
     },
     {
       "listing_id": "app-store-uz-custom-product-page",
       "store_locales": [
-        "en-US",
+        "en-GB",
         "ru-RU"
       ],
       "audience_locale": "uz-UZ",
-      "store_locale_fallback": "en-US",
+      "store_locale_fallback": "en-GB",
       "keyword_assignment_gate": {
         "status": "blocked-pending-base-version-approval",
         "candidate_source_version": "1.1.0",
@@ -97,7 +101,7 @@
         ]
       },
       "localized_asset_roots": {
-        "en-US": "store/creatives/growth-2026-08/app-store/uz-UZ",
+        "en-GB": "store/creatives/growth-2026-08/app-store/uz-UZ",
         "ru-RU": "store/creatives/growth-2026-08/app-store/ru-RU"
       }
     },
