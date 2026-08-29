@@ -30,6 +30,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Nimbo uses your approximate location to show weather around you.</string>
+	<key>NimboSourceRevision</key>
+	<string>$(NIMBO_SOURCE_REVISION)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

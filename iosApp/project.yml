@@ -15,6 +15,9 @@ settings:
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: 5SWEZ7HTYP
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    # Archive/release invocations must override this with one full Git commit.
+    # The verifier deliberately rejects this sentinel in signed candidates.
+    NIMBO_SOURCE_REVISION: UNVERIFIED_SOURCE
 targets:
   Nimbo:
     type: application
@@ -30,6 +33,7 @@ targets:
         CFBundleDisplayName: Nimbo
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NimboSourceRevision: $(NIMBO_SOURCE_REVISION)
         ITSAppUsesNonExemptEncryption: false
         CADisableMinimumFrameDurationOnPhone: true
         BGTaskSchedulerPermittedIdentifiers:
@@ -91,6 +95,7 @@ targets:
         CFBundleDisplayName: Nimbo
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NimboSourceRevision: $(NIMBO_SOURCE_REVISION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
@@ -114,6 +119,7 @@ targets:
         CFBundleDisplayName: Nimbo
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NimboSourceRevision: $(NIMBO_SOURCE_REVISION)
         ITSAppUsesNonExemptEncryption: false
         CADisableMinimumFrameDurationOnPhone: true
         BGTaskSchedulerPermittedIdentifiers:
@@ -172,6 +178,7 @@ targets:
         CFBundleDisplayName: Nimbo
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NimboSourceRevision: $(NIMBO_SOURCE_REVISION)
         WKCompanionAppBundleIdentifier: uz.ganikhodjaev.weather
         WKApplication: true
     settings:
