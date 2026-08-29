@@ -74,6 +74,13 @@ CodeSign phase with `Command CodeSign failed with a nonzero exit code`; no
 authorization prompt, xcarchive, or upload followed. Existing signing material
 was left untouched.
 
+At `2026-08-29 10:32 +05:00`, a new read-only readiness check listed the
+previously used physical iPad as nominally available, but its lock-state query
+timed out and the `--no-auto-mount-ddis` DDI-services query failed while opening
+the CoreDevice tunnel. The current iPhone and paired watch remained unavailable.
+No DDI was mounted, and no app was built, installed, launched, or removed during
+this check, so the exact-current Apple physical matrix could not resume.
+
 ## Decision
 
 Publication remains blocked until all of the following are true:

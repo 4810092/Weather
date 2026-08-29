@@ -47,7 +47,7 @@ Rank comparisons include only exact numeric observations under the current monit
 | Release artifact / source sync | pass | PASS | pass | Source-current signed artifacts and hashes are recorded. Required action: Maintain dated evidence and recheck at the next cutoff. |
 | Android physical smoke | pass | PASS | pass | The required Android physical matrix passed. Required action: Maintain dated evidence and recheck at the next cutoff. |
 | iOS physical smoke | pass | PASS | pass | The required Apple physical matrix passed. Required action: Maintain dated evidence and recheck at the next cutoff. |
-| nimbo.uz activation | blocked | FAIL | pass | Public delegation and HTTPS are not verified. Required action: Verify registry delegation, public DNS, and HTTPS for nimbo.uz before using the domain in store or outreach surfaces. |
+| nimbo.uz activation | blocked | FAIL | pass | Public delegation and HTTPS are not verified. Required action: Verify a matching nimbo.uz/www certificate, HTTPS redirects, canonicals, and localized routes before using the domain in store or outreach surfaces. |
 | Store policy console clearance | pass | PASS | pass | Both store consoles report no open policy action. Required action: Maintain dated evidence and recheck at the next cutoff. |
 
 ## Quality guardrails
@@ -74,7 +74,7 @@ Rank comparisons include only exact numeric observations under the current monit
 | Priority | Action | Suggested owner | Suggested due |
 | ---: | --- | --- | --- |
 | 1 | Obtain written Open-Meteo promotion clearance; keep promotion paused until the reply is recorded. | Product / legal | 2026-09-06 |
-| 2 | Verify registry delegation, public DNS, and HTTPS for nimbo.uz before using the domain in store or outreach surfaces. | Web operations | 2026-09-06 |
+| 2 | Verify a matching nimbo.uz/www certificate, HTTPS redirects, canonicals, and localized routes before using the domain in store or outreach surfaces. | Web operations | 2026-09-06 |
 | 3 | Capture the next complete public-rank snapshot and rerun the evaluation without changing the monitor configuration. | Growth operations | 2026-08-31 |
 
 Suggested owners and due dates are operating recommendations calculated from the report date, not recorded commitments.

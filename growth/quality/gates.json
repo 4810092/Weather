@@ -10,7 +10,7 @@
     "open_meteo_promotion_clearance": {
       "status": "pending",
       "blocks_publication": true,
-      "reason": "Clarification was sent to Open-Meteo's official contact at 2026-08-29 06:05 +05:00 from the authenticated maintainer account; no written reply has been received."
+      "reason": "The authenticated Gmail thread and in:anywhere searches were checked read-only at 2026-08-29 10:22:53 +05:00. The clarification sent to info@open-meteo.com at 06:05:07 remains the thread's only message with label SENT; no inbound Open-Meteo reply is indexed in this account. This does not prove delivery or cover another account or a future/unindexed reply. Written clearance remains absent."
     },
     "android_physical_smoke": {
       "status": "blocked",
@@ -30,7 +30,7 @@
     "domain_activation": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "At 2026-08-29 09:52 +05:00, domain-specific WHOIS changed to NIMBO.UZ status ACTIVE, updated 29-Aug-2026 and expiring 29-Aug-2027 with the intended Cloudflare nameservers. The registrar-record blocker is cleared, but the authoritative .uz nameserver plus Cloudflare and Google resolvers still return DNSSEC-validated NXDOMAIN, and the authenticated Cloudflare zone remains pending, so parent delegation, public A/AAAA/www resolution, and HTTPS remain unavailable. Direct Cloudflare-child queries return the staged DNS-only GitHub Pages records correctly. Wait for registry propagation, then verify independent public DNS and TLS before announcing the domain."
+      "reason": "At 2026-08-29 10:14–10:16 +05:00, WHOIS was ACTIVE and both .uz authorities returned the intended jose/sharon Cloudflare delegation. A DNSSEC trace completed to the child, both authoritative nameservers agreed, and the Cloudflare and Google public resolvers returned the four A records, four AAAA records, and www CNAME. The signed parent proves no child DS, so the current unsigned delegation is insecure rather than bogus. HTTP origin routing returns apex 200 and www 301, but the GitHub Pages edge still presents *.github.io without nimbo.uz/www SAN and hostname verification fails with curl exit 60. At 10:29–10:30 +05:00, authenticated GitHub Pages settings showed DNS Check in Progress and Enforce HTTPS disabled because no certificate had been issued for nimbo.uz. Keep the gate blocked until a matching certificate is issued and apex, www, redirects, canonicals, and localized routes pass end-to-end HTTPS verification."
     },
     "store_policy_console_clearance": {
       "status": "pass",
@@ -39,5 +39,5 @@
     }
   },
   "scale_status": "hold",
-  "scale_status_reason": "Public outreach and acquisition scaling remain gated on provider clearance, crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, registry delegation/DNS/TLS, and critical console guardrails."
+  "scale_status_reason": "Public outreach and acquisition scaling remain gated on provider clearance, crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, public HTTPS for nimbo.uz, and critical console guardrails."
 }

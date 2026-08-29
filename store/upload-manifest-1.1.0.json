@@ -156,7 +156,7 @@
     "physical tablet, widget, and Wear OS smoke",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",
     "authenticated App Store Connect and Google Play upload paths",
-    "public nimbo.uz DNS and TLS"
+    "valid public nimbo.uz HTTPS/TLS and route verification"
   ],
   "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."
 }

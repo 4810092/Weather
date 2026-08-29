@@ -1,24 +1,28 @@
 # `nimbo.uz` launch state — 2026-08-28, refreshed 2026-08-29
 
-Status: **BLOCKED — registrar record is active, but registry delegation, public
-DNS, and TLS are not yet available**.
+Status: **BLOCKED — registrar activation, registry delegation, and public DNS
+now pass, but a matching HTTPS certificate is not yet available**.
 
 ## Completed
 
 - GitHub Pages deployment `6147270106` for commit
   `584f47a83637ce3587ce980a69f392b84a57656b` completed successfully.
-- GitHub Pages workflow run `33213699930` for the current commit
+- GitHub Pages workflow run `33213699930` for earlier commit
   `53d4801d5d2012b300bb44959f08c32afe705045` also completed successfully.
+- GitHub Pages workflow run `33235358445` for commit
+  `738e008ecb0a74224f5ba4f283610f7c8629a4f9` completed successfully in 38
+  seconds; its deployment step completed in 11 seconds.
 - The repository Pages configuration uses the workflow build type and accepts
   `nimbo.uz` as its custom domain.
 - The generated site uses `https://nimbo.uz` as the canonical origin for the
   Uzbek, Russian, and English landing, privacy, support, and press routes.
-- The registrar-facing record contains the Cloudflare-assigned nameservers
-  `jose.ns.cloudflare.com` and `sharon.ns.cloudflare.com`; this is not proof of
-  registry delegation.
-- The Cloudflare zone now contains the complete DNS-only GitHub Pages record
-  set: four `A`, four `AAAA`, and the `www` `CNAME`. These records are staged
-  but cannot answer publicly until the `.uz` registry publishes delegation.
+- The active registrar record and the `.uz` parent both contain the
+  Cloudflare-assigned nameservers `jose.ns.cloudflare.com` and
+  `sharon.ns.cloudflare.com`.
+- The Cloudflare zone contains the complete DNS-only GitHub Pages record set:
+  four `A`, four `AAAA`, and the `www` `CNAME`. The two authoritative
+  nameservers and the Cloudflare and Google public resolvers now return this
+  record set publicly.
 - A direct HTTP request to the GitHub Pages edge with `Host: nimbo.uz` returned
   HTTP `200` with the expected site. This proves that the Pages origin can route
   the custom host, but it does not prove public DNS or HTTPS reachability.
@@ -99,31 +103,48 @@ returned DNSSEC-authenticated `NXDOMAIN`, while direct queries to
 `www` CNAME. The authenticated Cloudflare Zone API still reported the zone as
 `pending`. `https://nimbo.uz/` still could not resolve.
 
-The registry has therefore accepted the active domain record but has not yet
-published an effective parent delegation at the capture time. Public DNS and
-certificate issuance remain pending propagation; the prepared Cloudflare child
-zone itself continues to answer correctly when queried directly.
+At `2026-08-29 10:14:37–10:16:25 +05:00`, both `.uz` authorities returned
+`NOERROR` with the intended `jose.ns.cloudflare.com` and
+`sharon.ns.cloudflare.com` delegation, and a DNSSEC trace completed through
+the signed `.uz` zone to the Cloudflare child. Both child nameservers agreed on
+the four apex `A` records, four apex `AAAA` records, `www` CNAME, NS, and SOA.
+The Cloudflare and Google public resolvers also returned the same public record
+set. The signed parent proves that the child has no `DS`; `nimbo.uz` is
+therefore currently an unsigned/insecure delegation, not a DNSSEC-bogus zone.
+
+HTTP origin routing now passes when resolved directly: the apex returns `200`
+and `www` returns `301` to the apex. HTTPS remains invalid. The GitHub Pages
+edge still presents a certificate with `CN=*.github.io` and no `nimbo.uz` or
+`www.nimbo.uz` SAN; hostname verification fails and `curl --resolve` exits
+`60`. The macOS system resolver API also retained an earlier negative cache at
+the capture time even though direct local queries and both independent public
+resolvers were already correct.
+
+The registrar, parent delegation, authoritative DNS, and independent public
+resolution parts of the gate now pass. Certificate issuance and end-to-end
+HTTPS verification remain the only domain launch blocker.
+
+At `2026-08-29 10:29–10:30 +05:00`, the authenticated GitHub Pages settings
+page identified the latest deployment as live at `http://nimbo.uz/`, showed the
+custom-domain status `DNS Check in Progress`, and kept `Enforce HTTPS` disabled
+with the explicit reason that no certificate had yet been issued for
+`nimbo.uz`. No Pages setting was changed during this read-only check.
 
 TLS for `nimbo.uz` is not provisioned. The successful GitHub Pages deployment
-and direct edge-host HTTP `200` are origin-only evidence; public reachability
-and HTTPS remain unclaimed.
+and HTTP `200` do not prove certificate readiness; valid public HTTPS remains
+unclaimed.
 
 ## Fail-closed activation gate
 
 Do not announce or promote `nimbo.uz` as live until all of the following are
 complete and independently verified:
 
-1. Keep the now-active registrar record and intended Cloudflare nameservers
-   unchanged while the `.uz` registry publishes the parent delegation.
-2. Confirm the delegation independently at the authoritative `.uz` nameserver
-   and through Cloudflare and Google recursive resolvers.
-3. Verify the staged Cloudflare DNS records below after delegation, then confirm
-   public `NS`, `A`, `AAAA`, and `www` resolution from independent recursive
-   resolvers.
-4. Wait for GitHub Pages certificate issuance, enable HTTPS, and verify the
+1. Keep the active registrar record, delegated Cloudflare nameservers, and
+   verified DNS-only GitHub Pages record set unchanged.
+2. Wait for GitHub Pages certificate issuance, enable HTTPS, and verify the
    apex, `www`, redirects, canonical URLs, and every localized route over TLS.
 
-## DNS records staged before activation
+## DNS records serving after activation
 
 All records are present and must remain DNS-only while GitHub verifies the
 domain and issues TLS:

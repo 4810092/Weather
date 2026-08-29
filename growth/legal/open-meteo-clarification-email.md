@@ -1,7 +1,8 @@
 # Open-Meteo promotion clarification — sent 2026-08-29
 
-Status: sent at `2026-08-29 06:05 +05:00`; awaiting an unambiguous written
-response. The provider gate remains `pending`.
+Status: sent at `2026-08-29 06:05:07 +05:00`; a read-only authenticated Gmail
+recheck at `2026-08-29 10:22:53 +05:00` found no inbound response. The provider
+gate remains `pending` until an unambiguous written answer is recorded.
 To: `info@open-meteo.com`
 Address verification: published on [Open-Meteo Terms & Privacy](https://open-meteo.com/en/terms), re-checked immediately before sending on 2026-08-29.
 Subject: Clarification on non-commercial organic promotion for Nimbo
@@ -49,4 +50,9 @@ https://github.com/4810092/Weather
 - The Gmail provider returned a successful sent-message result from the
   authenticated maintainer account. A pre-send search found no earlier thread
   to or from the provider contact, so no duplicate was sent.
+- At the dated recheck, the thread contained exactly one message with label
+  `SENT`. Exact sender, domain, subject, and broad `Open-Meteo` searches under
+  `in:anywhere` returned no inbound message. This covers only Gmail-indexed
+  state in the authenticated maintainer account and does not prove delivery or
+  exclude a future or not-yet-indexed response.
 - Save the sent timestamp and full written reply; do not mark the provider gate `pass` based on silence or an ambiguous answer.

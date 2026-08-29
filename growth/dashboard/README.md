@@ -6,7 +6,7 @@ artifact. `report.html` is generated from that artifact with the packaged Data
 Analytics portable-artifact renderer; it must not be edited by hand.
 
 The dashboard is intentionally `blocked`, with scale status `hold`.
-Public outreach and acquisition scaling remain gated on provider clearance, crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, registry delegation/DNS/TLS, and critical console guardrails.
+Public outreach and acquisition scaling remain gated on provider clearance, crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, public HTTPS for `nimbo.uz`, and critical console guardrails.
 On 2026-08-29 the auxiliary Apple
 `Toshkent ob-havo` search returned only one unique app, below the 10-app
 completeness floor, while all required goal surfaces were complete and failed;
@@ -22,11 +22,21 @@ the fresh `97c26cb` output except for VCS metadata, but no exact-current signed 
 bundle exists. The historical iOS crash
 still lacks a symbolicated report; the current-source hardening evidence cannot
 be attributed to that event and does not close the crash gate. The
-Open-Meteo clarification has been sent but is awaiting a written response.
-At 09:52 +05:00, WHOIS showed `nimbo.uz` active with the intended Cloudflare
-nameservers, clearing the registrar-record blocker; the Cloudflare zone remains
-pending, and parent delegation, public resolution, and HTTPS are still unavailable. Missing
-evidence remains explicit rather than silently becoming a zero or pass.
+The authenticated Gmail thread and `in:anywhere` searches were checked read-only
+at 10:22:53 +05:00: the 06:05:07 clarification remains the thread's only
+message with label `SENT`, and no inbound Open-Meteo reply is indexed in that
+account. This does not prove delivery or exclude another account or a later
+unindexed reply; written clearance remains absent.
+At 10:14–10:16 +05:00, WHOIS, both `.uz` authorities, the DNSSEC trace,
+Cloudflare/Google public resolution, and HTTP origin routing confirmed that the
+registrar, parent delegation, A/AAAA records, `www` CNAME, and origin-routing
+blockers are cleared. The GitHub Pages edge still serves a `*.github.io`
+certificate without `nimbo.uz` or `www.nimbo.uz` in the SAN, so hostname
+verification fails with curl exit 60. At 10:29–10:30 +05:00, authenticated
+GitHub Pages settings showed `DNS Check in Progress` and `Enforce HTTPS`
+disabled because no certificate had been issued for `nimbo.uz`. Public HTTPS is
+now the only domain blocker. Missing evidence remains explicit rather than
+silently becoming a zero or pass.
 The dashboard also exposes every critical weekly metric guardrail; all eight
 are currently `unknown`, independently blocking scale. The point-in-time
 `store_policy_console_clearance` operational gate is intentionally distinct

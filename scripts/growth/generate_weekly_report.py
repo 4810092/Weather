@@ -116,8 +116,8 @@ GATE_ACTIONS = {
     ),
     "domain_activation": (
         "Web operations",
-        "Verify registry delegation, public DNS, and HTTPS for nimbo.uz before using "
-        "the domain in store or outreach surfaces.",
+        "Verify a matching nimbo.uz/www certificate, HTTPS redirects, canonicals, "
+        "and localized routes before using the domain in store or outreach surfaces.",
     ),
     "store_policy_console_clearance": (
         "Store operations",
