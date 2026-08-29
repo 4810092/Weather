@@ -41,6 +41,8 @@
   <string name="timeline_title">24時間前 · 現在 · 24時間後</string>
   <string name="attribution">天気・地域データ: Open-Meteo · 地域情報は GeoNames に基づきます</string>
   <string name="about_nimbo">Nimbo について</string>
+  <string name="help_and_feedback">ヘルプとフィードバック</string>
+  <string name="rate_nimbo">Nimboを評価</string>
   <string name="privacy_policy">プライバシーポリシー</string>
   <string name="open_source_licenses">オープンソースライセンス</string>
   <string name="recent_days">最近の日々</string>

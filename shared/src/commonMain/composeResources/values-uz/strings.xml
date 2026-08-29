@@ -41,6 +41,8 @@
   <string name="timeline_title">24 soat oldin · hozir · 24 soat keyin</string>
   <string name="attribution">Ob-havo va joylar: Open-Meteo · Joylar GeoNames asosida</string>
   <string name="about_nimbo">Nimbo haqida</string>
+  <string name="help_and_feedback">Yordam va fikr-mulohaza</string>
+  <string name="rate_nimbo">Nimbo’ni baholang</string>
   <string name="privacy_policy">Maxfiylik siyosati</string>
   <string name="open_source_licenses">Ochiq manba litsenziyalari</string>
   <string name="recent_days">So‘nggi kunlar</string>

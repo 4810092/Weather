@@ -41,6 +41,8 @@
   <string name="timeline_title">24 小时前 · 现在 · 24 小时后</string>
   <string name="attribution">天气和地点数据来自 Open-Meteo · 地点信息基于 GeoNames</string>
   <string name="about_nimbo">关于 Nimbo</string>
+  <string name="help_and_feedback">帮助与反馈</string>
+  <string name="rate_nimbo">为 Nimbo 评分</string>
   <string name="privacy_policy">隐私政策</string>
   <string name="open_source_licenses">开源许可</string>
   <string name="recent_days">最近几天</string>

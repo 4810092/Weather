@@ -41,6 +41,8 @@
   <string name="timeline_title">24 часа назад · сейчас · 24 часа вперёд</string>
   <string name="attribution">Погода и места: Open-Meteo · База мест: GeoNames</string>
   <string name="about_nimbo">О Nimbo</string>
+  <string name="help_and_feedback">Помощь и обратная связь</string>
+  <string name="rate_nimbo">Оценить Nimbo</string>
   <string name="privacy_policy">Политика конфиденциальности</string>
   <string name="open_source_licenses">Лицензии открытого ПО</string>
   <string name="recent_days">Последние дни</string>

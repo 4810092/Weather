@@ -41,6 +41,8 @@
   <string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string>
   <string name="attribution">Hava ve yer verileri Open-Meteo · Yerler GeoNames tabanlıdır</string>
   <string name="about_nimbo">Nimbo hakkında</string>
+  <string name="help_and_feedback">Yardım ve geri bildirim</string>
+  <string name="rate_nimbo">Nimbo’yu değerlendir</string>
   <string name="privacy_policy">Gizlilik politikası</string>
   <string name="open_source_licenses">Açık kaynak lisansları</string>
   <string name="recent_days">Son günler</string>

@@ -40,6 +40,8 @@
     <string name="timeline_title">24 hours before · now · 24 hours ahead</string>
     <string name="attribution">Weather and place data by Open-Meteo · Places based on GeoNames</string>
     <string name="about_nimbo">About Nimbo</string>
+    <string name="help_and_feedback">Help and feedback</string>
+    <string name="rate_nimbo">Rate Nimbo</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="open_source_licenses">Open-source licenses</string>
     <string name="recent_days">Recent days</string>

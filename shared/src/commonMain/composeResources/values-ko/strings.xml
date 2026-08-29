@@ -41,6 +41,8 @@
   <string name="timeline_title">24시간 전 · 지금 · 24시간 후</string>
   <string name="attribution">날씨 및 장소 데이터: Open-Meteo · 장소 정보는 GeoNames 기반</string>
   <string name="about_nimbo">Nimbo 정보</string>
+  <string name="help_and_feedback">도움말 및 의견</string>
+  <string name="rate_nimbo">Nimbo 평가하기</string>
   <string name="privacy_policy">개인정보 처리방침</string>
   <string name="open_source_licenses">오픈 소스 라이선스</string>
   <string name="recent_days">최근 날씨</string>

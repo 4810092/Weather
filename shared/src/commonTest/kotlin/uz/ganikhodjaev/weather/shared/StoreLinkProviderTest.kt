@@ -16,6 +16,12 @@ class StoreLinkProviderTest {
             "https://apps.apple.com/app/id6799886897",
             NimboStoreLinks.APP_STORE
         )
+        assertEquals(NimboStoreLinks.GOOGLE_PLAY, NimboStoreLinks.GOOGLE_PLAY_REVIEW)
+        assertEquals(
+            "https://apps.apple.com/app/id6799886897?action=write-review",
+            NimboStoreLinks.APP_STORE_REVIEW
+        )
+        assertEquals("https://nimbo.uz/support/", NimboPublicLinks.SUPPORT)
     }
 
     @Test
@@ -32,6 +38,20 @@ class StoreLinkProviderTest {
         assertFalse("&" in googlePlay)
         assertFalse("?" in appStore)
         assertFalse("#" in appStore)
+    }
+
+    @Test
+    fun trustAndFeedbackLinksContainNoAnalyticsParameters() {
+        val links = listOf(
+            NimboPublicLinks.SUPPORT,
+            NimboStoreLinks.GOOGLE_PLAY_REVIEW,
+            NimboStoreLinks.APP_STORE_REVIEW
+        )
+
+        assertTrue(links.all { it.startsWith("https://") })
+        assertTrue(links.none { "utm_" in it })
+        assertTrue(links.none { "referrer=" in it })
+        assertTrue(links.none { "sentiment" in it })
     }
 
     @Test

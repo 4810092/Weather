@@ -144,6 +144,8 @@ fun NimboApp(platformContext: PlatformContext) {
                         onUnitPreferenceChanged = stateHolder::setUnitPreference,
                         onShareText = { text -> shareText(platformContext, text) },
                         storeUrl = storeLinkProvider.storeUrl,
+                        reviewUrl = storeLinkProvider.reviewUrl,
+                        supportUrl = NimboPublicLinks.SUPPORT,
                         onDismissFirstForecastTip = stateHolder::dismissFirstForecastTip,
                         themePreference = themePreference,
                         onThemePreferenceChanged = { preference: ThemePreference ->

@@ -41,6 +41,8 @@
   <string name="timeline_title">24 horas antes · ahora · 24 horas después</string>
   <string name="attribution">Datos del tiempo y lugares de Open-Meteo · Lugares basados en GeoNames</string>
   <string name="about_nimbo">Acerca de Nimbo</string>
+  <string name="help_and_feedback">Ayuda y comentarios</string>
+  <string name="rate_nimbo">Valorar Nimbo</string>
   <string name="privacy_policy">Política de privacidad</string>
   <string name="open_source_licenses">Licencias de código abierto</string>
   <string name="recent_days">Días recientes</string>

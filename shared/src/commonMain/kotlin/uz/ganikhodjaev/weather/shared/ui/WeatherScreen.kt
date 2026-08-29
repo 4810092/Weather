@@ -112,6 +112,8 @@ internal fun WeatherScreen(
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
     storeUrl: String,
+    reviewUrl: String,
+    supportUrl: String,
     onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
@@ -138,6 +140,8 @@ internal fun WeatherScreen(
             onUnitPreferenceChanged,
             onShareText,
             storeUrl,
+            reviewUrl,
+            supportUrl,
             onDismissFirstForecastTip,
             themePreference,
             onThemePreferenceChanged
@@ -469,6 +473,8 @@ private fun WeatherContent(
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
     storeUrl: String,
+    reviewUrl: String,
+    supportUrl: String,
     onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
@@ -570,6 +576,20 @@ private fun WeatherContent(
                             }
                         ) {
                             Text(stringResource(Res.string.about_nimbo))
+                        }
+                        TextButton(
+                            onClick = {
+                                uriHandler.openUri(supportUrl)
+                            }
+                        ) {
+                            Text(stringResource(Res.string.help_and_feedback))
+                        }
+                        TextButton(
+                            onClick = {
+                                uriHandler.openUri(reviewUrl)
+                            }
+                        ) {
+                            Text(stringResource(Res.string.rate_nimbo))
                         }
                         TextButton(
                             onClick = {
