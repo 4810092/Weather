@@ -6,17 +6,26 @@
   <title>{{TITLE}}</title>
   <meta name="description" content="{{DESCRIPTION}}">
   <meta name="theme-color" content="#f3f7fc">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{{OG_TYPE}}">
   <meta property="og:site_name" content="Nimbo Weather">
   <meta property="og:title" content="{{TITLE}}">
   <meta property="og:description" content="{{DESCRIPTION}}">
   <meta property="og:url" content="{{CANONICAL_URL}}">
   <meta property="og:image" content="{{OG_IMAGE_URL}}">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="500">
+  <meta property="og:image:alt" content="{{TITLE}}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{TITLE}}">
+  <meta name="twitter:description" content="{{DESCRIPTION}}">
+  <meta name="twitter:image" content="{{OG_IMAGE_URL}}">
+  <meta name="apple-itunes-app" content="app-id=6799886897">
+  {{ARTICLE_META}}
   <link rel="canonical" href="{{CANONICAL_URL}}">
   {{ALTERNATES}}
   {{STRUCTURED_DATA}}
-  <link rel="icon" href="{{ASSET_PREFIX}}/nimbo-icon.png" sizes="any">
+  <link rel="icon" href="{{ASSET_PREFIX}}/nimbo-icon-site.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="{{ASSET_PREFIX}}/nimbo-icon-site.png" sizes="192x192">
   <link rel="stylesheet" href="{{ASSET_PREFIX}}/site.css">
   <script defer src="{{ASSET_PREFIX}}/site.js"></script>
 </head>
@@ -25,7 +34,7 @@
   <header class="site-header" data-header>
     <div class="shell nav-shell">
       <a class="brand" href="{{HOME_URL}}" aria-label="Nimbo Weather">
-        <img src="{{ASSET_PREFIX}}/nimbo-icon.png" alt="" width="42" height="42">
+        <img src="{{ASSET_PREFIX}}/nimbo-icon-site.png" alt="" width="42" height="42">
         <span>Nimbo</span>
       </a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
@@ -47,7 +56,7 @@
     <div class="shell footer-grid">
       <div>
         <a class="brand footer-brand" href="{{HOME_URL}}">
-          <img src="{{ASSET_PREFIX}}/nimbo-icon.png" alt="" width="34" height="34">
+          <img src="{{ASSET_PREFIX}}/nimbo-icon-site.png" alt="" width="34" height="34" loading="lazy">
           <span>Nimbo Weather</span>
         </a>
         <p>{{WEATHER_DATA}}</p>

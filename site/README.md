@@ -5,6 +5,13 @@ press kit, support, privacy pages, seasonal-guide pipeline, and a source-backed 
 landing surface intentionally has no analytics, cookie banner, third-party
 JavaScript, or build-time package dependency.
 
+Each localized landing exposes a factual `SoftwareApplication` JSON-LD record
+with the visible free price and official store destinations. The Uzbek root
+also exposes the canonical `WebSite` site-name record. No rating or review
+markup is emitted. Navigation and favicon surfaces use a dedicated 192 px icon;
+the original 1024 px artwork remains available unchanged in the press kit, and
+below-the-fold press previews are lazy-loaded.
+
 Build a local preview from the repository root:
 
 ```sh

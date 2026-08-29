@@ -36,7 +36,7 @@
         "android_alt": "Nimbo Weather Android’da"
       },
       "landing": {
-        "title": "Nimbo — tashqariga chiqish uchun eng yaxshi vaqtni toping",
+        "title": "Nimbo Ob-havo — Toshkent va O‘zbekiston uchun prognoz",
         "description": "Toshkent va O‘zbekiston shaharlari uchun tushunarli ob-havo: kecha, hozir va keyingi 24 soat bitta vaqt chizig‘ida.",
         "eyebrow": "O‘zbekiston uchun ob-havo",
         "headline": "Tashqariga chiqish uchun eng yaxshi vaqtni toping.",
@@ -157,7 +157,7 @@
         "android_alt": "Nimbo Weather на Android"
       },
       "landing": {
-        "title": "Nimbo — найдите лучшее время выйти на улицу",
+        "title": "Nimbo Погода — прогноз для Ташкента и Узбекистана",
         "description": "Понятная погода для Ташкента и городов Узбекистана: вчера, сейчас и следующие 24 часа на одной временной шкале.",
         "eyebrow": "Погода для Узбекистана",
         "headline": "Найдите лучшее время выйти на улицу.",
@@ -278,7 +278,7 @@
         "android_alt": "Nimbo Weather on Android"
       },
       "landing": {
-        "title": "Nimbo — find the best time to go outside",
+        "title": "Nimbo Weather — forecast for Uzbekistan",
         "description": "Clear weather for Tashkent and cities across Uzbekistan: yesterday, now, and the next 24 hours on one timeline.",
         "eyebrow": "Weather for Uzbekistan",
         "headline": "Find the best time to go outside.",

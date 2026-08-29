@@ -278,6 +278,83 @@ class SiteArticlesTest(unittest.TestCase):
             if output.exists():
                 shutil.rmtree(output)
 
+    def test_public_site_exposes_factual_search_and_loading_contract(self) -> None:
+        build_root = ROOT / "build"
+        build_root.mkdir(exist_ok=True)
+        output = Path(tempfile.mkdtemp(prefix="site-search-", dir=build_root))
+        shutil.rmtree(output)
+        try:
+            MODULE.build(output, MODULE.CANONICAL_BASE_URL)
+            expected = {
+                "uz": (
+                    output / "index.html",
+                    "Nimbo Ob-havo",
+                    "hl=uz",
+                    True,
+                ),
+                "ru": (
+                    output / "ru/index.html",
+                    "Nimbo Погода",
+                    "hl=ru",
+                    False,
+                ),
+                "en": (
+                    output / "en/index.html",
+                    "Nimbo Weather",
+                    "hl=en",
+                    False,
+                ),
+            }
+            for locale, (path, title_marker, play_locale, has_website) in expected.items():
+                document = path.read_text(encoding="utf-8")
+                self.assertIn(f"<title>{title_marker}", document)
+                self.assertIn(
+                    '<meta name="apple-itunes-app" content="app-id=6799886897">',
+                    document,
+                )
+                self.assertIn('<meta name="twitter:image"', document)
+                self.assertIn("nimbo-icon-site.png", document)
+                self.assertIn('width="1320" height="2868"', document)
+                match = re.search(
+                    r'<script type="application/ld\+json">(.*?)</script>',
+                    document,
+                )
+                self.assertIsNotNone(match)
+                schema = json.loads(match.group(1))
+                types = [item["@type"] for item in schema["@graph"]]
+                self.assertIn("Organization", types)
+                self.assertEqual("WebSite" in types, has_website)
+                application = next(
+                    item
+                    for item in schema["@graph"]
+                    if item["@type"] == "SoftwareApplication"
+                )
+                self.assertEqual(application["inLanguage"], locale)
+                self.assertEqual(
+                    application["applicationCategory"], "UtilitiesApplication"
+                )
+                self.assertEqual(application["offers"]["price"], "0")
+                self.assertTrue(application["isAccessibleForFree"])
+                self.assertIn(play_locale, application["downloadUrl"][1])
+                self.assertIn("gl=UZ", application["downloadUrl"][1])
+                self.assertNotIn("aggregateRating", json.dumps(schema))
+
+            self.assertLess(MODULE.SITE_ICON_SOURCE.stat().st_size, 64 * 1024)
+            self.assertEqual(
+                (output / "assets/nimbo-icon-site.png").read_bytes(),
+                MODULE.SITE_ICON_SOURCE.read_bytes(),
+            )
+            press = (output / "press/index.html").read_text(encoding="utf-8")
+            self.assertIn('href="../assets/nimbo-icon.png" download', press)
+            self.assertGreaterEqual(press.count('loading="lazy"'), 6)
+            growth = (output / "growth/index.html").read_text(encoding="utf-8")
+            self.assertIn('<meta name="robots" content="noindex,follow">', growth)
+            sitemap = (output / "sitemap.xml").read_text(encoding="utf-8")
+            self.assertNotIn("/growth/", sitemap)
+        finally:
+            if output.exists():
+                shutil.rmtree(output)
+
 
 if __name__ == "__main__":
     unittest.main()

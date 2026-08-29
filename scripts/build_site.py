@@ -14,7 +14,7 @@ import shutil
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urljoin, urlparse
+from urllib.parse import parse_qsl, unquote, urlencode, urljoin, urlparse, urlunparse
 
 try:
     from scripts.check_dashboard_report import verify_dashboard_report
@@ -39,6 +39,7 @@ CANONICAL_BASE_URL = "https://nimbo.uz"
 ARTICLES_SOURCE = REPO_ROOT / "growth/content/articles.json"
 CONTENT_CALENDAR_SOURCE = REPO_ROOT / "growth/content/calendar.csv"
 QUALITY_GATES_SOURCE = REPO_ROOT / "growth/quality/gates.json"
+SITE_ICON_SOURCE = SOURCE_ROOT / "assets/nimbo-icon-site.png"
 UNRESOLVED_PLACEHOLDER = re.compile(r"\{\{[A-Z0-9_]+\}\}")
 SCREENSHOT_SOURCES = {
     "uz": {
@@ -136,6 +137,19 @@ def canonical_url(base_url: str, locale: str, page: str) -> str:
     return f"{base_url.rstrip('/')}/{path + '/' if path else ''}"
 
 
+def localized_site(site: dict[str, str], locale: str) -> dict[str, str]:
+    """Return locale-correct public destinations without analytics parameters."""
+    parsed = urlparse(site["play_store_url"])
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    query["hl"] = {"uz": "uz", "ru": "ru", "en": "en"}[locale]
+    query["gl"] = "UZ"
+    localized = dict(site)
+    localized["play_store_url"] = urlunparse(
+        parsed._replace(query=urlencode(query))
+    )
+    return localized
+
+
 def article_route_parts(locale: str, slug: str) -> tuple[str, ...]:
     parts: list[str] = []
     if locale != "uz":
@@ -176,7 +190,9 @@ def article_structured_data(
             "name": "Nimbo",
             "logo": {
                 "@type": "ImageObject",
-                "url": urljoin(f"{base_url.rstrip('/')}/", "assets/nimbo-icon.png"),
+                "url": urljoin(
+                    f"{base_url.rstrip('/')}/", "assets/nimbo-icon-site.png"
+                ),
             },
         },
         "citation": article["source_urls"],
@@ -185,6 +201,68 @@ def article_structured_data(
     if article.get("status") == "published" and isinstance(published_on, str):
         payload["datePublished"] = published_on
         payload["dateModified"] = published_on
+    serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    safe_serialized = serialized.replace("</", "<\\/")
+    return f'<script type="application/ld+json">{safe_serialized}</script>'
+
+
+def landing_structured_data(
+    *,
+    base_url: str,
+    locale: str,
+    page: dict[str, object],
+    site: dict[str, str],
+) -> str:
+    """Describe only visible, verified landing-page and application facts."""
+    site = localized_site(site, locale)
+    current_url = canonical_url(base_url, locale, "landing")
+    organization_id = f"{base_url.rstrip('/')}/#organization"
+    application: dict[str, object] = {
+        "@type": "SoftwareApplication",
+        "@id": f"{current_url}#software-application",
+        "name": site["name"],
+        "alternateName": "Nimbo",
+        "url": current_url,
+        "description": page["description"],
+        "inLanguage": locale,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Android, iOS, iPadOS, Wear OS, watchOS",
+        "image": urljoin(
+            f"{base_url.rstrip('/')}/", f"assets/nimbo-feature-{locale}.jpg"
+        ),
+        "isAccessibleForFree": True,
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+        },
+        "downloadUrl": [site["app_store_url"], site["play_store_url"]],
+        "publisher": {"@id": organization_id},
+    }
+    organization: dict[str, object] = {
+        "@type": "Organization",
+        "@id": organization_id,
+        "name": site["name"],
+        "url": f"{base_url.rstrip('/')}/",
+        "logo": urljoin(
+            f"{base_url.rstrip('/')}/", "assets/nimbo-icon-site.png"
+        ),
+        "sameAs": [site["github_url"]],
+    }
+    graph: list[dict[str, object]] = [organization, application]
+    if locale == "uz":
+        graph.insert(
+            1,
+            {
+                "@type": "WebSite",
+                "@id": f"{base_url.rstrip('/')}/#website",
+                "url": f"{base_url.rstrip('/')}/",
+                "name": site["name"],
+                "alternateName": "Nimbo",
+                "inLanguage": list(LOCALE_ORDER),
+            },
+        )
+    payload = {"@context": "https://schema.org", "@graph": graph}
     serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     safe_serialized = serialized.replace("</", "<\\/")
     return f'<script type="application/ld+json">{safe_serialized}</script>'
@@ -362,8 +440,8 @@ def landing_body(locale: str, data: dict[str, object], site: dict[str, str], ass
         </div>
         <div class="device-stage" aria-label="{escaped(page['proof'])}">
           <div class="device-halo" aria-hidden="true"></div>
-          <div class="device device-ios"><img src="{assets}/screenshots/{locale}-ios.png" alt="{escaped(common['ios_alt'])}"></div>
-          <div class="device device-android"><img src="{assets}/screenshots/{locale}-android.png" alt="{escaped(common['android_alt'])}"></div>
+          <div class="device device-ios"><img src="{assets}/screenshots/{locale}-ios.png" alt="{escaped(common['ios_alt'])}" width="1320" height="2868" decoding="async" fetchpriority="high"></div>
+          <div class="device device-android"><img src="{assets}/screenshots/{locale}-android.png" alt="{escaped(common['android_alt'])}" width="1080" height="1920" decoding="async"></div>
           <div class="proof-chip">{escaped(page['proof'])}</div>
         </div>
       </div>
@@ -428,12 +506,12 @@ def press_body(locale: str, data: dict[str, object], site: dict[str, str], asset
           <section class="content-section">
             <h2>{escaped(page['assets_title'])}</h2><p>{escaped(page['assets_text'])}</p>
             <div class="asset-grid">
-              <a class="asset-card" href="{assets}/nimbo-icon.png" download><span class="asset-preview"><img src="{assets}/nimbo-icon.png" alt="{escaped(page['download_icon'])}"></span><span class="asset-label">{escaped(page['download_icon'])} ↓</span></a>
-              <a class="asset-card" href="{assets}/screenshots/{locale}-ios.png" download><span class="asset-preview"><img src="{assets}/screenshots/{locale}-ios.png" alt="{escaped(page['download_ios'])}"></span><span class="asset-label">{escaped(page['download_ios'])} ↓</span></a>
-              <a class="asset-card" href="{assets}/screenshots/{locale}-android.png" download><span class="asset-preview"><img src="{assets}/screenshots/{locale}-android.png" alt="{escaped(page['download_android'])}"></span><span class="asset-label">{escaped(page['download_android'])} ↓</span></a>
-              <a class="asset-card" href="{assets}/nimbo-feature-{locale}.jpg" download><span class="asset-preview"><img src="{assets}/nimbo-feature-{locale}.jpg" alt="{escaped(page['download_feature'])}"></span><span class="asset-label">{escaped(page['download_feature'])} ↓</span></a>
-              <a class="asset-card" href="{assets}/{apple_watch_asset}" download><span class="asset-preview"><img src="{assets}/{apple_watch_asset}" alt="{escaped(page['download_apple_watch'])}"></span><span class="asset-label">{escaped(page['download_apple_watch'])} ↓</span></a>
-              <a class="asset-card" href="{assets}/{wear_asset}" download><span class="asset-preview"><img src="{assets}/{wear_asset}" alt="{escaped(page['download_wear'])}"></span><span class="asset-label">{escaped(page['download_wear'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/nimbo-icon.png" download><span class="asset-preview"><img src="{assets}/nimbo-icon.png" alt="{escaped(page['download_icon'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_icon'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/screenshots/{locale}-ios.png" download><span class="asset-preview"><img src="{assets}/screenshots/{locale}-ios.png" alt="{escaped(page['download_ios'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_ios'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/screenshots/{locale}-android.png" download><span class="asset-preview"><img src="{assets}/screenshots/{locale}-android.png" alt="{escaped(page['download_android'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_android'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/nimbo-feature-{locale}.jpg" download><span class="asset-preview"><img src="{assets}/nimbo-feature-{locale}.jpg" alt="{escaped(page['download_feature'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_feature'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/{apple_watch_asset}" download><span class="asset-preview"><img src="{assets}/{apple_watch_asset}" alt="{escaped(page['download_apple_watch'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_apple_watch'])} ↓</span></a>
+              <a class="asset-card" href="{assets}/{wear_asset}" download><span class="asset-preview"><img src="{assets}/{wear_asset}" alt="{escaped(page['download_wear'])}" loading="lazy" decoding="async"></span><span class="asset-label">{escaped(page['download_wear'])} ↓</span></a>
             </div>
             <div class="store-actions">
               <a class="button button-secondary" href="{assets}/nimbo-creative-manifest.json" download>{escaped(page['download_manifest'])}</a>
@@ -483,6 +561,7 @@ def article_body(
     article: dict[str, object],
     site: dict[str, str],
 ) -> str:
+    site = localized_site(site, locale)
     page = article["locales"][locale]
     guides = data["guides"]
     sections = "".join(
@@ -575,6 +654,7 @@ def render_body(
     assets: str,
     articles: list[dict[str, object]],
 ) -> str:
+    site = localized_site(site, locale)
     if page_name == "landing":
         return landing_body(locale, data, site, assets)
     if page_name == "press":
@@ -700,6 +780,8 @@ def validate_content(content: dict[str, object]) -> None:
         raise ValueError("site.app_store_url must point to apps.apple.com")
     if urlparse(site["play_store_url"]).netloc != "play.google.com":
         raise ValueError("site.play_store_url must point to play.google.com")
+    if not SITE_ICON_SOURCE.is_file() or SITE_ICON_SOURCE.stat().st_size > 64 * 1024:
+        raise ValueError("site chrome icon must exist and remain at most 64 KiB")
     for locale in LOCALE_ORDER:
         locale_data = content["locales"][locale]
         missing_pages = set(GUIDE_PAGE_ORDER) - locale_data.keys()
@@ -735,6 +817,7 @@ def copy_assets(output: Path) -> None:
     screenshots.mkdir(parents=True, exist_ok=True)
     shutil.copy2(SOURCE_ROOT / "assets/site.css", assets / "site.css")
     shutil.copy2(SOURCE_ROOT / "assets/site.js", assets / "site.js")
+    shutil.copy2(SITE_ICON_SOURCE, assets / "nimbo-icon-site.png")
     shutil.copy2(REPO_ROOT / "branding/store/nimbo-app-icon-1024.png", assets / "nimbo-icon.png")
     for locale, source in FEATURE_GRAPHIC_SOURCES.items():
         shutil.copy2(source, assets / f"nimbo-feature-{locale}.jpg")
@@ -773,7 +856,15 @@ def copy_growth_dashboard(output: Path) -> bool:
     verify_dashboard_report(artifact, source)
     target = output / "growth/index.html"
     target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source, target)
+    rendered = source.read_text(encoding="utf-8")
+    if "<head>" not in rendered:
+        raise ValueError("growth dashboard lacks a head element")
+    rendered = rendered.replace(
+        "<head>",
+        '<head>\n  <meta name="robots" content="noindex,follow">',
+        1,
+    )
+    target.write_text(rendered, encoding="utf-8")
     return True
 
 
@@ -881,12 +972,23 @@ def build(
                 "{{HTML_LANG}}": escaped(locale_data["html_lang"]),
                 "{{TITLE}}": escaped(page["title"]),
                 "{{DESCRIPTION}}": escaped(page["description"]),
+                "{{OG_TYPE}}": "website",
+                "{{ARTICLE_META}}": "",
                 "{{CANONICAL_URL}}": escaped(current_url),
                 "{{OG_IMAGE_URL}}": escaped(
                     urljoin(f"{base_url}/", f"assets/nimbo-feature-{locale}.jpg")
                 ),
                 "{{ALTERNATES}}": alternates,
-                "{{STRUCTURED_DATA}}": "",
+                "{{STRUCTURED_DATA}}": (
+                    landing_structured_data(
+                        base_url=base_url,
+                        locale=locale,
+                        page=page,
+                        site=content["site"],
+                    )
+                    if page_name == "landing"
+                    else ""
+                ),
                 "{{ASSET_PREFIX}}": assets,
                 "{{SKIP_LABEL}}": {"uz": "Asosiy mazmunga o‘tish", "ru": "Перейти к содержанию", "en": "Skip to content"}[locale],
                 "{{HOME_URL}}": relative_directory_link(current, destination(output, locale, "landing")),
@@ -977,6 +1079,12 @@ def build(
                 "{{HTML_LANG}}": escaped(locale_data["html_lang"]),
                 "{{TITLE}}": escaped(page["title"]),
                 "{{DESCRIPTION}}": escaped(page["description"]),
+                "{{OG_TYPE}}": "article",
+                "{{ARTICLE_META}}": (
+                    f'<meta property="article:published_time" content="{escaped(article["published_on"])}">'
+                    if article.get("status") == "published"
+                    else ""
+                ),
                 "{{CANONICAL_URL}}": escaped(current_url),
                 "{{OG_IMAGE_URL}}": escaped(
                     urljoin(f"{base_url}/", f"assets/nimbo-feature-{locale}.jpg")
@@ -1030,13 +1138,6 @@ def build(
     (output / "sitemap.xml").write_text(sitemap, encoding="utf-8")
     (output / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base_url}/sitemap.xml\n", encoding="utf-8")
     (output / ".nojekyll").write_text("", encoding="utf-8")
-
-    if has_growth_dashboard:
-        generated_urls.append(f"{base_url}/growth/")
-        sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        sitemap += "".join(f"  <url><loc>{escaped(url)}</loc></url>\n" for url in generated_urls)
-        sitemap += "</urlset>\n"
-        (output / "sitemap.xml").write_text(sitemap, encoding="utf-8")
 
     expected = (
         len(LOCALE_ORDER) * (len(page_order) + len(articles))
