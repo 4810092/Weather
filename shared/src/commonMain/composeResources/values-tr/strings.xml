@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">Özbekistan</string>
   <string name="first_forecast_tip_title">Tahmininiz hazır</string>
   <string name="first_forecast_tip_body">Daha fazla şehir kaydetmek için Yeri değiştir’i kullanın veya hava durumunu bir bakışta görmek için Nimbo widget’ını ekleyin.</string>
+  <string name="first_forecast_tip_add_city">Başka bir şehir ekle</string>
   <string name="got_it">Anladım</string>
   <string name="search_city">Şehir ara</string>
   <string name="current_location">Mevcut konum</string>

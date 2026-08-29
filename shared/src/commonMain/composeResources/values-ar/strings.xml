@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">أوزبكستان</string>
   <string name="first_forecast_tip_title">توقعاتك جاهزة</string>
   <string name="first_forecast_tip_body">استخدم تغيير المكان لحفظ مدن أخرى، أو أضف أداة Nimbo لرؤية الطقس بسرعة.</string>
+  <string name="first_forecast_tip_add_city">إضافة مدينة أخرى</string>
   <string name="got_it">فهمت</string>
   <string name="search_city">ابحث عن مدينة</string>
   <string name="current_location">الموقع الحالي</string>

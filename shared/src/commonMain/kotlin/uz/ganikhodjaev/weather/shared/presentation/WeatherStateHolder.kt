@@ -195,10 +195,7 @@ internal class WeatherStateHolder(
 
     fun showLocationPicker() {
         val current = mutableState.value
-        val picker = current.toLocationPicker(
-            savedLocations = repository.savedLocations(),
-            activeLocationId = activeLocation?.id
-        ) ?: return
+        val picker = createLocationPicker(current) ?: return
         contentBeforeLocationPicker = current as? WeatherUiState.Content
         mutableState.value = picker
     }
@@ -293,8 +290,38 @@ internal class WeatherStateHolder(
     }
 
     fun dismissFirstForecastTip() {
+        acknowledgeFirstForecastTip()
+    }
+
+    fun addLocationFromFirstForecastTip() {
         val current = mutableState.value as? WeatherUiState.Content ?: return
+        val picker = createLocationPicker(current) ?: return
+        acknowledgeFirstForecastTip()
+        contentBeforeLocationPicker = mutableState.value as? WeatherUiState.Content
+        mutableState.value = picker
+    }
+
+    private fun acknowledgeFirstForecastTip() {
+        val current = mutableState.value as? WeatherUiState.Content ?: return
+        if (!onboardingState.hasAcknowledgedFirstForecastTip) {
+            persistOnboardingState(
+                onboardingState.copy(hasAcknowledgedFirstForecastTip = true)
+            )
+        }
         mutableState.value = current.copy(showFirstForecastTip = false)
+    }
+
+    private fun createLocationPicker(current: WeatherUiState): WeatherUiState.ChooseLocation? {
+        val savedLocations = try {
+            repository.savedLocations()
+        } catch (error: Throwable) {
+            logFailure("saved locations read", error)
+            return null
+        }
+        return current.toLocationPicker(
+            savedLocations = savedLocations,
+            activeLocationId = activeLocation?.id
+        )
     }
 
     private fun launchActivation(
@@ -364,22 +391,39 @@ internal class WeatherStateHolder(
                             if (weather == null || !isCurrentActivation(generation, location)) {
                                 return@collect
                             }
-                            val old = mutableState.value as? WeatherUiState.Content
+                            val visibleState = mutableState.value
+                            val old = (visibleState as? WeatherUiState.Content)
+                                ?: contentBeforeLocationPicker
+                            val savedLocations = repository.savedLocations()
+                            if (!isCurrentActivation(generation, location)) return@collect
+                            if (visibleState is WeatherUiState.ChooseLocation && old == null) {
+                                return@collect
+                            }
+                            completeFirstForecastIfNeeded()
                             val content = WeatherUiState.Content(
                                 weather = weather,
-                                savedLocations = repository.savedLocations(),
+                                savedLocations = savedLocations,
                                 isRefreshing = old?.isRefreshing ?: false,
                                 refreshMessage = old?.refreshMessage,
                                 unitPreference = unitPreference,
                                 displayUnits = unitPreference.resolve(automaticUnitSystem),
-                                showFirstForecastTip = old?.showFirstForecastTip ?: false,
+                                showFirstForecastTip = old?.showFirstForecastTip
+                                    ?: shouldShowFirstForecastTip(),
                                 reviewEligibleForecastId = old?.reviewEligibleForecastId
                             )
-                            mutableState.value = applyPendingSuccessfulForecast(
+                            val updatedContent = applyPendingSuccessfulForecast(
                                 content = content,
                                 generation = generation,
                                 location = location
                             )
+                            if (!isCurrentActivation(generation, location)) return@collect
+                            if (mutableState.value is WeatherUiState.ChooseLocation) {
+                                if (contentBeforeLocationPicker != null) {
+                                    contentBeforeLocationPicker = updatedContent
+                                }
+                            } else {
+                                mutableState.value = updatedContent
+                            }
                         }
                     } catch (cancelled: CancellationException) {
                         throw cancelled
@@ -417,14 +461,15 @@ internal class WeatherStateHolder(
 
     private fun handleObservationFailure(generation: Long, location: Location) {
         if (!isCurrentActivation(generation, location)) return
-        mutableState.value = when (val current = mutableState.value) {
-            is WeatherUiState.Content -> current.copy(
+        val cached = updateContentPreservingLocationPicker { current ->
+            current.copy(
                 isRefreshing = false,
                 refreshMessage = UiMessage.RefreshFailedShowingSaved,
                 reviewEligibleForecastId = null
             )
-            WeatherUiState.Loading -> WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
-            else -> current
+        }
+        if (cached == null && mutableState.value is WeatherUiState.Loading) {
+            mutableState.value = WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
         }
     }
 
@@ -522,9 +567,8 @@ internal class WeatherStateHolder(
             } else {
                 null
             }
-            val current = mutableState.value
-            if (current is WeatherUiState.Content) {
-                mutableState.value = current.copy(
+            updateContentPreservingLocationPicker { current ->
+                current.copy(
                     weather = current.weather.advancedToNow(),
                     isRefreshing = true,
                     refreshMessage = null,
@@ -575,19 +619,17 @@ internal class WeatherStateHolder(
                     locationId = location.id,
                     forecastId = successfulForecastId
                 )
-                val contentAfterRefresh = mutableState.value as? WeatherUiState.Content
-                if (contentAfterRefresh != null) {
-                    mutableState.value = applyPendingSuccessfulForecast(
+                updateContentPreservingLocationPicker { contentAfterRefresh ->
+                    applyPendingSuccessfulForecast(
                         content = contentAfterRefresh,
                         generation = generation,
                         location = location
+                    ).copy(
+                        isRefreshing = false,
+                        refreshMessage = null
                     )
                 }
                 if (!isCurrentActivation(generation, location)) return
-                val updated = mutableState.value
-                if (updated is WeatherUiState.Content) {
-                    mutableState.value = updated.copy(isRefreshing = false, refreshMessage = null)
-                }
                 scope.launch {
                     try {
                         repository.refreshHistory(location)
@@ -611,14 +653,14 @@ internal class WeatherStateHolder(
             } catch (error: Throwable) {
                 logFailure("weather refresh", error)
                 if (!isCurrentActivation(generation, location)) return
-                val cached = mutableState.value
-                mutableState.value = if (cached is WeatherUiState.Content) {
-                    cached.copy(
+                val cached = updateContentPreservingLocationPicker { content ->
+                    content.copy(
                         isRefreshing = false,
                         refreshMessage = UiMessage.RefreshFailedShowingSaved
                     )
-                } else {
-                    WeatherUiState.EmptyError(
+                }
+                if (cached == null && mutableState.value !is WeatherUiState.ChooseLocation) {
+                    mutableState.value = WeatherUiState.EmptyError(
                         UiMessage.WeatherUnavailable
                     )
                 }
@@ -645,17 +687,51 @@ internal class WeatherStateHolder(
         val successfulForecastId = pending.forecastId
         if (content.weather.fetchedAtEpochSeconds < successfulForecastId) return content
 
-        val shouldShowTip = !onboardingState.hasShownFirstForecastTip
-        onboardingState = OnboardingState(
-            hasCompletedFirstForecast = true,
-            hasShownFirstForecastTip = onboardingState.hasShownFirstForecastTip || shouldShowTip
-        )
-        onboardingStateStore.write(onboardingState)
+        val shouldShowTip = !onboardingState.hasAcknowledgedFirstForecastTip
+        completeFirstForecastIfNeeded()
         pendingSuccessfulForecast = null
         return content.copy(
             showFirstForecastTip = content.showFirstForecastTip || shouldShowTip,
             reviewEligibleForecastId = successfulForecastId
         )
+    }
+
+    private fun shouldShowFirstForecastTip(): Boolean = onboardingState.hasCompletedFirstForecast &&
+        !onboardingState.hasAcknowledgedFirstForecastTip
+
+    private fun completeFirstForecastIfNeeded() {
+        if (!onboardingState.hasCompletedFirstForecast) {
+            persistOnboardingState(onboardingState.copy(hasCompletedFirstForecast = true))
+        }
+    }
+
+    private fun persistOnboardingState(state: OnboardingState) {
+        // Keep this session responsive. If durable storage fails, the unchanged store
+        // safely retries the completion or acknowledgement on the next launch.
+        onboardingState = state
+        try {
+            onboardingStateStore.write(state)
+        } catch (error: Throwable) {
+            logFailure("onboarding state write", error)
+        }
+    }
+
+    private inline fun updateContentPreservingLocationPicker(
+        update: (WeatherUiState.Content) -> WeatherUiState.Content
+    ): WeatherUiState.Content? {
+        val visibleState = mutableState.value
+        val content = (visibleState as? WeatherUiState.Content)
+            ?: contentBeforeLocationPicker?.takeIf {
+                visibleState is WeatherUiState.ChooseLocation
+            }
+            ?: return null
+        val updated = update(content)
+        if (visibleState is WeatherUiState.ChooseLocation) {
+            contentBeforeLocationPicker = updated
+        } else {
+            mutableState.value = updated
+        }
+        return updated
     }
 
     private fun cancelDeviceLocationRequest() {

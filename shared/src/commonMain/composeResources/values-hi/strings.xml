@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">उज़्बेकिस्तान</string>
   <string name="first_forecast_tip_title">आपका पूर्वानुमान तैयार है</string>
   <string name="first_forecast_tip_body">और शहर सहेजने के लिए स्थान बदलें का उपयोग करें या मौसम तुरंत देखने के लिए Nimbo विजेट जोड़ें।</string>
+  <string name="first_forecast_tip_add_city">दूसरा शहर जोड़ें</string>
   <string name="got_it">समझ गया</string>
   <string name="search_city">शहर खोजें</string>
   <string name="current_location">वर्तमान स्थान</string>

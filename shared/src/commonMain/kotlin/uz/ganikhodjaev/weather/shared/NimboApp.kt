@@ -146,6 +146,9 @@ fun NimboApp(platformContext: PlatformContext) {
                         storeUrl = storeLinkProvider.storeUrl,
                         reviewUrl = storeLinkProvider.reviewUrl,
                         supportUrl = NimboPublicLinks.SUPPORT,
+                        onAddLocationFromFirstForecastTip = {
+                            stateHolder.addLocationFromFirstForecastTip()
+                        },
                         onDismissFirstForecastTip = stateHolder::dismissFirstForecastTip,
                         themePreference = themePreference,
                         onThemePreferenceChanged = { preference: ThemePreference ->

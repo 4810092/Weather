@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">Ouzbékistan</string>
   <string name="first_forecast_tip_title">Vos prévisions sont prêtes</string>
   <string name="first_forecast_tip_body">Utilisez Changer de lieu pour enregistrer d’autres villes, ou ajoutez le widget Nimbo pour voir la météo en un coup d’œil.</string>
+  <string name="first_forecast_tip_add_city">Ajouter une autre ville</string>
   <string name="got_it">Compris</string>
   <string name="search_city">Rechercher une ville</string>
   <string name="current_location">Position actuelle</string>

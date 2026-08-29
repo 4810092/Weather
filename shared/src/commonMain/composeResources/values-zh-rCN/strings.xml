@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">乌兹别克斯坦</string>
   <string name="first_forecast_tip_title">天气预报已准备好</string>
   <string name="first_forecast_tip_body">使用“更改地点”保存更多城市，或添加 Nimbo 小组件以快速查看天气。</string>
+  <string name="first_forecast_tip_add_city">再添加一个城市</string>
   <string name="got_it">知道了</string>
   <string name="search_city">搜索城市</string>
   <string name="current_location">当前位置</string>

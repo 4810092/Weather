@@ -50,7 +50,7 @@ class WeatherStateHolderGrowthTest {
     }
 
     @Test
-    fun quickCityCompletesOnboardingWithoutRequestingDeviceLocation() = runBlocking {
+    fun quickCityCompletesOnboardingAndShowsUnacknowledgedTipWithoutDeviceLocation() = runBlocking {
         val repository = ScriptedWeatherDataSource()
         val locationProvider = RecordingLocationProvider()
         val onboardingStore = RecordingOnboardingStore()
@@ -80,11 +80,533 @@ class WeatherStateHolderGrowthTest {
             assertEquals(
                 OnboardingState(
                     hasCompletedFirstForecast = true,
-                    hasShownFirstForecastTip = true
+                    hasAcknowledgedFirstForecastTip = false
                 ),
                 onboardingStore.current
             )
+            assertEquals(listOf(onboardingStore.current), onboardingStore.writes)
             assertEquals(0, locationProvider.requestCount)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun unacknowledgedFirstForecastTipRestoresFromFreshCacheOnColdStart() = runBlocking {
+        val fetchedAt = 1_000L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val locationProvider = RecordingLocationProvider()
+        val onboardingStore = RecordingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = locationProvider,
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            holder.start()
+            val content = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            yield()
+
+            assertEquals(fetchedAt, content.weather.fetchedAtEpochSeconds)
+            assertFalse(onboardingStore.current.hasAcknowledgedFirstForecastTip)
+            assertTrue(onboardingStore.writes.isEmpty())
+            assertEquals(0, repository.refreshCallCount)
+            assertEquals(0, locationProvider.requestCount)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun cachedForecastCompletesInterruptedFirstForecastWithoutAnotherProviderCall() = runBlocking {
+        val fetchedAt = 1_500L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val locationProvider = RecordingLocationProvider()
+        val onboardingStore = RecordingOnboardingStore()
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = locationProvider,
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            holder.start()
+            val content = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            yield()
+
+            assertEquals(fetchedAt, content.weather.fetchedAtEpochSeconds)
+            assertEquals(
+                OnboardingState(
+                    hasCompletedFirstForecast = true,
+                    hasAcknowledgedFirstForecastTip = false
+                ),
+                onboardingStore.current
+            )
+            assertEquals(listOf(onboardingStore.current), onboardingStore.writes)
+            assertEquals(0, repository.refreshCallCount)
+            assertEquals(0, locationProvider.requestCount)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun cachedForecastDoesNotCompleteOnboardingWhenContentCannotBeConstructed() = runBlocking {
+        val fetchedAt = 1_750L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        repository.failSavedLocationsWith(IllegalStateException("database unavailable"))
+        val onboardingStore = RecordingOnboardingStore()
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            holder.start()
+            val failure = holder.state.filterIsInstance<WeatherUiState.EmptyError>().first()
+
+            assertEquals(UiMessage.WeatherUnavailable, failure.message)
+            assertEquals(OnboardingState(), onboardingStore.current)
+            assertTrue(onboardingStore.writes.isEmpty())
+            assertEquals(0, repository.refreshCallCount)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun dismissedFirstForecastTipStaysHiddenAfterStateHolderRecreation() = runBlocking {
+        val fetchedAt = 2_000L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val locationProvider = RecordingLocationProvider()
+        val onboardingStore = RecordingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val firstScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val firstHolder = createStateHolder(
+            repository = repository,
+            locationProvider = locationProvider,
+            onboardingStateStore = onboardingStore,
+            scope = firstScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            firstHolder.start()
+            firstHolder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            firstHolder.dismissFirstForecastTip()
+
+            val dismissed = assertIs<WeatherUiState.Content>(firstHolder.state.value)
+            assertFalse(dismissed.showFirstForecastTip)
+            assertTrue(onboardingStore.current.hasAcknowledgedFirstForecastTip)
+        } finally {
+            firstScope.cancel()
+        }
+
+        val secondScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val secondHolder = createStateHolder(
+            repository = repository,
+            locationProvider = locationProvider,
+            onboardingStateStore = onboardingStore,
+            scope = secondScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+        try {
+            secondHolder.start()
+            val restored = secondHolder.state.filterIsInstance<WeatherUiState.Content>().first()
+            yield()
+
+            assertFalse(restored.showFirstForecastTip)
+            assertEquals(0, repository.refreshCallCount)
+            assertEquals(0, locationProvider.requestCount)
+        } finally {
+            secondScope.cancel()
+        }
+    }
+
+    @Test
+    fun failedAcknowledgementWriteHidesTipOnlyForCurrentSession() = runBlocking {
+        val fetchedAt = 2_500L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val onboardingStore = ThrowingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val firstScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val firstHolder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = onboardingStore,
+            scope = firstScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            firstHolder.start()
+            firstHolder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            firstHolder.dismissFirstForecastTip()
+            assertFalse(
+                assertIs<WeatherUiState.Content>(firstHolder.state.value).showFirstForecastTip
+            )
+            assertEquals(1, onboardingStore.writeCount)
+        } finally {
+            firstScope.cancel()
+        }
+
+        val secondScope = CoroutineScope(coroutineContext + SupervisorJob())
+        try {
+            val secondHolder = createStateHolder(
+                repository = repository,
+                locationProvider = RecordingLocationProvider(),
+                onboardingStateStore = onboardingStore,
+                scope = secondScope,
+                currentEpochSeconds = { fetchedAt }
+            )
+            secondHolder.start()
+            val restored = secondHolder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            assertTrue(restored.showFirstForecastTip)
+        } finally {
+            secondScope.cancel()
+        }
+    }
+
+    @Test
+    fun failedCompletionWriteRetriesFromCacheWithoutAnotherProviderCall() = runBlocking {
+        val fetchedAt = 2_750L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val onboardingStore = ThrowingOnboardingStore()
+
+        repeat(2) {
+            val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+            try {
+                val holder = createStateHolder(
+                    repository = repository,
+                    locationProvider = RecordingLocationProvider(),
+                    onboardingStateStore = onboardingStore,
+                    scope = holderScope,
+                    currentEpochSeconds = { fetchedAt }
+                )
+                holder.start()
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    it.showFirstForecastTip
+                }
+                yield()
+            } finally {
+                holderScope.cancel()
+            }
+        }
+
+        assertEquals(2, onboardingStore.writeCount)
+        assertEquals(0, repository.refreshCallCount)
+    }
+
+    @Test
+    fun firstForecastTipAddCityOpensCancellablePickerWithoutProviderOrLocationCalls() =
+        runBlocking {
+            val fetchedAt = 3_000L
+            val repository = ScriptedWeatherDataSource(
+                initialActiveLocation = TASHKENT,
+                initialSnapshot = snapshot(TASHKENT, fetchedAt)
+            )
+            val locationProvider = RecordingLocationProvider()
+            val onboardingStore = RecordingOnboardingStore(
+                OnboardingState(
+                    hasCompletedFirstForecast = true,
+                    hasAcknowledgedFirstForecastTip = false
+                )
+            )
+            val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+            val holder = createStateHolder(
+                repository = repository,
+                locationProvider = locationProvider,
+                onboardingStateStore = onboardingStore,
+                scope = holderScope,
+                currentEpochSeconds = { fetchedAt }
+            )
+
+            try {
+                holder.start()
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    it.showFirstForecastTip
+                }
+                holder.addLocationFromFirstForecastTip()
+
+                val picker = assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+                assertTrue(picker.canCancel)
+                assertEquals(TASHKENT.id, picker.activeLocationId)
+                assertEquals(listOf(TASHKENT), picker.savedLocations)
+                assertEquals(UzbekistanQuickLocations.all, picker.quickLocations)
+                assertTrue(onboardingStore.current.hasAcknowledgedFirstForecastTip)
+                assertEquals(0, repository.refreshCallCount)
+                assertEquals(0, repository.searchCallCount)
+                assertEquals(0, repository.setActiveLocationCallCount)
+                assertEquals(0, locationProvider.requestCount)
+
+                val readsBeforeEmission = repository.savedLocationsReadCount
+                repository.emitSnapshot(snapshot(TASHKENT, fetchedAt + 1L))
+                withTimeout(5_000L) {
+                    while (repository.savedLocationsReadCount == readsBeforeEmission) {
+                        yield()
+                    }
+                }
+                assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+
+                holder.cancelLocationPicker()
+                val restored = assertIs<WeatherUiState.Content>(holder.state.value)
+                assertFalse(restored.showFirstForecastTip)
+                assertEquals(fetchedAt + 1L, restored.weather.fetchedAtEpochSeconds)
+
+                val recreatedScope = CoroutineScope(coroutineContext + SupervisorJob())
+                try {
+                    val recreated = createStateHolder(
+                        repository = repository,
+                        locationProvider = locationProvider,
+                        onboardingStateStore = onboardingStore,
+                        scope = recreatedScope,
+                        currentEpochSeconds = { fetchedAt + 1L }
+                    )
+                    recreated.start()
+                    val recreatedContent = recreated.state
+                        .filterIsInstance<WeatherUiState.Content>()
+                        .first()
+                    yield()
+                    assertFalse(recreatedContent.showFirstForecastTip)
+                    assertEquals(0, repository.refreshCallCount)
+                    assertEquals(0, locationProvider.requestCount)
+                } finally {
+                    recreatedScope.cancel()
+                }
+            } finally {
+                holderScope.cancel()
+            }
+        }
+
+    @Test
+    fun firstForecastTipPickerStaysOpenWhenInFlightRefreshSucceeds() = runBlocking {
+        val fetchedAt = 3_200L
+        val refreshedAt = fetchedAt +
+            uz.ganikhodjaev.weather.shared.AUTOMATIC_REFRESH_MIN_AGE_SECONDS
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val onboardingStore = RecordingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { refreshedAt }
+        )
+
+        try {
+            holder.start()
+            val refresh = withTimeout(5_000L) { repository.nextRefresh() }
+            withTimeout(5_000L) {
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    it.showFirstForecastTip
+                }
+            }
+
+            holder.addLocationFromFirstForecastTip()
+            assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+
+            val savedLocationReadsBeforeSuccess = repository.savedLocationsReadCount
+            refresh.succeed(forecastId = refreshedAt)
+            withTimeout(5_000L) {
+                while (
+                    repository.savedLocationsReadCount == savedLocationReadsBeforeSuccess ||
+                    repository.refreshHistoryCallCount == 0
+                ) {
+                    yield()
+                }
+            }
+
+            assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+            holder.cancelLocationPicker()
+            val restored = assertIs<WeatherUiState.Content>(holder.state.value)
+            assertEquals(refreshedAt, restored.weather.fetchedAtEpochSeconds)
+            assertFalse(restored.isRefreshing)
+            assertNull(restored.refreshMessage)
+            assertFalse(restored.showFirstForecastTip)
+            assertEquals(refreshedAt, restored.reviewEligibleForecastId)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun firstForecastTipPickerStaysOpenWhenInFlightRefreshFails() = runBlocking {
+        val fetchedAt = 3_300L
+        val nowEpochSeconds = fetchedAt +
+            uz.ganikhodjaev.weather.shared.AUTOMATIC_REFRESH_MIN_AGE_SECONDS
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val onboardingStore = RecordingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = RecordingLocationProvider(),
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { nowEpochSeconds }
+        )
+
+        try {
+            holder.start()
+            val refresh = withTimeout(5_000L) { repository.nextRefresh() }
+            withTimeout(5_000L) {
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    it.showFirstForecastTip
+                }
+            }
+
+            holder.addLocationFromFirstForecastTip()
+            assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+
+            refresh.fail(IllegalStateException("offline"))
+            yield()
+
+            assertIs<WeatherUiState.ChooseLocation>(holder.state.value)
+            holder.cancelLocationPicker()
+            val restored = assertIs<WeatherUiState.Content>(holder.state.value)
+            assertEquals(fetchedAt, restored.weather.fetchedAtEpochSeconds)
+            assertFalse(restored.isRefreshing)
+            assertEquals(UiMessage.RefreshFailedShowingSaved, restored.refreshMessage)
+            assertFalse(restored.showFirstForecastTip)
+            assertNull(restored.reviewEligibleForecastId)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun firstForecastTipRemainsUnacknowledgedWhenSavedLocationsCannotBeRead() = runBlocking {
+        val fetchedAt = 3_500L
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt)
+        )
+        val locationProvider = RecordingLocationProvider()
+        val onboardingStore = RecordingOnboardingStore(
+            OnboardingState(
+                hasCompletedFirstForecast = true,
+                hasAcknowledgedFirstForecastTip = false
+            )
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository = repository,
+            locationProvider = locationProvider,
+            onboardingStateStore = onboardingStore,
+            scope = holderScope,
+            currentEpochSeconds = { fetchedAt }
+        )
+
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                it.showFirstForecastTip
+            }
+            repository.failSavedLocationsWith(IllegalStateException("database unavailable"))
+
+            holder.addLocationFromFirstForecastTip()
+
+            val unchanged = assertIs<WeatherUiState.Content>(holder.state.value)
+            assertTrue(unchanged.showFirstForecastTip)
+            assertFalse(onboardingStore.current.hasAcknowledgedFirstForecastTip)
+            assertTrue(onboardingStore.writes.isEmpty())
+            assertEquals(0, repository.refreshCallCount)
+            assertEquals(0, repository.searchCallCount)
+            assertEquals(0, locationProvider.requestCount)
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun failedFirstForecastDoesNotCompleteOnboardingOrShowTip() = runBlocking {
+        val repository = ScriptedWeatherDataSource()
+        val onboardingStore = RecordingOnboardingStore()
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository,
+            RecordingLocationProvider(),
+            onboardingStore,
+            holderScope
+        )
+
+        try {
+            holder.start()
+            holder.chooseLocation(TASHKENT)
+            repository.nextRefresh().fail(IllegalStateException("offline"))
+            val failure = holder.state.filterIsInstance<WeatherUiState.EmptyError>().first()
+
+            assertEquals(UiMessage.WeatherUnavailable, failure.message)
+            assertEquals(OnboardingState(), onboardingStore.current)
+            assertTrue(onboardingStore.writes.isEmpty())
         } finally {
             holderScope.cancel()
         }
@@ -282,7 +804,7 @@ class WeatherStateHolderGrowthTest {
             RecordingOnboardingStore(
                 OnboardingState(
                     hasCompletedFirstForecast = true,
-                    hasShownFirstForecastTip = true
+                    hasAcknowledgedFirstForecastTip = true
                 )
             ),
             holderScope
@@ -335,7 +857,7 @@ class WeatherStateHolderGrowthTest {
             RecordingOnboardingStore(
                 OnboardingState(
                     hasCompletedFirstForecast = true,
-                    hasShownFirstForecastTip = true
+                    hasAcknowledgedFirstForecastTip = true
                 )
             ),
             holderScope
@@ -368,7 +890,7 @@ class WeatherStateHolderGrowthTest {
             RecordingOnboardingStore(
                 OnboardingState(
                     hasCompletedFirstForecast = true,
-                    hasShownFirstForecastTip = true
+                    hasAcknowledgedFirstForecastTip = true
                 )
             ),
             holderScope,
@@ -449,7 +971,7 @@ class WeatherStateHolderGrowthTest {
             RecordingOnboardingStore(
                 OnboardingState(
                     hasCompletedFirstForecast = true,
-                    hasShownFirstForecastTip = true
+                    hasAcknowledgedFirstForecastTip = true
                 )
             ),
             holderScope,
@@ -825,11 +1347,27 @@ class WeatherStateHolderGrowthTest {
         OnboardingStateStore {
         var current = initialState
             private set
+        val writes = mutableListOf<OnboardingState>()
 
         override fun read(): OnboardingState = current
 
         override fun write(state: OnboardingState) {
             current = state
+            writes += state
+        }
+    }
+
+    private class ThrowingOnboardingStore(
+        private val initialState: OnboardingState = OnboardingState()
+    ) : OnboardingStateStore {
+        var writeCount = 0
+            private set
+
+        override fun read(): OnboardingState = initialState
+
+        override fun write(state: OnboardingState) {
+            writeCount += 1
+            throw IllegalStateException("preferences unavailable")
         }
     }
 
@@ -904,8 +1442,17 @@ class WeatherStateHolderGrowthTest {
         private var active = initialActiveLocation
         private var preference = UnitPreference.Automatic
         private var observeFailure: Throwable? = null
+        private var savedLocationsFailure: Throwable? = null
         val observeFailureReached = CompletableDeferred<Unit>()
         var refreshCallCount = 0
+            private set
+        var searchCallCount = 0
+            private set
+        var setActiveLocationCallCount = 0
+            private set
+        var savedLocationsReadCount = 0
+            private set
+        var refreshHistoryCallCount = 0
             private set
 
         init {
@@ -922,9 +1469,21 @@ class WeatherStateHolderGrowthTest {
             observeFailure = error
         }
 
+        fun failSavedLocationsWith(error: Throwable) {
+            savedLocationsFailure = error
+        }
+
+        fun emitSnapshot(snapshot: WeatherSnapshot) {
+            weather.getOrPut(snapshot.location.id) { MutableStateFlow(null) }.value = snapshot
+        }
+
         override fun activeLocation(): Location? = active
 
-        override fun savedLocations(): List<Location> = saved.toList()
+        override fun savedLocations(): List<Location> {
+            savedLocationsReadCount += 1
+            savedLocationsFailure?.let { throw it }
+            return saved.toList()
+        }
 
         override fun observe(location: Location): Flow<WeatherSnapshot?> {
             observeFailure?.let { error ->
@@ -950,10 +1509,13 @@ class WeatherStateHolderGrowthTest {
 
         override suspend fun refreshAirQuality(location: Location) = Unit
 
-        override suspend fun refreshHistory(location: Location) = Unit
+        override suspend fun refreshHistory(location: Location) {
+            refreshHistoryCallCount += 1
+        }
 
-        override suspend fun searchCities(query: String, language: String): List<Location> =
-            withContext(NonCancellable) {
+        override suspend fun searchCities(query: String, language: String): List<Location> {
+            searchCallCount += 1
+            return withContext(NonCancellable) {
                 val request = SearchRequest(query, language)
                 searchRequests.send(request)
                 when (val result = request.result.await()) {
@@ -961,8 +1523,10 @@ class WeatherStateHolderGrowthTest {
                     is SearchResult.Success -> result.locations
                 }
             }
+        }
 
         override suspend fun setActiveLocation(location: Location) {
+            setActiveLocationCallCount += 1
             setActiveLocationFailure?.let { throw it }
             active = location
             saved.removeAll { it.id == location.id }

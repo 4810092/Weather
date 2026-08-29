@@ -11,7 +11,7 @@ class OnboardingStateTest {
         val state = OnboardingState()
 
         assertFalse(state.hasCompletedFirstForecast)
-        assertFalse(state.hasShownFirstForecastTip)
+        assertFalse(state.hasAcknowledgedFirstForecastTip)
     }
 
     @Test

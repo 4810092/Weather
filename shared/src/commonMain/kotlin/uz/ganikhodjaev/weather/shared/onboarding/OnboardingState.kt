@@ -5,7 +5,8 @@ import uz.ganikhodjaev.weather.shared.model.Location
 
 internal data class OnboardingState(
     val hasCompletedFirstForecast: Boolean = false,
-    val hasShownFirstForecastTip: Boolean = false
+    // This is set only after an explicit user action, never when the tip is rendered.
+    val hasAcknowledgedFirstForecastTip: Boolean = false
 )
 
 internal interface OnboardingStateStore {

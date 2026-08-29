@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">Uzbequistão</string>
   <string name="first_forecast_tip_title">A sua previsão está pronta</string>
   <string name="first_forecast_tip_body">Use Mudar local para guardar mais cidades ou adicione o widget Nimbo para ver o tempo rapidamente.</string>
+  <string name="first_forecast_tip_add_city">Adicionar outra cidade</string>
   <string name="got_it">Entendido</string>
   <string name="search_city">Pesquisar uma cidade</string>
   <string name="current_location">Localização atual</string>

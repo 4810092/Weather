@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">Usbekistan</string>
   <string name="first_forecast_tip_title">Deine Vorhersage ist bereit</string>
   <string name="first_forecast_tip_body">Speichere über Ort ändern weitere Städte oder füge das Nimbo-Widget für Wetter auf einen Blick hinzu.</string>
+  <string name="first_forecast_tip_add_city">Weitere Stadt hinzufügen</string>
   <string name="got_it">Verstanden</string>
   <string name="search_city">Stadt suchen</string>
   <string name="current_location">Aktueller Standort</string>

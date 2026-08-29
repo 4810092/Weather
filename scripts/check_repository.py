@@ -342,7 +342,7 @@ weather_content_source = weather_screen_source.split(
 primary_section_markers = [
     "CurrentSummary(state = state, condition = condition, insights = insights)",
     "OutsideCard(outside, weather.location.timezone)",
-    "FirstForecastTip(onDismissFirstForecastTip)",
+    "onAddLocation = onAddLocationFromFirstForecastTip",
     "WeatherDetails(",
 ]
 primary_section_positions = [
@@ -355,6 +355,35 @@ if primary_section_positions != sorted(primary_section_positions):
         "Best Time Outside must render after the current summary and before "
         "the first-forecast tip and hourly details"
     )
+
+first_forecast_tip_contract = (
+    "onAddLocationFromFirstForecastTip: () -> Unit",
+    "onAddLocation = onAddLocationFromFirstForecastTip",
+    "onDismiss = onDismissFirstForecastTip",
+    "private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit)",
+    "onClick = onAddLocation",
+    "Res.string.first_forecast_tip_add_city",
+    "onClick = onDismiss",
+    "Res.string.got_it",
+)
+missing_tip_contract = [
+    marker for marker in first_forecast_tip_contract if marker not in weather_screen_source
+]
+if missing_tip_contract:
+    fail(
+        "first-forecast tip action wiring is incomplete: "
+        + ", ".join(missing_tip_contract)
+    )
+
+nimbo_app_source = (
+    ROOT / "shared/src/commonMain/kotlin/uz/ganikhodjaev/weather/shared/NimboApp.kt"
+).read_text()
+for marker in (
+    "stateHolder.addLocationFromFirstForecastTip()",
+    "onDismissFirstForecastTip = stateHolder::dismissFirstForecastTip",
+):
+    if marker not in nimbo_app_source:
+        fail(f"NimboApp first-forecast tip binding is missing: {marker}")
 
 network_security = ET.parse(
     ROOT / "app/src/main/res/xml/network_security_config.xml"

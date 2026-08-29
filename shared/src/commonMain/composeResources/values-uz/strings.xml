@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">O‘zbekiston</string>
   <string name="first_forecast_tip_title">Prognozingiz tayyor</string>
   <string name="first_forecast_tip_body">Ko‘proq shaharni saqlash uchun Joyni o‘zgartirishdan foydalaning yoki ob-havoni bir qarashda ko‘rish uchun Nimbo vidjetini qo‘shing.</string>
+  <string name="first_forecast_tip_add_city">Yana bir shahar qo‘shish</string>
   <string name="got_it">Tushunarli</string>
   <string name="search_city">Shahar qidirish</string>
   <string name="current_location">Joriy joylashuv</string>

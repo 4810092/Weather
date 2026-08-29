@@ -15,6 +15,7 @@
   <string name="quick_country_uzbekistan">ウズベキスタン</string>
   <string name="first_forecast_tip_title">予報の準備ができました</string>
   <string name="first_forecast_tip_body">「場所を変更」で都市を追加保存するか、Nimboウィジェットで天気をひと目で確認できます。</string>
+  <string name="first_forecast_tip_add_city">別の都市を追加</string>
   <string name="got_it">了解</string>
   <string name="search_city">都市を検索</string>
   <string name="current_location">現在地</string>

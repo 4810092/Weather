@@ -14,6 +14,7 @@
     <string name="quick_country_uzbekistan">Uzbekistan</string>
     <string name="first_forecast_tip_title">Your forecast is ready</string>
     <string name="first_forecast_tip_body">Use Change place to save more cities, or add the Nimbo widget for weather at a glance.</string>
+    <string name="first_forecast_tip_add_city">Add another city</string>
     <string name="got_it">Got it</string>
     <string name="search_city">Search for a city</string>
     <string name="current_location">Current location</string>

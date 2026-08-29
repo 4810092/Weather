@@ -10,7 +10,10 @@ internal actual fun createOnboardingStateStore(
     return object : OnboardingStateStore {
         override fun read(): OnboardingState = OnboardingState(
             hasCompletedFirstForecast = preferences.boolForKey(KEY_COMPLETED_FIRST_FORECAST),
-            hasShownFirstForecastTip = preferences.boolForKey(KEY_SHOWN_FIRST_FORECAST_TIP)
+            // The legacy "shown" bit was written before UI render and cannot prove an action.
+            hasAcknowledgedFirstForecastTip = preferences.boolForKey(
+                KEY_ACKNOWLEDGED_FIRST_FORECAST_TIP
+            )
         )
 
         override fun write(state: OnboardingState) {
@@ -19,12 +22,13 @@ internal actual fun createOnboardingStateStore(
                 forKey = KEY_COMPLETED_FIRST_FORECAST
             )
             preferences.setBool(
-                state.hasShownFirstForecastTip,
-                forKey = KEY_SHOWN_FIRST_FORECAST_TIP
+                state.hasAcknowledgedFirstForecastTip,
+                forKey = KEY_ACKNOWLEDGED_FIRST_FORECAST_TIP
             )
         }
     }
 }
 
 private const val KEY_COMPLETED_FIRST_FORECAST = "onboarding_completed_first_forecast"
-private const val KEY_SHOWN_FIRST_FORECAST_TIP = "onboarding_shown_first_forecast_tip"
+private const val KEY_ACKNOWLEDGED_FIRST_FORECAST_TIP =
+    "onboarding_acknowledged_first_forecast_tip"

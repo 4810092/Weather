@@ -114,6 +114,7 @@ internal fun WeatherScreen(
     storeUrl: String,
     reviewUrl: String,
     supportUrl: String,
+    onAddLocationFromFirstForecastTip: () -> Unit,
     onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
@@ -142,6 +143,7 @@ internal fun WeatherScreen(
             storeUrl,
             reviewUrl,
             supportUrl,
+            onAddLocationFromFirstForecastTip,
             onDismissFirstForecastTip,
             themePreference,
             onThemePreferenceChanged
@@ -475,6 +477,7 @@ private fun WeatherContent(
     storeUrl: String,
     reviewUrl: String,
     supportUrl: String,
+    onAddLocationFromFirstForecastTip: () -> Unit,
     onDismissFirstForecastTip: () -> Unit,
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
@@ -544,7 +547,10 @@ private fun WeatherContent(
                 if (state.showFirstForecastTip) {
                     Spacer(Modifier.height(20.dp))
                     CenteredSection(horizontalPadding) {
-                        FirstForecastTip(onDismissFirstForecastTip)
+                        FirstForecastTip(
+                            onAddLocation = onAddLocationFromFirstForecastTip,
+                            onDismiss = onDismissFirstForecastTip
+                        )
                     }
                 }
                 Spacer(Modifier.height(32.dp))
@@ -620,7 +626,7 @@ private fun WeatherContent(
 }
 
 @Composable
-private fun FirstForecastTip(onDismiss: () -> Unit) {
+private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -639,6 +645,13 @@ private fun FirstForecastTip(onDismiss: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary
         )
+        Spacer(Modifier.height(12.dp))
+        Button(
+            onClick = onAddLocation,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(Res.string.first_forecast_tip_add_city))
+        }
         TextButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.End)
