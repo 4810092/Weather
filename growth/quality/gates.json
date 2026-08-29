@@ -15,27 +15,27 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Commit 2004e4f phone 1.1.0 (8) passed a bounded physical API 25 debug/source smoke. That result is now historical: current source changes durable automatic-refresh state, transient retry handling, saved-location cleanup, and repository observation windows, with no matching physical pass. There is still no upload-signed current artifact or release-certificate physical result; signed vc7 is historical, and physical tablet, widget, and Wear OS coverage remains required."
+      "reason": "Commit 80cdd60 phone 1.1.0 (8) passed a matching-byte current-source debug smoke on a physical API 25 phone and API 36 emulator, including legacy navigation contrast, IME resize, landscape side-cutout insets, true offline cache, recovery, sharing, and process stability. There is still no upload-signed vc8 or release-certificate physical result, and physical tablet, widget, and Wear OS coverage remains required."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Current Apple 1.1.0 (6) source changes the foreground review-request path, durable automatic-refresh state, saved-location cleanup, and repository observation windows. It has no distribution-signed archive, artifact hash, or matching physical result. Unsigned simulator builds are build-only evidence; the build-5 iPad install and build-4 runtime evidence are historical. Current iPhone, iPad, widget, and watch coverage remains required."
+      "reason": "Current Apple 1.1.0 (6) source changes the foreground review-request path, durable automatic-refresh state, saved-location cleanup, repository observation windows, and all-side safe-drawing insets. It has no distribution-signed archive, artifact hash, or matching physical result. A current iPad now has a compatible usable DDI and connected tunnel, but signing blocks installation; current iPhone, iPad, widget, and watch coverage remains required."
     },
     "release_artifact_source_sync": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities. Protected signing material, compatible Apple profiles, and signing identities are present, but the Android security value lookups exit with status 51 and Apple archive codesign fails with errSecInternalComponent, backed by Security framework errSecAuthFailed. Neither current phone nor Apple candidate has a signed artifact, immutable hash, or matching physical-QA evidence; unchanged Wear OS 1.1.0 (1000008) alone remains verified-current. See growth/quality/signing-readiness-2026-08-29.md."
+      "reason": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are the current source identities. The exact-HEAD unsigned phone AAB validates and current debug bytes pass bounded device QA, but Android Keychain value lookups exit with status 51; Apple archive codesign fails with errSecInternalComponent backed by errSecAuthFailed. There is no upload-signed phone AAB, signed Apple archive, or matching signed-artifact physical QA; unchanged Wear OS 1.1.0 (1000008) alone remains verified-current. See growth/quality/signing-readiness-2026-08-29.md."
     },
     "domain_activation": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "The registrar surface reports nimbo.uz is activating, registry WHOIS reports EXPIRED with creation and expiration both 2026-08-28, and authoritative plus public resolvers return DNSSEC NXDOMAIN. Cloudflare remains pending, but the complete DNS-only GitHub Pages record set is staged and an immediate nameserver recheck was requested. GitHub Pages is healthy, but registry delegation and TLS cannot proceed until registrar activation is complete."
+      "reason": "The registrar surface reports nimbo.uz is activating and domain-specific WHOIS reports EXPIRED with creation and expiration both 2026-08-28; the apparent top-level ACTIVE line belongs to the IANA .UZ ccTLD object, not NIMBO.UZ. Cloudflare remains pending, but both assigned child nameservers authoritatively serve the complete DNS-only GitHub Pages record set. Registry authorities and public resolvers still return DNSSEC-validated NXDOMAIN, so parent delegation and TLS remain absent."
     },
     "store_policy_console_clearance": {
       "status": "pass",
       "blocks_publication": true,
-      "reason": "Read-only 2026-08-28 console check found no open App Store review/compliance action and Google Play Policy status explicitly reported no issues; see growth/quality/store-policy-console-2026-08-28.md."
+      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action, and the authenticated Google Play recheck at 2026-08-29 06:24 +05:00 again explicitly reported no policy issues and no pending publishing change. See growth/quality/store-policy-console-2026-08-28.md."
     }
   },
   "scale_status": "hold",

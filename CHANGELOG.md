@@ -9,8 +9,13 @@ This file records public product and repository checkpoints supported by source 
 - Prepare the Nimbo 1.1.0 source identities as Android phone version code 8,
   Wear OS version code 1000008, and Apple build 6.
 - Keep the coordinated release fail-closed: the current phone and Apple source
-  identities have no signed, source-synced artifacts or matching physical QA,
-  while phone version code 7 and Apple build 5 are historical candidates only.
+  identities have no signed, source-synced artifacts or matching
+  signed-artifact physical QA, while phone version code 7 and Apple build 5 are
+  historical candidates only. Current Android debug bytes have a separate
+  bounded API 25/API 36 device pass.
+- Harden Android edge-to-edge rendering with all-side safe-drawing insets,
+  removal of deprecated system-bar theme attributes, and a readable API 24–25
+  three-button navigation fallback.
 - Improve open-source onboarding, architecture/reference documentation, contributor workflows, dependency updates, CI hardening, and security reporting.
 - Add GitHub prerelease objects for the existing `v1.0.0-rc.1` and `v1.0.0-rc.2` tags without changing tag history.
 

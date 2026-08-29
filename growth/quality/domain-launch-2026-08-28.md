@@ -61,6 +61,16 @@ At `2026-08-29 05:56 +05:00`, one authenticated registrar support ticket
 registration/delegation or identify any remaining owner action. The ticket list
 was checked first and contained no existing duplicate for this activation issue.
 
+At `2026-08-29 07:12–07:14 +05:00`, the registrar still showed
+`Активируется`, ticket `#1665` still had status `Новый`, and no human reply had
+arrived. The apparent top-level `ACTIVE` line in the combined WHOIS response
+belongs to the IANA object for the `.UZ` ccTLD; both domain-specific
+`NIMBO.UZ` sections still report `EXPIRED`. The Cloudflare child zone is ready:
+both assigned nameservers authoritatively return all four `A`, four `AAAA`, and
+the `www` `CNAME` records. However, both `.uz` registry authorities and the
+Cloudflare and Google public resolvers still return DNSSEC-validated `NXDOMAIN`,
+so the parent delegation and public TLS endpoint remain absent.
+
 Registry lookup, direct queries to authoritative `.uz` nameservers, and public
 recursive resolver checks all returned DNSSEC-authenticated `NXDOMAIN` for
 `nimbo.uz`. The registry has therefore not published a delegation. The

@@ -36,13 +36,27 @@ inherited QA claim is recorded.
   version codes `8` and `1000008` from the resulting local bundles. Jarsigner
   reports those Gradle outputs as unsigned, so they are not substituted for the
   manifest's required upload-signed artifacts and no current SHA is promoted.
-- Xcode build settings report marketing version `1.1.0` and build `6`. An
-  arm64-only Release simulator build completed without signing; the app and
-  widget Info.plists both expand to build `6`. This proves source/project
-  consistency only, not an archive, distribution signature, or device pass.
+- An isolated exact-HEAD phone rebuild at
+  `80cdd608b93056edd05e29873da43834a916cd3a` produced unsigned AAB SHA-256
+  `12da2a0d69d6ff5b5925a03cec419d7ae988e1092b5748f0662c795ea31771cc`;
+  Bundletool validation passed and the embedded package/version/minSdk/targetSdk
+  are `uz.ganikhodjaev.weather`, `1.1.0 (8)`, 24, and 36. The ignored local
+  copy remains explicitly named `nimbo-phone-1.1.0-vc8-unsigned-head.aab` and
+  is not promoted into the upload manifest.
+- Xcode build settings report marketing version `1.1.0` and build `6`. Exact
+  current commit `80cdd608b93056edd05e29873da43834a916cd3a` passes a clean
+  unsigned arm64 Release simulator build. The app and widget binaries are
+  unsigned, expand to build 6, and have SHA-256 values
+  `6be0ce6bfe0ede43ca9caa70180f428626a37188b2e551e35deda3b7c6f19956`
+  and `23899278a6e02caff65a1c93209450015fd6b6c6b79fb200c271b46d615f5dd2`.
+  This proves source/project consistency only, not an archive, distribution
+  signature, or device pass.
 - A later current-source signing readiness pass confirmed compatible Apple
   profiles and visible identities, but both the full archive and an isolated
   watch archive failed at `codesign`; neither produced an xcarchive.
+- A single exact-current-HEAD archive retry again failed at widget CodeSign
+  with `errSecInternalComponent`, without a provisioning or compile failure;
+  no xcarchive was produced.
 - The provider-capacity change passes shared Android-host and iOS Simulator
   tests, Kotlin formatting, SQLDelight migration verification, Android phone
   and Wear release bundle builds, and unsigned iOS/watchOS Release simulator
@@ -58,6 +72,15 @@ inherited QA claim is recorded.
   physical gates. That result is historical for the current source, which now
   also changes durable automatic-refresh state and retry handling, saved-location
   cleanup, repository observation windows, and the iOS review-request path.
+- Commit `80cdd608b93056edd05e29873da43834a916cd3a` now has the bounded
+  current-source device pass. The exact debug APK SHA-256 is
+  `e10aa48ffb5ea7ee2e6a9b43031e623731788a936e23dc94a3480386074d32bc`;
+  the installed bytes matched on the physical API 25 phone and API 36 emulator.
+  Live and cached weather, true offline fallback and recovery, share chooser,
+  legacy navigation contrast, IME resize, light/dark rendering, and landscape
+  cutout/three-button paths passed without a captured crash or ANR. This closes
+  the stale-source gap for bounded debug phone behavior, but not the missing
+  upload signature, tablet/widget path, or paired physical Wear OS matrix.
 
 ## Preserved historical candidates
 
