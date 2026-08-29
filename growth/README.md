@@ -7,8 +7,8 @@ complete their protected private-signing operations and therefore have no
 source-synced signed artifact, matching hash, or physical QA; signed phone vc7
 and Apple build 5 are historical evidence only. The Open-Meteo clarification
 has been sent but written provider clearance is still missing. The iOS crash
-diagnostic, complete device matrix, public HTTPS for `nimbo.uz`, and reconciled
-console exports are still missing. A build, a Pages
+diagnostic, complete device matrix, and reconciled console exports are still
+missing. A build, a Pages
 deployment, or historical device evidence does not close those gates.
 
 ## Evidence model
@@ -47,8 +47,8 @@ overwrite a day unless `--replace` is provided. The second command writes the
 current decision record in `growth/reports/`.
 
 The Codex task has an active local heartbeat named `Nimbo UZ rank monitor` on a
-temporary hourly cadence while domain activation and release-access blockers
-are unresolved. It refreshes the public rank/evaluation state when needed; on
+temporary hourly cadence while provider, crash, and release-access blockers are
+unresolved. It refreshes the public rank/evaluation state when needed; on
 Mondays it also imports a new user-supplied, valid seven-day console CSV when
 one is present. It never bypasses authentication or 2FA. The optional macOS launchd template in
 [automation](automation) remains uninstalled, avoiding a duplicate machine

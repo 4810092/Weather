@@ -1,7 +1,7 @@
 # `nimbo.uz` launch state — 2026-08-28, refreshed 2026-08-29
 
-Status: **BLOCKED — registrar activation, registry delegation, and public DNS
-now pass, but a matching HTTPS certificate is not yet available**.
+Status: **PASS — registrar activation, public delegation/DNS, matching TLS,
+HTTPS enforcement, redirects, canonicals, and published routes are verified**.
 
 ## Completed
 
@@ -12,6 +12,9 @@ now pass, but a matching HTTPS certificate is not yet available**.
 - GitHub Pages workflow run `33235358445` for commit
   `738e008ecb0a74224f5ba4f283610f7c8629a4f9` completed successfully in 38
   seconds; its deployment step completed in 11 seconds.
+- GitHub Pages workflow run `33236549322` deployed commit
+  `6f036dff7cb4fc915faae3938a032335a697107c` while final TLS and redirect
+  verification was performed.
 - The repository Pages configuration uses the workflow build type and accepts
   `nimbo.uz` as its custom domain.
 - The generated site uses `https://nimbo.uz` as the canonical origin for the
@@ -30,7 +33,7 @@ now pass, but a matching HTTPS certificate is not yet available**.
   performs read-only registry delegation, public DNS, Pages health, HTTP/TLS,
   and canonical checks alongside rank evaluation.
 
-## Current external blocker
+## Activation chronology
 
 At `2026-08-29 01:34 +05:00`, the public Webname status page reported
 `Активацияни кутиш` (waiting for activation). The `.uz` WHOIS response reported
@@ -130,24 +133,49 @@ custom-domain status `DNS Check in Progress`, and kept `Enforce HTTPS` disabled
 with the explicit reason that no certificate had yet been issued for
 `nimbo.uz`. No Pages setting was changed during this read-only check.
 
-TLS for `nimbo.uz` is not provisioned. The successful GitHub Pages deployment
-and HTTP `200` do not prove certificate readiness; valid public HTTPS remains
-unclaimed.
+At `2026-08-29 10:36–10:41 +05:00`, GitHub issued a Let's Encrypt certificate
+with `CN=nimbo.uz`, SANs for `nimbo.uz` and `www.nimbo.uz`, validity from
+`2026-08-29 04:32:08Z` through `2026-11-27 04:32:07Z`, and successful hostname
+verification for both hosts. The authenticated Pages control became available,
+`Enforce HTTPS` was enabled, and the checked state was verified. One UI capture
+showed `DNS check successful`; a near-simultaneous reload retained the earlier
+`DNS Check in Progress` label, which is treated as non-blocking control-plane
+lag because the public data-plane checks below all pass.
 
-## Fail-closed activation gate
+After propagation, all four GitHub Pages IPv4 edges returned `301` from the
+HTTP apex to `https://nimbo.uz/`. HTTP `www` reached the same HTTPS apex in two
+redirects, and HTTPS `www` reached it in one. The final response was `200` with
+certificate verification result `0` in every case.
 
-Do not announce or promote `nimbo.uz` as live until all of the following are
-complete and independently verified:
+All 12 intended localized HTML routes returned HTTPS `200` with the expected
+self-canonical and `lang`: Uzbek at `/`, `/press/`, `/privacy/`, `/support/`;
+Russian at `/ru/` plus its three localized routes; and English at `/en/` plus
+its three localized routes. Uzbek intentionally uses the canonical root rather
+than a separate `/uz/` route. `/growth/`, `/robots.txt`, `/sitemap.xml`, and
+`/schemas/store-metadata-v2.json` also returned HTTPS `200`; the schema parsed
+as JSON with the expected canonical `$id`.
 
-1. Keep the active registrar record, delegated Cloudflare nameservers, and
-   verified DNS-only GitHub Pages record set unchanged.
-2. Wait for GitHub Pages certificate issuance, enable HTTPS, and verify the
-   apex, `www`, redirects, canonical URLs, and every localized route over TLS.
+The macOS resolver API still retained an earlier negative cache during this
+window, but both authoritative nameservers, Cloudflare and Google recursive DNS
+checks from the activation capture, and a fresh Cloudflare DoH query returned
+the public record set. The stale local cache does not invalidate the independent
+public checks.
+
+## Fail-closed activation gate — complete
+
+The domain gate passed only after all of the following were independently
+verified:
+
+1. Active registrar record and `.uz` parent delegation.
+2. Matching Cloudflare authoritative records and independent recursive DNS.
+3. Matching apex/`www` certificate plus enabled HTTPS enforcement.
+4. Redirect convergence, published route responses, canonical URLs, language
+   declarations, and the public schema.
 
 ## DNS records serving after activation
 
-All records are present and must remain DNS-only while GitHub verifies the
-domain and issues TLS:
+All records are present and must remain DNS-only to preserve the verified
+GitHub Pages host routing and certificate configuration:
 
 | Type | Name | Target |
 |---|---|---|

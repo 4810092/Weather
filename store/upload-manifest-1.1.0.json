@@ -155,8 +155,7 @@
     "source-synced signed Apple 1.1.0 (6) artifact and physical runtime matrix",
     "physical tablet, widget, and Wear OS smoke",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",
-    "authenticated App Store Connect and Google Play upload paths",
-    "valid public nimbo.uz HTTPS/TLS and route verification"
+    "authenticated App Store Connect and Google Play upload paths"
   ],
   "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."
 }

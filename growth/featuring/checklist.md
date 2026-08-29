@@ -35,7 +35,7 @@ store upload, nomination, promotional-content event, or featuring request.
       stability gate is `pass`.
 - [ ] Required physical iPhone, Android tablet, widget, and paired-watch paths
       are completed for the exact release candidate.
-- [ ] `nimbo.uz` DNS, HTTPS, canonical routes, and localized content are publicly
+- [x] `nimbo.uz` DNS, HTTPS, canonical routes, and localized content are publicly
       reachable and checked.
 - [ ] Exact Apple and Android candidates are uploaded, processed, and assigned
       to the intended release path; local artifacts alone do not satisfy this.

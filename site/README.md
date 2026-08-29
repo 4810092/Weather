@@ -23,8 +23,8 @@ provider, crash, release, device, policy, or domain gate.
 The deployment workflow runs automatically when site, dashboard, or site-build
 sources change on `master`, and it also supports a manual dispatch. It builds
 with `https://nimbo.uz` as the canonical URL and uploads only `build/pages`.
-GitHub Pages is the origin; Cloudflare provides DNS-only records during domain
-verification and TLS issuance.
+GitHub Pages is the origin and TLS endpoint; Cloudflare provides the verified
+DNS-only record set for the custom domain.
 
 All phone images shown on the site are copied from the versioned, real-device or
 simulator store capture set. Marketing copy must not imply features that are not
