@@ -1,9 +1,9 @@
 # Release artifact source sync — 2026-08-30
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; 0/3 current artifacts
-byte-verified**.
+Status: **HISTORICAL PREDECESSOR CHECKPOINT; it recorded 0/3 byte-verified
+artifacts and has been superseded by `aa6496d`**.
 
-The current product/build-input commit is
+The product/build-input commit at this checkpoint was
 `44c189209c793cf097fcc293faf8db88033e6902`. It resolves to Android phone
 `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
 `1.1.0 (6)`.

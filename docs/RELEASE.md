@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:44c189209c793cf097fcc293faf8db88033e6902 -->
+<!-- source_revision:aa6496d0ac9011ff818d2c0dd2ec5c565317400c -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bfbb3c1553078d1a8e76aa50949710068d05a65ed773774227b6f0f403012570 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bc50b496e8ce38e68e8546203a1ec108119ba75859fe4e58fdbbbeddef2f0bd0 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=9da5536c2e4521cebcd23bd7378624a4b786253f1445429712a73c7da83afd06 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=7aaef414b6034d399d1f6f4e7e455891fca4c6dfd3d2017f6c0ec631b99a86f3 -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,7 +28,21 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 Apple source-binding correction — 2026-08-30
+## Nimbo 1.1.0 deterministic Apple signing correction — 2026-08-30
+
+The authoritative product/build-input revision is
+`aa6496d0ac9011ff818d2c0dd2ec5c565317400c`. It keeps the coordinated phone,
+Wear, and Apple identities and the source-binding setting, while replacing the
+obsolete global provisioning-profile override with bundle-specific App Store
+profiles for the app, widget, and watch plus a matching manual export map.
+Read-only Xcode build settings prove the three mappings. No private-key
+operation, archive, IPA, signed Android bundle, or physical QA was produced
+from this revision; 0/3 current artifacts remain byte-verified. The current
+decision is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-aa6496d.md)
+and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Nimbo 1.1.0 Apple source-binding checkpoint — 2026-08-30
 
 The authoritative product/build-input revision is
 `44c189209c793cf097fcc293faf8db88033e6902`. It keeps phone `1.1.0 (8)`, Wear
@@ -38,7 +52,7 @@ simulator app, and watch app. A one-time unsigned Release simulator smoke
 confirmed that an explicitly supplied full revision reaches all produced
 Info.plists. No retained upload artifact was built or signed from this revision,
 so all earlier Android, Apple, screenshot, and device evidence is historical
-and non-transferable. The current decision is recorded in the
+and non-transferable. This predecessor checkpoint is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 

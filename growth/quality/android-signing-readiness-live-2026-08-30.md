@@ -7,6 +7,12 @@ password, private-key material, protected Keychain value, signing input, or
 credential environment value was printed, exported, changed, or reset. No AAB
 was built, signed, uploaded, submitted, or published.
 
+After this observation, Apple release signing inputs advanced the coordinated
+manifest authority to `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` without
+changing the Android product identity or clearing Keychain authorization. The
+`44c1892` statements below remain point-in-time audit evidence; they are not an
+instruction to build the superseded revision.
+
 ## Source and release identities
 
 - The working tree is clean at repository HEAD
@@ -73,16 +79,16 @@ Keychain rejects both protected reads. The narrow unblock is successful
 authorization of that Keychain; the accepted upload keystore, alias, and
 certificate must not be replaced or reset.
 
-After both exact protected lookups return status 0, build from a standalone
-checkout detached at
-`44c189209c793cf097fcc293faf8db88033e6902`, retain new outputs under a new
+After both exact protected lookups return status 0, resolve the current full
+revision only through `verify_release_artifacts.py --print-source-revision`,
+build from a standalone checkout detached at that revision, and retain outputs under a new
 mode-700 external directory such as
-`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-44c1892/`,
+`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-aa6496d/`,
 and sign to the manifest filenames `nimbo-phone-1.1.0-vc8.aab` and
 `nimbo-wear-1.1.0-vc1000008.aab`. Pass the two protected values only through
 short-lived environment variables consumed by JDK 17 `jarsigner` via
 `-storepass:env` and `-keypass:env`, then unset them. Verification must re-open
-the final bytes, prove revision `44c1892…`, identities, ZIP/JAR integrity,
+the final bytes, prove the manifest's full revision, identities, ZIP/JAR integrity,
 certificate DER SHA-256, Bundletool 1.18.3 validation, and hashes before any
 manifest or readiness state can advance.
 

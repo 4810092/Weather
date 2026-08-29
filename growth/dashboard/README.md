@@ -18,12 +18,13 @@ returned only one unique app, below the 10-app completeness floor, but it is
 a non-goal diagnostic source error: `goal_evidence_complete=true`, all
 required goal surfaces are complete and failed, and the streak remains `0/7`.
 Current product/build-input commit
-`44c189209c793cf097fcc293faf8db88033e6902` resolves to phone 1.1.0 (8),
-Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It adds fail-closed Apple
-`NimboSourceRevision` plumbing, but no retained AAB, archive, or IPA was built
-or signed from it. The dashboard therefore reports `0/3` current artifacts
-byte-verified. All binaries, screenshots, and device results below belong to
-predecessor revisions and remain non-transferable regression evidence.
+`aa6496d0ac9011ff818d2c0dd2ec5c565317400c` resolves to phone 1.1.0 (8),
+Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It keeps fail-closed Apple
+`NimboSourceRevision` plumbing and adds deterministic per-target App Store
+profiles, but no retained AAB, archive, or IPA was built or signed from it.
+The dashboard therefore reports `0/3` current artifacts byte-verified. All
+binaries, screenshots, and device results below belong to predecessor
+revisions and remain non-transferable regression evidence.
 
 Predecessor debug APK and installed bytes
 `52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
@@ -96,7 +97,7 @@ historical iOS crash still lacks a diagnostic and symbolicated report. The
 authenticated inventory path closes the API-authentication discovery gap, but
 its diagnostic request is permission-blocked by `403` and cannot recover the
 suppressed crash signature or log.
-Current `44c1892` inherits the predecessor hardening, but the executed tests and
+Current `aa6496d` inherits the predecessor hardening, but the executed tests and
 simulator binaries remain pinned to `9c2dce4`; neither can identify or be
 attributed to that event, and the results do not transfer to close the crash
 gate. OpenMeteo GmbH

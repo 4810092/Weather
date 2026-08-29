@@ -44,8 +44,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issue["id"]: issue["message"]
                 for issue in artifact["snapshot"]["accessIssues"]
             }
+            current_revision = json.loads(
+                (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
+            )["gates"]["release_artifact_source_sync"]["source_revision"]
             self.assertIn(
-                "current source authority 44c1892",
+                f"current source authority {current_revision[:7]}",
                 issues["ios_crash_report_missing"],
             )
             self.assertIn(
@@ -55,6 +58,14 @@ class SyncDashboardGatesTest(unittest.TestCase):
             self.assertNotIn(
                 "exact-current 9c2dce4",
                 issues["release_artifact_source_sync_missing"],
+            )
+            self.assertIn(
+                f"Current product/build-input commit {current_revision}",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "deterministic per-target release profiles",
+                artifact["manifest"]["blocks"][0]["body"],
             )
 
     def test_second_replace_failure_rolls_back_both_outputs(self) -> None:

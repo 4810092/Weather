@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -247,6 +248,13 @@ def sync(
     source_issue = access_issue_by_id.get("release_artifact_source_sync_missing")
     if not isinstance(crash_issue, dict) or not isinstance(source_issue, dict):
         raise ValueError("dashboard release/crash access issues are missing")
+    current_revision = gates["release_artifact_source_sync"].get(
+        "source_revision"
+    )
+    if not isinstance(current_revision, str) or len(current_revision) != 40:
+        raise ValueError("release artifact source revision is malformed")
+    current_revision_short = current_revision[:7]
+
     crash_issue["message"] = (
         "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, "
         "but privacy suppression exposes no report, stack, UUID, device, or OS. "
@@ -257,10 +265,10 @@ def sync(
         "storage-failure exception escapes and passes its Apple surface suite "
         "and source-bound simulator builds; neither the authenticated inventory "
         "nor that non-transferable preventive evidence identifies or closes the "
-        "historical crash for current source authority 44c1892."
+        f"historical crash for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
-        "Current product/build-input commit 44c1892 has no retained signed phone "
+        f"Current product/build-input commit {current_revision_short} has no retained signed phone "
         "vc8, Wear 1000008, or distribution-signed Apple build-6 candidate, so "
         "0/3 current artifacts are byte-verified. All retained Android bundles, "
         "Apple simulator products, screenshots, and device results belong to "
@@ -286,30 +294,38 @@ def sync(
     verdict = blocks[0].get("body")
     if not isinstance(verdict, str):
         raise ValueError("dashboard verdict body is malformed")
-    prior_start = (
-        "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
+    current_summary = (
+        "Current product/build-input commit "
+        + current_revision
+        + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
+        "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
+        "deterministic per-target release profiles. "
+        "No retained AAB, archive, or IPA was built or signed from it, so "
+        "0/3 current artifacts are byte-verified. Predecessor commit "
+        "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
+        "storage-failure exception escapes and adds four throwing-repository "
+        "regressions, but all of its binaries, screenshots, and device results "
+        "are historical and non-transferable."
     )
+    current_pattern = re.compile(
+        r"Current product/build-input commit [0-9a-f]{40} keeps .*?"
+        r"are historical and non-transferable\.",
+        re.DOTALL,
+    )
+    verdict, current_summary_count = current_pattern.subn(
+        current_summary,
+        verdict,
+        count=1,
+    )
+    prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."
-    if prior_start in verdict:
+    if current_summary_count == 0 and prior_start in verdict:
         start = verdict.index(prior_start)
         end = verdict.index(prior_end, start) + len(prior_end)
-        current_revision = gates["release_artifact_source_sync"].get(
-            "source_revision"
-        )
-        verdict = (
-            verdict[:start]
-            + "Current product/build-input commit "
-            + str(current_revision)
-            + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
-            "1.1.0 (6), and adds fail-closed Apple source-revision plumbing. "
-            "No retained AAB, archive, or IPA was built or signed from it, so "
-            "0/3 current artifacts are byte-verified. Predecessor commit "
-            "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
-            "storage-failure exception escapes and adds four throwing-repository "
-            "regressions, but all of its binaries, screenshots, and device results "
-            "are historical and non-transferable."
-            + verdict[end:]
-        )
+        verdict = verdict[:start] + current_summary + verdict[end:]
+        current_summary_count = 1
+    if current_summary_count != 1:
+        raise ValueError("dashboard verdict current-release summary is missing")
     verdict = verdict.replace(
         "Exact phone and Wear AABs embed 9c2dce4",
         "Predecessor phone and Wear AABs embed 9c2dce4",

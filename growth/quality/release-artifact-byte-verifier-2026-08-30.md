@@ -5,8 +5,11 @@ Status: **PASS for the fail-closed contract; 0/3 current artifacts verified**.
 This change does not sign, upload, submit, review, publish, or make any build
 public. Android phone `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple
 `1.1.0 (6)` remain `blocked` in the upload manifest because their exact-current
-signed bytes and matching physical QA do not exist. Current product/build-input
-revision `44c189209c793cf097fcc293faf8db88033e6902` is the manifest authority.
+signed bytes and matching physical QA do not exist. At this verifier
+implementation checkpoint, product/build-input revision
+`44c189209c793cf097fcc293faf8db88033e6902` was the manifest authority; the
+manifest now advances independently when a later committed release input is
+proven by the same contract.
 
 ## Defects closed
 

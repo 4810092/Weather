@@ -17,6 +17,13 @@ proved and should not be attempted through that command.
 The current physical matrix is also incomplete: one iPad is an eligible Xcode
 destination, but no concrete iPhone or Apple Watch destination is eligible.
 
+The configuration defect found by this audit was corrected afterward in
+product/build-input revision `aa6496d0ac9011ff818d2c0dd2ec5c565317400c`:
+Release settings now select the three exact profiles per target and manual
+ExportOptions maps the same three bundle IDs. This closes the deterministic
+configuration blocker only. It does not prove private-key access, archive,
+export, or physical QA.
+
 ## Source and toolchain
 
 - The repository was clean at HEAD
@@ -95,18 +102,13 @@ ad-hoc build.
 
 ## Next safe action
 
-1. Configure manual Release signing per target with the three exact profiles
-   listed above; do not use one global profile specifier.
-2. Change the export configuration to manual signing with `Apple Distribution`
-   and a `provisioningProfiles` dictionary mapping all three bundle IDs to those
-   exact profile names.
-3. From a clean checkout, obtain the full revision only through
+1. From a clean checkout, obtain the full revision only through
    `verify_release_artifacts.py --print-source-revision`, then run a bounded
    noninteractive key-access/archive preflight. Stop on any keychain prompt or
    profile substitution.
-4. Only after a successful archive/export, verify the retained IPA, xcarchive,
+2. Only after a successful archive/export, verify the retained IPA, xcarchive,
    dSYMs, embedded `NimboSourceRevision`, all embedded profiles, certificate
    fingerprint, entitlements, and Mach-O UUID binding before upload.
-5. Re-establish an eligible physical iPhone and paired watch, then complete the
+3. Re-establish an eligible physical iPhone and paired watch, then complete the
    required TestFlight iPhone/iPad/widget/watch smoke. The current iPad alone
    does not close the matrix.

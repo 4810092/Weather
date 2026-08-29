@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:44c189209c793cf097fcc293faf8db88033e6902 -->
+<!-- source_revision:aa6496d0ac9011ff818d2c0dd2ec5c565317400c -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bfbb3c1553078d1a8e76aa50949710068d05a65ed773774227b6f0f403012570 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bc50b496e8ce38e68e8546203a1ec108119ba75859fe4e58fdbbbeddef2f0bd0 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=9da5536c2e4521cebcd23bd7378624a4b786253f1445429712a73c7da83afd06 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=7aaef414b6034d399d1f6f4e7e455891fca4c6dfd3d2017f6c0ec631b99a86f3 -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,9 +54,10 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `44c1892` has no retained signed Android or Apple
-  candidate and no matching physical QA. It adds the Apple source-revision
-  build setting only; all evidence below belongs to predecessor revisions.
+- Current product/build source `aa6496d` has no retained signed Android or Apple
+  candidate and no matching physical QA. It keeps the Apple source-revision
+  setting and adds deterministic per-target App Store profiles; all evidence
+  below belongs to predecessor revisions.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian
