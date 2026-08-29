@@ -51,10 +51,19 @@ incompleteness does not fail a decisive goal snapshot. It refuses to silently
 overwrite a day unless `--replace` is provided. The second command writes the
 current decision record in `growth/reports/`.
 
+For hourly visibility after the canonical daily file already exists, use
+`--check-current` for a compact non-writing JSON result or
+`--append-intraday` for an append-only local observation. Intraday files are
+explicitly ineligible for streak calculation and are ignored by Git; they do
+not replace or supplement the one canonical daily result. `--stdout` emits the
+full current capture without writing a file. See
+[data/public-rank/README.md](data/public-rank/README.md) for the exact contract.
+
 The Codex task has an active local heartbeat named
 `Nimbo UZ rank and domain monitor` on a temporary hourly cadence while crash
 and release-access blockers are unresolved. It refreshes the public
-rank/evaluation state when needed; on
+rank/evaluation state when needed and may append a local intraday observation
+without changing the canonical daily streak input; on
 Mondays it also imports a new user-supplied, valid seven-day console CSV when
 one is present. It never bypasses authentication or 2FA. The optional macOS launchd template in
 [automation](automation) remains uninstalled, avoiding a duplicate machine

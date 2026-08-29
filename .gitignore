@@ -40,3 +40,7 @@ signing.properties
 
 # Local agent/session state is not project documentation
 .codex/
+
+# Hourly rank probes are append-only local operations evidence. Only the
+# canonical daily JSON files in the parent directory are versioned.
+growth/data/public-rank/intraday/

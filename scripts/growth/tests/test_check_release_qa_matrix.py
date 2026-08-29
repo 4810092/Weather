@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -29,11 +30,13 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
             "iosApp/project.yml",
             "MARKETING_VERSION: 1.1.0\nCURRENT_PROJECT_VERSION: 6\n",
         )
+        self.source_revision = self._commit_release_source()
         self._write_text("growth/evidence.md", "fixture evidence\n")
         self._write_json(
             "store/upload-manifest-1.1.0.json",
             {
                 "release": "1.1.0",
+                "source_revision": self.source_revision,
                 "artifacts": {
                     "android_phone": {
                         "version_code": 8,
@@ -69,7 +72,9 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
             "growth/quality/gates.json",
             {
                 "gates": {
-                    "release_artifact_source_sync": self._gate("blocked"),
+                    "release_artifact_source_sync": self._gate(
+                        "blocked", source_revision=self.source_revision
+                    ),
                     "android_physical_smoke": self._gate("blocked"),
                     "ios_physical_smoke": self._gate("blocked"),
                 }
@@ -81,12 +86,37 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         self.temporary_directory.cleanup()
 
     @staticmethod
-    def _gate(status: str) -> dict[str, object]:
-        return {
+    def _gate(
+        status: str, *, source_revision: str | None = None
+    ) -> dict[str, object]:
+        gate: dict[str, object] = {
             "status": status,
             "blocks_publication": True,
             "reason": "fixture gate evidence",
         }
+        if source_revision is not None:
+            gate["source_revision"] = source_revision
+        return gate
+
+    def _commit_release_source(self) -> str:
+        commands = (
+            ["init", "--quiet"],
+            ["config", "user.email", "release-test@example.invalid"],
+            ["config", "user.name", "Release test"],
+            ["add", "app", "wearApp", "iosApp"],
+            ["commit", "--quiet", "-m", "Fixture release source"],
+        )
+        for command in commands:
+            subprocess.run(
+                ["git", *command],
+                cwd=self.root,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=self.root, text=True
+        ).strip()
 
     def _write_text(self, relative: str, content: str) -> None:
         path = self.root / relative
@@ -139,6 +169,95 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
 
         self.assertIn(
             "android_phone: manifest version_code 9 differs from build 8",
+            failures,
+        )
+
+    def test_release_source_change_makes_recorded_revision_stale(self) -> None:
+        path = self.root / "app/build.gradle.kts"
+        path.write_text(path.read_text(encoding="utf-8") + "// product change\n")
+
+        failures = validate(self.root)
+
+        self.assertTrue(
+            any(
+                failure.startswith(
+                    "upload manifest: source_revision "
+                    f"{self.source_revision} is stale for release source: "
+                )
+                and "app/build.gradle.kts" in failure
+                for failure in failures
+            )
+        )
+
+    def test_release_gate_revision_must_match_manifest(self) -> None:
+        gates = self._read_json("growth/quality/gates.json")
+        gates["gates"]["release_artifact_source_sync"]["source_revision"] = "f" * 40
+        self._write_json("growth/quality/gates.json", gates)
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "quality gates: release_artifact_source_sync source_revision "
+            f"{'f' * 40!r} differs from upload manifest {self.source_revision!r}",
+            failures,
+        )
+
+    def test_source_revision_requires_full_lowercase_commit(self) -> None:
+        manifest = self._read_json("store/upload-manifest-1.1.0.json")
+        manifest["source_revision"] = self.source_revision[:12]
+        self._write_json("store/upload-manifest-1.1.0.json", manifest)
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "upload manifest: source_revision must be a full lowercase 40-hex commit",
+            failures,
+        )
+
+    def test_source_revision_must_be_a_commit_object(self) -> None:
+        tree_revision = subprocess.check_output(
+            ["git", "rev-parse", f"{self.source_revision}^{{tree}}"],
+            cwd=self.root,
+            text=True,
+        ).strip()
+        manifest = self._read_json("store/upload-manifest-1.1.0.json")
+        manifest["source_revision"] = tree_revision
+        self._write_json("store/upload-manifest-1.1.0.json", manifest)
+        gates = self._read_json("growth/quality/gates.json")
+        gates["gates"]["release_artifact_source_sync"][
+            "source_revision"
+        ] = tree_revision
+        self._write_json("growth/quality/gates.json", gates)
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "upload manifest: source_revision "
+            f"{tree_revision} must identify a commit object, got tree",
+            failures,
+        )
+
+    def test_untracked_release_source_fails_closed(self) -> None:
+        self._write_text("shared/src/new-product-file.kt", "package fixture\n")
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "upload manifest: untracked release source prevents exact-source proof: "
+            "shared/src/new-product-file.kt",
+            failures,
+        )
+
+    def test_ignored_untracked_release_source_fails_closed(self) -> None:
+        ignored_path = "shared/src/commonMain/kotlin/IgnoredProductFile.kt"
+        self._write_text(".gitignore", f"/{ignored_path}\n")
+        self._write_text(ignored_path, "package fixture\n")
+
+        failures = validate(self.root)
+
+        self.assertIn(
+            "upload manifest: untracked release source prevents exact-source proof: "
+            f"{ignored_path}",
             failures,
         )
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,41 @@ VALID_SOURCE_SYNC = {"blocked", "verified-current"}
 VALID_GATE_STATUS = {"blocked", "pending", "unknown", "fail", "pass"}
 RELEASE_GATE = "release_artifact_source_sync"
 SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}\Z")
+REVISION_PATTERN = re.compile(r"[0-9a-f]{40}\Z")
+
+# These paths define the product/build inputs covered by exact-source release
+# evidence. Evidence, reports, and store manifests intentionally live outside
+# this list so a documentation-only evidence commit does not invalidate the
+# product revision it records.
+RELEASE_SOURCE_PATHS = (
+    "androidSurfaceContract",
+    "app",
+    "shared",
+    "wearApp",
+    "iosApp",
+    "build.gradle.kts",
+    "settings.gradle.kts",
+    "gradle.properties",
+    "gradle",
+    "gradlew",
+    "gradlew.bat",
+)
+
+# `git ls-files --others` intentionally omits no standard excludes, so locally
+# ignored product source is visible too. Only deterministic build products and
+# user-local Xcode state are excluded from the broad module roots.
+RELEASE_GENERATED_PATHS = (
+    ":(exclude)androidSurfaceContract/build/**",
+    ":(exclude)app/build/**",
+    ":(exclude)shared/build/**",
+    ":(exclude)wearApp/build/**",
+    ":(exclude)iosApp/build/**",
+    ":(exclude)**/.cxx/**",
+    ":(exclude)**/.externalNativeBuild/**",
+    ":(exclude)**/.DS_Store",
+    ":(exclude)iosApp/**/xcuserdata/**",
+    ":(exclude)iosApp/**/DerivedData/**",
+)
 
 SURFACES = (
     {
@@ -155,6 +191,137 @@ def _gate_status(
     return str(status)
 
 
+def _run_git(root: Path, arguments: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *arguments],
+        cwd=root,
+        capture_output=True,
+        check=False,
+        text=True,
+        timeout=15,
+    )
+
+
+def _validate_source_revision(
+    root: Path,
+    manifest: dict[str, Any],
+    gates: dict[str, Any],
+    failures: list[str],
+) -> None:
+    revision = manifest.get("source_revision")
+    if not isinstance(revision, str) or REVISION_PATTERN.fullmatch(revision) is None:
+        failures.append(
+            "upload manifest: source_revision must be a full lowercase 40-hex commit"
+        )
+        return
+
+    release_gate = gates.get(RELEASE_GATE)
+    gate_revision = (
+        release_gate.get("source_revision")
+        if isinstance(release_gate, dict)
+        else None
+    )
+    if gate_revision != revision:
+        failures.append(
+            "quality gates: release_artifact_source_sync source_revision "
+            f"{gate_revision!r} differs from upload manifest {revision!r}"
+        )
+
+    try:
+        object_type = _run_git(root, ["cat-file", "-t", revision])
+        diff = _run_git(
+            root,
+            [
+                "diff",
+                "--quiet",
+                "--no-ext-diff",
+                revision,
+                "--",
+                *RELEASE_SOURCE_PATHS,
+            ],
+        )
+        changed = (
+            _run_git(
+                root,
+                [
+                    "diff",
+                    "--name-only",
+                    "--no-ext-diff",
+                    revision,
+                    "--",
+                    *RELEASE_SOURCE_PATHS,
+                ],
+            )
+            if diff.returncode == 1
+            else None
+        )
+        untracked = _run_git(
+            root,
+            [
+                "ls-files",
+                "--others",
+                "--",
+                *RELEASE_SOURCE_PATHS,
+                *RELEASE_GENERATED_PATHS,
+            ],
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        failures.append(f"upload manifest: cannot verify source_revision: {error}")
+        return
+
+    if object_type.returncode != 0:
+        detail = object_type.stderr.strip() or "object does not exist"
+        failures.append(
+            f"upload manifest: source_revision {revision} is not a commit: {detail}"
+        )
+        return
+    resolved_type = object_type.stdout.strip()
+    if resolved_type != "commit":
+        failures.append(
+            f"upload manifest: source_revision {revision} must identify a commit "
+            f"object, got {resolved_type or 'unknown'}"
+        )
+        return
+
+    if diff.returncode == 1:
+        assert changed is not None
+        if changed.returncode != 0:
+            detail = changed.stderr.strip() or f"git diff exited {changed.returncode}"
+            failures.append(
+                f"upload manifest: cannot inspect stale source_revision: {detail}"
+            )
+            return
+        paths = [line for line in changed.stdout.splitlines() if line]
+        detail = ", ".join(paths[:8]) or "release source paths changed"
+        if len(paths) > 8:
+            detail += f", and {len(paths) - 8} more"
+        failures.append(
+            f"upload manifest: source_revision {revision} is stale for release source: {detail}"
+        )
+    elif diff.returncode != 0:
+        detail = diff.stderr.strip() or f"git diff exited {diff.returncode}"
+        failures.append(
+            f"upload manifest: cannot verify source_revision {revision}: {detail}"
+        )
+        return
+
+    if untracked.returncode != 0:
+        detail = untracked.stderr.strip() or f"git ls-files exited {untracked.returncode}"
+        failures.append(
+            f"upload manifest: cannot inspect untracked release source: {detail}"
+        )
+        return
+    untracked_paths = sorted({line for line in untracked.stdout.splitlines() if line})
+    if untracked_paths:
+        detail = ", ".join(untracked_paths[:8])
+        if len(untracked_paths) > 8:
+            detail += f", and {len(untracked_paths) - 8} more"
+        failures.append(
+            "upload manifest: untracked release source prevents exact-source proof: "
+            f"{detail}"
+        )
+
+
 def _existing_repository_file(
     root: Path,
     value: object,
@@ -219,6 +386,8 @@ def expected_current_block(
     if not isinstance(gates, dict):
         failures.append("quality gates: gates must be an object")
         gates = {}
+
+    _validate_source_revision(root, manifest, gates, failures)
 
     release_gate_status = _gate_status(gates, RELEASE_GATE, failures)
     physical_gate_statuses = {

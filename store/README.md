@@ -15,12 +15,13 @@ to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` resolves each store surface to its exact locale,
 metadata, creative, and artifact source-sync state. It intentionally remains
 `draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
-current hashes, signing, and physical-QA evidence until exact-source artifacts
-exist. The older signed phone vc7 and Apple build 5 bytes are retained only as
-historical candidates. The retained signed Wear `1000008` embeds an older VCS
-revision and is likewise historical even though its non-signature payload
-matches the fresh current output except for version-control metadata. This is
-a preflight inventory, not evidence of a console upload.
+upload-candidate hashes, signing, and physical-QA evidence until exact-source
+signed artifacts and their matching QA exist. Its full `source_revision` is
+shared with the release/source gate; `check_release_qa_matrix.py` fails if that
+revision differs from the current product/build inputs or if either authority
+drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
+bytes remain historical candidates because their source predates the current
+revision. This is a preflight inventory, not evidence of a console upload.
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

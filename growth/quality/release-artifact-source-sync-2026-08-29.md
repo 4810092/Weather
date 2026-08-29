@@ -1,20 +1,22 @@
 # Release artifact source sync — 2026-08-29
 
 Status: **BLOCKED for Android phone, Wear OS, and Apple**.
-No artifact was signed, uploaded, submitted, or published by this refresh.
+No upload or release candidate was signed, uploaded, submitted, or published by
+this refresh. The bounded physical smoke used the explicitly identified debug-
+signed APK below.
 
 ## Decision
 
 The exact product commit is
-`24ea3734c105e259374ad3b41a6f7e6476ea70db`. Its source identities are Android
+`9342824db7c0dcadfc4bdfe11f580377c108d968`. Its source identities are Android
 phone `1.1.0 (8)`, Apple app/widget/watch `1.1.0 (6)`, and Wear OS
 `1.1.0 (1000008)`.
 
 | Surface | Source sync | Exact current evidence | Signing and device boundary |
 | --- | --- | --- | --- |
-| Android phone/tablet | **BLOCKED** | AAB `f91d0dce82aad7596118a6563d64b94f9f90daa2550cfb4b345fc3ef966bfdab`; mapping `d749110783872a36406c56a99b11d9c67764a7973d767656c3bd6f0ed59addfd` | Bundletool passes and embedded VCS metadata names the exact commit, but the AAB has zero signature entries. The exact debug APK passed the bounded first-screen smoke on a physical API 25 phone; there is no upload-signed/full physical matrix. |
-| Wear OS | **BLOCKED** | unsigned AAB `6bcf5f9b947cb52887ba2e5c7a48c59cd5a1428c4680c67d63edd6a708bcd439`; historical signed AAB `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6` | The unsigned bundle embeds exact revision `24ea373`; the signed bundle embeds historical revision `4d9492a`. There is no exact-current signed bundle or physical-watch pass. |
-| Apple app/widget/watch | **BLOCKED** | app `421b867257004a15e6042cb98817190570b91cb8c54ac61b3c4e8df049f94ad7`; widget `e639f0661cd6e96924803d8aa5982706ee0d78c981b7d2d4375b920d2eac1b27`; watch `9f29f22984185f2c5cf072357434b442b5e95f90b6c292b9aabfc97993bd689d` | Release simulator executables carry only linker-generated ad-hoc signatures. UUID-matched dSYMs verify, but there is no distribution-signed archive, IPA, or physical Apple pass. |
+| Android phone/tablet | **BLOCKED** | AAB `e1c65555ed6848e30b335af2312acd37200f741bc42f55e2754a79134b84c5f8`; mapping `df9153ef1bc8973c39df369a2d5fb14825bcd0a04c9ea3ee5a2634e7494d9a6a` | Bundletool passes and embedded VCS metadata names the exact commit, but the AAB has zero signature entries. The exact debug APK passed the bounded first-forecast-tip smoke on a physical API 25 phone; there is no upload-signed/full physical matrix. |
+| Wear OS | **BLOCKED** | unsigned AAB `d5c681fb292596b8703cea3a1b40e33d1f9ce450202648777af02d69066437c5`; historical signed AAB `ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6` | The unsigned bundle embeds exact revision `9342824`; the signed bundle embeds historical revision `4d9492a`. There is no exact-current signed bundle or physical-watch pass. |
+| Apple app/widget/watch | **BLOCKED** | app `0db3db757a7c0c497f7712c565a9b40e71edf271505cf0d0887c0ff3d59c0a76`; widget `57e2fcafc984c050104ceb29d16ea49a1c97c563522426833094692882edf022`; watch `c6e8ff6543aa4ece0ccab7c7ee740eaef720fa07ab211e3846ca2cb00a48da66` | Exact-source Release simulator executables carry only linker-generated ad-hoc signatures. UUID-matched dSYMs verify, but an exact-source device archive attempt failed in CodeSign and produced no archive or IPA; there is no distribution-signed or physical Apple pass. |
 
 ## Current verification
 
@@ -23,34 +25,35 @@ phone `1.1.0 (8)`, Apple app/widget/watch `1.1.0 (6)`, and Wear OS
   validation passed, and embedded VCS metadata resolves to the full commit
   above. Archive inspection found zero signature entries.
 - The exact phone debug APK SHA-256 is
-  `968ac46930c6175562855b1e5229a74f9d49c47e3b4da107334d337291530ad4`.
+  `40f3d15d9eed33761c4e53c86ed91ac26411817811fb93792e1eb65ef0a69227`.
   Its installed bytes matched on a physical Android 7.1.1 / API 25 phone after
-  a fresh install. Russian onboarding, Tashkent without location permission,
-  the first-screen Best Time card, 150% text, and the exercised process path
-  passed. This is debug evidence, not a source-synced signed release pass.
+  a fresh install. The localized first-forecast tip appeared after the first
+  successful Tashkent forecast, opened the existing cancelable location picker,
+  preserved Tashkent, and stayed acknowledged after a cold start. See
+  `growth/quality/android-first-forecast-tip-current-head-2026-08-29.md`. This is
+  debug evidence, not a source-synced signed release pass.
 - Empty/Fresh/Stale phone-widget and round-Wear emulator coverage is retained in
   `growth/quality/surface-freshness-2026-08-29.md` as prior regression evidence
   for commit `ee7c36f`; it is not relabelled as exact-current physical proof.
 - The Apple executables above are thin arm64 simulator products for iOS 15.0
   app/widget and watchOS 10.0. Their UUIDs are app
-  `6F1E3580-866F-3F7B-B4E2-73A22488CDBF`, widget
-  `3DF79B39-B3BF-3898-9A5D-DBE9F872C74E`, and watch
-  `77A04CF4-4666-38C7-AC65-5A658831BA02`; each matches its dSYM. They have no
+  `93135119-99F1-3E23-A5DC-97ADC7D9E0B7`, widget
+  `5E2196A9-DDE9-3429-B003-78BCEA6E5322`, and watch
+  `9A50D076-B33B-38C5-99CC-55B29C8ADDFD`; each matches its dSYM. They have no
   Team Identifier, bound Info.plist, or sealed resources. This is not archive
   or physical evidence.
-- The exact product source passed 127 growth tests, repository, localization,
-  store metadata/assets/previews, dashboard, and site checks. Targeted Gradle
-  tests plus the Android debug build passed 146 actionable tasks; exact phone
-  and Wear release bundles passed 133 tasks; the iOS simulator test passed 26
-  tasks; and the separate Swift surface suite passed 18 XCTest cases. Both AABs
-  passed Bundletool 1.18.3 validation.
+- The exact Android phone and Wear bundles passed Bundletool 1.18.3 validation.
+  The exact shared iOS simulator test, 18-case Swift surface suite, and Release
+  simulator builds for app, WidgetKit, and watch passed.
 - The retained signed Wear bundle embeds full revision
   `4d9492a343283344ac80f3248a73c6fc752906e1`; the fresh unsigned bundle embeds
-  `24ea3734c105e259374ad3b41a6f7e6476ea70db`. Exact-source provenance therefore
-  remains blocked.
+  `9342824db7c0dcadfc4bdfe11f580377c108d968`. Exact-source signed provenance
+  therefore remains blocked.
 - Android protected-value lookup remains unauthorized with `security` status
-  `51`. Apple private-key use reports `errSecAuthFailed (-25293)`, and a GUI
-  Xcode archive fails at `NimboWidget` CodeSign without producing an archive.
+  `51`. An exact-source Apple device archive attempt failed at `NimboWidget`
+  CodeSign with `errSecInternalComponent` and produced no archive; its local log
+  SHA-256 is
+  `6e082e58720080d3cff0c09378f546446298df0f4704711358229e6a6a4659ec`.
   Existing credentials and identities were not printed, replaced, or reset.
 
 ## Prior-product dated CI evidence

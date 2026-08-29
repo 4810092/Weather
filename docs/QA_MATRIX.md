@@ -29,19 +29,21 @@ from a successful build or an older artifact.
 
 ### Current evidence boundary
 
-- Android phone and Wear bundles compile from product commit `24ea373` and
+- Android phone and Wear bundles compile from product commit `9342824` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 activation-path
-  QA, including the first-screen Best Time card and 150% text. API 24
+  QA, including the durable first-forecast tip, its cancelable city-picker CTA,
+  persisted acknowledgement, and cold-start suppression. API 24
   phone-widget and API 37 round-Wear Empty/Fresh/Stale checks remain prior
   regression evidence for `ee7c36f`; current upload-signed tablet, physical
   widget, and paired Wear OS coverage is absent.
-- Apple app, widget, and watch compile from product commit `24ea373` for the
+- Apple app, widget, and watch compile from product commit `9342824` for the
   simulator and have matching hash/UUID/dSYM evidence. The app and widget emit
   iOS 15 minimum load commands, the watch emits watchOS 10, and 18 deterministic
-  surface tests pass. Build 6 still has no distribution-signed archive or IPA,
-  no iOS 15/16 runtime widget render, and no physical iPhone, iPad, widget, or
-  paired-watch result.
+  surface tests pass. An exact-source device archive attempt failed at the
+  Widget CodeSign step and produced no archive or IPA. Build 6 still has no
+  distribution-signed archive, no iOS 15/16 runtime widget render, and no
+  physical iPhone, iPad, widget, or paired-watch result.
 - Unit, host, simulator, repository, localization, migration, R8, and unsigned
   release-build checks are useful regression evidence. They are not signing,
   install-over-production, TestFlight/Play delivery, physical-device, review,

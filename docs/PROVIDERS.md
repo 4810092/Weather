@@ -42,14 +42,17 @@ See Open-Meteo’s current [licence](https://open-meteo.com/en/license) and [geo
 
 Open-Meteo’s current free/open-access terms limit the service to non-commercial use and published request limits. A subscription or advertising-supported application is listed as commercial use. A commercial, monetized, or higher-volume deployment of Nimbo must switch to an appropriate customer or self-hosted endpoint before release and must not embed a customer API key in a public client.
 
-The August 2026 growth plan treats public organic promotion as a provider gate,
-not as an assumed extension of the free tier. Campaign outreach and coordinated
-promotion must remain paused until Open-Meteo gives written confirmation that the
-planned non-monetized organic promotion is permitted, or Nimbo moves to an
-approved customer/self-hosted endpoint. The existing client endpoint does not
-change merely to start growth work, and any future commercial credential belongs
-behind separately reviewed server-side infrastructure rather than in a mobile
-binary.
+OpenMeteo GmbH confirmed in ticket `234272` that Nimbo may use the
+non-commercial API for the exact scope sent on August 29, 2026: a free,
+non-monetized app; unpaid Uzbek/Russian posts; one personalized contact plus at
+most one follow-up; genuine Apple/Google editorial submissions; and ordinary
+unpaid links. The [dated decision record](../growth/legal/open-meteo-clarification-email.md)
+is the authority for that bounded pass. Monetization, paid advertising or
+sponsorship, affiliate/referral revenue, attribution removal, exceeding the
+published Free API limits, or another material fact change reopens the provider
+gate and requires a new licensing/endpoint decision. Any future commercial
+credential belongs behind separately reviewed server-side infrastructure rather
+than in a mobile binary.
 
 See the current [terms and privacy notice](https://open-meteo.com/en/terms) and [pricing](https://open-meteo.com/en/pricing). Provider terms can change; this document is a release checklist, not legal advice.
 

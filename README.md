@@ -186,7 +186,7 @@ Arabic uses RTL layout, while the chronological forecast row is explicitly LTR s
 
 Nimbo has no account, ads, analytics, crash-reporting SDK, or background location permission. Optional device coordinates are reduced to two decimals before local storage, provider requests, or system reverse geocoding. City queries and reduced coordinates are sent to Open-Meteo over HTTPS; cached places/weather remain on-device, with a compact snapshot shared to widgets and a paired watch.
 
-Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](store/privacy-declarations.md), and [provider terms/attribution notes](docs/PROVIDERS.md). Open-Meteo's Free API is non-commercial, and its [current terms](https://open-meteo.com/en/terms) list promotional activities as commercial use. Nimbo public promotion remains paused pending written provider clearance or an approved customer/self-hosted endpoint.
+Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](store/privacy-declarations.md), and [provider terms/attribution notes](docs/PROVIDERS.md). OpenMeteo GmbH confirmed in ticket `234272` that Nimbo may use the non-commercial API for the exact free, non-monetized app and unpaid organic-promotion scope [recorded here](growth/legal/open-meteo-clarification-email.md). Monetization, paid promotion, attribution removal, published-limit changes, or another material scope change requires a new provider/licensing decision before proceeding.
 
 ## Platforms and release state
 

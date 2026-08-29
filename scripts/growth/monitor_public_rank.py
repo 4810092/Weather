@@ -6,8 +6,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
+import tempfile
 import time
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Iterable
@@ -373,6 +376,104 @@ def _monitor_exit_code(snapshot: dict[str, Any]) -> int:
     return 0 if status in {"pass", "fail"} else 1
 
 
+def _surface_rank(surface: dict[str, Any]) -> int | str:
+    rank = surface.get("target_rank")
+    if isinstance(rank, int) and not isinstance(rank, bool) and rank >= 1:
+        return rank
+    bound = surface.get("target_rank_bound")
+    return bound if isinstance(bound, str) and bound else "unknown"
+
+
+def _current_check_payload(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Build a compact, explicitly non-canonical live-check result."""
+
+    apple = snapshot["surfaces"]["apple"]
+    google = snapshot["surfaces"]["google"]
+    evaluation = snapshot["evaluation"]
+    return {
+        "schema_version": 1,
+        "mode": "check-current",
+        "persisted": False,
+        "streak_eligible": False,
+        "canonical_daily_snapshot_unchanged": True,
+        "date": snapshot["date"],
+        "captured_at": snapshot["captured_at"],
+        "config_fingerprint": snapshot["config_fingerprint"],
+        "diagnostic_capture_complete": snapshot["diagnostic_capture_complete"],
+        "goal_evidence_complete": snapshot["goal_evidence_complete"],
+        "evaluation": evaluation,
+        "source_errors": snapshot["source_errors"],
+        "ranks": {
+            "apple_weather_category": _surface_rank(apple["category"]),
+            "apple_search": {
+                query_id: _surface_rank(surface)
+                for query_id, surface in apple["search"].items()
+            },
+            "google_weather_category": {
+                profile_id: _surface_rank(surface)
+                for profile_id, surface in google["category"].items()
+            },
+            "google_generic_top10_queries": evaluation[
+                "google_generic_top10_queries"
+            ],
+            "google_generic_top10_query_count": evaluation[
+                "google_generic_top10_query_count"
+            ],
+        },
+    }
+
+
+def _intraday_observation_payload(snapshot: dict[str, Any]) -> dict[str, Any]:
+    payload = dict(snapshot)
+    payload["observation"] = {
+        "kind": "intraday",
+        "streak_eligible": False,
+        "canonical_daily_snapshot_unchanged": True,
+    }
+    return payload
+
+
+def _intraday_observation_path(root: Path, snapshot: dict[str, Any]) -> Path:
+    captured_at = datetime.fromisoformat(str(snapshot["captured_at"]))
+    if captured_at.tzinfo is None or captured_at.utcoffset() is None:
+        raise ValueError("captured_at must include a UTC offset")
+    captured_date = captured_at.date().isoformat()
+    if captured_date != snapshot.get("date"):
+        raise ValueError("captured_at date does not match snapshot date")
+    filename = captured_at.strftime("%H%M%S%z.json")
+    return root / captured_date / filename
+
+
+def _write_json_exclusive(path: Path, payload: Any) -> None:
+    """Write one observation without ever replacing an existing path."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(
+        payload,
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=False,
+    ) + "\n"
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+            handle.write(serialized)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.link(temporary_path, path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
 def evaluate_day(
     snapshot: dict[str, Any],
     framework: dict[str, Any],
@@ -735,11 +836,44 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--replace", action="store_true", help="Replace an existing daily snapshot"
     )
+    live_mode = parser.add_mutually_exclusive_group()
+    live_mode.add_argument(
+        "--stdout",
+        action="store_true",
+        help="Print the full live capture without writing any file",
+    )
+    live_mode.add_argument(
+        "--check-current",
+        action="store_true",
+        help="Print a compact live check without writing any file",
+    )
+    live_mode.add_argument(
+        "--append-intraday",
+        action="store_true",
+        help="Append a non-streak intraday observation without changing the daily file",
+    )
+    parser.add_argument(
+        "--intraday-dir",
+        type=Path,
+        help=(
+            "Intraday observation root; defaults to "
+            "growth/data/public-rank/intraday"
+        ),
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    live_mode = args.stdout or args.check_current or args.append_intraday
+    if live_mode and args.output is not None:
+        parser.error("--output cannot be combined with a live observation mode")
+    if live_mode and args.replace:
+        parser.error("--replace cannot be combined with a live observation mode")
+    if args.intraday_dir is not None and not args.append_intraday:
+        parser.error("--intraday-dir requires --append-intraday")
+
     config = load_json(args.config)
     framework = load_json(args.framework)
     local_date = now_in(config["market"]["timezone"]).date().isoformat()
@@ -751,10 +885,19 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 2
-    output = args.output or GROWTH_ROOT / "data/public-rank" / f"{local_date}.json"
-    if output.exists() and not args.replace:
-        print(f"snapshot already exists: {output}; pass --replace to overwrite", file=sys.stderr)
-        return 2
+    output: Path | None = None
+    if not live_mode:
+        output = (
+            args.output
+            or GROWTH_ROOT / "data/public-rank" / f"{local_date}.json"
+        )
+        if output.exists() and not args.replace:
+            print(
+                f"snapshot already exists: {output}; pass --replace to overwrite",
+                file=sys.stderr,
+            )
+            return 2
+
     snapshot = capture(config, framework)
     if snapshot["date"] != local_date:
         print(
@@ -763,7 +906,56 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
-    write_json(output, snapshot)
+
+    if args.stdout:
+        print(json.dumps(snapshot, ensure_ascii=False, indent=2, sort_keys=False))
+        return _monitor_exit_code(snapshot)
+    if args.check_current:
+        print(
+            json.dumps(
+                _current_check_payload(snapshot),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=False,
+            )
+        )
+        return _monitor_exit_code(snapshot)
+    if args.append_intraday:
+        intraday_root = (
+            args.intraday_dir
+            or GROWTH_ROOT / "data/public-rank" / "intraday"
+        )
+        intraday_path = _intraday_observation_path(intraday_root, snapshot)
+        try:
+            _write_json_exclusive(
+                intraday_path,
+                _intraday_observation_payload(snapshot),
+            )
+        except FileExistsError:
+            print(
+                f"intraday observation already exists: {intraday_path}; "
+                "refusing overwrite",
+                file=sys.stderr,
+            )
+            return 2
+        print(
+            f"Appended {intraday_path} ({snapshot['evaluation']['status']}; "
+            "streak_eligible=false; canonical_daily_snapshot_unchanged=true)."
+        )
+        return _monitor_exit_code(snapshot)
+
+    assert output is not None
+    try:
+        if args.replace:
+            write_json(output, snapshot)
+        else:
+            _write_json_exclusive(output, snapshot)
+    except FileExistsError:
+        print(
+            f"snapshot already exists: {output}; pass --replace to overwrite",
+            file=sys.stderr,
+        )
+        return 2
     print(
         f"Wrote {output} ({snapshot['evaluation']['status']}; "
         f"diagnostic_capture_complete={snapshot['diagnostic_capture_complete']}; "

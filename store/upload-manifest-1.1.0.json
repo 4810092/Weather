@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "release": "1.1.0",
+  "source_revision": "9342824db7c0dcadfc4bdfe11f580377c108d968",
   "prepared_on": "2026-08-29",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
