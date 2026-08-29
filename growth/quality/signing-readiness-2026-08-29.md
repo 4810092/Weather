@@ -148,6 +148,30 @@ connectivity change does not clear signing or physical QA.
   remaining unblock is successful authentication to the existing login keychain;
   existing items, keys, and signing configuration do not need replacement.
 
+## Exact credential-path recheck — 2026-08-29 22:56 +05:00
+
+- A metadata-only audit of the earlier signing commands recovered the exact
+  Android Studio generic-password records without reading any command output or
+  secret value. The keystore-password service/account pair is
+  `IntelliJ Platform APK Signing Keystore Step — KEY_STORE_PASSWORD__/Users/khasan/work/ganikhodjaev/mykeys`
+  / `KEY_STORE_PASSWORD__/Users/khasan/work/ganikhodjaev/mykeys`; the key-password
+  service/account pair is
+  `IntelliJ Platform APK Signing Keystore Step — KEY_PASSWORD__/Users/khasan/work/ganikhodjaev/mykeys__weather`
+  / `KEY_PASSWORD__/Users/khasan/work/ganikhodjaev/mykeys__weather`.
+- Both exact metadata lookups succeeded. Protected reads with stdout and stderr
+  fully redirected exited `51` for exact service-plus-account, service-only,
+  and account-only lookups. The legacy `weather` / `weather` candidate does not
+  exist (`44`), and no Nimbo signing credential environment variables or safe
+  alternate Gradle source were present. No password was guessed.
+- All five currently available Apple code-sign identities were checked with a
+  private-key operation against disposable copied bytes. Every attempt failed
+  with `errSecInternalComponent`; the temporary inputs were removed. No keychain
+  ACL, identity, certificate, signing setting, or credential was changed.
+- This closes the remaining noninteractive fallback audit: exact-current signed
+  artifacts cannot be produced until the existing login Keychain authorizes its
+  protected values and private keys. It does not justify replacing the accepted
+  Android upload identity or any Apple identity.
+
 ## Decision
 
 Publication remains blocked until all of the following are true:
