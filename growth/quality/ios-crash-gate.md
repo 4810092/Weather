@@ -37,6 +37,20 @@ Status: **BLOCKED**. Do not scale public acquisition or send outreach while this
   which process/UUID crashed.
 - Older local Nimbo archives also exist, but an older dSYM must not be used unless its UUID matches the missing crash report.
 
+At `2026-08-29 11:03 +05:00`, a broader read-only recovery audit confirmed the
+same boundary. `dwarfdump --verify` passed for the app, widget, and watch dSYM
+bundles in the retained build-4 archive, and their UUIDs match every shipped
+build-4 executable listed above. No matching `.ips` or `.crash` payload was
+found in the repository, `.nimbo-release`, user or system
+DiagnosticReports/CrashReporter locations, Xcode product and cache locations,
+the reviewed user-file locations, simulator/CoreDevice log locations, or the
+local metadata index. The Nimbo Xcode product cache has no `Crashes/` directory
+and contains only older `1.0` build metadata. The separate Organizer archive
+for `1.0 (3)` has a different main executable UUID and is not valid evidence for
+the build-4 event. Xcode 26.6 provides `atos`; legacy `symbolicatecrash` is not
+present. Once an actual diagnostic is recovered, its architecture, image UUID,
+load address, and frame addresses can be matched directly to the retained dSYM.
+
 The absence of a local report and Apple's low-volume suppression do not mean the
 crash is fixed or harmless. The authoritative aggregate pins the event to
 production `1.0.1 (4)`, but the crashed app/extension binary UUID and root cause
@@ -82,4 +96,6 @@ rg -l -i 'uz\.ganikhodjaev\.weather|\bNimbo\b' ~/Library/Logs/DiagnosticReports
 find ~/Library/Developer/Xcode -type f \( -iname '*.ips' -o -iname '*.crash' \)
 dwarfdump --uuid ../.nimbo-release/ios/1.0.1-4/Nimbo.xcarchive/dSYMs/Nimbo.app.dSYM
 dwarfdump --uuid ../.nimbo-release/ios/1.0.1-4/Nimbo.xcarchive/Products/Applications/Nimbo.app/Nimbo
+dwarfdump --verify ../.nimbo-release/ios/1.0.1-4/Nimbo.xcarchive/dSYMs/Nimbo.app.dSYM
+xcrun atos -arch <arch> -o <matching-dSYM-DWARF-binary> -l <image-load-address> <frame-address>
 ```
