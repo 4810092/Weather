@@ -285,6 +285,9 @@ class SiteArticlesTest(unittest.TestCase):
         shutil.rmtree(output)
         try:
             MODULE.build(output, MODULE.CANONICAL_BASE_URL)
+            content = json.loads(
+                (ROOT / "site/content.json").read_text(encoding="utf-8")
+            )
             expected = {
                 "uz": (
                     output / "index.html",
@@ -337,6 +340,30 @@ class SiteArticlesTest(unittest.TestCase):
                 self.assertTrue(application["isAccessibleForFree"])
                 self.assertIn(play_locale, application["downloadUrl"][1])
                 self.assertIn("gl=UZ", application["downloadUrl"][1])
+                faq_source = content["locales"][locale]["landing"]["faq"]
+                faq = next(
+                    item
+                    for item in schema["@graph"]
+                    if item["@type"] == "FAQPage"
+                )
+                self.assertEqual(
+                    faq["@id"],
+                    f"{MODULE.canonical_url(MODULE.CANONICAL_BASE_URL, locale, 'landing')}#faq",
+                )
+                self.assertEqual(faq["name"], faq_source["title"])
+                self.assertEqual(faq["inLanguage"], locale)
+                self.assertEqual(len(faq["mainEntity"]), 4)
+                self.assertEqual(
+                    [item["name"] for item in faq["mainEntity"]],
+                    [item["question"] for item in faq_source["items"]],
+                )
+                self.assertEqual(
+                    [item["acceptedAnswer"]["text"] for item in faq["mainEntity"]],
+                    [item["answer"] for item in faq_source["items"]],
+                )
+                for item in faq_source["items"]:
+                    self.assertIn(MODULE.escaped(item["question"]), document)
+                    self.assertIn(MODULE.escaped(item["answer"]), document)
                 self.assertNotIn("aggregateRating", json.dumps(schema))
 
             self.assertLess(MODULE.SITE_ICON_SOURCE.stat().st_size, 64 * 1024)
@@ -354,6 +381,19 @@ class SiteArticlesTest(unittest.TestCase):
         finally:
             if output.exists():
                 shutil.rmtree(output)
+
+    def test_landing_faq_contract_rejects_blank_or_duplicate_copy(self) -> None:
+        source = ROOT / "site/content.json"
+        content = json.loads(source.read_text(encoding="utf-8"))
+        content["locales"]["uz"]["landing"]["faq"]["items"][0]["answer"] = " "
+        with self.assertRaisesRegex(ValueError, "FAQ item 1 is invalid"):
+            MODULE.validate_content(content)
+
+        content = json.loads(source.read_text(encoding="utf-8"))
+        items = content["locales"]["ru"]["landing"]["faq"]["items"]
+        items[1]["question"] = items[0]["question"]
+        with self.assertRaisesRegex(ValueError, "FAQ questions must be unique"):
+            MODULE.validate_content(content)
 
 
 if __name__ == "__main__":

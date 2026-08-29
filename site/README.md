@@ -8,7 +8,11 @@ JavaScript, or build-time package dependency.
 Each localized landing exposes a factual `SoftwareApplication` JSON-LD record
 with the visible free price and official store destinations. The Uzbek root
 also exposes the canonical `WebSite` site-name record. No rating or review
-markup is emitted. Navigation and favicon surfaces use a dedicated 192 px icon;
+markup is emitted. A visible four-question UZ/RU/EN forecast FAQ targets the
+same factual city-search, offline-cache, Best Time Outside, and forecast-surface
+contract shown on the page; its `FAQPage` JSON-LD is generated from that exact
+copy and does not promise a rich result or ranking. Navigation and favicon
+surfaces use a dedicated 192 px icon;
 the original 1024 px artwork remains available unchanged in the press kit, and
 below-the-fold press previews are lazy-loaded.
 

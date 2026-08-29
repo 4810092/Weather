@@ -52,6 +52,16 @@
           {"number": "05", "title": "Oxirgi prognoz oflayn", "text": "Internet vaqtincha yo‘qolsa, so‘nggi saqlangan prognoz ekranda qoladi."},
           {"number": "06", "title": "Vidjetlar va soat", "text": "Telefonni ochmasdan joriy holatni ko‘ring; Wear OS va Apple Watch ham qo‘llab-quvvatlanadi."}
         ],
+        "faq": {
+          "title": "Toshkent ob-havo va prognoz haqida savollar",
+          "intro": "Nimbo’da Toshkent va O‘zbekiston shaharlari prognozini qanday topish, solishtirish va oflayn ko‘rish haqida qisqa javoblar.",
+          "items": [
+            {"question": "Toshkent ob-havo prognozini geolokatsiyasiz ko‘rish mumkinmi?", "answer": "Ha. Nimbo’da Toshkentni oddiy qidiruv orqali tanlang. Geolokatsiya ixtiyoriy va prognozni ko‘rish uchun akkaunt kerak emas."},
+            {"question": "Ob-havo prognozi oflayn ishlaydimi?", "answer": "Internet vaqtincha yo‘qolsa, Nimbo oxirgi muvaffaqiyatli saqlangan prognozni ko‘rsatadi. Bu yangi o‘lchov emas; tashqariga chiqishdan oldin yangilashga urinib ko‘ring."},
+            {"question": "Tashqariga chiqish uchun eng yaxshi vaqt qanday tanlanadi?", "answer": "Nimbo qolgan mahalliy kun ichidagi uzluksiz ikki soatlik oynalarni his qilinadigan harorat, yog‘ingarchilik, shamol va UV bo‘yicha taqqoslaydi. Mos oyna bo‘lmasa, xavf omillarini ko‘rsatadi; bu xavfsizlik kafolati emas."},
+            {"question": "Nimbo qaysi ob-havo ma’lumotlarini ko‘rsatadi?", "answer": "Telefon ilovasida joriy ob-havo, 24 soat oldin · hozir · 24 soat keyin vaqt chizig‘i, 10 kunlik prognoz va AQI konteksti bor. Joriy holat vidjetlar va qo‘llab-quvvatlanadigan soatlarda ham ko‘rinadi."}
+          ]
+        },
         "privacy_title": "Ob-havo ilovasi, reklama tarmog‘i emas",
         "privacy_text": "Nimbo akkaunt yaratmaydi, reklama ko‘rsatmaydi va analitika yoki crash-reporting SDK ishlatmaydi. Joylashuv ixtiyoriy: shaharni oddiy qidiruv orqali ham tanlash mumkin.",
         "open_title": "Tekshirish mumkin bo‘lgan mahsulot",
@@ -173,6 +183,16 @@
           {"number": "05", "title": "Последний прогноз офлайн", "text": "Если интернет временно пропал, последний сохранённый прогноз остаётся доступен."},
           {"number": "06", "title": "Виджеты и прогноз на часах", "text": "Смотрите текущую погоду без открытия телефона; поддерживаются Wear OS и Apple Watch."}
         ],
+        "faq": {
+          "title": "Вопросы о погоде и прогнозе в Ташкенте",
+          "intro": "Короткие ответы о том, как найти, сравнить и посмотреть офлайн прогноз для Ташкента и других городов Узбекистана.",
+          "items": [
+            {"question": "Можно ли посмотреть погоду в Ташкенте без геолокации?", "answer": "Да. Найдите Ташкент обычным поиском внутри Nimbo. Геолокация необязательна, а для просмотра прогноза не нужен аккаунт."},
+            {"question": "Работает ли прогноз погоды офлайн?", "answer": "Если интернет временно пропал, Nimbo показывает последний успешно сохранённый прогноз. Это не новое измерение — перед выходом попробуйте обновить данные."},
+            {"question": "Как Nimbo выбирает лучшее время выйти на улицу?", "answer": "Nimbo сравнивает непрерывные двухчасовые окна до конца местного дня по ощущаемой температуре, осадкам, ветру и UV. Если подходящего окна нет, приложение показывает факторы риска; это не гарантия безопасности."},
+            {"question": "Что входит в прогноз Nimbo?", "answer": "В приложении для телефона есть текущая погода, шкала 24 часа назад · сейчас · 24 часа вперёд, прогноз на 10 дней и контекст AQI. Текущие условия также доступны в виджетах и на поддерживаемых часах."}
+          ]
+        },
         "privacy_title": "Погодное приложение, а не рекламная сеть",
         "privacy_text": "Nimbo не создаёт аккаунт, не показывает рекламу и не подключает SDK аналитики или crash-reporting. Геопозиция необязательна: город можно найти обычным поиском.",
         "open_title": "Продукт, который можно проверить",
@@ -294,6 +314,16 @@
           {"number": "05", "title": "Latest forecast offline", "text": "When the internet drops temporarily, the most recently saved forecast stays available."},
           {"number": "06", "title": "Widgets and watch forecast", "text": "Check current conditions without opening the phone; Wear OS and Apple Watch are supported."}
         ],
+        "faq": {
+          "title": "Questions about Tashkent weather forecasts",
+          "intro": "Short answers about finding, comparing, and viewing forecasts offline for Tashkent and other cities in Uzbekistan.",
+          "items": [
+            {"question": "Can I check Tashkent weather without location permission?", "answer": "Yes. Search for Tashkent by name inside Nimbo. Location is optional, and no account is required to view a forecast."},
+            {"question": "Does the weather forecast work offline?", "answer": "If the internet drops temporarily, Nimbo shows the last successfully saved forecast. It is not a new observation, so try to refresh before going outside."},
+            {"question": "How does Nimbo choose the best time to go outside?", "answer": "Nimbo compares continuous two-hour windows remaining in the local day using apparent temperature, precipitation, wind, and UV. If no suitable window exists, it shows the risk factors instead; this is not a safety guarantee."},
+            {"question": "What weather information does Nimbo show?", "answer": "The phone app includes current weather, a 24 hours ago · now · 24 hours ahead timeline, a 10-day forecast, and AQI context. Current conditions are also available in widgets and on supported watches."}
+          ]
+        },
         "privacy_title": "A weather app, not an ad network",
         "privacy_text": "Nimbo creates no account, shows no ads, and includes no analytics or crash-reporting SDK. Location is optional: ordinary city search works without permission.",
         "open_title": "A product you can inspect",

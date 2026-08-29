@@ -239,6 +239,12 @@ h1 {
 .feature-card h3 { margin: 36px 0 12px; font-size: 1.24rem; line-height: 1.16; letter-spacing: -0.025em; }
 .feature-card p { margin: 0; color: var(--muted); font-size: .95rem; }
 
+.faq-section { border-top: 1px solid var(--line); }
+.faq-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.faq-card { padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(150deg, #fff, #f5f9fb); }
+.faq-card h3 { margin: 0; font-size: 1.14rem; line-height: 1.25; letter-spacing: -.022em; }
+.faq-card p { margin: 13px 0 0; color: var(--muted); font-size: .95rem; }
+
 .split-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .split-card { padding: 38px; border-radius: var(--radius-lg); background: var(--paper); }
 .split-card:nth-child(2) { background: linear-gradient(145deg, #e6f2f7, #f5ede2); }
@@ -324,7 +330,7 @@ h1 {
   .device-android { width: 178px; left: 3%; }
   .proof-chip { right: 1%; bottom: 2%; max-width: 190px; }
   .section { padding: 70px 0; }
-  .feature-grid, .split-grid, .asset-grid { grid-template-columns: 1fr; }
+  .feature-grid, .split-grid, .faq-grid, .asset-grid { grid-template-columns: 1fr; }
   .feature-card { min-height: 0; }
   .asset-preview { height: 250px; }
   .footer-grid { grid-template-columns: 1fr; }

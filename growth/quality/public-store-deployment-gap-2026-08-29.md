@@ -1,7 +1,7 @@
 # Public store deployment gap — 2026-08-29
 
 Status: **candidate ASO package is prepared; the Google UZ listing is saved as
-an unpublished draft whose Uzbek short description now trails the repository
+an unpublished draft whose Uzbek short description matches the repository
 candidate**.
 
 The public Apple and Google product pages were checked read-only at
@@ -35,7 +35,7 @@ Public evidence:
 
 | Locale slice | Public title | Public short description | Prepared country-listing gap |
 | --- | --- | --- | --- |
-| `hl=uz&gl=UZ` | `Nimbo` | `Understand the hours ahead through weather you have recently felt.` | `Nimbo: Ob-havo va prognoz`; `Ob-havo prognozi: tashqariga chiqish uchun eng yaxshi vaqtni toping.`; full Uzbek copy |
+| `hl=uz&gl=UZ` | `Nimbo` | `Understand the hours ahead through weather you have recently felt.` | `Nimbo: Ob-havo va prognoz`; `Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.`; full Uzbek copy |
 | `hl=ru&gl=UZ` | `Nimbo` | `Поймите погоду на ближайшие часы через знакомые недавние ощущения.` | `Nimbo: Погода и прогноз`; `Прогноз погоды: найдите лучшее время, чтобы выйти на улицу.`; UZ-targeted Russian copy |
 
 The public page exposes five phone, four unique tablet, and one Wear creative.
@@ -46,11 +46,19 @@ carrying the Uzbek fallback and `ru-RU` carrying the Russian payload. That
 percentage is listing targeting, not release rollout. The visible public feature
 graphic materially differs from all three versioned candidate graphics.
 
-After the authenticated capture, the repository candidate was refined to
+At `2026-08-29 21:52:51 +05:00`, the authenticated Console draft was changed in
+one field only: the default `en-US` locale used for the Uzbek audience now shows
+the exact 74/80-character repository short description
 `Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.`
-The Console Draft still contains the older Uzbek short description shown in the
-table. This repository-only change is not evidence that the revised copy was
-saved, submitted, reviewed, published, or made available to users.
+The Console displayed `Изменения сохранены` and `Черновик сохранен` after
+`Сохранить как проект`. The draft was then reopened from the Store listings
+page. Its row still visibly showed audience `Узбекистан` and status `Черновик`;
+the reopened edit form showed status `Черновик`, the exact short description
+above, and a disabled `Сохранить как проект` button, confirming there were no
+further unsaved edits. The action did not enter the review step, submit for
+review, publish, change rollout or targeting, or replace any asset. This is
+authoritative point-in-time draft evidence, not evidence of review, publication,
+or end-user availability.
 
 Public evidence:
 <https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather&hl=uz&gl=UZ>
@@ -60,12 +68,11 @@ and
 ## Decision
 
 The Google UZ country listing exists as an unpublished Console draft with its
-localized feature graphics and six captioned screenshot stories, but its Uzbek
-short description must still be synchronized with the newer repository
-candidate. Submission, review, publication, and end-user availability remain
-pending. The public Apple page still trails the prepared English subtitle and
-Russian query-first title/subtitle; the repository draft is not treated as
-deployed growth progress.
+localized feature graphics, six captioned screenshot stories, and an Uzbek
+short description synchronized to the repository candidate. Submission, review,
+publication, and end-user availability remain pending. The public Apple page
+still trails the prepared English subtitle and Russian query-first
+title/subtitle; neither store draft is treated as deployed growth progress.
 
 Release upload and publication remain blocked by the crash, source-signed
 artifact, and remaining physical-device gates. Open-Meteo clearance passes for

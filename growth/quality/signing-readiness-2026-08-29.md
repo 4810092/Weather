@@ -119,6 +119,30 @@ duplicate Development certificate was revoked while the other same-label
 identity remained valid. No private-key operation was attempted, so this
 connectivity change does not clear signing or physical QA.
 
+## Protected Android signing recheck — 2026-08-29 21:46 +05:00
+
+- The login keychain remained the default and only user keychain in the search
+  list. Both expected generic-password item metadata records were readable, but
+  `security show-keychain-info` and each protected value lookup exited `51`
+  with `errSecAuthFailed (-25293)`. No secret value was obtained, printed,
+  persisted, replaced, or reset, and no keychain ACL was changed.
+- Android Studio's saved signing configuration still points to the existing
+  PKCS12 keystore and expected private-key alias; no alternative Nimbo signing
+  environment or Gradle credential source was found. Android Studio independently
+  reported that the system keyring was unavailable, and its local log recorded
+  `-25293`, so the trusted IDE path has the same authorization blocker.
+- The keystore remains readable as metadata with mode `600`, and the expected
+  alias remains a `PrivateKeyEntry`. Retained signed phone and Wear bundles pass
+  `jarsigner -verify` and share certificate SHA-256
+  `43:15:48:A4:87:1C:9C:09:0E:EE:80:8A:C3:A3:48:98:F5:D7:86:02:D9:E7:47:DF:E8:1E:22:84:15:AA:C2:52`,
+  consistent with the accepted upload identity. The same protected CLI signing
+  route succeeded on 2026-08-28, which isolates the fresh failure to the current
+  login-keychain authorization state rather than the keystore, alias, or
+  certificate mapping.
+- Signing was not started, and no signed exact-source artifact was created. The
+  remaining unblock is successful authentication to the existing login keychain;
+  existing items, keys, and signing configuration do not need replacement.
+
 ## Decision
 
 Publication remains blocked until all of the following are true:

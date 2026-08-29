@@ -262,6 +262,27 @@ def landing_structured_data(
                 "inLanguage": list(LOCALE_ORDER),
             },
         )
+    faq = page["faq"]
+    graph.append(
+        {
+            "@type": "FAQPage",
+            "@id": f"{current_url}#faq",
+            "url": current_url,
+            "name": faq["title"],
+            "inLanguage": locale,
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": item["question"],
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": item["answer"],
+                    },
+                }
+                for item in faq["items"]
+            ],
+        }
+    )
     payload = {"@context": "https://schema.org", "@graph": graph}
     serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     safe_serialized = serialized.replace("</", "<\\/")
@@ -425,6 +446,14 @@ def landing_body(locale: str, data: dict[str, object], site: dict[str, str], ass
         "</article>"
         for item in page["features"]
     )
+    faq = page["faq"]
+    faq_items = "".join(
+        '<article class="faq-card">'
+        f'<h3>{escaped(item["question"])}</h3>'
+        f'<p>{escaped(item["answer"])}</p>'
+        "</article>"
+        for item in faq["items"]
+    )
     return f"""
     <section class="hero">
       <div class="shell hero-grid">
@@ -468,6 +497,15 @@ def landing_body(locale: str, data: dict[str, object], site: dict[str, str], ass
           <p>{escaped(page['open_text'])}</p>
           <a class="button button-link" href="{escaped(site['github_url'])}">{escaped(common['source'])} →</a>
         </article>
+      </div>
+    </section>
+    <section class="section section-white faq-section" aria-labelledby="faq-title">
+      <div class="shell">
+        <div class="section-heading">
+          <h2 id="faq-title">{escaped(faq['title'])}</h2>
+          <p>{escaped(faq['intro'])}</p>
+        </div>
+        <div class="faq-grid">{faq_items}</div>
       </div>
     </section>
     <section class="section-dark final-cta">
@@ -787,8 +825,34 @@ def validate_content(content: dict[str, object]) -> None:
         missing_pages = set(GUIDE_PAGE_ORDER) - locale_data.keys()
         if missing_pages:
             raise ValueError(f"{locale}: missing pages {sorted(missing_pages)}")
-        if len(locale_data["landing"]["features"]) != 6:
+        landing = locale_data["landing"]
+        if len(landing["features"]) != 6:
             raise ValueError(f"{locale}: landing must contain exactly six benefit stories")
+        faq = landing.get("faq")
+        if not isinstance(faq, dict) or set(faq) != {"title", "intro", "items"}:
+            raise ValueError(f"{locale}: landing FAQ must contain title, intro, and items")
+        if not all(
+            isinstance(faq[key], str) and faq[key].strip()
+            for key in ("title", "intro")
+        ):
+            raise ValueError(f"{locale}: landing FAQ title and intro must be non-empty")
+        faq_items = faq["items"]
+        if not isinstance(faq_items, list) or len(faq_items) != 4:
+            raise ValueError(f"{locale}: landing FAQ must contain exactly four items")
+        questions: set[str] = set()
+        for index, item in enumerate(faq_items, start=1):
+            if (
+                not isinstance(item, dict)
+                or set(item) != {"question", "answer"}
+                or not all(
+                    isinstance(item[key], str) and item[key].strip()
+                    for key in ("question", "answer")
+                )
+            ):
+                raise ValueError(f"{locale}: landing FAQ item {index} is invalid")
+            if item["question"] in questions:
+                raise ValueError(f"{locale}: landing FAQ questions must be unique")
+            questions.add(item["question"])
         if len(locale_data["privacy"]["sections"]) != 6:
             raise ValueError(
                 f"{locale}: public privacy policy must contain six complete sections"
