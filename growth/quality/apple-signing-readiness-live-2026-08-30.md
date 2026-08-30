@@ -68,7 +68,17 @@ was not invoked and no password or biometric prompt was opened.
   ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
   surface tests, and the unsigned application build. The overall run failed on
   all three Android UI profiles. It provides neither signing nor physical QA
-  for current authority `704fd89`, whose hosted rerun remains pending.
+  for current authority `704fd89`.
+- Exact-source run
+  [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+  `ios` in 17m25s: shared simulator tests took 5m20s, Apple surface tests took
+  2m29s, and the unsigned build took 8m37s. The
+  `ios-simulator-test-results` GitHub archive digest is
+  `1eea44358a95c8e2b58af184fd1fabd46369aec22a12975e128aa54d122994ba`.
+  This is unsigned simulator/build regression evidence, not a distribution-
+  signed archive, physical QA, or crash-gate closure; Apple remains `0/1`
+  byte-verified and blocked.
 
 ## Certificate, key, and profiles
 

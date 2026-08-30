@@ -129,7 +129,17 @@ ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
 surface tests, and the unsigned application build. The overall run failed all
 three Android UI profiles. This is unsigned predecessor regression evidence,
 not a signed or physical result, and it neither diagnoses the suppressed crash
-nor transfers to current authority `704fd89`, whose hosted rerun is pending.
+nor transfers to current authority `704fd89`.
+
+Exact-source hosted
+[run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+the current iOS job in 17m25s, including shared simulator tests (5m20s), Apple
+surface tests (2m29s), and an unsigned build (8m37s). This confirms hosted
+regression execution for `704fd893e59d94d8e9a4971313a773b3fa545ab6`; it
+still does not supply the suppressed crash diagnostic, symbolication,
+distribution-signed bytes, or physical reproduction. The crash gate remains
+blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

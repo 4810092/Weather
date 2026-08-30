@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 class SyncDashboardGatesTest(unittest.TestCase):
-    def test_sync_relabels_predecessor_release_evidence(self) -> None:
+    def test_sync_records_green_hosted_source_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             temporary_root = Path(directory)
             artifact_path = temporary_root / "artifact.json"
@@ -38,8 +38,18 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 row["gate_id"]: row
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
-            self.assertIn("predecessor API 24", rows["android_physical_smoke"]["decision"])
-            self.assertIn("predecessor simulator", rows["ios_physical_smoke"]["decision"])
+            self.assertIn(
+                "exact-source hosted UI matrix green",
+                rows["android_physical_smoke"]["decision"],
+            )
+            self.assertIn(
+                "exact-source hosted unsigned iOS proof green",
+                rows["ios_physical_smoke"]["decision"],
+            )
+            self.assertIn(
+                "hosted source proof green",
+                rows["release_artifact_source_sync"]["decision"],
+            )
             issues = {
                 issue["id"]: issue["message"]
                 for issue in artifact["snapshot"]["accessIssues"]
@@ -60,6 +70,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
+                "Exact-source run 33297505825 completed successfully",
+                issues["release_artifact_source_sync_missing"],
+            )
+            self.assertIn(
                 "protected environment secrets are not provisioned",
                 issues["release_artifact_source_sync_missing"],
             )
@@ -77,6 +91,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "pre-manifest verifier are implemented",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "Exact-source GitHub Actions run 33297505825 completed successfully",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 

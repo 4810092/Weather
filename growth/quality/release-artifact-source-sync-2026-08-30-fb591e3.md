@@ -90,8 +90,12 @@ artifacts, and device results from predecessor revisions remained non-transferab
 Successor authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
 generic test activity with a dedicated activity that applies locale before
 composition. Targeted device-test ktlint, compilation, and manifest processing
-pass, but no hosted rerun exists for that successor. The current signing,
-artifact, and physical matrix remains blocked at `0/3`; see the
+pass. Exact-source successor run
+[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+ordinary Android/iOS and all five tests on all three UI profiles. That success
+does not retroactively transfer to this failed predecessor checkpoint. Current
+signing, artifact, crash, and physical gates remain blocked at `0/3`; see the
 [current source-sync record](release-artifact-source-sync-2026-08-30-704fd89.md).
 
 No release artifact was signed, uploaded, submitted, or published by this

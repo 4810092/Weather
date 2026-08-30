@@ -5,8 +5,8 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b71817c3207b303d89c4d76909abb230319b75982564d5bcfa6d56303f28f3ad -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0652a16e939a2ff58fa52da588962e3faab120f66e9dec6bcde9c7e448a0610d -->
 <!-- release-authority-current:end -->
 
 Current verdict (2026-08-30): **HOLD ACQUISITION**. The canonical 00:00 +05:00
@@ -26,9 +26,12 @@ phone and tablet jobs plus the existing Android/iOS jobs. Historical run
 1m55s and ordinary unsigned iOS in 20m38s. KVM passed on all three UI jobs;
 each launched five tests and failed the same two zero-node Uzbek/Russian locale
 selectors. Current source `704fd89` applies locale before composition through a
-dedicated test activity; targeted ktlint, compilation, and manifest processing
-pass, while its hosted rerun is pending. A protected, manual GitHub-hosted workflow
-implements exact-source signing and pre-manifest byte verification. All prior
+dedicated test activity. Exact-source hosted run
+[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+ordinary Android/iOS and all five tests on the API 24 phone, API 36 phone, and
+API 36 tablet profiles. A protected, manual GitHub-hosted workflow implements
+exact-source signing and pre-manifest byte verification. All prior
 compile and hosted results, including run `33291750686` for `ed1b791`, do not
 transfer. Its
 branch-restricted `release-signing` environment now exists, but its eight

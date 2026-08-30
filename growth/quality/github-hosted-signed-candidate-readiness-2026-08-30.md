@@ -108,11 +108,14 @@ Google Play, submit for review, release, or prove public availability.
   ordinary unsigned iOS in 20m38s, and the KVM gate on all three UI profiles.
   Each UI profile launched five tests and failed the same two zero-node
   Uzbek/Russian locale selectors. Current source `704fd89` replaces the generic
-  test activity with a locale-configured activity; targeted ktlint, compilation,
-  and manifest processing pass, while its hosted rerun remains pending. The
-  predecessor result is non-transferable. No
-  current unsigned artifact hash is transferred from a predecessor or promoted
-  into the upload manifest.
+  test activity with a locale-configured activity. Exact-source hosted
+  [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+  overall in 17m30s: ordinary Android in 2m31s, ordinary iOS in 17m25s, and all
+  five tests on the API 24 phone, API 36 phone, and API 36 tablet in 2m24s,
+  3m15s, and 3m30s. The predecessor result remains non-transferable. The six
+  GitHub archive digests are recorded in the current source-sync record; none
+  is a signed-candidate file hash or promoted into the upload manifest.
 - Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`
   passed a standalone cold-cache Java 21 run of all 241 CI/release tasks.
   Unsigned phone vc8 SHA-256 is

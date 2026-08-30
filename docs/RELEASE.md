@@ -16,8 +16,8 @@ live status.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b71817c3207b303d89c4d76909abb230319b75982564d5bcfa6d56303f28f3ad -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0652a16e939a2ff58fa52da588962e3faab120f66e9dec6bcde9c7e448a0610d -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -40,10 +40,13 @@ authority `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned iOS
 in 20m38s. Its KVM gate passed on all three UI profiles, but each profile
 launched five tests and failed the same two zero-node Uzbek/Russian locale
 selectors. The current source replaces the generic test activity with a
-dedicated locale-configured activity; targeted ktlint, compilation, and
-manifest processing pass, while its hosted rerun is pending. No
-predecessor AAB/archive hash, signed artifact, physical QA, or
-store state transfers either, and the manifest remains `0/3` byte-verified.
+dedicated locale-configured activity. Exact-source GitHub Actions run
+[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+overall in 17m30s: ordinary Android in 2m31s, ordinary unsigned iOS in 17m25s,
+and all three five-test UI profiles in 2m24s, 3m15s, and 3m30s. No predecessor
+AAB/archive hash, signed artifact, physical QA, crash diagnosis, or store state
+transfers, and the manifest remains `0/3` byte-verified.
 The current boundary is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).

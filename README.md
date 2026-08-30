@@ -212,9 +212,15 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   20m38s. Its KVM gate passed on all three UI profiles, but each profile
   launched five tests and failed the same two zero-node Uzbek/Russian locale
   selectors. Current source `704fd89` uses a dedicated test activity that
-  applies locale before composition; targeted device-test ktlint, compilation,
-  and manifest processing pass, while its hosted rerun remains pending. Prior
-  CI, unsigned, and device evidence is non-transferable.
+  applies locale before composition. Exact-source GitHub Actions
+  [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada`
+  passed overall in 17m30s: ordinary Android in 2m31s, ordinary unsigned iOS in
+  17m25s, and the API 24 phone, API 36 phone, and API 36 tablet UI profiles in
+  2m24s, 3m15s, and 3m30s. All five UI tests passed on every profile. This is
+  unsigned hosted regression evidence only: prior signed/device evidence is
+  non-transferable, no current artifact is byte-verified in the upload
+  manifest, and signing, physical QA, and the crash gate remain blocked.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
   [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md),

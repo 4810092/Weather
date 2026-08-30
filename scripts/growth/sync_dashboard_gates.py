@@ -161,28 +161,25 @@ def sync(
         new_next = old_next
         if gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · hosted proof pending; 0/3 current artifacts "
+                "BLOCKED · hosted source proof green; 0/3 current artifacts "
                 "byte-verified; signed/physical matrix missing"
             )
             new_next = (
-                "Run the standard hosted Android/iOS jobs and API 24/API 36 "
-                "phone/tablet UI matrix for the current source, then unlock "
-                "the local login Keychain, provision the protected "
+                "Unlock the local login Keychain, provision the protected "
                 "release-signing environment, run the master-only hosted "
                 "workflow, promote its verified receipt, and bind exact "
                 "physical QA to the retained bytes"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · hosted UI matrix configured/pending; predecessor "
-                "API 24/API 36 emulator and API 25 physical evidence is "
-                "non-transferable; source-current signed/physical matrix missing"
+                "BLOCKED · exact-source hosted UI matrix green; source-current "
+                "signed/physical phone, tablet, widget, and Wear matrix missing"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · hosted proof pending; predecessor simulator "
-                "evidence is non-transferable; source-current signed build 6 "
-                "and physical matrix missing"
+                "BLOCKED · exact-source hosted unsigned iOS proof green; "
+                "source-current distribution-signed build 6 and physical "
+                "matrix missing"
             )
         if not all(
             isinstance(value, str)
@@ -305,10 +302,10 @@ def sync(
         "An existing API key authenticates for app, version, build, and "
         "analytics-request inventory and confirms public 1.0.1 build 4, but "
         "the build-detail and diagnostic-signature GETs return security 403. "
-        "Predecessor product commit 9c2dce4 closes three deterministic "
-        "storage-failure exception escapes and passes its Apple surface suite "
-        "and source-bound simulator builds; neither the authenticated inventory "
-        "nor that non-transferable preventive evidence identifies or closes the "
+        f"Current source {current_revision_short} passed exact-source hosted "
+        "shared-simulator, Apple-surface, and unsigned application checks in "
+        "run 33297505825. Neither the authenticated inventory nor this unsigned "
+        "regression evidence identifies or closes the "
         f"historical crash for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
@@ -317,10 +314,12 @@ def sync(
         "candidate, so 0/3 current artifacts are byte-verified. The manual "
         "master-only protected GitHub-hosted workflow, pre-manifest verifier, "
         "standard hosted Android/iOS jobs, and hosted API 24/API 36 phone/tablet "
-        "UI matrix are configured and statically validated. No hosted run has "
-        "completed for this source authority; the UI matrix and all other "
-        "exact-source hosted proof remain pending; protected environment secrets "
-        "are not provisioned and the signed workflow has not run. The locked "
+        "UI matrix are configured and statically validated. Exact-source run "
+        "33297505825 completed successfully in 17m30s: ordinary Android/iOS and "
+        "all three KVM-gated five-test UI profiles passed. Its retained Android "
+        "and Wear bundles are explicitly unsigned regression artifacts; protected "
+        "environment secrets are not provisioned and the signed workflow has not "
+        "run. The locked "
         "local login Keychain still rejects "
         "Android protected credential reads and Apple private-key use. All signed "
         "bundles, screenshots, and device results belong to predecessor revisions "
@@ -347,9 +346,9 @@ def sync(
         + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
         "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
         "deterministic per-target release profiles. "
-        "The standard hosted Android/iOS jobs and hosted API 24/API 36 phone/"
-        "tablet UI matrix are configured, but no run has completed for this "
-        "source authority; UI and ordinary hosted proof remain pending. The "
+        "Exact-source GitHub Actions run 33297505825 completed successfully in "
+        "17m30s: standard Android/iOS and all three KVM-gated API 24/API 36 "
+        "phone/tablet five-test UI profiles passed. The "
         "protected master-only hosted workflow and pre-manifest verifier are "
         "implemented but have not run because release-signing secrets are not "
         "provisioned. No source-current signed artifact or physical-device "

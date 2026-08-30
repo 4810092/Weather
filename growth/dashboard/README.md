@@ -27,8 +27,13 @@ resource lookup. Historical run `33296238901` for predecessor authority
 `fb591e3` passed ordinary Android and unsigned iOS plus all three KVM gates;
 each UI job launched five tests and failed the same two zero-node Uzbek/Russian
 selectors because the generic predecessor activity reset locale. That failed
-run is non-transferable. No hosted rerun or retained signed AAB, archive, or
-IPA exists yet for `704fd89`.
+run is non-transferable. Exact-source run
+[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+then completed successfully in `17m30s` for `704fd89`: ordinary Android and
+unsigned iOS passed, all three KVM-gated API 24/API 36 phone/tablet jobs passed
+exactly five UI tests, and the iOS shared-simulator, Apple-surface, and unsigned
+application checks passed. Its Android and Wear artifacts are explicitly
+unsigned regression outputs; no retained signed AAB, archive, or IPA exists.
 The dashboard therefore reports `0/3` current artifacts byte-verified. All
 binaries, screenshots, and device results below belong to predecessor
 revisions and remain non-transferable regression evidence.

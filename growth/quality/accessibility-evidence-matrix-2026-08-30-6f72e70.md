@@ -1,8 +1,7 @@
 # Accessibility evidence matrix — 2026-08-30
 
-Status: **HISTORICAL PREDECESSOR HARNESS; LATEST PREDECESSOR HOSTED RUN FAILED
-TWO LOCALE SELECTORS ON ALL THREE PROFILES; PHYSICAL ACCESSIBILITY AND STORE
-DECLARATIONS BLOCKED**.
+Status: **HISTORICAL PREDECESSOR HARNESS; CURRENT SUCCESSOR HOSTED SUITE GREEN
+ON ALL THREE PROFILES; PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
 
 This record is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It distinguishes source
@@ -24,8 +23,11 @@ Current authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
 generic activity with a dedicated activity that applies locale before
 composition, verifies Compose observes the injected language, and derives
 layout direction from the same locale. Targeted device-test ktlint,
-compilation, and merged-manifest processing pass. A hosted rerun for `704fd89`
-has not occurred, and no predecessor result transfers to the current authority.
+compilation, and merged-manifest processing pass. Exact-source hosted
+[run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` then passed
+all five tests on the API 24 phone in 2m24s, API 36 phone in 3m15s, and API 36
+tablet in 3m30s. No predecessor result transfers to the current authority.
 
 ## Automated source evidence
 
@@ -41,10 +43,11 @@ UI tests for:
 The API 24 test target uses core-library desugaring for the shared
 `kotlinx-datetime` code path. The current harness passed targeted ktlint,
 device-test compilation, and merged-manifest processing locally; it was not
-executed on a local emulator or device. Standard GitHub-hosted CI is configured
-to execute the suite on an API 24 phone, API 36 phone, and API 36 tablet. Until
-those jobs are green for `704fd89`, the correct result is
-`configured/pending`, not `passed`.
+executed on a local emulator or device. Standard GitHub-hosted CI executed all
+five tests green on the API 24 phone, API 36 phone, and API 36 tablet for exact
+authority `704fd893e59d94d8e9a4971313a773b3fa545ab6`. The correct automated
+result is now `hosted/passed`; physical TalkBack, large-text, and device-layout
+coverage remains `blocked`, not inferred from emulator automation.
 
 ## Evidence matrix
 

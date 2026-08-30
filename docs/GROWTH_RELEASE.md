@@ -9,8 +9,8 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b71817c3207b303d89c4d76909abb230319b75982564d5bcfa6d56303f28f3ad -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0652a16e939a2ff58fa52da588962e3faab120f66e9dec6bcde9c7e448a0610d -->
 <!-- release-authority-current:end -->
 
 This document separates implementation readiness from device QA, store review,
@@ -90,9 +90,14 @@ the captured slice”; it is never converted to a synthetic rank.
   UI jobs; each launched exactly five tests and failed the same two zero-node
   Uzbek/Russian locale selectors because the generic activity reset locale.
   Current source `704fd89` applies the test locale before composition through a
-  dedicated activity. Targeted device-test ktlint, compilation, and merged-
-  manifest processing pass; its complete hosted rerun is pending, and the
-  predecessor result does not transfer.
+  dedicated activity. Exact-source hosted run
+  [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada`
+  passed ordinary Android (2m31s), ordinary unsigned iOS (17m25s), and all five
+  UI tests on the API 24 phone (2m24s), API 36 phone (3m15s), and API 36 tablet
+  (3m30s). This closes the exact-source hosted regression check only; the
+  predecessor result still does not transfer and signed bytes, physical QA,
+  and crash diagnosis remain blocked.
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful

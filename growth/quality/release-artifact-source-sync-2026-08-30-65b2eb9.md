@@ -27,8 +27,13 @@ Linux AAPT2 artifact before the Android build. Its independent `macos-26` iOS
 job passed, and the same 241-task Gradle invocation passed on macOS because it
 resolved the already-pinned macOS binary. This change addresses that precise
 hosted-Linux failure without changing product behavior, versions, signing
-identity, store state, or physical-QA evidence. A post-fix hosted rerun is still
-required before the hosted CI result can be called green.
+identity, store state, or physical-QA evidence. At this historical checkpoint,
+a post-fix hosted rerun was still required before its hosted CI result could be
+called green. Later exact-source run
+[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+passed at successor authority `704fd893e59d94d8e9a4971313a773b3fa545ab6`;
+that later result does not transfer artifact or signing evidence back to this
+checkpoint.
 
 ## Exact clean-room regression evidence
 

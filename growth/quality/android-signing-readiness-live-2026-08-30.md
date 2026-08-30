@@ -33,7 +33,18 @@ instruction to build the superseded revision.
 - Historical run `33296238901` for predecessor authority `fb591e3` passed its
   ordinary unsigned Android job in 1m55s. The overall run failed all three UI
   profiles, and its unsigned outputs do not establish signing for current
-  authority `704fd89`; the current hosted rerun remains pending.
+  authority `704fd89`.
+- Exact-source run
+  [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
+  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
+  `android-and-shared` in 2m31s and all five tests on each Android UI profile.
+  Its GitHub archive digests are
+  `36db17cc8a0faac163aad463e9ddbc8ef500c67aea54b9ceb274adeb47c711e4`
+  for `android-release-unsigned` and
+  `30d87426a7d0a43508cbee16da377965562802e2839719e7beba943dcae48d1e`
+  for `wear-release-unsigned`. Those are archive digests, not verified signed
+  AAB hashes or signing evidence; current Android/Wear release authority
+  remains `0/2` byte-verified and blocked.
 
 ## Keystore and Keychain
 

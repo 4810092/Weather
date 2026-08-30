@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-08-30 deterministic locale gate
 
 Status: **BLOCKED for Android phone, Wear OS, and Apple; exact-source hosted
-rerun pending; 0/3 current artifacts byte-verified**.
+regression green; 0/3 current artifacts byte-verified**.
 
 The authoritative product/build-input commit is
 `704fd893e59d94d8e9a4971313a773b3fa545ab6`. It resolves to Android phone
@@ -65,7 +65,40 @@ executed at evidence commit
 The three Android UI failures made the predecessor run fail overall. Its
 unsigned artifacts and failed-test reports are bounded historical regression
 evidence only; they are not upload candidates and do not transfer to `704fd89`.
-No hosted run has executed the current custom-activity locale harness yet.
+
+## Exact-source hosted regression
+
+Public GitHub Actions
+[run 33297505825](https://github.com/4810092/Weather/actions/runs/33297505825)
+executed at evidence commit
+`163ff034c2b93ec302c4c5bee3c49168e0b33ada`, whose resolved release-source
+authority is exactly `704fd893e59d94d8e9a4971313a773b3fa545ab6`.
+
+- the overall run passed in 17m30s;
+- `android-and-shared` passed in 2m31s;
+- API 24 phone, API 36 phone, and API 36 tablet UI jobs passed in 2m24s,
+  3m15s, and 3m30s respectively, with all five deterministic tests green on
+  every profile;
+- `ios` passed in 17m25s: shared simulator tests took 5m20s, Apple
+  glanceable-surface tests took 2m29s, and the unsigned application build took
+  8m37s.
+
+The run retained six GitHub artifact archives:
+
+| Artifact archive | Displayed size | GitHub archive SHA-256 |
+| --- | ---: | --- |
+| `android-release-unsigned` | 5.1 MB | `36db17cc8a0faac163aad463e9ddbc8ef500c67aea54b9ceb274adeb47c711e4` |
+| `wear-release-unsigned` | 2.42 MB | `30d87426a7d0a43508cbee16da377965562802e2839719e7beba943dcae48d1e` |
+| `android-ui-results-phone-api24` | 50.2 KB | `46fbc3843c84ff52c53aae0589491912bf00f0f483baca3cdfca27be5f4f4e41` |
+| `android-ui-results-phone-api36` | 140 KB | `9d9896ab752ca87cd650607c839be37cfd8e382afa895c3422972116016c9b6c` |
+| `android-ui-results-tablet-api36` | 329 KB | `49cdbcad149479b2e79d68238d4ab4b8e584f09dfb91d0dbbe7ff960f254c6da` |
+| `ios-simulator-test-results` | 77.9 KB | `1eea44358a95c8e2b58af184fd1fabd46369aec22a12975e128aa54d122994ba` |
+
+These are GitHub archive digests, not verified hashes of signed AAB/IPA upload
+candidates. The run closes exact-source hosted regression execution only. It
+does not establish distribution signing, transfer any archive digest into the
+upload manifest, provide physical-device QA, or diagnose the suppressed iOS
+crash.
 
 ## Current artifact authority
 
@@ -81,15 +114,14 @@ and device results from predecessor revisions remain non-transferable.
 
 ## Remaining unblock
 
-1. Push the source/evidence commits and obtain a green ordinary hosted rerun for
-   this exact authority, including both ordinary jobs and all three Android UI
-   jobs.
-2. Provision the eight required protected `release-signing` environment inputs
+1. Provision the eight required protected `release-signing` environment inputs
    without exposing credentials in chat, then run the manual candidate workflow.
-3. Promote the manifest only from the verified receipt and a separately
+2. Promote the manifest only from the verified receipt and a separately
    committed signing record.
-4. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
+3. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
    evidence to the retained artifact hashes.
+4. Obtain and symbolicate the suppressed iOS crash diagnostic, reproduce or
+   disposition it against the current signed build, and close the crash gate.
 
 No release artifact was signed, uploaded, submitted, or published by this
 source-sync update.
