@@ -4,12 +4,15 @@ Nimbo’s quality evidence has four layers: deterministic shared tests, actual S
 
 ## Automated pull-request gates
 
-- Repository policy and simple secret-pattern checks for tracked files.
+- Repository policy, workflow integrity, dependency checksums, and simple
+  secret-pattern checks for tracked files.
 - Local Markdown-link validation.
 - Complete resource/type/placeholder parity for 13 app languages and all widget/watch/permission surfaces.
-- Store metadata limits and 105 expected production-image dimensions/formats.
+- Store metadata limits and 123 expected versioned delivery-image dimensions/formats.
 - ktlint for Kotlin and Gradle Kotlin scripts.
-- 53 unique Kotlin test functions: 49 common and four Android-host platform, persistence, and migration tests; plus 24 growth-tooling Python tests.
+- 53 unique Kotlin test functions: 49 common and four Android-host platform,
+  persistence, and migration tests; plus the repository's complete Python
+  growth/release/security regression suite.
 - SQLDelight numbered-migration/schema verification plus a released-v1 SQLite fixture migration.
 - R8/resource-shrunk Android phone/tablet and Wear OS bundles.
 - Unsigned Release builds for iOS/WidgetKit and watchOS.
@@ -26,6 +29,23 @@ retained `android-release-unsigned`, `wear-release-unsigned`, and
 Android/Wear bundles are unsigned and the iOS artifact is test output, so this
 is not signing, store upload, review, publication, or public-availability
 evidence.
+
+The separate manual `Signed release candidate` workflow is intentionally not a
+normal CI path. An isolated no-secret job builds exact-source unsigned inputs;
+a fresh `release-signing` runner receives only that checksummed package and
+step-scoped encrypted secrets. Every action uses a reviewed full commit SHA,
+and repository policy binds the complete workflow, action blocks, run bodies,
+shells, secret environments, and final upload paths. Only a receipt-bound
+candidate tarball plus its receipt can be retained for seven days. It has no
+store or repository write permission. A green run proves signed candidate
+bytes only; it does not close physical-device, crash, upload, review, rollout,
+or public-availability gates.
+
+Both ordinary CI workflows and the protected release workflow use reviewed
+full-commit action pins. Gradle verifies the official wrapper checksum and the
+SHA-256 inventory for 1,700+ resolved dependency artifacts. Generated checksum
+metadata is reviewed as a supply-chain allowlist; it is not a claim that every
+upstream artifact has independent PGP provenance.
 
 ## Runtime and product protections
 

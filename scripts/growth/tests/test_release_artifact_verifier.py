@@ -19,6 +19,7 @@ from scripts.release_artifact_verifier import (
     APPLE_TEAM_ID,
     EXPECTED_POLICY,
     verify_manifest_artifacts,
+    verify_signed_candidate_artifacts,
 )
 
 
@@ -236,6 +237,30 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
                 "}\n",
             )
             archive.writestr("base/dex/classes.dex", b"payload")
+            if "phone" in filename:
+                archive.writestr(
+                    "BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map",
+                    self.android_mapping_text(),
+                )
+        return path
+
+    @staticmethod
+    def android_mapping_text() -> str:
+        return (
+            "# compiler: R8\n"
+            "# compiler_version: 9.3.16\n"
+            "# min_api: 24\n"
+            "# common_typos_disable\n"
+            '# {"id":"com.android.tools.r8.mapping","version":"2.2"}\n'
+            "# pg_map_id: fixture-map-id\n"
+            "# pg_map_hash: SHA-256 fixture-map-hash\n"
+            "Example -> a:\n"
+        )
+
+    def write_android_mapping(self, manifest: dict) -> Path:
+        filename = manifest["artifacts"]["android_phone"]["filename"]
+        path = self.artifact_root / f"{Path(filename).stem}-mapping.txt"
+        path.write_text(self.android_mapping_text(), encoding="utf-8")
         return path
 
     def write_apple_candidate(
@@ -662,6 +687,345 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         self.assertTrue(all(not result.byte_verified for result in results.values()))
         self.assertTrue(
             all(result.source_sync == "blocked" for result in results.values())
+        )
+
+    def test_complete_blocked_manifest_can_verify_staged_signed_candidate(
+        self,
+    ) -> None:
+        manifest = self.manifest()
+        for artifact_id in ("android_phone", "wear_os"):
+            self.write_android_bundle(manifest["artifacts"][artifact_id]["filename"])
+        mapping_path = self.write_android_mapping(manifest)
+        self.write_apple_candidate()
+        failures: list[str] = []
+        apple_certificate = b"fixture-apple-certificate"
+
+        def candidate_runner(
+            command: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess:
+            executable = Path(command[0]).name
+            if executable in {"codesign", "security", "xcrun"} or (
+                executable == "openssl" and "-fingerprint" in command
+            ):
+                return self.apple_runner(
+                    command,
+                    text=bool(kwargs.get("text", True)),
+                    timeout=int(kwargs.get("timeout", 120)),
+                    certificate_bytes=apple_certificate,
+                )
+            return self.runner(
+                command,
+                text=bool(kwargs.get("text", True)),
+                timeout=int(kwargs.get("timeout", 120)),
+            )
+
+        with (
+            mock.patch(
+                "scripts.release_artifact_verifier.BUNDLETOOL_SHA256",
+                self.bundletool_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.ANDROID_UPLOAD_CERTIFICATE_SHA256",
+                self.android_certificate_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.APPLE_DISTRIBUTION_CERTIFICATE_SHA256",
+                hashlib.sha256(apple_certificate).hexdigest(),
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier._required_system_tool",
+                side_effect=lambda path, owner, failures: str(path),
+            ),
+        ):
+            verification = verify_signed_candidate_artifacts(
+                self.root,
+                manifest,
+                failures,
+                artifact_root=self.artifact_root,
+                bundletool_jar=self.bundletool,
+                runner=candidate_runner,
+            )
+        results = verification.artifacts
+
+        self.assertEqual(failures, [])
+        self.assertTrue(verification.byte_verified)
+        self.assertEqual(set(results), {"android_phone", "wear_os", "apple"})
+        self.assertTrue(all(result.byte_verified for result in results.values()))
+        self.assertTrue(
+            all(
+                result.source_sync == "candidate-verified"
+                for result in results.values()
+            )
+        )
+        for artifact_id, result in results.items():
+            expected = self.artifact_root / manifest["artifacts"][artifact_id][
+                "filename"
+            ]
+            self.assertEqual(
+                result.sha256,
+                hashlib.sha256(expected.read_bytes()).hexdigest(),
+            )
+        self.assertEqual(
+            verification.candidate_set["phone_mapping"]["sha256"],
+            hashlib.sha256(mapping_path.read_bytes()).hexdigest(),
+        )
+        self.assertIn("apple_archive", verification.candidate_set)
+        self.assertEqual(
+            set(verification.candidate_set["apple_dsyms"]),
+            {"app", "widget", "watch"},
+        )
+
+    def test_candidate_preflight_rejects_already_promoted_manifest(self) -> None:
+        manifest = self.manifest("android_phone")
+        failures: list[str] = []
+
+        verification = verify_signed_candidate_artifacts(
+            self.root,
+            manifest,
+            failures,
+            artifact_root=self.artifact_root,
+            bundletool_jar=self.bundletool,
+            runner=self.runner,
+        )
+        results = verification.artifacts
+
+        self.assertTrue(
+            any(
+                "preflight requires the committed manifest to remain blocked"
+                in failure
+                for failure in failures
+            )
+        )
+        self.assertTrue(all(not result.byte_verified for result in results.values()))
+
+    def test_candidate_preflight_rejects_source_byte_mutation(self) -> None:
+        manifest = self.manifest()
+        for artifact_id in ("android_phone", "wear_os"):
+            self.write_android_bundle(manifest["artifacts"][artifact_id]["filename"])
+        self.write_android_mapping(manifest)
+        self.write_apple_candidate()
+        phone_path = self.artifact_root / manifest["artifacts"]["android_phone"][
+            "filename"
+        ]
+        failures: list[str] = []
+        mutated = False
+        apple_certificate = b"fixture-apple-certificate"
+
+        def mutating_runner(
+            command: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess:
+            nonlocal mutated
+            if not mutated:
+                phone_path.write_bytes(phone_path.read_bytes() + b"mutated")
+                mutated = True
+            executable = Path(command[0]).name
+            if executable in {"codesign", "security", "xcrun"} or (
+                executable == "openssl" and "-fingerprint" in command
+            ):
+                return self.apple_runner(
+                    command,
+                    text=bool(kwargs.get("text", True)),
+                    timeout=int(kwargs.get("timeout", 120)),
+                    certificate_bytes=apple_certificate,
+                )
+            return self.runner(
+                command,
+                text=bool(kwargs.get("text", True)),
+                timeout=int(kwargs.get("timeout", 120)),
+            )
+
+        with (
+            mock.patch(
+                "scripts.release_artifact_verifier.BUNDLETOOL_SHA256",
+                self.bundletool_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.ANDROID_UPLOAD_CERTIFICATE_SHA256",
+                self.android_certificate_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.APPLE_DISTRIBUTION_CERTIFICATE_SHA256",
+                hashlib.sha256(apple_certificate).hexdigest(),
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier._required_system_tool",
+                side_effect=lambda path, owner, failures: str(path),
+            ),
+        ):
+            verification = verify_signed_candidate_artifacts(
+                self.root,
+                manifest,
+                failures,
+                artifact_root=self.artifact_root,
+                bundletool_jar=self.bundletool,
+                runner=mutating_runner,
+            )
+        results = verification.artifacts
+
+        self.assertTrue(mutated)
+        self.assertTrue(
+            any(
+                "source tree changed during verification" in failure
+                for failure in failures
+            )
+        )
+        self.assertFalse(verification.byte_verified)
+        self.assertFalse(results["android_phone"].byte_verified)
+
+    def test_candidate_rejects_stale_manifest_against_current_checkout(self) -> None:
+        manifest = self.manifest()
+        with tempfile.TemporaryDirectory() as worktree_directory:
+            old_source = Path(worktree_directory) / "source"
+            subprocess.run(
+                [
+                    "git",
+                    "worktree",
+                    "add",
+                    "--detach",
+                    str(old_source),
+                    self.source_revision,
+                ],
+                cwd=self.root,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            try:
+                (self.root / "app/build.gradle.kts").write_text(
+                    'versionName = "1.1.0"\nversionCode = 8\n// current-source drift\n',
+                    encoding="utf-8",
+                )
+                subprocess.run(
+                    ["git", "add", "app/build.gradle.kts"],
+                    cwd=self.root,
+                    check=True,
+                )
+                subprocess.run(
+                    ["git", "commit", "-q", "-m", "fixture product drift"],
+                    cwd=self.root,
+                    check=True,
+                )
+                failures: list[str] = []
+
+                verification = verify_signed_candidate_artifacts(
+                    self.root,
+                    manifest,
+                    failures,
+                    artifact_root=self.artifact_root,
+                    bundletool_jar=self.bundletool,
+                    source_repository_root=old_source,
+                    runner=self.runner,
+                )
+            finally:
+                subprocess.run(
+                    ["git", "worktree", "remove", "--force", str(old_source)],
+                    cwd=self.root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+
+        self.assertFalse(verification.byte_verified)
+        self.assertTrue(
+            any("is stale for release source" in failure for failure in failures),
+            failures,
+        )
+
+    def test_candidate_preflight_rejects_stale_valid_r8_mapping(self) -> None:
+        manifest = self.manifest()
+        for artifact_id in ("android_phone", "wear_os"):
+            self.write_android_bundle(manifest["artifacts"][artifact_id]["filename"])
+        mapping_path = self.write_android_mapping(manifest)
+        mapping_path.write_text(
+            self.android_mapping_text().replace(
+                "fixture-map-hash",
+                "different-but-well-formed-map-hash",
+            ),
+            encoding="utf-8",
+        )
+        self.write_apple_candidate()
+        failures: list[str] = []
+        apple_certificate = b"fixture-apple-certificate"
+
+        def candidate_runner(
+            command: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess:
+            executable = Path(command[0]).name
+            if executable in {"codesign", "security", "xcrun"} or (
+                executable == "openssl" and "-fingerprint" in command
+            ):
+                return self.apple_runner(
+                    command,
+                    text=bool(kwargs.get("text", True)),
+                    timeout=int(kwargs.get("timeout", 120)),
+                    certificate_bytes=apple_certificate,
+                )
+            return self.runner(
+                command,
+                text=bool(kwargs.get("text", True)),
+                timeout=int(kwargs.get("timeout", 120)),
+            )
+
+        with (
+            mock.patch(
+                "scripts.release_artifact_verifier.BUNDLETOOL_SHA256",
+                self.bundletool_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.ANDROID_UPLOAD_CERTIFICATE_SHA256",
+                self.android_certificate_sha256,
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier.APPLE_DISTRIBUTION_CERTIFICATE_SHA256",
+                hashlib.sha256(apple_certificate).hexdigest(),
+            ),
+            mock.patch(
+                "scripts.release_artifact_verifier._required_system_tool",
+                side_effect=lambda path, owner, failures: str(path),
+            ),
+        ):
+            verification = verify_signed_candidate_artifacts(
+                self.root,
+                manifest,
+                failures,
+                artifact_root=self.artifact_root,
+                bundletool_jar=self.bundletool,
+                runner=candidate_runner,
+            )
+
+        self.assertFalse(verification.byte_verified)
+        self.assertTrue(
+            any(
+                "external mapping differs from phone AAB mapping" in failure
+                for failure in failures
+            )
+        )
+
+    def test_candidate_preflight_rejects_unexpected_root_entry(self) -> None:
+        manifest = self.manifest()
+        for artifact_id in ("android_phone", "wear_os"):
+            self.write_android_bundle(manifest["artifacts"][artifact_id]["filename"])
+        self.write_android_mapping(manifest)
+        self.write_apple_candidate()
+        (self.artifact_root / "unexpected-secret.bin").write_bytes(b"must not upload")
+        failures: list[str] = []
+
+        verification = verify_signed_candidate_artifacts(
+            self.root,
+            manifest,
+            failures,
+            artifact_root=self.artifact_root,
+            bundletool_jar=self.bundletool,
+            runner=self.runner,
+        )
+
+        self.assertFalse(verification.byte_verified)
+        self.assertTrue(
+            any(
+                "candidate root inventory mismatch" in failure
+                and "unexpected-secret.bin" in failure
+                for failure in failures
+            )
         )
 
     def test_incomplete_blocked_contract_is_rejected(self) -> None:

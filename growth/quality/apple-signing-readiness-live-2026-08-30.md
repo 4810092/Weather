@@ -1,18 +1,21 @@
 # Apple signing readiness live recheck — 2026-08-30
 
-Checked read-only at `2026-08-29T23:43:44Z` (`2026-08-30 04:43:44 +05`).
-No build, archive, export, install, or signing operation was run, and no
-certificate, private-key, account, device, or profile secret is recorded here.
+The initial checkpoint at `2026-08-29T23:43:44Z` (`2026-08-30 04:43:44
++05`) was read-only. Later bounded checks recorded below performed one
+disposable failing private-key operation and exact-source unsigned build/archive
+actions. No distribution-signed archive, export, install, credential mutation,
+or secret disclosure occurred.
 
 ## Verdict
 
-Apple `1.1.0 (6)` is **not safely archive-ready through the current checked-in
-release command**. The local machine has the required toolchain, the
-manifest-pinned Apple Distribution certificate/private-key identity, and valid
-exact App Store profiles for the app, widget, and watch. The documented manual
-archive command nevertheless forces the obsolete main-app-only profile onto all
-three products. A noninteractive distribution archive has therefore not been
-proved and should not be attempted through that command.
+Apple `1.1.0 (6)` is **not archive-ready in the current local security
+session**. The local machine has the required toolchain, manifest-pinned Apple
+Distribution certificate/private-key identity, and valid exact App Store
+profiles for the app, widget, and watch. The initial audit also found that the
+then-documented command forced one obsolete profile onto all three products;
+that configuration defect has since been corrected. Actual private-key use
+still fails while the login Keychain is locked, so a noninteractive
+distribution archive remains unproved.
 
 The current physical matrix is also incomplete: one iPad is an eligible Xcode
 destination, but no concrete iPhone or Apple Watch destination is eligible.
@@ -38,12 +41,15 @@ was not invoked and no password or biometric prompt was opened.
 
 ## Source and toolchain
 
-- The repository was clean at HEAD
+- At the initial checkpoint, the repository was clean at HEAD
   `76d9c3dd2de142714a2a22219f9778b4e7dfa682`.
-- `python3 scripts/verify_release_artifacts.py --print-source-revision`
-  resolved the canonical product/build-input revision
+- At that same checkpoint,
+  `python3 scripts/verify_release_artifacts.py --print-source-revision` resolved
+  the then-current product/build-input revision
   `44c189209c793cf097fcc293faf8db88033e6902`. Later HEAD commits do not alter
-  the verifier-owned release inputs.
+  the verifier-owned release inputs. The current manifest authority is
+  `aa6496d0ac9011ff818d2c0dd2ec5c565317400c`, which contains the corrected
+  per-target signing configuration used by the 05:30 preflight.
 - The upload manifest remains fail-closed: Apple is `source_sync: blocked`,
   with no current IPA SHA-256 or signing/physical evidence. The JSON verifier
   reports Apple `byte_verified: false`.
@@ -60,8 +66,9 @@ was not invoked and no password or biometric prompt was opened.
   SHA-256 and team, and expires on 2027-01-15.
 - `security find-identity -v -p codesigning` reports one valid Apple
   Distribution identity and recognizes the matching private-key pair.
-  Because this audit deliberately performed no signing, noninteractive
-  keychain ACL access remains unproved.
+  The later disposable `codesign` attempt did exercise the private key and
+  failed with `errSecInternalComponent`, proving that current noninteractive
+  Keychain authorization is unavailable.
 - These installed profiles are valid App Store profiles through 2027-01-23,
   allow the manifest-pinned certificate, use `get-task-allow=false`, expose
   `beta-reports-active=true`, and match their bundle IDs exactly:
@@ -77,21 +84,49 @@ was not invoked and no password or biometric prompt was opened.
   lacks the current App Group entitlement. It cannot sign the widget or watch
   bundle and is not the correct current main-app profile.
 
-## Reproducible signing blocker
+## Historical configuration blocker and current private-key blocker
 
-`docs/RELEASE.md` supplies one command-line
+At the initial checkpoint, `docs/RELEASE.md` supplied one command-line
 `PROVISIONING_PROFILE_SPECIFIER='Nimbo App Store 1.0'`. Command-line build
 settings apply to every target. Read-only `xcodebuild -showBuildSettings`
 confirmed that `Nimbo`, `NimboWidget`, and `NimboWatch` each receive that same
 profile specifier while retaining three different bundle IDs. The command is
 therefore deterministically incompatible with the current embedded products.
+Revision `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` removed that override and
+made the exact per-target mappings authoritative.
 
-`iosApp/ExportOptions.plist` also uses `signingStyle=automatic`. No configured
+The initial `iosApp/ExportOptions.plist` also used `signingStyle=automatic`. No configured
 Apple-ID entry was visible in the current Xcode account preference list
 (although the cached last-selected team matches the manifest). Automatic
 profile/cloud-certificate recovery is therefore not a safe noninteractive
-fallback. The three installed profiles make a deterministic manual flow
-possible once target-specific settings and export mapping are supplied.
+fallback. The current plist now uses deterministic manual signing with all
+three exact profiles. A fresh real `codesign` operation nevertheless returns
+`errSecInternalComponent`, independently proving the remaining Keychain/private-
+key authorization blocker.
+
+## 05:30 exact-source unsigned preflight
+
+The manifest resolver returned
+`aa6496d0ac9011ff818d2c0dd2ec5c565317400c` in a clean isolated checkout. A
+generic iOS-device Release build with signing disabled completed successfully.
+Its packaged app, WidgetKit extension, and watch app all report version
+`1.1.0 (6)`, embed the exact full source revision, and remain unsigned as
+required for this preflight. Architectures are app `arm64`, widget `arm64`, and
+watch `arm64_32` plus `arm64`.
+
+Immediately before that build, the installed manifest-pinned Distribution
+identity was again listed as valid, but a real disposable Mach-O signing
+operation exited 1 with `errSecInternalComponent`. No archive/export was
+attempted in that first pass.
+
+A second clean isolated checkout then completed the Xcode `archive` action with
+signing disabled. The resulting `.xcarchive` contains the app, widget, and watch
+at `1.1.0 (6)` with exact source `aa6496d`; all products are intentionally
+unsigned. All three dSYMs are present, and every executable UUID exactly
+matches its corresponding dSYM. The temporary checkout and archive were
+removed after inspection. This narrows the remaining distribution archive
+blocker to actual private-key authorization; it does not produce a retained
+IPA, distribution signature, device result, or upload evidence.
 
 ## Live device/CoreDevice state
 

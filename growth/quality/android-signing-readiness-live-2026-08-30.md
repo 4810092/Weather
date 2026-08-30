@@ -72,6 +72,30 @@ are neither source-current candidates nor uploadable artifacts. No retained
 AAB currently combines source revision `44c1892…`, the phone/Wear release
 identities above, and the pinned upload certificate.
 
+## 05:30 exact-source recheck
+
+A fresh authorization probe against current authority `aa6496d` returned the
+same fail-closed result: `security show-keychain-info` and both protected-value
+reads exited 51, while a passwordless unlock attempt exited 152 with
+`Unable to obtain authorization for this operation`. No protected value was
+printed or changed.
+
+The complete Android release gate was nevertheless rerun in a mode-700 detached
+checkout at exact commit `aa6496d0ac9011ff818d2c0dd2ec5c565317400c`.
+All 241 Gradle tasks passed, including ktlint, shared and Android tests,
+SQLDelight migration verification, both release lints, and both release bundle
+builds. The resulting unsigned bytes were:
+
+- phone `1.1.0 (8)` SHA-256
+  `c80a61365f6d06529a3adb97f41afcede0b0b69a6963a444be200c138daa0be8`;
+- Wear OS `1.1.0 (1000008)` SHA-256
+  `2b8b06fa6a0c21de2dd40429a746b8b88ff71942670f0814feea4ff7f650b4e8`.
+
+Both pass ZIP integrity and pinned Bundletool 1.18.3 validation and embed only
+the exact full source revision. Both intentionally contain zero JAR signature
+entries, so these hashes are build-preflight evidence rather than uploadable
+candidates.
+
 ## Next safe action
 
 Source-current signing cannot proceed noninteractively while the existing login
@@ -89,12 +113,15 @@ build from a standalone checkout detached at that revision, and retain outputs u
 mode-700 external directory such as
 `/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-aa6496d/`,
 and sign to the manifest filenames `nimbo-phone-1.1.0-vc8.aab` and
-`nimbo-wear-1.1.0-vc1000008.aab`. Pass the two protected values only through
-short-lived environment variables consumed by JDK 17 `jarsigner` via
-`-storepass:env` and `-keypass:env`, then unset them. Verification must re-open
-the final bytes, prove the manifest's full revision, identities, ZIP/JAR integrity,
-certificate DER SHA-256, Bundletool 1.18.3 validation, and hashes before any
-manifest or readiness state can advance.
+`nimbo-wear-1.1.0-vc1000008.aab`. The live JDK 17 `jarsigner` does not support
+the previously proposed `-storepass:env` / `-keypass:env` modifiers. The safe
+replacement was verified with a disposable keystore: keep xtrace disabled,
+omit both password options, pipe the two short-lived shell-variable values to
+the tool's password prompts over standard input, and unset them immediately.
+No password value may appear in argv, a file, or logs. Verification must
+re-open the final bytes, prove the manifest's full revision, identities,
+ZIP/JAR integrity, certificate DER SHA-256, Bundletool 1.18.3 validation, and
+hashes before any manifest or readiness state can advance.
 
 This record proves local signing readiness and the current authorization
 blocker only. It is not evidence of device QA, Play upload, review, rollout, or

@@ -55,6 +55,14 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 "0/3 current artifacts are byte-verified",
                 issues["release_artifact_source_sync_missing"],
             )
+            self.assertIn(
+                "master-only protected GitHub-hosted workflow",
+                issues["release_artifact_source_sync_missing"],
+            )
+            self.assertIn(
+                "protected environment secrets are not provisioned",
+                issues["release_artifact_source_sync_missing"],
+            )
             self.assertNotIn(
                 "exact-current 9c2dce4",
                 issues["release_artifact_source_sync_missing"],
@@ -65,6 +73,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "deterministic per-target release profiles",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "pre-manifest verifier are implemented",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 

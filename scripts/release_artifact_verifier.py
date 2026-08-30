@@ -18,6 +18,7 @@ import os
 import plistlib
 import re
 import shutil
+import stat
 import subprocess
 import tempfile
 import zipfile
@@ -151,7 +152,175 @@ class VerificationResult:
     details: dict[str, Any] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class CandidateTreeSnapshot:
+    tree_sha256: str
+    observation_sha256: str
+    top_level_entries: tuple[str, ...]
+    file_count: int
+    directory_count: int
+    total_bytes: int
+
+    def receipt(self) -> dict[str, Any]:
+        return {
+            "tree_sha256": self.tree_sha256,
+            "top_level_entries": list(self.top_level_entries),
+            "file_count": self.file_count,
+            "directory_count": self.directory_count,
+            "total_bytes": self.total_bytes,
+        }
+
+
+@dataclass(frozen=True)
+class SignedCandidateVerification:
+    artifacts: dict[str, VerificationResult]
+    candidate_set: dict[str, Any]
+    byte_verified: bool
+    source_observation_sha256: str | None = field(default=None, repr=False)
+
+
 CommandRunner = Callable[..., subprocess.CompletedProcess[Any]]
+
+
+def _snapshot_candidate_tree(
+    root: Path,
+    failures: list[str],
+    owner: str,
+    *,
+    expected_top_level: set[str] | None = None,
+) -> CandidateTreeSnapshot | None:
+    """Hash one closed directory tree without following links or special nodes."""
+
+    resolved_root = root.resolve()
+    if not resolved_root.is_dir() or resolved_root.is_symlink():
+        failures.append(f"{owner}: candidate root must be a real directory")
+        return None
+    try:
+        top_level = tuple(sorted(entry.name for entry in resolved_root.iterdir()))
+    except OSError as error:
+        failures.append(f"{owner}: cannot enumerate candidate root: {error}")
+        return None
+    if expected_top_level is not None and set(top_level) != expected_top_level:
+        missing = sorted(expected_top_level - set(top_level))
+        unexpected = sorted(set(top_level) - expected_top_level)
+        failures.append(
+            f"{owner}: candidate root inventory mismatch; missing={missing}, "
+            f"unexpected={unexpected}"
+        )
+
+    content_entries: list[dict[str, Any]] = []
+    observations: list[dict[str, Any]] = []
+    file_count = 0
+    directory_count = 0
+    total_bytes = 0
+    pending_root = True
+    for current, directory_names, file_names in os.walk(
+        resolved_root,
+        topdown=True,
+        followlinks=False,
+    ):
+        directory_names.sort()
+        file_names.sort()
+        current_path = Path(current)
+        candidates = [current_path] if pending_root else []
+        pending_root = False
+        candidates.extend(current_path / name for name in directory_names)
+        candidates.extend(current_path / name for name in file_names)
+        for path in candidates:
+            relative = path.relative_to(resolved_root)
+            relative_text = "." if relative == Path(".") else relative.as_posix()
+            try:
+                before = path.lstat()
+            except OSError as error:
+                failures.append(f"{owner}: cannot inspect {relative_text}: {error}")
+                continue
+            mode = stat.S_IMODE(before.st_mode)
+            if stat.S_ISLNK(before.st_mode):
+                failures.append(f"{owner}: symlink is forbidden: {relative_text}")
+                if path.name in directory_names:
+                    directory_names.remove(path.name)
+                continue
+            if stat.S_ISDIR(before.st_mode):
+                kind = "directory"
+                digest = None
+                size = 0
+                directory_count += 1
+            elif stat.S_ISREG(before.st_mode):
+                kind = "file"
+                digest = _sha256_file(path)
+                try:
+                    after = path.lstat()
+                except OSError as error:
+                    failures.append(
+                        f"{owner}: cannot re-inspect {relative_text}: {error}"
+                    )
+                    continue
+                if (
+                    before.st_dev,
+                    before.st_ino,
+                    before.st_size,
+                    before.st_mtime_ns,
+                    before.st_ctime_ns,
+                ) != (
+                    after.st_dev,
+                    after.st_ino,
+                    after.st_size,
+                    after.st_mtime_ns,
+                    after.st_ctime_ns,
+                ):
+                    failures.append(
+                        f"{owner}: {relative_text} changed while it was hashed"
+                    )
+                before = after
+                size = before.st_size
+                file_count += 1
+                total_bytes += size
+            else:
+                failures.append(
+                    f"{owner}: special filesystem entry is forbidden: {relative_text}"
+                )
+                continue
+            content_entries.append(
+                {
+                    "path": relative_text,
+                    "kind": kind,
+                    "mode": 0 if relative_text == "." else mode,
+                    "size": size,
+                    "sha256": digest,
+                }
+            )
+            observations.append(
+                {
+                    "path": relative_text,
+                    "dev": before.st_dev,
+                    "ino": before.st_ino,
+                    "mode": before.st_mode,
+                    "size": before.st_size,
+                    "mtime_ns": before.st_mtime_ns,
+                    "ctime_ns": before.st_ctime_ns,
+                }
+            )
+
+    content_entries.sort(key=lambda entry: entry["path"])
+    observations.sort(key=lambda entry: entry["path"])
+    content_payload = json.dumps(
+        content_entries,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    observation_payload = json.dumps(
+        observations,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return CandidateTreeSnapshot(
+        tree_sha256=hashlib.sha256(content_payload).hexdigest(),
+        observation_sha256=hashlib.sha256(observation_payload).hexdigest(),
+        top_level_entries=top_level,
+        file_count=file_count,
+        directory_count=directory_count,
+        total_bytes=total_bytes,
+    )
 
 
 def _run_command(
@@ -2380,6 +2549,356 @@ def verify_manifest_artifacts(
             details=details or {},
         )
     return results
+
+
+def _candidate_mapping_filename(phone_filename: object) -> str | None:
+    if not isinstance(phone_filename, str) or Path(phone_filename).name != phone_filename:
+        return None
+    return f"{Path(phone_filename).stem}-mapping.txt"
+
+
+def _verify_candidate_mapping(
+    path: Path,
+    phone_bundle: Path,
+    failures: list[str],
+) -> dict[str, Any] | None:
+    owner = "upload manifest artifact android_phone mapping"
+    try:
+        size = path.stat().st_size
+        with path.open("r", encoding="utf-8") as source:
+            header = [source.readline().rstrip("\n") for _ in range(7)]
+    except (OSError, UnicodeError) as error:
+        failures.append(f"{owner}: cannot read mapping: {error}")
+        return None
+    required_exact = {
+        "# compiler: R8",
+        "# min_api: 24",
+        '# {"id":"com.android.tools.r8.mapping","version":"2.2"}',
+    }
+    if size <= 0 or not required_exact.issubset(set(header)):
+        failures.append(f"{owner}: R8 identity header is incomplete")
+        return None
+    for prefix in ("# compiler_version: ", "# pg_map_id: ", "# pg_map_hash: "):
+        if not any(line.startswith(prefix) and len(line) > len(prefix) for line in header):
+            failures.append(f"{owner}: missing {prefix.strip()}")
+            return None
+    digest = _sha256_file(path)
+    embedded_path = "BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map"
+    try:
+        with zipfile.ZipFile(phone_bundle) as bundle:
+            embedded_names = [name for name in bundle.namelist() if name == embedded_path]
+            if embedded_names != [embedded_path]:
+                failures.append(
+                    f"{owner}: phone AAB must contain exactly one embedded mapping"
+                )
+                return None
+            embedded = bundle.read(embedded_path)
+    except (OSError, zipfile.BadZipFile, KeyError) as error:
+        failures.append(f"{owner}: cannot inspect embedded phone mapping: {error}")
+        return None
+    embedded_digest = hashlib.sha256(embedded).hexdigest()
+    if embedded_digest != digest or embedded != path.read_bytes():
+        failures.append(f"{owner}: external mapping differs from phone AAB mapping")
+        return None
+    return {
+        "filename": path.name,
+        "size": size,
+        "sha256": digest,
+        "embedded_path": embedded_path,
+    }
+
+
+def _unverified_candidate_results() -> dict[str, VerificationResult]:
+    return {
+        artifact_id: VerificationResult(
+            artifact_id=artifact_id,
+            source_sync="candidate-unverified",
+            byte_verified=False,
+        )
+        for artifact_id in ("android_phone", "wear_os", "apple")
+    }
+
+
+def verify_signed_candidate_artifacts(
+    repository_root: Path,
+    manifest: dict[str, Any],
+    failures: list[str],
+    *,
+    artifact_root: Path,
+    bundletool_jar: Path,
+    source_repository_root: Path | None = None,
+    runner: CommandRunner = _run_command,
+) -> SignedCandidateVerification:
+    """Verify newly signed bytes before promoting the committed manifest.
+
+    A release workflow cannot know deterministic artifact hashes until after it
+    has built and signed the candidate.  The committed manifest therefore stays
+    fail-closed as ``blocked`` while this function validates the real staged
+    bytes, embedded source identity, store signing identities, Android bundle
+    manifests, Apple archive/export topology, and dSYM UUID binding.  Its JSON
+    receipt is evidence for a later committed manifest promotion; it is not a
+    substitute for that promotion or for physical QA.
+    """
+
+    policy_valid = validate_verification_policy(manifest, failures)
+    artifacts = manifest.get("artifacts")
+    expected_artifacts = {"android_phone", "wear_os", "apple"}
+    if not isinstance(artifacts, dict) or set(artifacts) != expected_artifacts:
+        failures.append(
+            "upload manifest: artifacts must contain exactly android_phone, "
+            "wear_os, and apple"
+        )
+        return SignedCandidateVerification(
+            artifacts={},
+            candidate_set={},
+            byte_verified=False,
+        )
+
+    release_source_root = source_repository_root or repository_root
+    build_source_valid = validate_repository_source(
+        release_source_root,
+        manifest.get("source_revision"),
+        failures,
+    )
+    current_source_valid = True
+    if release_source_root.resolve() != repository_root.resolve():
+        current_source_valid = validate_repository_source(
+            repository_root,
+            manifest.get("source_revision"),
+            failures,
+        )
+    source_valid = build_source_valid and current_source_valid
+    contract_valid = _validate_artifact_contract(
+        repository_root,
+        manifest,
+        artifacts,
+        failures,
+    )
+    for artifact_id in ("android_phone", "wear_os", "apple"):
+        artifact = artifacts.get(artifact_id)
+        if isinstance(artifact, dict) and artifact.get("source_sync") != "blocked":
+            failures.append(
+                f"upload manifest artifact {artifact_id}: signed-candidate "
+                "preflight requires the committed manifest to remain blocked"
+            )
+            contract_valid = False
+
+    results: dict[str, VerificationResult] = {}
+    if not (policy_valid and source_valid and contract_valid):
+        return SignedCandidateVerification(
+            artifacts=_unverified_candidate_results(),
+            candidate_set={},
+            byte_verified=False,
+        )
+
+    phone_mapping_name = _candidate_mapping_filename(
+        artifacts["android_phone"].get("filename")
+    )
+    filenames = {
+        artifact.get("filename")
+        for artifact in artifacts.values()
+        if isinstance(artifact, dict) and isinstance(artifact.get("filename"), str)
+    }
+    if phone_mapping_name is None or len(filenames) != 3:
+        failures.append("signed candidate: cannot derive the closed artifact layout")
+        return SignedCandidateVerification(
+            artifacts=_unverified_candidate_results(),
+            candidate_set={},
+            byte_verified=False,
+        )
+    expected_top_level = filenames | {
+        phone_mapping_name,
+        EXPECTED_POLICY["apple_archive_relative_path"],
+        EXPECTED_POLICY["apple_export_options_relative_path"],
+    }
+    candidate_failure_count = len(failures)
+    source_before = _snapshot_candidate_tree(
+        artifact_root,
+        failures,
+        "signed candidate",
+        expected_top_level=expected_top_level,
+    )
+    if source_before is None or len(failures) != candidate_failure_count:
+        return SignedCandidateVerification(
+            artifacts=_unverified_candidate_results(),
+            candidate_set={},
+            byte_verified=False,
+        )
+
+    candidate_set: dict[str, Any] = source_before.receipt()
+    with tempfile.TemporaryDirectory(
+        prefix="nimbo-signed-candidate-stage-"
+    ) as directory:
+        staged_root = Path(directory) / "bytes"
+        shutil.copytree(artifact_root.resolve(), staged_root, copy_function=shutil.copy2)
+        staged_before = _snapshot_candidate_tree(
+            staged_root,
+            failures,
+            "staged signed candidate",
+            expected_top_level=expected_top_level,
+        )
+        if (
+            staged_before is None
+            or staged_before.tree_sha256 != source_before.tree_sha256
+        ):
+            failures.append(
+                "signed candidate: staged tree differs from source candidate tree"
+            )
+
+        mapping_path = _safe_external_file(
+            staged_root,
+            phone_mapping_name,
+            "upload manifest artifact android_phone mapping",
+            failures,
+        )
+        staged_phone_path = _safe_external_file(
+            staged_root,
+            artifacts["android_phone"].get("filename"),
+            "upload manifest artifact android_phone",
+            failures,
+        )
+        mapping_details = (
+            _verify_candidate_mapping(mapping_path, staged_phone_path, failures)
+            if mapping_path is not None and staged_phone_path is not None
+            else None
+        )
+        if mapping_details is not None:
+            candidate_set["phone_mapping"] = mapping_details
+
+        for artifact_id in ("android_phone", "wear_os", "apple"):
+            artifact = artifacts[artifact_id]
+            owner = f"upload manifest artifact {artifact_id}"
+            failure_count = len(failures)
+            path = _safe_external_file(
+                staged_root,
+                artifact.get("filename"),
+                owner,
+                failures,
+            )
+            details: dict[str, Any] | None = None
+            digest: str | None = None
+            if path is not None:
+                digest = _sha256_file(path)
+                if artifact_id in {"android_phone", "wear_os"}:
+                    details = _verify_android(
+                        artifact_id,
+                        path,
+                        artifact,
+                        manifest,
+                        bundletool_jar,
+                        failures,
+                        runner,
+                    )
+                    if artifact_id == "android_phone" and details is not None:
+                        if mapping_details is None:
+                            failures.append(f"{owner}: verified R8 mapping is missing")
+                        else:
+                            details["mapping"] = mapping_details
+                else:
+                    details = _verify_apple(
+                        path,
+                        artifact,
+                        manifest,
+                        staged_root,
+                        failures,
+                        runner,
+                    )
+            byte_verified = (
+                path is not None
+                and details is not None
+                and len(failures) == failure_count
+            )
+            results[artifact_id] = VerificationResult(
+                artifact_id=artifact_id,
+                source_sync=(
+                    "candidate-verified"
+                    if byte_verified
+                    else "candidate-unverified"
+                ),
+                byte_verified=byte_verified,
+                sha256=digest,
+                details=details or {},
+            )
+
+        staged_after = _snapshot_candidate_tree(
+            staged_root,
+            failures,
+            "staged signed candidate",
+            expected_top_level=expected_top_level,
+        )
+        if (
+            staged_before is None
+            or staged_after is None
+            or staged_before.tree_sha256 != staged_after.tree_sha256
+            or staged_before.observation_sha256 != staged_after.observation_sha256
+        ):
+            failures.append("signed candidate: staged tree changed during verification")
+
+        archive_path = staged_root / EXPECTED_POLICY["apple_archive_relative_path"]
+        archive_snapshot = _snapshot_candidate_tree(
+            archive_path,
+            failures,
+            "signed candidate Apple archive",
+        )
+        export_options_path = (
+            staged_root / EXPECTED_POLICY["apple_export_options_relative_path"]
+        )
+        if archive_snapshot is not None:
+            candidate_set["apple_archive"] = archive_snapshot.receipt()
+        if export_options_path.is_file() and not export_options_path.is_symlink():
+            candidate_set["export_options_sha256"] = _sha256_file(export_options_path)
+        dsyms: dict[str, dict[str, Any]] = {}
+        for product in APPLE_PRODUCTS:
+            dsym_path = archive_path / "dSYMs" / product["dsym"]
+            snapshot = _snapshot_candidate_tree(
+                dsym_path,
+                failures,
+                f"signed candidate {product['role']} dSYM",
+            )
+            if snapshot is not None:
+                dsyms[product["role"]] = snapshot.receipt()
+        if dsyms:
+            candidate_set["apple_dsyms"] = dsyms
+
+    source_after = _snapshot_candidate_tree(
+        artifact_root,
+        failures,
+        "signed candidate",
+        expected_top_level=expected_top_level,
+    )
+    source_stable = (
+        source_after is not None
+        and source_after.tree_sha256 == source_before.tree_sha256
+        and source_after.observation_sha256 == source_before.observation_sha256
+    )
+    if not source_stable:
+        failures.append("signed candidate: source tree changed during verification")
+
+    globally_verified = (
+        len(failures) == candidate_failure_count
+        and source_stable
+        and len(results) == 3
+        and all(result.byte_verified for result in results.values())
+    )
+    if not globally_verified:
+        results = {
+            artifact_id: VerificationResult(
+                artifact_id=result.artifact_id,
+                source_sync="candidate-unverified",
+                byte_verified=False,
+                sha256=result.sha256,
+                details=result.details,
+            )
+            for artifact_id, result in results.items()
+        }
+        for artifact_id, fallback in _unverified_candidate_results().items():
+            results.setdefault(artifact_id, fallback)
+    return SignedCandidateVerification(
+        artifacts=results,
+        candidate_set=candidate_set,
+        byte_verified=globally_verified,
+        source_observation_sha256=source_after.observation_sha256 if source_after else None,
+    )
 
 
 def evidence_contains_digest(

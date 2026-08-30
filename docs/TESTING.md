@@ -107,3 +107,26 @@ Simulator/emulator evidence is useful but does not prove physical-device battery
 ## CI behavior
 
 `.github/workflows/ci.yml` runs on every pull request and pushes to `master`, uses read-only repository permissions, cancels superseded runs for the same ref, and applies job timeouts. Android unsigned release bundles and iOS Simulator test results are retained for seven days as diagnostic artifacts. The macOS job also builds iOS/WidgetKit and watchOS without signing.
+All external actions use reviewed full commit SHAs. The Gradle wrapper validates
+the official 9.7.0 distribution SHA-256, and normal task resolution enforces the
+checked-in dependency verification metadata.
+
+`.github/workflows/signed-candidate.yml` is a distinct manual, environment-
+protected GitHub-hosted path for maintainer release bytes. It never runs for a
+pull request or push, accepts only `4810092/Weather` `master`, keeps
+`contents: read`, and separates an exact-source unsigned build job with no
+secrets from a fresh protected signing job. The first job transfers only a
+checksummed inert unsigned package retained for one day. All third-party
+actions are pinned to full reviewed commits; the repository validator binds
+complete action blocks, run bodies, shells, exact secret environments, and
+upload paths. The final job uploads only a receipt-bound signed tarball and
+receipt after phone, Wear OS, Apple archive/IPA, profile, signer, Bundletool,
+source-revision, closed-tree, mapping, and dSYM checks all pass. Ordinary
+contributors and normal CI never receive signing material.
+
+No mutable repository script executes on the protected runner while secret
+files or the unlocked ephemeral Keychain exist. The verifier scripts are
+checked against reviewed SHA-256 pins before signing, copied outside the
+checkout, rehashed after signing material is destroyed, and launched with
+isolated Python path handling. The verifier rejects either detached-build or
+current-checkout release-source drift from the manifest revision.

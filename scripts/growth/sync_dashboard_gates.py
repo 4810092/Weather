@@ -164,9 +164,10 @@ def sync(
                 "BLOCKED · 0/3 current artifacts byte-verified; signed matrix missing"
             )
             new_next = (
-                "Build, sign, and verify phone vc8, Wear 1000008, and Apple "
-                "build 6 in one protected GitHub-hosted workflow, then bind "
-                "exact physical QA to those retained bytes"
+                "Unlock the local login Keychain, provision the protected "
+                "release-signing environment, run the master-only hosted "
+                "workflow, promote its verified receipt, then bind exact "
+                "physical QA to the retained bytes"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
@@ -268,22 +269,23 @@ def sync(
         f"historical crash for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
-        f"Current product/build-input commit {current_revision_short} has no retained signed phone "
-        "vc8, Wear 1000008, or distribution-signed Apple build-6 candidate, so "
-        "0/3 current artifacts are byte-verified. All retained Android bundles, "
-        "Apple simulator products, screenshots, and device results belong to "
-        "predecessor revisions. Source-bound 9c2dce4 API 24 emulator, API 25 "
-        "physical debug-phone, API 36 emulator tablet/widget, and twelve "
-        "localized iPhone screenshot results remain non-transferable regression "
-        "or creative provenance only. The attempted Apple offline transition "
-        "was not captured; Apple Watch sources remain historical build-5 "
-        "simulator evidence. None satisfies current upload signing or the "
-        "complete physical matrix. Android signing authorization remains "
-        "unavailable, CoreDevice readiness must be re-established, and App "
-        "Store Connect contains no 1.1.0 version or builds 5/6. A bounded 1.1.0 "
-        "version-create POST returned 403 and the final GET proved zero partial "
-        "draft; no localization, asset, build association, submission, release, "
-        "or other store mutation followed."
+        f"Current product/build-input commit {current_revision_short} has no retained signed "
+        "phone vc8, Wear 1000008, or distribution-signed Apple build-6 "
+        "candidate, so 0/3 current artifacts are byte-verified. The manual "
+        "master-only protected GitHub-hosted workflow and pre-manifest verifier "
+        "are implemented and statically validated. Exact-source unsigned Android "
+        "phone/Wear release gates and Apple device build/archive plus dSYM UUID "
+        "binding pass, but protected environment secrets are not provisioned and "
+        "the workflow has not run. The locked local login Keychain still rejects "
+        "Android protected credential reads and Apple private-key use. All signed "
+        "bundles, screenshots, and device results belong to predecessor revisions "
+        "and remain non-transferable regression or creative provenance only. None "
+        "satisfies current upload signing or the complete physical matrix. "
+        "CoreDevice readiness must be re-established, and App Store Connect "
+        "contains no 1.1.0 version or builds 5/6. A bounded 1.1.0 version-create "
+        "POST returned 403 and the final GET proved zero partial draft; no "
+        "localization, asset, build association, submission, release, or other "
+        "store mutation followed."
     )
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
@@ -300,8 +302,12 @@ def sync(
         + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
         "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
         "deterministic per-target release profiles. "
-        "No retained AAB, archive, or IPA was built or signed from it, so "
-        "0/3 current artifacts are byte-verified. Predecessor commit "
+        "Exact-source unsigned Android release gates and Apple device build/"
+        "archive with matching dSYMs pass. The protected master-only hosted "
+        "workflow and pre-manifest verifier are implemented but have not run "
+        "because release-signing secrets are not provisioned; no retained signed "
+        "candidate exists, so 0/3 current artifacts are byte-verified. "
+        "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
         "regressions, but all of its binaries, screenshots, and device results "

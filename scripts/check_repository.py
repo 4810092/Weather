@@ -13,6 +13,15 @@ import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import unquote
 
+try:
+    from scripts.signed_candidate_workflow_security import (
+        validate_signed_candidate_workflow,
+    )
+except ModuleNotFoundError:
+    from signed_candidate_workflow_security import (  # type: ignore[no-redef]
+        validate_signed_candidate_workflow,
+    )
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REQUIRED = (
@@ -26,6 +35,7 @@ REQUIRED = (
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/signed-candidate.yml",
     "docs/ARCHITECTURE.md",
     "docs/DEVELOPMENT.md",
     "docs/TESTING.md",
@@ -36,6 +46,9 @@ REQUIRED = (
     "docs/CODEX_FOR_OSS_APPLICATION.md",
     "growth/reviews/README.md",
     "growth/reviews/review-inbox.csv",
+    "scripts/signed_candidate_workflow_security.py",
+    "scripts/verify_signed_candidate.py",
+    "gradle/verification-metadata.xml",
 )
 FORBIDDEN_SUFFIXES = (
     ".aab",
@@ -199,6 +212,50 @@ if export_options.get("teamID") != "5SWEZ7HTYP":
     fail("Apple export team changed")
 if export_options.get("provisioningProfiles") != apple_release_profiles:
     fail("Apple export profile map must exactly cover app, widget, and watch")
+
+signed_candidate_workflow = (
+    ROOT / ".github/workflows/signed-candidate.yml"
+).read_text(encoding="utf-8")
+for workflow_failure in validate_signed_candidate_workflow(signed_candidate_workflow):
+    fail(f"signed-candidate workflow: {workflow_failure}")
+
+gradle_wrapper_properties = (
+    ROOT / "gradle/wrapper/gradle-wrapper.properties"
+).read_text(encoding="utf-8")
+if (
+    "distributionUrl=https\\://services.gradle.org/distributions/gradle-9.7.0-bin.zip\n"
+    not in gradle_wrapper_properties
+):
+    fail("Gradle wrapper distribution must remain pinned to 9.7.0 bin")
+if (
+    "distributionSha256Sum="
+    "84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae\n"
+    not in gradle_wrapper_properties
+):
+    fail("Gradle wrapper distribution must retain the official SHA-256 pin")
+
+dependency_verification_path = ROOT / "gradle/verification-metadata.xml"
+dependency_verification = ET.parse(dependency_verification_path).getroot()
+verification_namespace = "{https://schema.gradle.org/dependency-verification}"
+if dependency_verification.tag != f"{verification_namespace}verification-metadata":
+    fail("Gradle dependency verification metadata uses an unexpected schema")
+verify_metadata = dependency_verification.find(
+    f"./{verification_namespace}configuration/"
+    f"{verification_namespace}verify-metadata"
+)
+if verify_metadata is None or verify_metadata.text != "true":
+    fail("Gradle dependency metadata verification must remain enabled")
+dependency_artifacts = dependency_verification.findall(
+    f".//{verification_namespace}artifact"
+)
+if len(dependency_artifacts) < 1000:
+    fail("Gradle dependency verification inventory is unexpectedly incomplete")
+for dependency_artifact in dependency_artifacts:
+    checksums = dependency_artifact.findall(f"{verification_namespace}sha256")
+    if len(checksums) != 1 or re.fullmatch(
+        r"[0-9a-f]{64}", checksums[0].get("value", "")
+    ) is None:
+        fail("every Gradle dependency artifact must have one SHA-256 checksum")
 
 android_version = re.search(r"versionCode\s*=\s*([\d_]+)", android)
 wear_version = re.search(r"versionCode\s*=\s*([\d_]+)", wear)

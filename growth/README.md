@@ -19,8 +19,14 @@ phone vc8, Wear vc1000008, and Apple build 6 have no source-synced signed
 artifact or matching release-certificate physical QA. Current product/build
 source `aa6496d` keeps fail-closed Apple source-revision plumbing and assigns
 bundle-specific App Store profiles to the app, widget, and watch. Read-only
-build settings prove the mapping, but no private-key operation or archive was
-run. The prior `9c2dce4` debug API 24/API 25/
+build settings prove the mapping. Exact-source unsigned Android phone/Wear
+release gates and an unsigned Apple device build/archive pass, including
+matching app/widget/watch dSYMs. A protected, manual GitHub-hosted workflow now
+implements exact-source signing and pre-manifest byte verification, but its
+`release-signing` secrets have not been provisioned and it has not produced a
+signed candidate. Local Keychain authorization still rejects Android password
+reads and Apple private-key use, so the authoritative result remains `0/3`
+byte-verified. The prior `9c2dce4` debug API 24/API 25/
 API 36, Apple simulator, and localized capture results remain historical
 regression evidence and do not transfer to `aa6496d`. None closes signing,
 physical-device, TestFlight, store-state, or the release matrix.
@@ -42,6 +48,7 @@ deployment, or historical device evidence does not close those gates.
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
 | Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Real-byte, signing, identity, source-drift, schema, and evidence checks; current result remains 0/3 verified |
+| GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Two isolated manual master-only hosted jobs, no-secret exact-source build, protected signing, closed-tree receipt/tar verification, missing-secret/Keychain blocker, and explicit no-store-upload boundary |
 | Current release source authority | [quality/release-artifact-source-sync-2026-08-30-aa6496d.md](quality/release-artifact-source-sync-2026-08-30-aa6496d.md) | Exact `aa6496d` product/build identity, Apple source-key plumbing, deterministic per-target profiles, and explicit non-transferability of every earlier artifact/device result |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |

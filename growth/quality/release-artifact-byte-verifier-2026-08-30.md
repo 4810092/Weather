@@ -99,7 +99,19 @@ unsigned and partially signed AABs, wrong Android signer, unexpected feature
 modules, Wear capability drift, self-certifying or aliased evidence records,
 Apple source-key omission, missing/mismatched archive products, external
 symlink attempts, expired profiles, and positive synthetic Android/Apple
-byte-verification paths.
+byte-verification paths. It now also covers the separate pre-manifest candidate
+path, which accepts only a still-blocked committed manifest and snapshots a
+closed six-entry root once into isolated staging. It binds the phone mapping to
+the exact copy embedded in the AAB; hashes the full archive, dSYM, and export
+trees; rejects extra/symlink/special entries and mutation or mutate-restore;
+then packages, re-extracts, and rehashes a receipt-bound tar while preserving
+verified internal file modes.
+
+The candidate path separately validates the detached build worktree and the
+current checkout's release-source paths against the manifest revision. A clean
+old worktree can no longer hide product/build-input drift on `master`. Receipt
+schema v2 also requires exactly phone, Wear, and Apple results, distinct
+receipt/package paths, and a final package existence/hash recheck.
 
 ## Remaining trust boundary
 
@@ -110,16 +122,29 @@ resolved JDK tools not being maliciously replaced. These are explicit build
 provenance and operator-trust boundaries, not closed evidence.
 
 Consequently, the first `verified-current` promotion must be produced and
-verified from the same clean checkout in a protected GitHub-hosted macOS
-release job, with immutable artifact delivery and retained workflow
-provenance/attestation. CI and Pages deliberately receive no signing material
-today and pass only while all three manifest entries remain blocked. A local or
-self-hosted Mac runner is not required.
+verified in the protected two-job GitHub-hosted macOS path: an isolated
+no-secret exact-source build followed by a fresh signing runner and immutable,
+receipt-bound artifact delivery. All third-party actions are full-SHA pinned,
+and the repository validator locks the complete workflow, action blocks, run
+bodies, shells, secret environments, and artifact paths. The protected secrets
+are not provisioned and the workflow has not run, so ordinary CI and Pages
+receive no signing material and all three manifest entries remain blocked. A
+local or self-hosted Mac runner is not required for CI; local hardware remains
+necessary for the separate physical-device QA gate.
+
+The Gradle wrapper distribution now has the official 9.7.0 SHA-256 pin, normal
+and protected workflows use full-commit action pins, and dependency
+verification metadata covers every artifact resolved by the complete release
+task set. This materially narrows but does not eliminate hosted-runner,
+toolchain, repository-review, or initially bootstrapped dependency trust; no
+separate cryptographic build attestation is claimed.
 
 ## Decision
 
 Keep `release_artifact_source_sync`, Android physical smoke, and Apple physical
 smoke blocked. Do not begin acquisition or store submission from historical,
 unsigned, debug, simulator-only, or receipt-only evidence. The next release
-step is the protected hosted signing/provenance path followed by exact-artifact
-physical QA; neither is claimed by this report.
+step is provisioning the protected environment after local Keychain unlock,
+running the hosted signing/provenance path, promoting the manifest from its
+verified receipt, and then completing exact-artifact physical QA. None of those
+outcomes is claimed by this report.

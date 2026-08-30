@@ -1,0 +1,94 @@
+# GitHub-hosted signed-candidate readiness — 2026-08-30
+
+Status: **IMPLEMENTED AND STATICALLY VERIFIED; NOT EXECUTED; 0/3 SIGNED
+ARTIFACTS BYTE-VERIFIED**.
+
+## Implemented boundary
+
+`.github/workflows/signed-candidate.yml` is manual-only and fail-closed to
+repository `4810092/Weather` branch `master`, with `contents: read`. It uses two
+isolated standard GitHub-hosted `macos-26` jobs. `build-unsigned` has no
+environment or secret access. It resolves the blocked manifest's full source
+revision, creates a clean detached worktree, runs all 241 Android release tasks,
+creates the unsigned Apple archive, and transfers only a checksummed inert
+package retained for one day. Checkout credentials are not persisted.
+
+`sign-verify` runs on a fresh runner behind `release-signing`. It validates the
+declared revision, checksum, and exact unsigned-input inventory before any
+secret becomes available. Signing secrets are scoped to exactly three
+consuming steps. The job pins Bundletool 1.18.3 by SHA-256, upload-signs both
+Android bundles without putting passwords in argv, imports the pinned Apple
+Distribution identity into an ephemeral Keychain, validates the three exact
+App Store profiles, and exports Apple build 6.
+
+No mutable repository Python executes while protected material exists. Before
+secret decoding, the job checks reviewed SHA-256 pins for
+`verify_signed_candidate.py` and `release_artifact_verifier.py` and copies them
+to a mode-restricted temporary directory. Immediately after Apple export it
+deletes the ephemeral Keychain, keystore, P12, installed profiles, and decoded
+profile plists. Only after those deletion checks pass does isolated Python
+rehash and execute the reviewed verifier copies. Both the detached build root
+and current checkout release-source paths must match the manifest revision, so
+an otherwise valid old worktree cannot mask a stale manifest on `master`.
+
+The pre-manifest verifier snapshots a closed six-entry candidate root exactly
+once and verifies only the isolated copy. It binds both AABs, IPA, the phone R8
+mapping and its byte-identical AAB-embedded copy, ExportOptions, the complete
+Apple archive, every dSYM tree, file modes, source revision, and signer/profile
+identity. Unexpected files, symlinks, special nodes, concurrent mutation, and
+mutate-restore are rejected. Packaging preserves and re-extracts the verified
+tree before producing a receipt-bound tarball. Only that tarball and receipt are
+uploaded for seven days; raw staging directories and secret material are never
+artifact paths. Cleanup always removes the temporary Keychain, profiles,
+credentials, unsigned inputs, and worktree.
+
+The workflow has no Git or store write permission. It does not promote the
+committed upload manifest, perform physical QA, upload to App Store Connect or
+Google Play, submit for review, release, or prove public availability.
+
+## Verification performed
+
+- `actionlint` accepts the workflow.
+- Every third-party action is pinned to a reviewed full commit SHA.
+- Gradle 9.7.0 is pinned to the official wrapper SHA-256, and checked-in
+  verification metadata binds 1,700+ resolved Gradle dependency artifacts.
+- `scripts/check_repository.py` binds the complete canonical workflow digest,
+  complete action-step blocks (including `with` and artifact paths), all run
+  bodies, every run shell, and each secret step's exact environment. Its
+  adversarial regressions reject automatic triggers, permission escalation,
+  mutable actions, xtrace, custom shells, extra environment variables,
+  post-secret command changes, and broadened artifact uploads.
+- The signed-candidate verifier has positive all-three-artifact coverage and a
+  fail-closed regression for any already-promoted manifest. Additional tests
+  reject source mutation, unexpected root entries, stale but well-formed
+  external mappings, detached/current source divergence, receipt/package path
+  aliasing, partial artifact inventories, and tar byte/mode drift.
+- A clean detached Android build at source
+  `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` passed all 241 release tasks.
+  Unsigned phone vc8 SHA-256 is
+  `c80a61365f6d06529a3adb97f41afcede0b0b69a6963a444be200c138daa0be8`;
+  unsigned Wear vc1000008 SHA-256 is
+  `2b8b06fa6a0c21de2dd40429a746b8b88ff71942670f0814feea4ff7f650b4e8`.
+  Both embed the exact revision and pass ZIP and pinned Bundletool validation.
+- Clean exact-source unsigned Apple device build and archive actions pass for
+  app, widget, and watch `1.1.0 (6)`. Architectures are app/widget `arm64` and
+  watch `arm64_32` plus `arm64`; all three executable UUIDs match their dSYMs.
+
+## Current blocker
+
+The workflow has not been dispatched or completed, and no signed candidate
+tarball or receipt exists. The unsigned job does not need secrets; the
+`sign-verify` job cannot complete until the `release-signing` environment
+secrets are provisioned.
+The local login Keychain remains locked: protected Android credential reads
+return `errSecAuthFailed`, and a real disposable Apple Mach-O signing operation
+with the installed pinned identity returns `errSecInternalComponent`. Current
+GitHub CLI authentication is also invalid, so protected environment setup
+cannot be completed through that CLI session.
+
+The necessary human action is only to unlock the macOS login Keychain and
+reauthorize GitHub locally; no password or private key should be sent in chat.
+After that, the existing inputs can be exported directly into the protected
+environment, the hosted workflow can run, and its receipt can drive a separate
+manifest-promotion commit. Until then, the authoritative manifest remains
+blocked and the byte-verification count remains `0/3`.

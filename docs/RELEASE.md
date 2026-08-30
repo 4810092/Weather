@@ -35,12 +35,81 @@ The authoritative product/build-input revision is
 Wear, and Apple identities and the source-binding setting, while replacing the
 obsolete global provisioning-profile override with bundle-specific App Store
 profiles for the app, widget, and watch plus a matching manual export map.
-Read-only Xcode build settings prove the three mappings. No private-key
-operation, archive, IPA, signed Android bundle, or physical QA was produced
-from this revision; 0/3 current artifacts remain byte-verified. The current
-decision is recorded in the
+Read-only Xcode build settings prove the three mappings. Exact-source unsigned
+Android phone/Wear release gates and Apple device build/archive plus matching
+dSYMs pass. Real Apple private-key use remains blocked, no signed candidate,
+IPA, or physical QA was produced, and 0/3 current artifacts remain
+byte-verified. The current decision is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-aa6496d.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Protected GitHub-hosted candidate signing
+
+`.github/workflows/signed-candidate.yml` is the only signed-candidate CI entry
+point. It is manual-only, restricted to `4810092/Weather` `master`, has
+read-only repository permissions, and uses two isolated standard GitHub-hosted
+`macos-26` jobs. The first job has no environment or secret access: it creates a
+detached worktree at the manifest's exact revision, runs the complete Android
+release gate, creates an unsigned Apple archive, and transfers only an inert,
+checksummed one-day input package. A fresh second runner uses the protected
+`release-signing` environment, validates that input, then decodes signing
+material and signs phone, Wear OS, app, widget, and watch products.
+
+`scripts/verify_signed_candidate.py` re-opens a single closed six-entry
+candidate tree. It binds the two AABs, IPA, Android mapping, ExportOptions, the
+complete Apple archive, and all dSYMs; the mapping must equal the copy embedded
+in the phone AAB. It also rejects unexpected files, symlinks, special nodes,
+source mutation, and mutate-restore attempts. A successful run uploads only a
+receipt-bound candidate tarball and its machine-readable receipt for seven
+days; decoded keys, profiles, raw staging directories, and unsigned inputs are
+not included.
+
+The signing job requires these environment secrets. If any is absent, the
+unsigned job may complete, but signing fails before any candidate is produced:
+
+- `NIMBO_ANDROID_UPLOAD_KEYSTORE_B64`;
+- `NIMBO_ANDROID_UPLOAD_STORE_PASSWORD`;
+- `NIMBO_ANDROID_UPLOAD_KEY_PASSWORD`;
+- `NIMBO_APPLE_DISTRIBUTION_P12_B64`;
+- `NIMBO_APPLE_DISTRIBUTION_P12_PASSWORD`;
+- `NIMBO_APPLE_APP_PROFILE_B64`;
+- `NIMBO_APPLE_WIDGET_PROFILE_B64`;
+- `NIMBO_APPLE_WATCH_PROFILE_B64`.
+
+Binary signing inputs are base64-encoded only for secret transport and are
+decoded under the runner's temporary mode-700 directory. Android passwords go
+to `jarsigner` only through its standard-input prompts with xtrace disabled;
+they never appear in command arguments. The Apple identity is imported into a
+new ephemeral keychain, profiles are checked against their exact bundle IDs,
+team, distribution entitlements, and expiry, and all temporary key/profile
+material is destroyed in an `always()` cleanup step. Do not place any of these
+values in repository variables, workflow inputs, logs, artifacts, or tracked
+files.
+
+Every third-party action is pinned to a reviewed full commit SHA. Repository
+checks bind the complete workflow bytes, complete action-step blocks (including
+artifact paths), run bodies, shells, and exact secret-step environments. This
+is intentionally narrow: any workflow mutation requires an explicit policy
+update and regression run. The Gradle 9.7.0 wrapper ZIP is pinned to its
+official SHA-256, and every resolved Gradle dependency artifact is covered by
+`gradle/verification-metadata.xml`.
+
+The protected runner does not execute mutable repository Python while signing
+material is available. Reviewed hashes of the two verifier scripts are checked
+and copied before secret decoding. After export, the Keychain, P12, keystore,
+profiles, and decoded profile plists are destroyed; only then does an isolated
+Python process execute those rehashed copies. Candidate verification also
+checks both the detached build worktree and the current checkout against the
+manifest source revision, preventing an old manifest from signing stale product
+bytes after `master` advances.
+
+This workflow does not write to Git, upload to either store, submit for review,
+publish metadata, or promote `store/upload-manifest-1.1.0.json`. Its receipt is
+pre-manifest byte evidence only. The resulting hashes and a separate committed
+signing record must promote the manifest before the ordinary artifact verifier
+can return `verified-current`; exact-byte physical QA remains a separate gate.
+Current readiness and the unprovisioned-secret boundary are recorded in
+[the hosted signing evidence](../growth/quality/github-hosted-signed-candidate-readiness-2026-08-30.md).
 
 ## Nimbo 1.1.0 Apple source-binding checkpoint — 2026-08-30
 
