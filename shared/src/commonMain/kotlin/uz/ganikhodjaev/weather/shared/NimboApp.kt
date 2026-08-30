@@ -84,11 +84,7 @@ fun NimboApp(platformContext: PlatformContext) {
     val state by stateHolder.state.collectAsState()
     val isForeground by rememberAppIsForeground(platformContext)
     val searchLanguage = Locale.current.language.lowercase()
-    val layoutDirection = if (Locale.current.language in RTL_LANGUAGES) {
-        LayoutDirection.Rtl
-    } else {
-        LayoutDirection.Ltr
-    }
+    val layoutDirection = layoutDirectionForLanguage(Locale.current.language)
 
     LaunchedEffect(stateHolder) {
         stateHolder.start()
@@ -193,6 +189,9 @@ private fun NimboStartupFailure(platformContext: PlatformContext, onRetry: () ->
         }
     }
 }
+
+internal fun layoutDirectionForLanguage(language: String): LayoutDirection =
+    if (language.lowercase() in RTL_LANGUAGES) LayoutDirection.Rtl else LayoutDirection.Ltr
 
 private val RTL_LANGUAGES = setOf("ar", "fa", "he", "ur")
 private const val FOREGROUND_REFRESH_CHECK_INTERVAL_MILLIS = 15 * 60 * 1_000L

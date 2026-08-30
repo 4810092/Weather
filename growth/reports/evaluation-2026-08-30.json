@@ -3,7 +3,7 @@
   "as_of": "2026-08-30",
   "checkpoint_90_day": "2026-11-26",
   "checkpoint_due": false,
-  "latest_weekly_period_end": null,
+  "latest_weekly_period_end": "2026-08-24",
   "top10_goal": {
     "as_of_snapshot_present": true,
     "current_config_fingerprint": "0e01ef38f36f6f478fd8b61acdcc01c6aabb70043777944868882180728bcf36",
@@ -46,7 +46,7 @@
         "value": null,
         "operator": ">=",
         "target": 35.0,
-        "denominator": null,
+        "denominator": 0.0,
         "minimum_denominator": 500.0,
         "sufficient": false,
         "status": "unknown"

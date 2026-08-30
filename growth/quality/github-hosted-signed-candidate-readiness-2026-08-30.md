@@ -1,7 +1,7 @@
 # GitHub-hosted signed-candidate readiness — 2026-08-30
 
-Status: **IMPLEMENTED AND STATICALLY VERIFIED; NOT EXECUTED; 0/3 SIGNED
-ARTIFACTS BYTE-VERIFIED**.
+Status: **IMPLEMENTED; PROTECTED ENVIRONMENT CREATED; 0/8 SECRETS;
+NOT EXECUTED; 0/3 SIGNED ARTIFACTS BYTE-VERIFIED**.
 
 ## CI placement decision
 
@@ -16,6 +16,14 @@ retention remains one day for unsigned inputs and seven days for the verified
 candidate/receipt to bound the separate storage allowance. Local Apple
 hardware is reserved for physical-device QA and bounded credential export,
 not routine CI.
+
+At `2026-08-30 09:44 +05:00`, the repository's `release-signing`
+environment was created and restricted to protected branches only. GitHub's
+public repository API independently reports `master` as protected, matching
+the workflow's fail-closed `refs/heads/master` condition. The environment has
+zero secrets and zero variables; this closes configuration placement only,
+not credential access or signing. See
+[github-release-signing-environment-2026-08-30.md](github-release-signing-environment-2026-08-30.md).
 
 ## Implemented boundary
 
@@ -139,9 +147,10 @@ Google Play, submit for review, release, or prove public availability.
 ## Current blocker
 
 The workflow has not been dispatched or completed, and no signed candidate
-tarball or receipt exists. The unsigned job does not need secrets; the
-`sign-verify` job cannot complete until the `release-signing` environment
-secrets are provisioned.
+tarball or receipt exists. The branch-restricted `release-signing` environment
+now exists, but all eight required secrets are absent. The unsigned job does
+not need secrets; the `sign-verify` job cannot complete until those secrets are
+provisioned.
 The local login Keychain remains locked: protected Android credential reads
 return `errSecAuthFailed`, and a real disposable Apple Mach-O signing operation
 with the installed pinned identity returns `errSecInternalComponent`. Current
@@ -150,7 +159,7 @@ cannot be completed through that CLI session.
 
 The necessary human action is only to unlock the macOS login Keychain and
 reauthorize GitHub locally; no password or private key should be sent in chat.
-After that, the existing inputs can be exported directly into the protected
-environment, the hosted workflow can run, and its receipt can drive a separate
-manifest-promotion commit. Until then, the authoritative manifest remains
-blocked and the byte-verification count remains `0/3`.
+After that, the existing inputs can be exported directly into the existing
+protected environment, the hosted workflow can run, and its receipt can drive
+a separate manifest-promotion commit. Until then, the authoritative manifest
+remains blocked and the byte-verification count remains `0/3`.

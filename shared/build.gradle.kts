@@ -20,6 +20,10 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
         withHostTestBuilder {}.configure {}
+        withDeviceTest {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            execution = "HOST"
+        }
     }
 
     val iosTargets = listOf(iosArm64(), iosSimulatorArm64())
@@ -56,6 +60,11 @@ kotlin {
         }
         getByName("androidHostTest").dependencies {
             implementation(libs.sqldelight.sqlite.driver)
+        }
+        getByName("androidDeviceTest").dependencies {
+            implementation(kotlin("test-junit"))
+            implementation(libs.androidx.test.runner)
+            implementation(libs.compose.ui.test)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

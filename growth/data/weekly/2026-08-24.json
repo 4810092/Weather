@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "week_start": "2026-08-18",
+  "week_end": "2026-08-24",
+  "source_file": "2026-08-18_2026-08-24-google-play-console.csv",
+  "records": [
+    {
+      "week_start": "2026-08-18",
+      "week_end": "2026-08-24",
+      "platform": "google",
+      "storefront": "UZ",
+      "source_scope": "summary",
+      "device": "all",
+      "app_version": "all",
+      "metric": "google_store_listing_visitors",
+      "unit": "count",
+      "source_ref": "Play Console > Nimbo > Store listings > Performance in Google Play > Installs > 2026-08-18..2026-08-24 > Country: Uzbekistan > Visitors",
+      "source_as_of": "2026-08-30",
+      "notes": "Aggregate non-PII export; zero visitor denominator means UZ CTR is unknown; visitor screen was visually confirmed before the install-click export",
+      "value": 0
+    },
+    {
+      "week_start": "2026-08-18",
+      "week_end": "2026-08-24",
+      "platform": "google",
+      "storefront": "UZ",
+      "source_scope": "summary",
+      "device": "all",
+      "app_version": "all",
+      "metric": "google_unique_user_install_clicks",
+      "unit": "count",
+      "source_ref": "Play Console > Nimbo > Store listings > Performance in Google Play > Installs > 2026-08-18..2026-08-24 > Country: Uzbekistan > Unique users who clicked Install",
+      "source_as_of": "2026-08-30",
+      "notes": "Aggregate non-PII export SHA-256 c796172c749fca71399ef6b51ded6e304e76309fc5886b6899e35b7889c8cdea; zero visitor denominator means UZ CTR is unknown",
+      "value": 0
+    },
+    {
+      "week_start": "2026-08-18",
+      "week_end": "2026-08-24",
+      "platform": "google",
+      "storefront": "ALL",
+      "source_scope": "summary",
+      "device": "all",
+      "app_version": "all",
+      "metric": "google_store_listing_visitors",
+      "unit": "count",
+      "source_ref": "https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/store-listings?metric=METRIC_REACH&dateRange=2026_08_18-2026_08_24&tableVisible=true&detailedMetric=STORE_LISTING_MEASURE_TYPE_KEY_METRIC&dimension=TRAFFIC_SOURCE",
+      "source_as_of": "2026-08-30",
+      "notes": "Aggregate non-PII export SHA-256 dd8c5fd5d956d924682e3e3191c3c7d3d3701d07ce2de6cea072709d2abc92e1",
+      "value": 26
+    },
+    {
+      "week_start": "2026-08-18",
+      "week_end": "2026-08-24",
+      "platform": "google",
+      "storefront": "ALL",
+      "source_scope": "summary",
+      "device": "all",
+      "app_version": "all",
+      "metric": "google_unique_user_install_clicks",
+      "unit": "count",
+      "source_ref": "https://play.google.com/console/u/0/developers/5513021445726079938/app/4975846491997599461/store-listings?metric=METRIC_ACQUISITION&dateRange=2026_08_18-2026_08_24&tableVisible=true&detailedMetric=STORE_LISTING_MEASURE_TYPE_KEY_METRIC&dimension=TRAFFIC_SOURCE",
+      "source_as_of": "2026-08-30",
+      "notes": "Aggregate non-PII export SHA-256 1d2e87147bb430c475a26c9cfd1fe9021bbd817c10f70b5469f42c4fa2d459cc",
+      "value": 11
+    }
+  ],
+  "derived_metrics": [
+    {
+      "week_start": "2026-08-18",
+      "week_end": "2026-08-24",
+      "platform": "google",
+      "storefront": "ALL",
+      "source_scope": "summary",
+      "device": "all",
+      "app_version": "all",
+      "metric": "google_store_listing_ctr_pct_derived",
+      "value": 42.31,
+      "unit": "percent",
+      "numerator_metric": "google_unique_user_install_clicks",
+      "denominator_metric": "google_store_listing_visitors"
+    }
+  ],
+  "warnings": [],
+  "decision_exclusions": [],
+  "coverage": {
+    "platforms": [
+      "google"
+    ],
+    "storefronts": [
+      "ALL",
+      "UZ"
+    ],
+    "source_scopes": [
+      "summary"
+    ],
+    "devices": [
+      "all"
+    ],
+    "app_versions": [
+      "all"
+    ]
+  },
+  "caveats": [
+    "Usage and retention populations can differ by store and opt-in status.",
+    "Point-in-time ratings and policy values are not additive across breakdown rows.",
+    "Missing metrics are unknown, not zero."
+  ]
+}
