@@ -53,7 +53,15 @@ jobs:
           )"
           source_root="$RUNNER_TEMP/nimbo-release-source"
           unsigned_root="$RUNNER_TEMP/nimbo-unsigned-inputs"
-          git worktree add --detach "$source_root" "$source_revision"
+          git clone --quiet --no-local --no-checkout --no-tags \
+            "$GITHUB_WORKSPACE" \
+            "$source_root"
+          git -C "$source_root" checkout --quiet --detach "$source_revision"
+          git -C "$source_root" remote remove origin
+          [[ -d "$source_root/.git" ]]
+          [[ ! -e "$source_root/.git/objects/info/alternates" ]]
+          [[ "$(git -C "$source_root" rev-parse --verify 'HEAD^{commit}')" == "$source_revision" ]]
+          [[ -z "$(git -C "$source_root" status --porcelain=v1 --untracked-files=all)" ]]
           install -d -m 700 "$unsigned_root"
           {
             echo "NIMBO_SOURCE_REVISION=$source_revision"
@@ -72,6 +80,61 @@ jobs:
           print(f"apple_filename={artifacts['apple']['filename']}")
           PY
 
+      - name: Validate and seal exact release inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$NIMBO_SOURCE_ROOT"
+          release_source_paths=(
+            androidSurfaceContract
+            app
+            shared
+            wearApp
+            iosApp
+            build.gradle.kts
+            settings.gradle.kts
+            gradle.properties
+            gradle
+            gradlew
+            gradlew.bat
+          )
+          release_generated_paths=(
+            ':(exclude)androidSurfaceContract/build/**'
+            ':(exclude)app/build/**'
+            ':(exclude)shared/build/**'
+            ':(exclude)wearApp/build/**'
+            ':(exclude)iosApp/build/**'
+            ':(exclude)**/.cxx/**'
+            ':(exclude)**/.externalNativeBuild/**'
+            ':(exclude)**/.DS_Store'
+            ':(exclude)iosApp/**/xcuserdata/**'
+            ':(exclude)iosApp/**/DerivedData/**'
+          )
+          for forbidden_gradle_override in \
+            '--write-verification-metadata' \
+            '--dependency-verification' \
+            'org.gradle.dependency.verification'; do
+            if git grep --quiet --fixed-strings \
+              -e "$forbidden_gradle_override" \
+              -- "${release_source_paths[@]}"; then
+              echo "release inputs must not override Gradle dependency verification" >&2
+              exit 1
+            else
+              grep_status=$?
+              [[ "$grep_status" == "1" ]]
+            fi
+          done
+          git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" -- \
+            "${release_source_paths[@]}" \
+            "${release_generated_paths[@]}"
+          untracked="$RUNNER_TEMP/nimbo-release-inputs-untracked-before"
+          git ls-files --others -z -- \
+            "${release_source_paths[@]}" \
+            "${release_generated_paths[@]}" \
+            > "$untracked"
+          [[ ! -s "$untracked" ]]
+          rm -f -- "$untracked"
+
       - name: Build exact-source Android phone and Wear bundles
         shell: bash
         run: |
@@ -88,6 +151,39 @@ jobs:
             :wearApp:lintRelease \
             :app:bundleRelease \
             :wearApp:bundleRelease
+          python3 -I - "$NIMBO_SOURCE_REVISION" \
+            app/build/outputs/bundle/release/app-release.aab \
+            wearApp/build/outputs/bundle/release/wearApp-release.aab <<'PY'
+          import sys
+          import zipfile
+          from pathlib import Path
+
+          revision = sys.argv[1]
+          expected = (
+              "repositories {\n"
+              "  system: GIT\n"
+              '  local_root_path: "$PROJECT_DIR"\n'
+              f'  revision: "{revision}"\n'
+              "}\n"
+          ).encode()
+          metadata_path = "base/root/META-INF/version-control-info.textproto"
+          for argument in sys.argv[2:]:
+              bundle = Path(argument)
+              with zipfile.ZipFile(bundle) as archive:
+                  matches = [
+                      entry for entry in archive.infolist()
+                      if entry.filename == metadata_path
+                  ]
+                  if len(matches) != 1:
+                      raise SystemExit(
+                          f"{bundle}: expected exactly one {metadata_path} entry"
+                      )
+                  payload = archive.read(matches[0])
+              if payload != expected:
+                  raise SystemExit(
+                      f"{bundle}: embedded Git revision is missing or not exact"
+                  )
+          PY
 
       - name: Build exact-source unsigned Apple archive
         shell: bash
@@ -103,6 +199,61 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             NIMBO_SOURCE_REVISION="$NIMBO_SOURCE_REVISION" \
             archive
+
+      - name: Verify exact release inputs remained sealed
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$NIMBO_SOURCE_ROOT"
+          release_source_paths=(
+            androidSurfaceContract
+            app
+            shared
+            wearApp
+            iosApp
+            build.gradle.kts
+            settings.gradle.kts
+            gradle.properties
+            gradle
+            gradlew
+            gradlew.bat
+          )
+          release_generated_paths=(
+            ':(exclude)androidSurfaceContract/build/**'
+            ':(exclude)app/build/**'
+            ':(exclude)shared/build/**'
+            ':(exclude)wearApp/build/**'
+            ':(exclude)iosApp/build/**'
+            ':(exclude)**/.cxx/**'
+            ':(exclude)**/.externalNativeBuild/**'
+            ':(exclude)**/.DS_Store'
+            ':(exclude)iosApp/**/xcuserdata/**'
+            ':(exclude)iosApp/**/DerivedData/**'
+          )
+          for forbidden_gradle_override in \
+            '--write-verification-metadata' \
+            '--dependency-verification' \
+            'org.gradle.dependency.verification'; do
+            if git grep --quiet --fixed-strings \
+              -e "$forbidden_gradle_override" \
+              -- "${release_source_paths[@]}"; then
+              echo "release inputs must not override Gradle dependency verification" >&2
+              exit 1
+            else
+              grep_status=$?
+              [[ "$grep_status" == "1" ]]
+            fi
+          done
+          git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" -- \
+            "${release_source_paths[@]}" \
+            "${release_generated_paths[@]}"
+          untracked="$RUNNER_TEMP/nimbo-release-inputs-untracked-after"
+          git ls-files --others -z -- \
+            "${release_source_paths[@]}" \
+            "${release_generated_paths[@]}" \
+            > "$untracked"
+          [[ ! -s "$untracked" ]]
+          rm -f -- "$untracked"
 
       - name: Package inert unsigned build outputs
         shell: bash
@@ -136,13 +287,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Remove unsigned build worktree
+      - name: Remove unsigned build clone
         if: always()
         shell: bash
         run: |
           set +e
           if [[ -n "${NIMBO_SOURCE_ROOT:-}" && "$NIMBO_SOURCE_ROOT" == "$RUNNER_TEMP/nimbo-release-source" ]]; then
-            git worktree remove --force "$NIMBO_SOURCE_ROOT"
+            rm -rf -- "$NIMBO_SOURCE_ROOT"
           fi
 
   sign-verify:
@@ -263,6 +414,37 @@ jobs:
               archive.extractall(destination, filter="data")
           if {entry.name for entry in destination.iterdir()} != expected_roots:
               raise SystemExit("unsigned-input archive inventory mismatch")
+          export_options = dict([
+              ("destination", "export"),
+              ("manageAppVersionAndBuildNumber", False),
+              ("method", "app-store-connect"),
+              ("provisioningProfiles", dict([
+                  ("uz.ganikhodjaev.weather", (
+                      "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather"
+                  )),
+                  ("uz.ganikhodjaev.weather.watchkitapp", (
+                      "iOS Team Store Provisioning Profile: "
+                      "uz.ganikhodjaev.weather.watchkitapp"
+                  )),
+                  ("uz.ganikhodjaev.weather.widget", (
+                      "iOS Team Store Provisioning Profile: "
+                      "uz.ganikhodjaev.weather.widget"
+                  )),
+              ])),
+              ("signingCertificate", "Apple Distribution"),
+              ("signingStyle", "manual"),
+              ("teamID", "5SWEZ7HTYP"),
+              ("uploadSymbols", True),
+          ])
+          import plistlib
+
+          actual_export_options = plistlib.loads(
+              (destination / "ExportOptions.plist").read_bytes()
+          )
+          if actual_export_options != export_options:
+              raise SystemExit(
+                  "ExportOptions.plist differs from the non-upload canonical contract"
+              )
           PY
           {
             echo "NIMBO_SOURCE_REVISION=$source_revision"

@@ -7,7 +7,37 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "872ec9312db6df160b4100d4e43e70590aeb96d1b73b0a201edaab4164de7c11"
+WORKFLOW_SHA256 = "fb493d2952e5404d8bc950bfefb1e514589304dd13636f6f29dde8786e8db16f"
+FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
+    "--write-verification-metadata",
+    "--dependency-verification",
+    "org.gradle.dependency.verification",
+)
+RELEASE_SOURCE_PATHS = (
+    "androidSurfaceContract",
+    "app",
+    "shared",
+    "wearApp",
+    "iosApp",
+    "build.gradle.kts",
+    "settings.gradle.kts",
+    "gradle.properties",
+    "gradle",
+    "gradlew",
+    "gradlew.bat",
+)
+RELEASE_GENERATED_PATHS = (
+    ":(exclude)androidSurfaceContract/build/**",
+    ":(exclude)app/build/**",
+    ":(exclude)shared/build/**",
+    ":(exclude)wearApp/build/**",
+    ":(exclude)iosApp/build/**",
+    ":(exclude)**/.cxx/**",
+    ":(exclude)**/.externalNativeBuild/**",
+    ":(exclude)**/.DS_Store",
+    ":(exclude)iosApp/**/xcuserdata/**",
+    ":(exclude)iosApp/**/DerivedData/**",
+)
 REPOSITORY_GUARD = (
     "github.repository == '4810092/Weather' && "
     "github.ref == 'refs/heads/master'"
@@ -81,11 +111,13 @@ BUILD_STEP_INVENTORY = [
     ("uses", "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1"),
     ("uses", "gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb"),
     ("name", "Resolve exact release source and unsigned staging paths"),
+    ("name", "Validate and seal exact release inputs"),
     ("name", "Build exact-source Android phone and Wear bundles"),
     ("name", "Build exact-source unsigned Apple archive"),
+    ("name", "Verify exact release inputs remained sealed"),
     ("name", "Package inert unsigned build outputs"),
     ("uses", "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"),
-    ("name", "Remove unsigned build worktree"),
+    ("name", "Remove unsigned build clone"),
 ]
 SIGN_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
@@ -122,14 +154,16 @@ REVIEWED_VERIFIER_SHA256 = {
     "release_artifact_verifier.py": "8b99c81951002b19cb6d0c096871e36f222ec2df6fac762603442e194fc41a99",
 }
 BUILD_RUN_SHA256 = {
-    "Resolve exact release source and unsigned staging paths": "b91ac3ced614e9d6ebdecd67a05531aa5a0900d086cfbd8a30ca336575559906",
-    "Build exact-source Android phone and Wear bundles": "1781c73a39f3b3952c97086ea02e7040af0ec5c5183875516342350aaf00fa10",
+    "Resolve exact release source and unsigned staging paths": "e7f591227861f1cb074317294a06906ff7da5e27e8c7c022f42e7a2244aef940",
+    "Validate and seal exact release inputs": "7c00fc4d079d5c75364d017f12a87fe858905d7af1b16f8c44a64db13b897629",
+    "Build exact-source Android phone and Wear bundles": "4434b4ee00d860ab3c1777257197196d1933e55cfb5704d34a911d42c302e1dd",
     "Build exact-source unsigned Apple archive": "2cbd799de05ca85a6f7027b3efacbe6706ee7ba8d5fe885f25a02f6f20f1c249",
+    "Verify exact release inputs remained sealed": "123e3558cc2a8f57afadcdf136210160f033b7195f21e5444e8ffc425bf01ec7",
     "Package inert unsigned build outputs": "4fed4cdb3bf2d514f0c4f57468527629a28466288e5dd71ea64cee150260051e",
-    "Remove unsigned build worktree": "31823bf4471aee3192e3627853b12ba465d70e4fc1cc64c9a978b40a3b460c2f",
+    "Remove unsigned build clone": "e76ab6f50b0eab2675461657cb4d3ce9e767cd4c481ca5206ac97222680a3ee5",
 }
 SIGN_RUN_SHA256 = {
-    "Validate and unpack inert unsigned inputs": "a657e8d3922a64b03d14b72a36447116502042a7c07650dcd85c2f0437cc0257",
+    "Validate and unpack inert unsigned inputs": "4b9e8b6524645706abf760aa18d3e4e44688cd4a4d59afc3615a442aa1f2c2fc",
     "Fetch pinned Bundletool": "8654644e5fab003fd6b3e98bd8b61d3e9f1f7f1bf76fa290458095bc9875cc79",
     "Decode protected signing material outside the checkout": "f2485c2e40ade88500f2b583a7226a970553dce44a851b4c4ba92de6b35bc9ac",
     "Upload-sign Android phone and Wear bundles": "fced7db2bc082b396bd326021a2a0adcc860932d32aa1a63c271d8141f23a9bc",
@@ -302,10 +336,57 @@ def validate_signed_candidate_workflow(text: str) -> list[str]:
             failures.append(f"{job_name} must use the standard macos-26 runner")
     if "secrets." in "\n".join(build) or "secrets[" in "\n".join(build):
         failures.append("unsigned build job must never reference secrets")
+    build_text = "\n".join(build)
+    if (
+        build_text.count("git clone --quiet --no-local --no-checkout --no-tags")
+        != 1
+        or "git worktree add --detach" in build_text
+        or build_text.count('[[ -d "$source_root/.git" ]]') != 1
+        or build_text.count(
+            '[[ ! -e "$source_root/.git/objects/info/alternates" ]]'
+        )
+        != 1
+    ):
+        failures.append(
+            "unsigned build source must be an exact standalone non-local Git clone"
+        )
+    for forbidden_override in FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES:
+        if build_text.count(f"'{forbidden_override}'") != 2:
+            failures.append(
+                "release input gates must forbid every Gradle verification override"
+            )
+    if build_text.count('[[ "$grep_status" == "1" ]]') != 2:
+        failures.append(
+            "release input override scans must fail closed on Git errors"
+        )
+    if (
+        build_text.count(
+            'git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" --'
+        )
+        != 2
+        or build_text.count("git ls-files --others -z --") != 2
+    ):
+        failures.append(
+            "release input gates must compare the complete source state before packaging"
+        )
     signing_text = "\n".join(signing)
     if "python3 scripts/" in signing_text or 'python3 "$GITHUB_WORKSPACE/scripts/' in signing_text:
         failures.append(
             "signing job must not execute mutable repository Python directly"
+        )
+    pre_secret_validation = _step_block(
+        signing, "Validate and unpack inert unsigned inputs"
+    )
+    pre_secret_text = (
+        "\n".join(pre_secret_validation) if pre_secret_validation is not None else ""
+    )
+    if (
+        pre_secret_text.count('("destination", "export")') != 1
+        or "actual_export_options != export_options" not in pre_secret_text
+        or "non-upload canonical contract" not in pre_secret_text
+    ):
+        failures.append(
+            "pre-secret validation must enforce the canonical non-upload export options"
         )
 
     uses = [
@@ -416,8 +497,15 @@ def validate_signed_candidate_workflow(text: str) -> list[str]:
         failures.append("signing cleanup must be the final step")
 
     required_markers = (
+        "git clone --quiet --no-local --no-checkout --no-tags",
         "git worktree add --detach",
+        "Validate and seal exact release inputs",
+        "Verify exact release inputs remained sealed",
+        "release inputs must not override Gradle dependency verification",
         "CODE_SIGNING_ALLOWED=NO",
+        "base/root/META-INF/version-control-info.textproto",
+        '("destination", "export")',
+        "ExportOptions.plist differs from the non-upload canonical contract",
         "runpy.run_path(str(script), run_name=\"__main__\")",
         "--package-output \"$NIMBO_PACKAGE_ROOT/signed-candidate-bytes.tar.gz\"",
         "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa",

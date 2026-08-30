@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import plistlib
+import subprocess
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from scripts.signed_candidate_workflow_security import (
+    FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES,
+    RELEASE_SOURCE_PATHS,
     validate_signed_candidate_workflow,
 )
 
@@ -253,6 +257,126 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
                 1,
             ),
             "unsigned build run block differs from policy",
+        )
+
+    def test_unsigned_build_requires_a_standalone_non_local_clone(self) -> None:
+        self.assert_rejected(
+            self.workflow.replace(
+                "git clone --quiet --no-local --no-checkout --no-tags",
+                "git clone --quiet --local --no-checkout --no-tags",
+                1,
+            ),
+            "standalone non-local Git clone",
+        )
+
+    def test_android_bundle_vcs_provenance_check_is_immutable(self) -> None:
+        self.assert_rejected(
+            self.workflow.replace(
+                "base/root/META-INF/version-control-info.textproto",
+                "base/root/META-INF/ignored.textproto",
+                1,
+            ),
+            "unsigned build run block differs from policy",
+        )
+
+    def test_every_gradle_verification_override_ban_is_immutable(self) -> None:
+        for forbidden_override in FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES:
+            with self.subTest(forbidden_override=forbidden_override):
+                self.assert_rejected(
+                    self.workflow.replace(
+                        f"'{forbidden_override}'",
+                        "'--harmless-placeholder'",
+                        1,
+                    ),
+                    "forbid every Gradle verification override",
+                )
+
+    def test_post_build_complete_source_comparison_is_immutable(self) -> None:
+        marker = "      - name: Verify exact release inputs remained sealed\n"
+        prefix, post_build = self.workflow.split(marker, 1)
+        mutated_post_build = post_build.replace(
+            '          git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" -- \\\n',
+            "          true # source mutation ignored\n",
+            1,
+        )
+        self.assert_rejected(
+            prefix + marker + mutated_post_build,
+            "compare the complete source state before packaging",
+        )
+
+    def test_release_input_scan_git_errors_are_not_accepted(self) -> None:
+        self.assert_rejected(
+            self.workflow.replace(
+                '              [[ "$grep_status" == "1" ]]\n',
+                "              true # accept every git-grep failure\n",
+                1,
+            ),
+            "fail closed on Git errors",
+        )
+
+    def test_tracked_release_inputs_forbid_gradle_verification_overrides(self) -> None:
+        self.assertIn("iosApp", RELEASE_SOURCE_PATHS)
+        self.assertTrue(
+            (ROOT / "iosApp/Nimbo.xcodeproj/project.pbxproj").is_file()
+        )
+        for forbidden_override in FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES:
+            with self.subTest(forbidden_override=forbidden_override):
+                result = subprocess.run(
+                    [
+                        "git",
+                        "grep",
+                        "-n",
+                        "--fixed-strings",
+                        "-e",
+                        forbidden_override,
+                        "--",
+                        *RELEASE_SOURCE_PATHS,
+                    ],
+                    cwd=ROOT,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+
+    def test_upload_destination_is_rejected_before_secrets(self) -> None:
+        self.assert_rejected(
+            self.workflow.replace(
+                '(\"destination\", \"export\")',
+                '(\"destination\", \"upload\")',
+                1,
+            ),
+            "canonical non-upload export options",
+        )
+
+    def test_repository_export_options_are_exact_non_upload_contract(self) -> None:
+        actual = plistlib.loads(
+            (ROOT / "iosApp/ExportOptions.plist").read_bytes()
+        )
+        self.assertEqual(
+            actual,
+            {
+                "destination": "export",
+                "manageAppVersionAndBuildNumber": False,
+                "method": "app-store-connect",
+                "provisioningProfiles": {
+                    "uz.ganikhodjaev.weather": (
+                        "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather"
+                    ),
+                    "uz.ganikhodjaev.weather.watchkitapp": (
+                        "iOS Team Store Provisioning Profile: "
+                        "uz.ganikhodjaev.weather.watchkitapp"
+                    ),
+                    "uz.ganikhodjaev.weather.widget": (
+                        "iOS Team Store Provisioning Profile: "
+                        "uz.ganikhodjaev.weather.widget"
+                    ),
+                },
+                "signingCertificate": "Apple Distribution",
+                "signingStyle": "manual",
+                "teamID": "5SWEZ7HTYP",
+                "uploadSymbols": True,
+            },
         )
 
     def test_final_upload_path_expansion_is_rejected(self) -> None:
