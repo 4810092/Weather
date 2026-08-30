@@ -127,6 +127,119 @@ jobs:
           git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" -- \
             "${release_source_paths[@]}" \
             "${release_generated_paths[@]}"
+          python3 -I - "$NIMBO_SOURCE_REVISION" "${release_source_paths[@]}" <<'PY'
+          import os
+          import stat
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          revision = sys.argv[1]
+          source_paths = sys.argv[2:]
+
+          def git(arguments: list[str]) -> bytes:
+              result = subprocess.run(
+                  ["git"] + arguments,
+                  check=False,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+              )
+              if result.returncode != 0:
+                  detail = os.fsdecode(result.stderr).strip() or str(result.returncode)
+                  raise SystemExit(
+                      "git {} failed while sealing source".format(" ".join(arguments))
+                      + ": "
+                      + detail
+                  )
+              return result.stdout
+
+          index_records = git(
+              ["ls-files", "-v", "-z", "--"] + source_paths
+          ).split(b"\0")
+          unsafe_flags = []
+          for record in index_records:
+              if not record:
+                  continue
+              marker, separator, raw_path = record.partition(b" ")
+              if separator != b" " or marker != b"H":
+                  unsafe_flags.append(
+                      "{}{}{}".format(
+                          os.fsdecode(marker) or "?",
+                          ":",
+                          os.fsdecode(raw_path or record),
+                      )
+                  )
+          if unsafe_flags:
+              raise SystemExit(
+                  "unsafe release-source index flags: " + ", ".join(unsafe_flags[:8])
+              )
+
+          tree_entries = []
+          for record in git(
+              ["ls-tree", "-r", "-z", "--full-tree", revision, "--"]
+              + source_paths
+          ).split(b"\0"):
+              if not record:
+                  continue
+              metadata, separator, raw_path = record.partition(b"\t")
+              parts = metadata.split(b" ")
+              if separator != b"\t" or len(parts) != 3:
+                  raise SystemExit("cannot parse committed release-source tree")
+              mode, object_type, object_id = (os.fsdecode(part) for part in parts)
+              tree_entries.append(
+                  (mode, object_type, object_id, os.fsdecode(raw_path))
+              )
+          committed_paths = [entry[3] for entry in tree_entries]
+          tracked_paths = [
+              os.fsdecode(path)
+              for path in git(["ls-files", "-z", "--"] + source_paths).split(b"\0")
+              if path
+          ]
+          if set(tracked_paths) != set(committed_paths):
+              raise SystemExit(
+                  "tracked release-source path set differs from authority revision"
+              )
+
+          actual_ids = [
+              os.fsdecode(object_id)
+              for object_id in git(
+                  ["hash-object", "--no-filters", "--"] + committed_paths
+              ).splitlines()
+              if object_id
+          ]
+          if len(actual_ids) != len(tree_entries):
+              raise SystemExit("actual release-source hash inventory is incomplete")
+          for (mode, object_type, object_id, path), actual_id in zip(
+              tree_entries, actual_ids, strict=True
+          ):
+              if object_type != "blob" or mode not in {
+                  "100644",
+                  "100755",
+                  "120000",
+              }:
+                  raise SystemExit(
+                      "unsupported release-source mode"
+                      + ": "
+                      + "{}{}{}".format(path, ":", mode)
+                  )
+              if actual_id != object_id:
+                  raise SystemExit(
+                      "actual release-source bytes differ from authority revision: "
+                      + path
+                  )
+              candidate_mode = Path(path).lstat().st_mode
+              if mode == "120000":
+                  valid_mode = stat.S_ISLNK(candidate_mode)
+              else:
+                  valid_mode = stat.S_ISREG(candidate_mode) and (
+                      bool(candidate_mode & 0o111) == (mode == "100755")
+                  )
+              if not valid_mode:
+                  raise SystemExit(
+                      "actual release-source mode differs from authority revision: "
+                      + path
+                  )
+          PY
           untracked="$RUNNER_TEMP/nimbo-release-inputs-untracked-before"
           git ls-files --others -z -- \
             "${release_source_paths[@]}" \
@@ -247,6 +360,119 @@ jobs:
           git diff --quiet --no-ext-diff "$NIMBO_SOURCE_REVISION" -- \
             "${release_source_paths[@]}" \
             "${release_generated_paths[@]}"
+          python3 -I - "$NIMBO_SOURCE_REVISION" "${release_source_paths[@]}" <<'PY'
+          import os
+          import stat
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          revision = sys.argv[1]
+          source_paths = sys.argv[2:]
+
+          def git(arguments: list[str]) -> bytes:
+              result = subprocess.run(
+                  ["git"] + arguments,
+                  check=False,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+              )
+              if result.returncode != 0:
+                  detail = os.fsdecode(result.stderr).strip() or str(result.returncode)
+                  raise SystemExit(
+                      "git {} failed while sealing source".format(" ".join(arguments))
+                      + ": "
+                      + detail
+                  )
+              return result.stdout
+
+          index_records = git(
+              ["ls-files", "-v", "-z", "--"] + source_paths
+          ).split(b"\0")
+          unsafe_flags = []
+          for record in index_records:
+              if not record:
+                  continue
+              marker, separator, raw_path = record.partition(b" ")
+              if separator != b" " or marker != b"H":
+                  unsafe_flags.append(
+                      "{}{}{}".format(
+                          os.fsdecode(marker) or "?",
+                          ":",
+                          os.fsdecode(raw_path or record),
+                      )
+                  )
+          if unsafe_flags:
+              raise SystemExit(
+                  "unsafe release-source index flags: " + ", ".join(unsafe_flags[:8])
+              )
+
+          tree_entries = []
+          for record in git(
+              ["ls-tree", "-r", "-z", "--full-tree", revision, "--"]
+              + source_paths
+          ).split(b"\0"):
+              if not record:
+                  continue
+              metadata, separator, raw_path = record.partition(b"\t")
+              parts = metadata.split(b" ")
+              if separator != b"\t" or len(parts) != 3:
+                  raise SystemExit("cannot parse committed release-source tree")
+              mode, object_type, object_id = (os.fsdecode(part) for part in parts)
+              tree_entries.append(
+                  (mode, object_type, object_id, os.fsdecode(raw_path))
+              )
+          committed_paths = [entry[3] for entry in tree_entries]
+          tracked_paths = [
+              os.fsdecode(path)
+              for path in git(["ls-files", "-z", "--"] + source_paths).split(b"\0")
+              if path
+          ]
+          if set(tracked_paths) != set(committed_paths):
+              raise SystemExit(
+                  "tracked release-source path set differs from authority revision"
+              )
+
+          actual_ids = [
+              os.fsdecode(object_id)
+              for object_id in git(
+                  ["hash-object", "--no-filters", "--"] + committed_paths
+              ).splitlines()
+              if object_id
+          ]
+          if len(actual_ids) != len(tree_entries):
+              raise SystemExit("actual release-source hash inventory is incomplete")
+          for (mode, object_type, object_id, path), actual_id in zip(
+              tree_entries, actual_ids, strict=True
+          ):
+              if object_type != "blob" or mode not in {
+                  "100644",
+                  "100755",
+                  "120000",
+              }:
+                  raise SystemExit(
+                      "unsupported release-source mode"
+                      + ": "
+                      + "{}{}{}".format(path, ":", mode)
+                  )
+              if actual_id != object_id:
+                  raise SystemExit(
+                      "actual release-source bytes differ from authority revision: "
+                      + path
+                  )
+              candidate_mode = Path(path).lstat().st_mode
+              if mode == "120000":
+                  valid_mode = stat.S_ISLNK(candidate_mode)
+              else:
+                  valid_mode = stat.S_ISREG(candidate_mode) and (
+                      bool(candidate_mode & 0o111) == (mode == "100755")
+                  )
+              if not valid_mode:
+                  raise SystemExit(
+                      "actual release-source mode differs from authority revision: "
+                      + path
+                  )
+          PY
           untracked="$RUNNER_TEMP/nimbo-release-inputs-untracked-after"
           git ls-files --others -z -- \
             "${release_source_paths[@]}" \

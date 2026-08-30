@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import os
 import plistlib
 import subprocess
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -29,6 +31,72 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
             any(needle in failure for failure in failures),
             failures,
         )
+
+    def run_source_seal_step(
+        self,
+        step_name: str,
+        repository: Path,
+        revision: str,
+        runner_temp: Path,
+    ) -> subprocess.CompletedProcess[str]:
+        lines = self.workflow.splitlines()
+        header = f"      - name: {step_name}"
+        start = lines.index(header)
+        end = next(
+            (
+                index
+                for index in range(start + 1, len(lines))
+                if lines[index].startswith("      - ")
+            ),
+            len(lines),
+        )
+        step = lines[start:end]
+        run_index = step.index("        run: |")
+        script = "\n".join(line[10:] for line in step[run_index + 1 :]) + "\n"
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "NIMBO_SOURCE_ROOT": str(repository),
+                "NIMBO_SOURCE_REVISION": revision,
+                "RUNNER_TEMP": str(runner_temp),
+            }
+        )
+        return subprocess.run(
+            ["bash", "-c", script],
+            cwd=ROOT,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+    def create_source_seal_repository(self, parent: Path) -> tuple[Path, str]:
+        repository = parent / "source"
+        source = repository / "app/source.txt"
+        source.parent.mkdir(parents=True)
+        source.write_text("authority bytes\n", encoding="utf-8")
+        for arguments in (
+            ("init", "--quiet"),
+            ("config", "user.email", "security-test@example.invalid"),
+            ("config", "user.name", "Security Test"),
+            ("add", "app/source.txt"),
+            ("commit", "--quiet", "-m", "authority"),
+        ):
+            subprocess.run(
+                ["git", *arguments],
+                cwd=repository,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        revision = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=repository,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return repository, revision
 
     def test_repository_workflow_passes(self) -> None:
         self.assertEqual(validate_signed_candidate_workflow(self.workflow), [])
@@ -303,6 +371,67 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
             prefix + marker + mutated_post_build,
             "compare the complete source state before packaging",
         )
+
+    def test_both_source_seal_steps_accept_exact_clean_source(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="nimbo-source-seal-clean-") as directory:
+            root = Path(directory)
+            repository, revision = self.create_source_seal_repository(root)
+            for step_name in (
+                "Validate and seal exact release inputs",
+                "Verify exact release inputs remained sealed",
+            ):
+                with self.subTest(step_name=step_name):
+                    result = self.run_source_seal_step(
+                        step_name,
+                        repository,
+                        revision,
+                        root,
+                    )
+                    self.assertEqual(
+                        result.returncode,
+                        0,
+                        result.stdout + result.stderr,
+                    )
+
+    def test_both_source_seal_steps_reject_hidden_tracked_byte_drift(self) -> None:
+        for flag in ("--skip-worktree", "--assume-unchanged"):
+            with self.subTest(flag=flag):
+                with tempfile.TemporaryDirectory(
+                    prefix="nimbo-source-seal-hidden-drift-"
+                ) as directory:
+                    root = Path(directory)
+                    repository, revision = self.create_source_seal_repository(root)
+                    subprocess.run(
+                        ["git", "update-index", flag, "app/source.txt"],
+                        cwd=repository,
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                    )
+                    (repository / "app/source.txt").write_text(
+                        "uncommitted build-time replacement\n",
+                        encoding="utf-8",
+                    )
+                    for step_name in (
+                        "Validate and seal exact release inputs",
+                        "Verify exact release inputs remained sealed",
+                    ):
+                        with self.subTest(step_name=step_name):
+                            result = self.run_source_seal_step(
+                                step_name,
+                                repository,
+                                revision,
+                                root,
+                            )
+                            self.assertNotEqual(
+                                result.returncode,
+                                0,
+                                result.stdout + result.stderr,
+                            )
+                            self.assertIn(
+                                "unsafe release-source index flags",
+                                result.stderr,
+                            )
 
     def test_release_input_scan_git_errors_are_not_accepted(self) -> None:
         self.assert_rejected(

@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "fb493d2952e5404d8bc950bfefb1e514589304dd13636f6f29dde8786e8db16f"
+WORKFLOW_SHA256 = "11ee64e943af525a8a5f177676f886289edb9e02e0f372baae954396ff65ae81"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -155,10 +155,10 @@ REVIEWED_VERIFIER_SHA256 = {
 }
 BUILD_RUN_SHA256 = {
     "Resolve exact release source and unsigned staging paths": "e7f591227861f1cb074317294a06906ff7da5e27e8c7c022f42e7a2244aef940",
-    "Validate and seal exact release inputs": "7c00fc4d079d5c75364d017f12a87fe858905d7af1b16f8c44a64db13b897629",
+    "Validate and seal exact release inputs": "37d37396443480fa2e7ab29160867b13441a393d4d9eca9cd4e3a6ee9792dc2b",
     "Build exact-source Android phone and Wear bundles": "4434b4ee00d860ab3c1777257197196d1933e55cfb5704d34a911d42c302e1dd",
     "Build exact-source unsigned Apple archive": "2cbd799de05ca85a6f7027b3efacbe6706ee7ba8d5fe885f25a02f6f20f1c249",
-    "Verify exact release inputs remained sealed": "123e3558cc2a8f57afadcdf136210160f033b7195f21e5444e8ffc425bf01ec7",
+    "Verify exact release inputs remained sealed": "bf482cff97dddc861c853a9047bdb6f8c6284f6d381d026125d1f7fbfd3362d8",
     "Package inert unsigned build outputs": "4fed4cdb3bf2d514f0c4f57468527629a28466288e5dd71ea64cee150260051e",
     "Remove unsigned build clone": "e76ab6f50b0eab2675461657cb4d3ce9e767cd4c481ca5206ac97222680a3ee5",
 }
@@ -368,6 +368,26 @@ def validate_signed_candidate_workflow(text: str) -> list[str]:
     ):
         failures.append(
             "release input gates must compare the complete source state before packaging"
+        )
+    if (
+        build_text.count('["ls-files", "-v", "-z", "--"] + source_paths') != 2
+        or build_text.count(
+            '["ls-tree", "-r", "-z", "--full-tree", revision, "--"]'
+        )
+        != 2
+        or build_text.count(
+            '["hash-object", "--no-filters", "--"] + committed_paths'
+        )
+        != 2
+        or build_text.count('marker != b"H"') != 2
+        or build_text.count("unsafe release-source index flags") != 2
+        or build_text.count(
+            "actual release-source bytes differ from authority revision"
+        )
+        != 2
+    ):
+        failures.append(
+            "release input gates must reject hidden index flags and hash actual source bytes"
         )
     signing_text = "\n".join(signing)
     if "python3 scripts/" in signing_text or 'python3 "$GITHUB_WORKSPACE/scripts/' in signing_text:
