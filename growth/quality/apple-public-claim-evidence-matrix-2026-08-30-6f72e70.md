@@ -1,7 +1,7 @@
 # Apple and public-claim evidence matrix — 2026-08-30
 
-Status: **PUBLIC AND CANDIDATE CLAIMS SEPARATED; PRIVACY SOURCE CORRECTED;
-DEPLOYMENT AND STORE MUTATIONS PENDING**.
+Status: **PUBLIC AND CANDIDATE CLAIMS SEPARATED; PRIVACY CORRECTION DEPLOYED
+AND VERIFIED; STORE MUTATIONS PENDING**.
 
 This audit is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. Public Apple remains
@@ -31,10 +31,13 @@ Nimbo does not collect or store rating or review text inside the app.
 
 The corrected `site/content.json` SHA-256 is
 `59915e7bb0ac70e4c27b625c9229998879bb8604b67531b3ae4782d065d46f76`.
-This is repository-source evidence only until the Pages workflow succeeds and
-the three live privacy routes are verified after propagation. Until then, the
-old public wording remains a deployment mismatch and must not be cited as
-current-product behavior.
+GitHub Pages run `33295070242` is green: build job `99213210597` completed the
+localized site and validators, and deploy job `99213248352` published it. After
+propagation, direct HTTPS reads of `https://nimbo.uz/privacy/`,
+`https://nimbo.uz/ru/privacy/`, and `https://nimbo.uz/en/privacy/` each returned
+the locale-matched version-neutral review-text statement. The previous public
+wording mismatch is closed; this proves only the deployed site copy, not a
+store listing, binary, review prompt, or release-state change.
 
 ## Store boundary
 

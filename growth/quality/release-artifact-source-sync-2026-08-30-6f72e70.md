@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-08-30 hosted UI gate
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; hosted CI pending;
-0/3 current artifacts byte-verified**.
+Status: **BLOCKED for Android phone, Wear OS, and Apple; ordinary hosted CI
+run 33295070238 failed; 0/3 current artifacts byte-verified**.
 
 The authoritative product/build-input commit is
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It resolves to Android phone
@@ -51,9 +51,37 @@ pinned to `dd06d9cba3e5552c54d9f8ea23572deb30010f7c` (`v6.0.0`) across ordinary
 and protected candidate workflows. The maintainer Mac is not a self-hosted
 runner and is reserved for local signing authorization and physical-device QA.
 
-No GitHub-hosted run exists yet for this authority. Therefore compilation and
-the configured workflow are source evidence only; no emulator test is reported
-as executed or passed for `6f72e70` until the pushed Actions run completes.
+Public GitHub Actions
+[run 33295070238](https://github.com/4810092/Weather/actions/runs/33295070238)
+executed at evidence commit
+`2390a10a676d958b70a478f47932685413d15fbc`. That commit is the direct
+evidence-only child of `6f72e70`; its release-source authority remains
+`6f72e70fff6eb7566e06dd862e1fad09055343a4`. The run concluded **failure**
+after 12m24s, so it does not close the ordinary hosted CI gate.
+
+| Job | Outcome | Bounded evidence |
+| --- | --- | --- |
+| `android-and-shared` | **PASS**, 6m32s | Repository, growth, store, localization, strict Gradle test/lint/migration, and unsigned phone/Wear release stages completed. |
+| `ios` | **PASS**, 12m21s | Shared iOS simulator tests completed in 3m28s, glanceable-surface tests in 2m29s, and unsigned app/watch simulator products in 5m49s. |
+| `Android UI (phone-api24)` | **FAIL** | Exactly five tests executed; exactly two visibility assertions failed: the Uzbek onboarding title and the Russian 200% font-scale title. |
+| `Android UI (phone-api36)` | **FAIL** | Exactly five tests executed; the same two title-visibility assertions failed. This is execution evidence, not a UI pass. |
+| `Android UI (tablet-api36)` | **FAIL before emulator start** | `/dev/kvm` existed, but the runner user lacked read/write access. No tablet emulator test execution is claimed. |
+
+The retained GitHub artifact archive digests exposed by the completed run are:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `android-ui-results-phone-api24` | `acdaaedc212791e093d164c149f91d1f8395fd1db8442379bb643b1edf5f5afd` |
+| `android-ui-results-phone-api36` | `e9824e6bf22ccada49f9aaa2bb53e46f3e3b53ead48745e18a93ceba4af6083e` |
+| `android-release-unsigned` | `96257aa2b9011c35da6a464d80d7b29c2f825c578e5d78f043b82becabc0a2a7` |
+| `wear-release-unsigned` | `da82df6006d330ee35719ee55e8a73a4542579f1defc84a09bbdbc3b5514d1d5` |
+| `ios-simulator-test-results` | `22b8fdbb7144110febd0b438d9c60452c7a33f4ebfe81a5994b16fda2967634c` |
+
+These are unsigned regression outputs or failed-test reports, not upload
+candidates. The reported inner Wear AAB digest was available only in
+abbreviated form (`2d73fdf6…d1d5`) and is therefore not promoted as an exact
+artifact identity. No run output changes the upload manifest or transfers
+predecessor physical-device evidence to this authority.
 
 ## Current artifact authority
 
@@ -69,8 +97,10 @@ and device results from predecessor revisions remain non-transferable.
 
 ## Remaining unblock
 
-1. Obtain a green ordinary hosted CI run for this exact authority, including
-   all three Android UI matrix jobs and the existing Android/iOS jobs.
+1. Correct the two phone visibility assertions and the standard-runner KVM
+   permission setup, then obtain a green ordinary hosted CI rerun for the new
+   exact release-source authority, including all three Android UI matrix jobs
+   and the existing Android/iOS jobs.
 2. Unlock the existing login Keychain locally, then provision the eight
    existing signing inputs into the branch-restricted `release-signing`
    environment without sending credentials through chat.
