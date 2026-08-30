@@ -5,7 +5,7 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
@@ -37,8 +37,15 @@ watch provisioning profiles. The two Android passwords, Apple distribution
 P12, and its transport password remain absent; the signed workflow has not run
 and no signed candidate was produced. Local Keychain authorization still
 rejects Android password reads and Apple private-key use, so the authoritative
-result remains `0/3` byte-verified. The prior `9c2dce4` debug API 24/API 25/API
-36, Apple simulator,
+result remains `0/3` byte-verified. Exact product source `2cdd438` now also has
+a bounded clean physical General Mobile API 25 debug pass: denied approximate
+location, Bukhara search, live forecast, cached offline warning and recovery,
+populated home widget render/tap, process health, and cleanup passed with local
+and pulled installed APK SHA-256
+`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
+This is debug-certificate regression evidence, not upload-signed or
+Play-delivered proof, so it does not change the gate or manifest. The prior
+`9c2dce4` debug API 24/API 25/API 36, Apple simulator,
 and localized capture results remain historical regression evidence and do not
 transfer to `2cdd438`. None closes signing,
 physical-device, TestFlight, store-state, or the release matrix.
@@ -70,6 +77,7 @@ deployment, or historical device evidence does not close those gates.
 | Android emulator QA | [quality/android-emulator-smoke-2026-08-28.md](quality/android-emulator-smoke-2026-08-28.md) | API 24/36 live, denied-location, search, offline/error, recovery, and cold-start evidence |
 | Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact `9c2dce4` no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
 | Android exact-product physical QA | [quality/android-current-product-physical-smoke-2026-08-29.md](quality/android-current-product-physical-smoke-2026-08-29.md) | Exact `9c2dce4` debug-certificate API 25 onboarding/live/late-day Best Time/tip/offline/recovery/process-health pass; explicitly not upload-signed, tablet/widget, or Wear evidence |
+| Android current-authority physical QA | [quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md](quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` debug-certificate physical API 25 denied-location/search/live/cache/recovery/widget/process-health pass; explicitly not upload-signed, physical-tablet, or Wear evidence |
 | Android exact-product tablet/widget QA | [quality/android-current-product-tablet-widget-smoke-2026-08-29.md](quality/android-current-product-tablet-widget-smoke-2026-08-29.md) | Byte-identical exact `9c2dce4` debug APK on an API 36 tablet emulator: Uzbek layout, live forecast, Best Time, durable tip, widget render/tap, large text, rotation, process health, and explicit non-physical/non-upload boundary |
 | Historical signed Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Historical phone vc7 clean API 25 live/search/cold-start evidence and uninstall boundary |
 | Trust and feedback QA | [quality/android-trust-feedback-smoke-2026-08-29.md](quality/android-trust-feedback-smoke-2026-08-29.md) | Exact-commit API 25 fresh-install plus API 36 preserved-data update, support/rate destinations, byte identity, and cleanup boundary |

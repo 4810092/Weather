@@ -16,7 +16,7 @@ live status.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
@@ -49,6 +49,16 @@ evidence only. No predecessor AAB/archive hash, signed artifact, physical QA,
 crash diagnosis, or store state transfers. The protected signed workflow has
 not run, the signing environment remains at `4/8` required secrets, and the
 manifest remains `0/3` byte-verified.
+An isolated exact-`2cdd438` debug APK and its pulled installed bytes share
+SHA-256
+`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
+and passed a bounded physical General Mobile Android 7.1.1 / API 25 smoke:
+denied-location fallback, Bukhara search, live forecast, cached-offline warning,
+recovery, populated home widget render/tap, process health, and cleanup. This
+uses the debug certificate and is not an upload-signed artifact, Play delivery,
+physical-tablet, or paired Wear result. It does not change the blocked gate or
+the `0/3` upload manifest. See the
+[exact-current physical record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md).
 The current boundary is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).

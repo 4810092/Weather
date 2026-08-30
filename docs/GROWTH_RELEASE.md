@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
@@ -86,7 +86,7 @@ the captured slice”; it is never converted to a synthetic rank.
   Open-Meteo forecast/AQI arrays while keeping required weather/time inputs
   fail-closed. Fourteen targeted Android-host and twelve targeted iOS Simulator
   provider tests pass, including cache/timezone preservation after rejected
-  required rows. It has no retained signed candidate or physical QA. At evidence
+  required rows. It has no retained signed candidate. At evidence
   head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
   [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
   (`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
@@ -95,7 +95,17 @@ the captured slice”; it is never converted to a synthetic rank.
   `23m59s`, including `18/18` surface tests. Its six archived outputs are
   unsigned/test evidence only. The protected signed workflow has not run, only
   `4/8` signing secrets are provisioned, the manifest remains `0/3`
-  byte-verified, and physical QA and crash diagnosis remain blocked.
+  byte-verified, and the complete upload-signed physical matrix plus crash
+  diagnosis remain blocked. Exact source `2cdd438` now has a bounded clean
+  physical General Mobile API 25 debug pass: denied approximate location,
+  Bukhara search, live forecast, cached offline warning, recovery, populated
+  widget render/tap, process health, and cleanup passed. Local and pulled
+  installed APK bytes share SHA-256
+  `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
+  This is debug-certificate evidence, not an upload-signed candidate, Play
+  delivery, physical tablet, or paired Wear result; it does not change the
+  `blocked` gate or the `0/3` manifest. See the
+  [exact-current physical record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md).
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful

@@ -7,7 +7,7 @@ Status date: August 30, 2026.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
@@ -55,8 +55,8 @@ and its explicit external-build provenance boundary are recorded in
 ### Current evidence boundary
 
 - Current product/build source `2cdd438` has no retained signed Android or
-  Apple candidate and no matching physical QA. It inherits the Apple source-
-  revision, deterministic per-target profiles, pinned dependency graph,
+  Apple candidate and no matching upload-signed physical QA. It inherits the
+  Apple source-revision, deterministic per-target profiles, pinned dependency graph,
   dedicated locale test activity, and standard API 24/API 36 hosted UI matrix.
   It adds tolerant optional Open-Meteo forecast/AQI decoding while keeping
   required weather/time inputs fail-closed. Fourteen Android-host and twelve
@@ -71,8 +71,17 @@ and its explicit external-build provenance boundary are recorded in
   unsigned/test evidence only. The protected signed workflow has not run, the
   signing environment remains at `4/8` required secrets, and the manifest
   remains `0/3` byte-verified. Hosted coverage is not physical accessibility,
-  release signing, or crash-gate closure; all predecessor/device evidence
-  remains non-transferable.
+  release signing, or crash-gate closure. A clean isolated exact-source debug
+  APK and its pulled installed bytes share SHA-256
+  `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
+  and passed a bounded physical General Mobile API 25 run: denied location,
+  ordinary Bukhara search, live forecast, cached offline fallback and explicit
+  retry, recovery, populated home widget render/tap, process health, and
+  cleanup. This exact-current physical result uses the debug certificate and
+  is not upload signing, Play delivery, physical-tablet, or Wear proof; the
+  gate stays blocked. Predecessor artifact/device evidence remains
+  non-transferable. See the
+  [physical record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md).
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian

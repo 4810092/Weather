@@ -38,6 +38,19 @@ physical reproduction, or crash-gate closure; the protected environment
 remains 4/8 secrets, the signed workflow has not run, and 0/3 current signed
 artifacts are byte-verified.
 
+A later bounded physical Android addendum now applies directly to current
+authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. Exact debug APK and
+pulled installed bytes SHA-256
+`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
+passed live provider, cached failure/retry/recovery, populated widget render/tap,
+and cleanup on a physical General Mobile Android 7.1.1 / API 25 phone. The
+retained 49-line post-recovery product log and final PID-scoped
+fatal/ANR/SSL/CertPath/trust-anchor filters had zero matches. This is useful
+current-source Android process-health regression evidence only; it neither
+reproduces nor diagnoses the historical iOS crash and it is not upload-signed
+release proof. See
+`growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md`.
+
 ## Hardened boundaries
 
 - UIKit now uses a single `UISceneDelegate` lifecycle. Scene-aware key-window

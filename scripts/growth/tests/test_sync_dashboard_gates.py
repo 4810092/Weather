@@ -39,7 +39,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact-source hosted UI matrix green",
+                "exact-source debug API 25 phone/widget pass",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -74,6 +74,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
+                "SHA-256 prefix d66c8f0",
+                issues["release_artifact_source_sync_missing"],
+            )
+            self.assertIn(
                 "protected environment has 4/8 required secrets",
                 issues["release_artifact_source_sync_missing"],
             )
@@ -103,6 +107,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "Exact-source GitHub Actions run 33300967788 passed",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "bounded physical API 25 phone/widget smoke",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 

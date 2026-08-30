@@ -216,10 +216,16 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`,
   API 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
   `23m59s`, including `18/18` surface tests. Its six archived outputs are
-  unsigned/test evidence only. Prior signed/device evidence remains
+  unsigned/test evidence only. A clean exact-`2cdd438` debug APK and its pulled
+  installed bytes share SHA-256
+  `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
+  and passed a bounded physical API 25 denied-location/search/live/cache/
+  recovery/widget/process-health smoke. This is debug-certificate evidence,
+  not upload signing or Play delivery. Prior signed/device evidence remains
   non-transferable, the protected signed workflow has not run with its partial
   `4/8` secret inventory, no current artifact is byte-verified in the upload
-  manifest (`0/3`), and signing, physical QA, and the crash gate remain blocked.
+  manifest (`0/3`), and the complete signed physical matrix plus crash gate
+  remain blocked.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
   [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md),

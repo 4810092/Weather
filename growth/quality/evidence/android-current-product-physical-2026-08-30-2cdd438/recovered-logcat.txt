@@ -1,0 +1,49 @@
+--------- beginning of main
+08-30 14:12:45.602 14620 14620 I art     : Late-enabling -Xcheck:jni
+08-30 14:12:45.755 14620 14620 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+08-30 14:12:45.828 14620 14620 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+08-30 14:12:45.828 14620 14620 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+08-30 14:12:45.837 14620 14635 D WM-ForceStopRunnable: The default process name was not specified.
+08-30 14:12:45.837 14620 14635 D WM-ForceStopRunnable: Performing cleanup operations.
+08-30 14:12:45.890 14620 14635 D WM-SystemJobScheduler: Reconciling jobs
+08-30 14:12:45.951 14620 14635 D WM-ForceStopRunnable: Application was force-stopped, rescheduling.
+08-30 14:12:46.025 14620 14635 D WM-SystemJobScheduler: Scheduling work ID 45e9c5fd-8229-4cf2-ae81-42cab8babc3eJob ID 2
+08-30 14:12:46.139 14620 14639 D WM-GreedyScheduler: Cancelling work ID 45e9c5fd-8229-4cf2-ae81-42cab8babc3e
+08-30 14:12:46.236 14620 14639 D WM-SystemJobScheduler: Scheduling work ID 45e9c5fd-8229-4cf2-ae81-42cab8babc3eJob ID 3
+08-30 14:12:46.271 14620 14639 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+08-30 14:12:46.387 14620 14620 W System.err: SLF4J(W): No SLF4J providers were found.
+08-30 14:12:46.387 14620 14620 W System.err: SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+08-30 14:12:46.388 14620 14620 W System.err: SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+08-30 14:12:46.666 14620 14637 I Adreno-EGL: <qeglDrvAPI_eglInitialize:379>: QUALCOMM Build: 10/21/16, d60dd79, I19dee93d08
+08-30 14:12:46.669 14620 14637 I OpenGLRenderer: Initialized EGL, version 1.4
+08-30 14:12:46.669 14620 14637 D OpenGLRenderer: Swap behavior 1
+08-30 14:12:46.766 14620 14620 I Choreographer: Skipped 38 frames!  The application may be doing too much work on its main thread.
+08-30 14:12:46.864 14620 14625 I art     : Do partial code cache collection, code=24KB, data=30KB
+08-30 14:12:46.865 14620 14625 I art     : After code cache collection, code=23KB, data=29KB
+08-30 14:12:46.865 14620 14625 I art     : Increasing code cache capacity to 128KB
+08-30 14:12:47.090 14620 14625 I art     : Do partial code cache collection, code=48KB, data=60KB
+08-30 14:12:47.091 14620 14625 I art     : After code cache collection, code=47KB, data=60KB
+08-30 14:12:47.091 14620 14625 I art     : Increasing code cache capacity to 256KB
+08-30 14:12:47.546 14620 14625 I art     : Do full code cache collection, code=101KB, data=114KB
+08-30 14:12:47.547 14620 14625 I art     : Starting a blocking GC JitCodeCache
+08-30 14:12:47.548 14620 14625 I art     : After code cache collection, code=79KB, data=72KB
+08-30 14:12:47.961 14620 14625 I art     : Do partial code cache collection, code=111KB, data=122KB
+08-30 14:12:47.962 14620 14625 I art     : After code cache collection, code=111KB, data=121KB
+08-30 14:12:47.962 14620 14625 I art     : Increasing code cache capacity to 512KB
+08-30 14:12:48.648 14620 14625 I art     : Do full code cache collection, code=222KB, data=250KB
+08-30 14:12:48.650 14620 14625 I art     : Starting a blocking GC JitCodeCache
+08-30 14:12:48.650 14620 14625 I art     : After code cache collection, code=183KB, data=187KB
+08-30 14:12:49.135 14620 14625 I art     : Do partial code cache collection, code=215KB, data=247KB
+08-30 14:12:49.136 14620 14625 I art     : After code cache collection, code=205KB, data=237KB
+08-30 14:12:49.136 14620 14625 I art     : Increasing code cache capacity to 1024KB
+08-30 14:12:49.693 14620 14620 I Choreographer: Skipped 166 frames!  The application may be doing too much work on its main thread.
+08-30 14:12:49.843 14620 14625 I art     : Compiler allocated 4MB to compile int com.google.android.gms.internal.wearable.zzeo.zze(java.lang.Object)
+08-30 14:12:51.090 14620 14654 D ProfileInstaller: Installing profile for uz.ganikhodjaev.weather
+08-30 14:12:58.240 14620 14646 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+08-30 14:12:59.463 14620 14625 I art     : Do full code cache collection, code=419KB, data=502KB
+08-30 14:12:59.465 14620 14625 I art     : Starting a blocking GC JitCodeCache
+08-30 14:12:59.466 14620 14625 I art     : After code cache collection, code=331KB, data=349KB
+08-30 14:12:59.679 14620 14625 I art     : Do partial code cache collection, code=355KB, data=402KB
+08-30 14:12:59.681 14620 14625 I art     : After code cache collection, code=354KB, data=401KB
+08-30 14:12:59.681 14620 14625 I art     : Increasing code cache capacity to 2MB
+08-30 14:13:10.706 14620 14625 I art     : Compiler allocated 6MB to compile void androidx.compose.ui.platform.AndroidComposeViewAccessibilityDelegateCompat.populateAccessibilityNodeInfoProperties(int, androidx.core.view.accessibility.AccessibilityNodeInfoCompat, androidx.compose.ui.semantics.SemanticsNode)

@@ -74,6 +74,25 @@ These values identify GitHub-created archive bytes. They are unsigned build
 and test-result proof only, not inner signed AAB/IPA hashes, a signed-candidate
 receipt, physical-device evidence, or crash-gate closure.
 
+## Current-source bounded physical regression
+
+At `2026-08-30 14:07–14:21 +05:00`, a clean isolated checkout of the exact
+product authority produced a debug APK whose local and pulled installed bytes
+share SHA-256
+`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
+The APK passed a bounded physical General Mobile Android 7.1.1 / API 25 smoke
+covering denied approximate location, ordinary Bukhara search, live forecast,
+cached cold start and failed-refresh warning, recovery, populated home widget
+render/tap, process health, and cleanup. The full evidence and device-state
+boundary are in
+[`android-current-product-physical-smoke-2026-08-30-2cdd438.md`](android-current-product-physical-smoke-2026-08-30-2cdd438.md).
+
+This physical result uses the debug certificate. It is not a retained
+upload-signed AAB, Play-delivered build, physical tablet, or paired Wear OS
+result and therefore is not promoted into the upload manifest. The source-sync
+gate remains blocked and every current signing/physical path in the manifest
+remains null.
+
 ## Predecessor hosted evidence
 
 GitHub Actions run

@@ -35,9 +35,16 @@ passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
 unsigned/test evidence only. No retained signed AAB, archive, or IPA exists for
 the current authority: the protected signed workflow has not run and its
 environment still contains only `4/8` required secrets. The dashboard therefore
-reports `0/3` current artifacts byte-verified. Physical QA and crash diagnosis
-remain blocked; all binaries, screenshots, and device results below belong to
-predecessor revisions and remain non-transferable regression evidence.
+reports `0/3` current artifacts byte-verified. The complete upload-signed
+physical matrix and crash diagnosis remain blocked. Exact-source debug APK and
+pulled installed bytes SHA-256
+`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
+passed a bounded clean physical General Mobile API 25 run covering denied
+location, Bukhara search, live forecast, cache/recovery, populated widget
+render/tap, process health, and cleanup. This is debug-certificate regression
+evidence, not upload signing, Play delivery, physical-tablet, or Wear proof.
+Signed artifacts and the remaining device evidence below belong to predecessor
+revisions and remain non-transferable.
 
 Predecessor debug APK and installed bytes
 `52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
@@ -98,8 +105,9 @@ denominator is never rendered as `0%` or used as target evidence. First launch,
 retention, active-use, rating, vitals, and user-loss metrics remain missing for
 that exact weekly scope.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
-is still missing despite the bounded predecessor API 24 emulator and API 25
-physical phone plus API 36 emulator tablet/widget debug passes. Android Keychain
+is still missing despite the bounded exact-current physical API 25 debug
+phone/widget pass plus predecessor API 24/API 36 emulator and API 25 physical
+debug evidence. Android Keychain
 metadata and the existing mode-600 keystore are present. The protected GitHub
 environment contains the keystore payload and all three Apple provisioning
 profiles, but the two Android passwords plus the Apple distribution P12 and its
