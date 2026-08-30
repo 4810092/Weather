@@ -1,6 +1,9 @@
 package uz.ganikhodjaev.weather.shared.ui
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.LocaleList
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -18,7 +21,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.v2.runComposeUiTest
+import androidx.compose.ui.test.v2.runAndroidComposeUiTest
 import androidx.compose.ui.text.intl.Locale as ComposeLocale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
@@ -43,7 +46,7 @@ class WeatherScreenAndroidUiTest {
     @Test
     fun onboardingDoesNotRequestLocationUntilTapAndOffersPermissionFreeSearch() =
         withTestLocale("en-US") {
-            runComposeUiTest {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
                 var locationRequests = 0
                 var selectedLocation: Location? = null
                 var state by mutableStateOf(
@@ -97,7 +100,7 @@ class WeatherScreenAndroidUiTest {
 
     @Test
     fun successfulForecastExposesTipAndAccessibleHeaderActions() = withTestLocale("en-US") {
-        runComposeUiTest {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
             var refreshes = 0
             var changes = 0
             var shares = 0
@@ -148,7 +151,7 @@ class WeatherScreenAndroidUiTest {
 
     @Test
     fun cachedForecastRemainsUsefulAndRetryRecoversFreshContent() = withTestLocale("en-US") {
-        runComposeUiTest {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
             var state by mutableStateOf(
                 contentState(
                     isStale = true,
@@ -177,7 +180,7 @@ class WeatherScreenAndroidUiTest {
     @Test
     fun uzbekAndArabicResourcesFollowLtrAndRtlLayout() {
         withTestLocale("uz-UZ") {
-            runComposeUiTest {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
                 setContent { TestWeatherScreen(state = onboardingState()) }
 
                 onNodeWithText("Tashqariga chiqish uchun eng yaxshi vaqtni toping.")
@@ -199,7 +202,7 @@ class WeatherScreenAndroidUiTest {
         }
 
         withTestLocale("ar") {
-            runComposeUiTest {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
                 setContent { TestWeatherScreen(state = onboardingState()) }
 
                 onNodeWithText("طقس يبدو مألوفًا.").performScrollTo().assertIsDisplayed()
@@ -218,7 +221,7 @@ class WeatherScreenAndroidUiTest {
 
     @Test
     fun russianOnboardingRemainsOperableAtTwoHundredPercentFontScale() = withTestLocale("ru-RU") {
-        runComposeUiTest {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
             setContent {
                 TestWeatherScreen(
                     state = onboardingState(),
@@ -255,9 +258,14 @@ private fun TestWeatherScreen(
     onDismissFirstForecastTip: () -> Unit = {}
 ) {
     val currentDensity = LocalDensity.current
+    val injectedLanguage = AndroidUiTestLocale.locale.language
+    val composeLanguage = ComposeLocale.current.language
+    check(composeLanguage == injectedLanguage) {
+        "Compose locale $composeLanguage does not match injected locale $injectedLanguage"
+    }
     CompositionLocalProvider(
         LocalDensity provides Density(currentDensity.density, fontScale),
-        LocalLayoutDirection provides layoutDirectionForLanguage(ComposeLocale.current.language),
+        LocalLayoutDirection provides layoutDirectionForLanguage(injectedLanguage),
         LocalNimboThemeTokens provides LightThemeTokens
     ) {
         MaterialTheme(colorScheme = LightColors) {
@@ -325,12 +333,33 @@ private fun contentState(
 
 private inline fun <T> withTestLocale(languageTag: String, block: () -> T): T {
     val originalLocales = LocaleList.getDefault()
-    LocaleList.setDefault(LocaleList(JavaLocale.forLanguageTag(languageTag)))
+    val originalTestLocale = AndroidUiTestLocale.locale
+    AndroidUiTestLocale.locale = JavaLocale.forLanguageTag(languageTag)
+    LocaleList.setDefault(LocaleList(AndroidUiTestLocale.locale))
     return try {
         block()
     } finally {
+        AndroidUiTestLocale.locale = originalTestLocale
         LocaleList.setDefault(originalLocales)
     }
+}
+
+class NimboLocaleTestActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context) {
+        val locale = AndroidUiTestLocale.locale
+        val locales = LocaleList(locale)
+        LocaleList.setDefault(locales)
+        val configuration = Configuration(newBase.resources.configuration).apply {
+            setLocales(locales)
+            setLayoutDirection(locale)
+        }
+        super.attachBaseContext(newBase.createConfigurationContext(configuration))
+    }
+}
+
+private object AndroidUiTestLocale {
+    @Volatile
+    var locale: JavaLocale = JavaLocale.forLanguageTag("en-US")
 }
 
 private val TASHKENT = Location(
