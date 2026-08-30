@@ -137,8 +137,12 @@ necessary for the separate physical-device QA gate.
 
 The Gradle wrapper distribution now has the official 9.7.0 SHA-256 pin, normal
 and protected workflows use full-commit action pins, and dependency
-verification metadata covers all 1,714 artifacts resolved by the complete
-Android and fresh-cache `iosArm64` release graphs. This materially narrows but
+verification metadata covers all 1,715 artifacts resolved by the complete
+hosted-Linux Android and fresh-cache macOS `iosArm64` release graphs. The
+Linux-specific AAPT2 runner is pinned to independently checked Google Maven
+bytes with SHA-256
+`e772a3dae8354764f1b0793903218427f483982445207f2e4ffc8c2026755bd4`.
+This materially narrows but
 does not eliminate hosted-runner,
 toolchain, repository-review, or initially bootstrapped dependency trust; no
 separate cryptographic build attestation is claimed.

@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:5b98f23d0320fba4eef77f2d7c43fcbd0afd0594 -->
+<!-- source_revision:65b2eb939466c493557a3ddac580e913cd0f58f3 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b6b2307a7ab42423ebf2951c98a5b2e66a82d2e25091b8f0806b4374c7ec1e20 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=11f7c0f5c68d45e110c563a7d25e4e188b35294f662dd4bcf9eb0b0343eef2a4 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e0f53d4d50e08daa4c2ea7633d2d3d38a2af2508521d8aae8ce2c05356fd1c5b -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0f0f4b4d58e0dec7cd1000377839f4b0c0b67e783f42bcdc2ac6b94904f1876c -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,9 +28,35 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 hosted-CI provenance hardening — 2026-08-30
+## Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30
 
 The authoritative product/build-input revision is
+`65b2eb939466c493557a3ddac580e913cd0f58f3`. It keeps phone `1.1.0 (8)`,
+Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
+metadata now covers 1,715 artifacts across the hosted-Linux Android and
+macOS/`iosArm64` graphs. The only new release input is the Linux AAPT2 runner;
+its official Google Maven bytes have SHA-256
+`e772a3dae8354764f1b0793903218427f483982445207f2e4ffc8c2026755bd4`.
+This addresses the precise Ubuntu verification failure in public CI run
+`33289915383` without changing product behavior.
+
+Independent standalone empty-cache runs at this exact revision passed all 241
+Android tasks and the 28-task Apple framework/archive path with the same
+sealed 256-entry source inventory. Unsigned phone and Wear SHA-256 values are
+`9a4d113fda6601f18cd6614f5b0797a715c9081fd52ecc41f0ec5401cfb2d8f4`
+and `2801b13123a4da6f70f448cc7f638a4315a08c4e4ab21c73acfb665c48515b45`;
+the unsigned Apple archive-tree SHA-256 is
+`8fc6c4693542f15d9518ea2217bf373986e4c10a96ebbb06e39f3dcfef4fe85f`.
+All embed the exact authority and pass their identity checks. These outputs are
+regression evidence only: no protected workflow run, signed artifact, physical
+QA, or store upload is claimed, and the manifest remains `0/3` byte-verified.
+The current boundary is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md)
+and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Historical Nimbo 1.1.0 hosted-CI provenance hardening — 2026-08-30
+
+The product/build-input revision at this predecessor checkpoint was
 `5b98f23d0320fba4eef77f2d7c43fcbd0afd0594`. It keeps phone `1.1.0 (8)`,
 Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
 metadata covers 1,714 resolved artifacts across the Android and fresh-cache

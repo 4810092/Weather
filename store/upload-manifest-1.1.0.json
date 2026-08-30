@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "release": "1.1.0",
-  "source_revision": "5b98f23d0320fba4eef77f2d7c43fcbd0afd0594",
+  "source_revision": "65b2eb939466c493557a3ddac580e913cd0f58f3",
   "prepared_on": "2026-08-30",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
@@ -27,7 +27,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-phone-1.1.0-vc7.aab",
@@ -44,7 +44,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-wear-1.1.0-vc1000008.aab",
@@ -61,7 +61,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md",
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "Nimbo.ipa",
