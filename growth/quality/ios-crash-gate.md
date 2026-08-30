@@ -103,7 +103,7 @@ Organizer remains the authority for the missing report and affected binary.
 
 ## Current code inheritance and predecessor execution evidence
 
-Current source authority `ed1b791b8d1a059e62409713102740e08d014de2`
+Current source authority `6f72e70fff6eb7566e06dd862e1fad09055343a4`
 inherits the reachable UIKit lifecycle, main-actor completion, storage-startup,
 saved-location-limit, and long-lived SQL observation hardening from `97c26cb`.
 Predecessor commit `9c2dce4200dbba5487c8c458ade4616005fde6e6`
@@ -120,7 +120,7 @@ widget `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff`,
 and watch `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728`.
 Their binary and dSYM UUIDs match, the shared iOS simulator suite and 18 Apple
 surface tests pass, and source-bound Release simulator builds succeed. The code
-is inherited by `ed1b791`, but these executed results and binary identities are
+is inherited by `6f72e70`, but these executed results and binary identities are
 non-transferable; neither can be attributed to the suppressed historical crash
 without its missing diagnostic.
 

@@ -64,11 +64,12 @@ upstream artifact has independent PGP provenance.
 The shared UI provides semantic labels/roles/selected state for timeline hours, reflows unit/theme/hour details at increased font scale, constrains content width, and uses expanded-width composition. Arabic mirrors surrounding layout while the chronological timeline is explicitly left-to-right.
 
 The Compose device-test suite covers deterministic onboarding, retry,
-large-text, LTR/RTL, and selected semantics on GitHub-hosted emulators. The
-dated [QA matrix](QA_MATRIX.md) separately records historical emulator/simulator
-and TalkBack evidence. Physical VoiceOver/TalkBack gestures/audio and paired
-watch/device behavior remain release gates; emulator automation does not close
-them.
+large-text, LTR/RTL, and forecast-header semantics on GitHub-hosted emulators.
+It does not yet assert selected-hour state or prove clipping-free expanded
+tablet composition. The dated [QA matrix](QA_MATRIX.md) separately records
+historical emulator/simulator and TalkBack evidence. Physical VoiceOver/
+TalkBack gestures/audio and paired watch/device behavior remain release gates;
+emulator automation does not close them.
 
 ## Performance evidence
 

@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:ed1b791b8d1a059e62409713102740e08d014de2 -->
+<!-- source_revision:6f72e70fff6eb7566e06dd862e1fad09055343a4 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4cf27d1e463313f525a43af7ff7699312729ec5afa3192f5a72725f662d00e3a -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=aa63127a1b36d45d5a73398c0a450df7d77e54e7fe39f20c7f1b592f6692a7af -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d8312c034ebd47c24ea6f06f3726d825635916eac85c1af59406a546352b9e3f -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=48e3d7d79c7932dd280b399d01da63d74762dc35360a43dcf665061ba60ad223 -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,24 +28,19 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 hosted Linux Kotlin verification closure — 2026-08-30
+## Nimbo 1.1.0 hosted UI authority — 2026-08-30
 
 The authoritative product/build-input revision is
-`ed1b791b8d1a059e62409713102740e08d014de2`. It keeps phone `1.1.0 (8)`,
+`6f72e70fff6eb7566e06dd862e1fad09055343a4`. It keeps phone `1.1.0 (8)`,
 Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
-metadata now covers 1,716 artifacts across the hosted-Linux Android and
-macOS/`iosArm64` graphs. The only new release input is the Linux Kotlin/Native
-2.4.10 prebuilt payload exposed by public CI run `33291190834`; its official
-Maven Central bytes have SHA-256
-`c9e356e8518144f275f1514cfe38b07db949f93e47e054832b8974fff1fd33e0`.
-Public GitHub Actions run [`33291750686`](https://github.com/4810092/Weather/actions/runs/33291750686)
-is green for evidence commit `409949e68b2ceb89de3c344917829fab8482c194`,
-whose release-source paths exactly match this authority: Android job
-`99204520470` passed on `ubuntu-24.04` in 6m30s and iOS job `99204520540`
-passed on `macos-26` in 15m37s. No predecessor AAB/archive hash, signed
-artifact, physical QA, or store state transfers to this revision, and the
-manifest remains `0/3` byte-verified. The current boundary is recorded in the
-[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md)
+metadata covers 1,758 artifacts. The source adds deterministic Compose UI tests,
+API 24 core-library desugaring, and standard GitHub-hosted API 24/API 36
+phone/tablet execution jobs. No hosted
+run exists yet for this authority; predecessor run `33291750686` does not
+transfer. No predecessor AAB/archive hash, signed artifact, physical QA, or
+store state transfers either, and the manifest remains `0/3` byte-verified.
+The current boundary is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-6f72e70.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 
 ## Historical Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30

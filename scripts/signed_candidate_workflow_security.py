@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "11ee64e943af525a8a5f177676f886289edb9e02e0f372baae954396ff65ae81"
+WORKFLOW_SHA256 = "879b5f99db38df7d140b8c6bb0cfcd42f05421d43b3f34a4b7883c8c18db7632"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -45,7 +45,7 @@ REPOSITORY_GUARD = (
 SIGNING_GUARD = REPOSITORY_GUARD + " && needs.build-unsigned.result == 'success'"
 APPROVED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
-    "actions/setup-java": "b6effb05e454b25005698d916606bdc6ffcbf961",
+    "actions/setup-java": "dd06d9cba3e5552c54d9f8ea23572deb30010f7c",
     "actions/setup-python": "ece7cb06caefa5fff74198d8649806c4678c61a1",
     "gradle/actions/setup-gradle": "9c971963bec38e04b3d30dcc455b5382be2fdbfb",
     "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
@@ -107,7 +107,7 @@ SECRET_STEP_ENVS = {
 }
 BUILD_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
-    ("uses", "actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961"),
+    ("uses", "actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c"),
     ("uses", "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1"),
     ("uses", "gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb"),
     ("name", "Resolve exact release source and unsigned staging paths"),
@@ -121,7 +121,7 @@ BUILD_STEP_INVENTORY = [
 ]
 SIGN_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
-    ("uses", "actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961"),
+    ("uses", "actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c"),
     ("uses", "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1"),
     ("uses", "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"),
     ("name", "Validate and unpack inert unsigned inputs"),
@@ -137,14 +137,14 @@ SIGN_STEP_INVENTORY = [
 ]
 BUILD_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
-    "9daf2e9277e6c64b26c83285599bc739d502643e715849a3e25ed028ab30b482",
+    "dcc5a242142f07133cff6aa7d84c0b2701cb05fa4bd0bc8bca60a640470fcfef",
     "68d8c78fc03544c83d10de90b661200da54135d5b13e5c09129e276eeec0f83e",
     "f20e72094b208a255e173807f2ae783a60e4735c8ec46973c31354533b2a37aa",
     "c064477d9afaac14ad4839d44fd7599f8c88aaedd60b09ee39d8e3b2b1a2bbd1",
 ]
 SIGN_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
-    "9daf2e9277e6c64b26c83285599bc739d502643e715849a3e25ed028ab30b482",
+    "dcc5a242142f07133cff6aa7d84c0b2701cb05fa4bd0bc8bca60a640470fcfef",
     "68d8c78fc03544c83d10de90b661200da54135d5b13e5c09129e276eeec0f83e",
     "6c10ee9ea85054e7903d406a87ad58351a0a84d295fdb7b8e59296a59da50e63",
     "c7a5e71576651099391a847844b2b8e051a8b6fb487340b445fc845ba742b509",

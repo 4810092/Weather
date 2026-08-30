@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:ed1b791b8d1a059e62409713102740e08d014de2 -->
+<!-- source_revision:6f72e70fff6eb7566e06dd862e1fad09055343a4 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4cf27d1e463313f525a43af7ff7699312729ec5afa3192f5a72725f662d00e3a -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=aa63127a1b36d45d5a73398c0a450df7d77e54e7fe39f20c7f1b592f6692a7af -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d8312c034ebd47c24ea6f06f3726d825635916eac85c1af59406a546352b9e3f -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=48e3d7d79c7932dd280b399d01da63d74762dc35360a43dcf665061ba60ad223 -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,7 +54,7 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `ed1b791` has no retained signed Android or
+- Current product/build source `6f72e70` has no retained signed Android or
   Apple candidate and no matching physical QA. It keeps the Apple source-
   revision and deterministic per-target profile settings, pins 1,716
   hosted-Linux Android and macOS/`iosArm64` dependency artifacts including the
@@ -94,7 +94,7 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md`](../growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-30-6f72e70.md`](../growth/quality/release-artifact-source-sync-2026-08-30-6f72e70.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).

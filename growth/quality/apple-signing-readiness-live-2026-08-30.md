@@ -1,7 +1,7 @@
 # Apple signing readiness live recheck — 2026-08-30
 
 Current release authority is
-`ed1b791b8d1a059e62409713102740e08d014de2`. Every `65b2eb9`, `5b98f23`, or `aa6496d` build or
+`6f72e70fff6eb7566e06dd862e1fad09055343a4`. Every `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, or `aa6496d` build or
 Keychain statement below is historical, non-transferable evidence; it does not
 prove current distribution-signed bytes.
 

@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
           java-version: "21"
@@ -85,53 +85,62 @@ jobs:
   android-ui:
     name: Android UI (${{ matrix.name }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: phone-api24
-            api-level: 24
+            system_image_api_level: 24
             profile: pixel_2
           - name: phone-api36
-            api-level: 36
+            system_image_api_level: 36
             profile: pixel_7
           - name: tablet-api36
-            api-level: 36
+            system_image_api_level: 36
             profile: pixel_tablet
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
           java-version: "21"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
-      - name: Enable KVM when available
+      - name: Require hardware-accelerated KVM
         shell: bash
         run: |
-          if [[ -e /dev/kvm ]]; then
-            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
-              | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-            sudo udevadm control --reload-rules
-            sudo udevadm trigger --name-match=kvm
-          else
-            echo "KVM is unavailable; emulator runner will select its supported fallback."
-          fi
+          test -c /dev/kvm || {
+            echo "::error::Standard runner has no /dev/kvm; refusing an unreliable software-emulation fallback."
+            exit 1
+          }
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          test -r /dev/kvm && test -w /dev/kvm || {
+            echo "::error::KVM exists but is not accessible to the runner user."
+            exit 1
+          }
       - name: Run Compose UI tests
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
         with:
-          api-level: ${{ matrix.api-level }}
-          target: google_apis
+          api-level: 36
+          system-image-api-level: ${{ matrix.system_image_api_level }}
+          target: default
           arch: x86_64
           profile: ${{ matrix.profile }}
           disable-animations: true
+          disable-linux-hw-accel: false
           emulator-options: >-
             -no-window -gpu swiftshader_indirect -no-snapshot -noaudio
             -no-boot-anim -camera-back none
-          script: ./gradlew :shared:connectedAndroidDeviceTest --stacktrace
+          script: bash scripts/run_android_ui_ci.sh '${{ matrix.name }}' '${{ matrix.system_image_api_level }}'
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
@@ -139,6 +148,7 @@ jobs:
           path: |
             shared/build/outputs/androidTest-results
             shared/build/reports/androidTests
+            build/android-ui-diagnostics
           if-no-files-found: warn
           retention-days: 7
 
@@ -150,7 +160,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
           java-version: "21"

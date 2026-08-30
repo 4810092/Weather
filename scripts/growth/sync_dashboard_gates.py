@@ -161,23 +161,28 @@ def sync(
         new_next = old_next
         if gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · 0/3 current artifacts byte-verified; signed matrix missing"
+                "BLOCKED · hosted proof pending; 0/3 current artifacts "
+                "byte-verified; signed/physical matrix missing"
             )
             new_next = (
-                "Unlock the local login Keychain, provision the protected "
+                "Run the standard hosted Android/iOS jobs and API 24/API 36 "
+                "phone/tablet UI matrix for the current source, then unlock "
+                "the local login Keychain, provision the protected "
                 "release-signing environment, run the master-only hosted "
-                "workflow, promote its verified receipt, then bind exact "
+                "workflow, promote its verified receipt, and bind exact "
                 "physical QA to the retained bytes"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · predecessor API 24/API 36 emulator and API 25 "
-                "physical pass; source-current signed matrix missing"
+                "BLOCKED · hosted UI matrix configured/pending; predecessor "
+                "API 24/API 36 emulator and API 25 physical evidence is "
+                "non-transferable; source-current signed/physical matrix missing"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · predecessor simulator builds pass; source-current "
-                "signed build 6 and physical matrix missing"
+                "BLOCKED · hosted proof pending; predecessor simulator "
+                "evidence is non-transferable; source-current signed build 6 "
+                "and physical matrix missing"
             )
         if not all(
             isinstance(value, str)
@@ -223,14 +228,38 @@ def sync(
         for source in sources
         if isinstance(source, dict) and isinstance(source.get("id"), str)
     }
+    baseline_source = source_by_id.get("baseline_snapshot")
     gate_source = source_by_id.get("gate_snapshot")
     evaluation_source = source_by_id.get("evaluation_snapshot")
-    if not isinstance(gate_source, dict) or not isinstance(evaluation_source, dict):
+    if (
+        not isinstance(baseline_source, dict)
+        or not isinstance(gate_source, dict)
+        or not isinstance(evaluation_source, dict)
+    ):
         raise ValueError("dashboard gate/evaluation sources are missing")
+    baseline_query = baseline_source.get("query")
     gate_query = gate_source.get("query")
     evaluation_query = evaluation_source.get("query")
-    if not isinstance(gate_query, dict) or not isinstance(evaluation_query, dict):
+    if (
+        not isinstance(baseline_query, dict)
+        or not isinstance(gate_query, dict)
+        or not isinstance(evaluation_query, dict)
+    ):
         raise ValueError("dashboard gate/evaluation source queries are malformed")
+    metric_definitions = baseline_query.get("metric_definitions")
+    if not isinstance(metric_definitions, list):
+        raise ValueError("dashboard baseline metric definitions are malformed")
+    old_play_definition = "Play conversion is the reported Play value and remains unreconciled"
+    new_play_definition = (
+        "Play conversion is the historical reported baseline; exact weekly "
+        "all-country and UZ listing populations are reported separately"
+    )
+    if old_play_definition in metric_definitions:
+        metric_definitions[
+            metric_definitions.index(old_play_definition)
+        ] = new_play_definition
+    elif new_play_definition not in metric_definitions:
+        raise ValueError("dashboard Play conversion metric definition is missing")
     gate_query["sql"] = sql
     gate_query["executed_at"] = generated_at
     evaluation_query["executed_at"] = generated_at
@@ -245,10 +274,15 @@ def sync(
         for issue in access_issues
         if isinstance(issue, dict) and isinstance(issue.get("id"), str)
     }
+    raw_exports_issue = access_issue_by_id.get("raw_store_exports_missing")
     crash_issue = access_issue_by_id.get("ios_crash_report_missing")
     source_issue = access_issue_by_id.get("release_artifact_source_sync_missing")
-    if not isinstance(crash_issue, dict) or not isinstance(source_issue, dict):
-        raise ValueError("dashboard release/crash access issues are missing")
+    if (
+        not isinstance(raw_exports_issue, dict)
+        or not isinstance(crash_issue, dict)
+        or not isinstance(source_issue, dict)
+    ):
+        raise ValueError("dashboard raw-export/release/crash access issues are missing")
     current_revision = gates["release_artifact_source_sync"].get(
         "source_revision"
     )
@@ -256,6 +290,15 @@ def sync(
         raise ValueError("release artifact source revision is malformed")
     current_revision_short = current_revision[:7]
 
+    raw_exports_issue["message"] = (
+        "Current App Store Connect analytics exports remain unavailable. The "
+        "validated Google Play aggregate for 2026-08-18..2026-08-24 is retained "
+        "without PII: all-country listing traffic is 26 visitors and 11 unique "
+        "install clicks, while UZ is 0 visitors and 0 clicks. UZ conversion is "
+        "therefore UNKNOWN because its denominator is zero; the derived 42.31% "
+        "all-country rate is diagnostic only. Exact-scope first launch, retention, "
+        "active-use, ratings, vitals, and user-loss evidence remains unavailable."
+    )
     crash_issue["message"] = (
         "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, "
         "but privacy suppression exposes no report, stack, UUID, device, or OS. "
@@ -272,11 +315,13 @@ def sync(
         f"Current product/build-input commit {current_revision_short} has no retained signed "
         "phone vc8, Wear 1000008, or distribution-signed Apple build-6 "
         "candidate, so 0/3 current artifacts are byte-verified. The manual "
-        "master-only protected GitHub-hosted workflow and pre-manifest verifier "
-        "are implemented and statically validated. Exact-source unsigned Android "
-        "phone/Wear release gates and Apple device build/archive plus dSYM UUID "
-        "binding pass, but protected environment secrets are not provisioned and "
-        "the workflow has not run. The locked local login Keychain still rejects "
+        "master-only protected GitHub-hosted workflow, pre-manifest verifier, "
+        "standard hosted Android/iOS jobs, and hosted API 24/API 36 phone/tablet "
+        "UI matrix are configured and statically validated. No hosted run has "
+        "completed for this source authority; the UI matrix and all other "
+        "exact-source hosted proof remain pending; protected environment secrets "
+        "are not provisioned and the signed workflow has not run. The locked "
+        "local login Keychain still rejects "
         "Android protected credential reads and Apple private-key use. All signed "
         "bundles, screenshots, and device results belong to predecessor revisions "
         "and remain non-transferable regression or creative provenance only. None "
@@ -302,11 +347,14 @@ def sync(
         + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
         "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
         "deterministic per-target release profiles. "
-        "Exact-source unsigned Android release gates and Apple device build/"
-        "archive with matching dSYMs pass. The protected master-only hosted "
-        "workflow and pre-manifest verifier are implemented but have not run "
-        "because release-signing secrets are not provisioned; no retained signed "
-        "candidate exists, so 0/3 current artifacts are byte-verified. "
+        "The standard hosted Android/iOS jobs and hosted API 24/API 36 phone/"
+        "tablet UI matrix are configured, but no run has completed for this "
+        "source authority; UI and ordinary hosted proof remain pending. The "
+        "protected master-only hosted workflow and pre-manifest verifier are "
+        "implemented but have not run because release-signing secrets are not "
+        "provisioned. No source-current signed artifact or physical-device "
+        "matrix exists, so 0/3 current artifacts are byte-verified and the "
+        "signed/physical gates remain blocked. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -347,6 +395,10 @@ def sync(
     ).replace(
         "from the exact-current 9c2dce4 build-6 simulator app",
         "from the source-bound predecessor 9c2dce4 build-6 simulator app",
+    ).replace(
+        "the Play conversion denominator is still unreconciled.",
+        "the latest validated weekly Play slice has zero UZ visitors, so UZ "
+        "conversion remains unknown; its 42.31% all-country rate is diagnostic only.",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at
