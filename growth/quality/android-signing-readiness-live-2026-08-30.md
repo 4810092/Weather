@@ -3,7 +3,7 @@
 Status: **BLOCKED for source-current phone and Wear OS signing**.
 
 Current release authority is
-`6f72e70fff6eb7566e06dd862e1fad09055343a4`. Every `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
+`fb591e3d16f507a5a4f794ae537ccd087523889b`. Every `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
 build and Keychain statement below is historical, non-transferable evidence;
 it does not prove current signed bytes.
 

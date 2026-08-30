@@ -1,13 +1,20 @@
 # Accessibility evidence matrix — 2026-08-30
 
-Status: **SOURCE AND AUTOMATION HARNESS PRESENT; HOSTED EXECUTION PENDING;
-PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
+Status: **HISTORICAL PREDECESSOR HARNESS; HOSTED RUN EXECUTED BUT FAILED TWO
+VIEWPORT ASSERTIONS; PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
 
 This record is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It distinguishes source
 semantics and deterministic emulator automation from screen-reader use on
 physical devices. It is not an App Store or Google Play accessibility
 declaration.
+
+Hosted run `33295070238` later executed all five tests on both phone API 24 and
+API 36, but each phone job failed the Uzbek onboarding-title and Russian 200%
+font-scale title visibility assertions; the tablet job stopped before emulator
+start at the KVM permission gate. Current authority `fb591e3` contains the
+bounded fixes and still requires a complete green hosted rerun. No predecessor
+result transfers to the current authority.
 
 ## Automated source evidence
 

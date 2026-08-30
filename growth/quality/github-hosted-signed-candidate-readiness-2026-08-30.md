@@ -100,12 +100,14 @@ Google Play, submit for review, release, or prove public availability.
   reject source mutation, unexpected root entries, stale but well-formed
   external mappings, build/current source divergence, receipt/package path
   aliasing, partial artifact inventories, and tar byte/mode drift.
-- Current source `6f72e70fff6eb7566e06dd862e1fad09055343a4`
+- Current source `fb591e3d16f507a5a4f794ae537ccd087523889b`
   adds deterministic Compose UI coverage, API 24 core-library desugaring, and
-  standard GitHub-hosted API 24/API 36 phone/tablet jobs. No ordinary hosted
-  run exists yet for this authority. Public run
-  [`33291750686`](https://github.com/4810092/Weather/actions/runs/33291750686)
-  belongs to predecessor authority `ed1b791` and is non-transferable. No
+  standard GitHub-hosted API 24/API 36 phone/tablet jobs. Predecessor run
+  [`33295070238`](https://github.com/4810092/Weather/actions/runs/33295070238)
+  passed ordinary Android/iOS, failed two phone visibility assertions, and
+  stopped the tablet job at the KVM permission gate. The current source fixes
+  those exact failures; its hosted rerun is pending and the predecessor result
+  is non-transferable. No
   current unsigned artifact hash is transferred from a predecessor or promoted
   into the upload manifest.
 - Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`

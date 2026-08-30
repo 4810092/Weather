@@ -185,7 +185,7 @@ overview/Best Time, recent comparison, selected timeline, and 10-day/AQI
 details. They are from predecessor product source `9c2dce4`, build 6, and are
 bounded to an iPhone 17 Pro Max simulator on iOS 26.5 with the checked-in
 Tashkent quick-city seed and the normal live provider path. They remain valid
-creative provenance but do not prove the current `6f72e70` binary, distribution signing,
+creative provenance but do not prove the current `fb591e3` binary, distribution signing,
 physical iPhone/iPad/watch/widget QA, TestFlight, store review, rollout, or
 public availability. An offline-cache state was not checked in for Apple: a
 process-scoped unreachable proxy did not deterministically force the live
