@@ -38,7 +38,11 @@ macOS/`iosArm64` graphs. The only new release input is the Linux Kotlin/Native
 2.4.10 prebuilt payload exposed by public CI run `33291190834`; its official
 Maven Central bytes have SHA-256
 `c9e356e8518144f275f1514cfe38b07db949f93e47e054832b8974fff1fd33e0`.
-The exact hosted rerun is pending. No predecessor AAB/archive hash, signed
+Public GitHub Actions run [`33291750686`](https://github.com/4810092/Weather/actions/runs/33291750686)
+is green for evidence commit `409949e68b2ceb89de3c344917829fab8482c194`,
+whose release-source paths exactly match this authority: Android job
+`99204520470` passed on `ubuntu-24.04` in 6m30s and iOS job `99204520540`
+passed on `macos-26` in 15m37s. No predecessor AAB/archive hash, signed
 artifact, physical QA, or store state transfers to this revision, and the
 manifest remains `0/3` byte-verified. The current boundary is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md)

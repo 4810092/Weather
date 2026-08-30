@@ -25,7 +25,9 @@ release-source bytes before and after compilation. A protected, manual GitHub-
 hosted workflow implements exact-source signing and pre-manifest byte
 verification. Empty-cache predecessor `65b2eb9` audits pass all 241 Android
 release tasks and the Apple 28-task framework/archive path, but those results
-do not transfer and the exact current hosted rerun is pending. Its
+do not transfer. Public hosted CI run `33291750686` is green for
+release-source-equivalent evidence commit `409949e` on standard
+`ubuntu-24.04` and `macos-26` runners. Its
 `release-signing` secrets have not been provisioned and it has not produced a
 signed candidate. Local Keychain authorization still rejects Android password
 reads and Apple private-key use, so the authoritative result remains `0/3`

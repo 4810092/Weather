@@ -42,8 +42,25 @@ remain the CI authority; no local or self-hosted Mac runner is configured.
 
 The exact predecessor `65b2eb9` clean-room Android and Apple builds passed, but
 their unsigned AAB/archive hashes and embedded revisions do not transfer to
-`ed1b791`. The exact current hosted Ubuntu/macOS rerun is therefore required
-before CI or any current unsigned build identity can be called verified.
+`ed1b791`. Public GitHub Actions run
+[`33291750686`](https://github.com/4810092/Weather/actions/runs/33291750686)
+completed successfully for evidence commit
+`409949e68b2ceb89de3c344917829fab8482c194`, whose complete release-source path
+set exactly matches `ed1b791`. Android job
+[`99204520470`](https://github.com/4810092/Weather/actions/runs/33291750686/job/99204520470)
+passed repository, growth, store, localization, strict Gradle test/lint/
+migration, and phone/Wear release-bundle stages on `ubuntu-24.04` in 6m30s.
+iOS job
+[`99204520540`](https://github.com/4810092/Weather/actions/runs/33291750686/job/99204520540)
+validated the manifest source identity, passed shared simulator and glanceable-
+surface tests, and built the unsigned app/watch simulator products on
+`macos-26` in 15m37s. Hosted CI is therefore green for the current release
+source.
+
+The ordinary CI artifacts are unsigned regression outputs and are not the
+protected receipt-bound candidate. This result does not establish any current
+artifact digest, signing identity, physical-device QA, upload, submission, or
+public store state.
 
 | Surface | Exact identity | Current signed bytes | Decision |
 | --- | --- | --- | --- |
@@ -57,14 +74,13 @@ and device results from predecessor revisions remain non-transferable.
 
 ## Remaining unblock
 
-1. Obtain a green public hosted CI rerun for this exact authority.
-2. Provision existing signing material into the protected `release-signing`
+1. Provision existing signing material into the protected `release-signing`
    environment without sending credentials through chat.
-3. Run the manual hosted workflow and retain its receipt-bound candidate tar
+2. Run the manual hosted workflow and retain its receipt-bound candidate tar
    and schema-v2 receipt.
-4. Promote the manifest only from the verified receipt and a separate committed
+3. Promote the manifest only from the verified receipt and a separate committed
    signing record.
-5. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
+4. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
    evidence to the retained artifact hashes.
 
 No artifact was signed, uploaded, submitted, or published by this source-sync

@@ -94,8 +94,13 @@ Google Play, submit for review, release, or prove public availability.
   aliasing, partial artifact inventories, and tar byte/mode drift.
 - Current source `ed1b791b8d1a059e62409713102740e08d014de2`
   adds only the Linux Kotlin/Native prebuilt checksum exposed by public CI run
-  `33291190834`. Its exact hosted rerun is pending; no current unsigned binary
-  hash or hosted-green claim is transferred from its predecessor.
+  `33291190834`. Public CI run
+  [`33291750686`](https://github.com/4810092/Weather/actions/runs/33291750686)
+  is green for evidence commit `409949e68b2ceb89de3c344917829fab8482c194`,
+  whose release-source paths exactly match `ed1b791`: Android job
+  `99204520470` passed on `ubuntu-24.04` in 6m30s, and iOS job `99204520540`
+  passed on `macos-26` in 15m37s. No current unsigned artifact hash is
+  transferred from its predecessor or promoted into the upload manifest.
 - Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`
   passed a standalone cold-cache Java 21 run of all 241 CI/release tasks.
   Unsigned phone vc8 SHA-256 is
@@ -113,8 +118,8 @@ Google Play, submit for review, release, or prove public availability.
   `ef3ddacdbad75043300e2fb8b0ad6267bcf8894046bb6378df2025ecf8214edb`.
 - Public CI runs `33289915383` and `33291190834` diagnosed the two macOS-hidden
   host payload gaps in sequence: Linux AAPT2 and Linux Kotlin/Native prebuilt.
-  A current post-fix hosted rerun is still required before hosted CI can be
-  called green.
+  Post-fix run `33291750686` closes the hosted CI gate for both standard-runner
+  jobs. It does not close signing, byte verification, or physical-device QA.
 - At predecessor source
   `5b98f23d0320fba4eef77f2d7c43fcbd0afd0594` passed all 241 release tasks.
   Unsigned phone vc8 SHA-256 is

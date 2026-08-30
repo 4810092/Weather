@@ -85,7 +85,10 @@ the captured slice”; it is never converted to a synthetic rank.
   dependency artifacts including Linux AAPT2 and Kotlin/Native host payloads, and
   seals actual source bytes in the hosted candidate workflow. It has no
   retained signed candidate or physical QA. Exact predecessor `65b2eb9`
-  regression builds pass, but do not transfer; the current hosted rerun is pending.
+  regression hashes do not transfer. Public GitHub Actions run `33291750686`
+  is green for release-source-equivalent evidence commit `409949e`: Android job
+  `99204520470` passed on `ubuntu-24.04` and iOS job `99204520540` passed on
+  `macos-26`. This is hosted CI proof, not signed-artifact or physical-QA proof.
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful

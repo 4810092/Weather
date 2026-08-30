@@ -26,7 +26,10 @@ including Linux AAPT2 and Kotlin/Native host payloads, and seals
 actual source bytes in the hosted candidate path, but no retained signed AAB,
 archive, or IPA exists for it.
 Independent predecessor `65b2eb9` Android and Apple compile/archive audits
-pass, but their unsigned outputs do not transfer; the current hosted rerun is pending.
+pass, but their unsigned outputs do not transfer. Public hosted CI run
+`33291750686` is green for release-source-equivalent evidence commit `409949e`:
+Android job `99204520470` passed on `ubuntu-24.04`, and iOS job `99204520540`
+passed on `macos-26`.
 The dashboard therefore reports `0/3` current artifacts byte-verified. All
 binaries, screenshots, and device results below belong to predecessor
 revisions and remain non-transferable regression evidence.
