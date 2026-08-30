@@ -11,8 +11,14 @@ crash-hardening commit `97c26cb` and added only the localized, user-initiated
 support and store-rating paths plus their tests. The product source current at
 that checkpoint was `9c2dce4200dbba5487c8c458ade4616005fde6e6`; it also contains
 the later durable first-forecast activation tip and storage-failure hardening.
-Current authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` inherits that code,
-but none of the historical hashes below is relabelled exact-current. See
+Current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` inherits that code
+through predecessor `704fd893e59d94d8e9a4971313a773b3fa545ab6` and adds
+tolerant decoding for omitted optional Open-Meteo forecast/AQI arrays while
+keeping required weather/time inputs fail-closed. Fourteen targeted
+Android-host and twelve targeted iOS Simulator provider tests pass for the
+exact current bytes, including cache/timezone preservation after rejected
+required-row responses. None of the historical hashes below is relabelled
+exact-current. See
 `growth/quality/ios-crash-gate.md` for the current-source boundary.
 
 This result does **not** close `ios_crash_gate`. The production `1.0.1 (4)`
@@ -20,6 +26,9 @@ crash on 2026-08-25 still has no downloadable `.ips`, stack, incident ID, or
 binary UUID, so none of the fixes below is attributed to that historical event.
 It also does not produce an upload-signed Android bundle, Apple archive, or
 physical Apple result.
+Hosted runs `33297505825` and `33299592101` belong only to predecessor
+`704fd89` and are non-transferable; the complete hosted matrix for `2cdd438`
+is pending.
 
 ## Hardened boundaries
 

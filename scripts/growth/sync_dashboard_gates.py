@@ -161,7 +161,7 @@ def sync(
         new_next = old_next
         if gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · hosted source proof green; 0/3 current artifacts "
+                "BLOCKED · current hosted source proof pending; 0/3 artifacts "
                 "byte-verified; signed/physical matrix missing"
             )
             new_next = (
@@ -172,14 +172,13 @@ def sync(
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact-source hosted UI matrix green; source-current "
-                "signed/physical phone, tablet, widget, and Wear matrix missing"
+                "BLOCKED · current provider tests green; current hosted, signed, "
+                "and physical phone/tablet/widget/Wear matrix missing"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact-source hosted unsigned iOS proof green; "
-                "source-current distribution-signed build 6 and physical "
-                "matrix missing"
+                "BLOCKED · current provider tests green; current hosted Apple, "
+                "distribution-signed build 6, and physical matrix missing"
             )
         if not all(
             isinstance(value, str)
@@ -302,22 +301,23 @@ def sync(
         "An existing API key authenticates for app, version, build, and "
         "analytics-request inventory and confirms public 1.0.1 build 4, but "
         "the build-detail and diagnostic-signature GETs return security 403. "
-        f"Current source {current_revision_short} passed exact-source hosted "
-        "shared-simulator, Apple-surface, and unsigned application checks in "
-        "run 33297505825. Neither the authenticated inventory nor this unsigned "
-        "regression evidence identifies or closes the "
+        f"Current source {current_revision_short} passes twelve targeted iOS "
+        "Simulator provider mapping/service tests. Predecessor hosted run "
+        "33297505825 is non-transferable. Neither the authenticated inventory "
+        "nor these bounded regression tests identify or close the "
         f"historical crash for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
         f"Current product/build-input commit {current_revision_short} has no retained signed "
         "phone vc8, Wear 1000008, or distribution-signed Apple build-6 "
-        "candidate, so 0/3 current artifacts are byte-verified. The manual "
-        "master-only protected GitHub-hosted workflow, pre-manifest verifier, "
-        "standard hosted Android/iOS jobs, and hosted API 24/API 36 phone/tablet "
-        "UI matrix are configured and statically validated. Exact-source run "
-        "33297505825 completed successfully in 17m30s: ordinary Android/iOS and "
-        "all three KVM-gated five-test UI profiles passed. Its retained Android "
-        "and Wear bundles are explicitly unsigned regression artifacts. The "
+        "candidate, so 0/3 current artifacts are byte-verified. Fourteen "
+        "targeted Android-host and twelve targeted iOS Simulator provider "
+        "tests pass, including cache preservation after rejected required-row "
+        "responses. The complete hosted Android/iOS and API 24/API 36 "
+        "phone/tablet matrix for this authority is pending. Runs 33297505825 "
+        "and 33299592101 passed only for its predecessor and are explicitly "
+        "non-transferable. The manual master-only protected GitHub-hosted workflow and "
+        "pre-manifest verifier remain configured and statically validated. The "
         "protected environment has 4/8 required secrets: its Android keystore "
         "payload and three Apple provisioning profiles are present, while two "
         "Android passwords plus the Apple P12 and its transport password remain "
@@ -347,10 +347,12 @@ def sync(
         + current_revision
         + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
         "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
-        "deterministic per-target release profiles. "
-        "Exact-source GitHub Actions run 33297505825 completed successfully in "
-        "17m30s: standard Android/iOS and all three KVM-gated API 24/API 36 "
-        "phone/tablet five-test UI profiles passed. The "
+        "deterministic per-target release profiles. It tolerates omitted "
+        "optional Open-Meteo forecast/AQI arrays while keeping required "
+        "weather/time rows fail-closed. Fourteen targeted Android-host and "
+        "twelve targeted iOS Simulator tests pass. The complete hosted matrix "
+        "for this authority is pending; predecessor runs 33297505825 and "
+        "33299592101 are non-transferable. The "
         "protected master-only hosted workflow and pre-manifest verifier are "
         "implemented but have not run because only 4/8 release-signing secrets "
         "are provisioned. No source-current signed artifact or physical-device "

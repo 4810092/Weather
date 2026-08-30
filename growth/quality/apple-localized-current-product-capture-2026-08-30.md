@@ -1,7 +1,7 @@
 # Apple localized source-bound product capture — 2026-08-30
 
 Status: **PASS for predecessor `9c2dce4` App Store phone screenshot provenance;
-not current-binary evidence for `704fd89`**.
+not current-binary evidence for `2cdd438`**.
 
 This record proves only the provenance and store-format readiness of twelve
 localized iPhone phone sources: four distinct states in each of English,
@@ -9,9 +9,12 @@ Russian, and Uzbek. It does not satisfy Apple distribution signing,
 physical-device, iPad, widget, paired-watch, iOS 15, crash, TestFlight, review,
 rollout, or public-availability gates.
 The captures were exact-current for `9c2dce4` when recorded. Intermediate
-authority `fb591e3` and current authority `704fd89` both supersede that binary
-identity, so the images remain creative provenance but cannot verify the
-current app artifact.
+authorities `fb591e3` and `704fd89`, then current authority
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`, supersede that binary identity,
+so the images remain creative provenance but cannot verify the current app
+artifact. Current-source twelve-test iOS Simulator provider coverage does not
+rerun or transfer this screenshot provenance; the complete current hosted
+matrix, signed archive, and physical Apple capture remain pending.
 
 ## Exact captured build and simulator boundary
 

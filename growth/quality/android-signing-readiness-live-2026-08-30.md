@@ -3,9 +3,15 @@
 Status: **BLOCKED for source-current phone and Wear OS signing**.
 
 Current release authority is
-`704fd893e59d94d8e9a4971313a773b3fa545ab6`. Every `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. Every `704fd89`, `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
 build and Keychain statement below is historical, non-transferable evidence;
 it does not prove current signed bytes.
+
+The protected `release-signing` environment contains 4/8 required secrets:
+the Android keystore payload and three Apple provisioning profiles. Both
+Android passwords, the Apple distribution P12, and its transport password are
+absent. Across phone, Wear, and Apple, 0/3 current signed artifacts are
+byte-verified; the candidate workflow and physical matrix have not run.
 
 Observed at `2026-08-30 04:43:42 +05:00`. This was a read-only audit. No
 password, private-key material, protected Keychain value, signing input, or
@@ -33,8 +39,8 @@ instruction to build the superseded revision.
 - Historical run `33296238901` for predecessor authority `fb591e3` passed its
   ordinary unsigned Android job in 1m55s. The overall run failed all three UI
   profiles, and its unsigned outputs do not establish signing for current
-  authority `704fd89`.
-- Exact-source run
+  authority `2cdd438`.
+- Predecessor exact-source run
   [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
   at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
   `android-and-shared` in 2m31s and all five tests on each Android UI profile.
@@ -42,9 +48,14 @@ instruction to build the superseded revision.
   `36db17cc8a0faac163aad463e9ddbc8ef500c67aea54b9ceb274adeb47c711e4`
   for `android-release-unsigned` and
   `30d87426a7d0a43508cbee16da377965562802e2839719e7beba943dcae48d1e`
-  for `wear-release-unsigned`. Those are archive digests, not verified signed
-  AAB hashes or signing evidence; current Android/Wear release authority
-  remains `0/2` byte-verified and blocked.
+  for `wear-release-unsigned`. Evidence-head run
+  [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+  also passed against the same `704fd89` release-source tree. Those predecessor
+  results and archive digests are not verified current signed AAB hashes or
+  current hosted evidence. Fourteen targeted Android-host provider tests pass
+  for `2cdd438`, including cache/timezone preservation after rejected required
+  rows, but the complete current hosted matrix is pending. Android/Wear release
+  authority remains `0/2` byte-verified and blocked.
 
 ## Keystore and Keychain
 
@@ -90,7 +101,7 @@ At the initial observation, the local
 signature entries and embed revision
 `dd88d77f0ccce74bb2a3b3390885fa87a642f536`, not the manifest authority. They
 were neither source-current candidates nor uploadable artifacts. No retained
-AAB now combines current revision `704fd89…`, the phone/Wear release identities
+AAB now combines current revision `2cdd438…`, the phone/Wear release identities
 above, and the pinned upload certificate.
 
 ## 05:30 exact-source recheck
@@ -132,7 +143,7 @@ After both exact protected lookups return status 0, resolve the current full
 revision only through `verify_release_artifacts.py --print-source-revision`,
 build from a standalone checkout detached at that revision, and retain outputs under a new
 mode-700 external directory such as
-`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-704fd89/`,
+`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-2cdd438/`,
 and sign to the manifest filenames `nimbo-phone-1.1.0-vc8.aab` and
 `nimbo-wear-1.1.0-vc1000008.aab`. The live JDK 17 `jarsigner` does not support
 the previously proposed `-storepass:env` / `-keypass:env` modifiers. The safe

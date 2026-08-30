@@ -100,14 +100,16 @@ artifacts, and device results from predecessor revisions remained non-transferab
 Successor authority `fb591e3` corrected the viewport and KVM setup defects.
 Historical run `33296238901` then passed ordinary Android/iOS and the KVM gate
 on all three profiles, but each profile launched five tests and failed the same
-two zero-node Uzbek/Russian locale selectors. Current authority `704fd89` uses
-a dedicated locale-configured activity. Exact-source successor run
+two zero-node Uzbek/Russian locale selectors. Later authority `704fd89` uses a
+dedicated locale-configured activity. Exact-source successor run
 [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
 at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
 ordinary Android/iOS and all five tests on all three UI profiles. This does not
-retroactively transfer evidence to the historical `6f72e70` checkpoint;
-signing, artifact verification, crash diagnosis, and the exact physical matrix
-remain blocked at `0/3` under the current authority.
+retroactively transfer evidence to the historical `6f72e70` checkpoint.
+Current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` adds provider
+decoding hardening, so the `704fd89` run is non-transferable to current source
+as well. Signing, artifact verification, crash diagnosis, and the exact
+physical matrix remain blocked at `0/3`.
 
 No release artifact was signed, uploaded, submitted, or published by this
 historical source-sync update.

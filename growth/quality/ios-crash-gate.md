@@ -1,4 +1,4 @@
-# iOS crash gate — 2026-08-28, refreshed 2026-08-29
+# iOS crash gate — 2026-08-28, refreshed 2026-08-30
 
 Status: **BLOCKED**. Do not scale public acquisition or send outreach while this gate is blocked.
 
@@ -103,8 +103,9 @@ Organizer remains the authority for the missing report and affected binary.
 
 ## Current code inheritance and predecessor execution evidence
 
-Current source authority `704fd893e59d94d8e9a4971313a773b3fa545ab6`
-inherits the reachable UIKit lifecycle, main-actor completion, storage-startup,
+Current source authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`
+inherits through predecessor `704fd893e59d94d8e9a4971313a773b3fa545ab6`
+the reachable UIKit lifecycle, main-actor completion, storage-startup,
 saved-location-limit, and long-lived SQL observation hardening from `97c26cb`.
 Predecessor commit `9c2dce4200dbba5487c8c458ade4616005fde6e6`
 also closed three deterministic storage-failure paths that previously let a
@@ -120,7 +121,7 @@ widget `7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff`,
 and watch `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728`.
 Their binary and dSYM UUIDs match, the shared iOS simulator suite and 18 Apple
 surface tests pass, and source-bound Release simulator builds succeed. The code
-is inherited by `704fd89`, but these executed results and binary identities are
+is inherited by `2cdd438`, but these executed results and binary identities are
 non-transferable; neither can be attributed to the suppressed historical crash
 without its missing diagnostic.
 
@@ -129,17 +130,24 @@ ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
 surface tests, and the unsigned application build. The overall run failed all
 three Android UI profiles. This is unsigned predecessor regression evidence,
 not a signed or physical result, and it neither diagnoses the suppressed crash
-nor transfers to current authority `704fd89`.
+nor transfers to current authority `2cdd438`.
 
-Exact-source hosted
+Predecessor exact-source hosted
 [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
 at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
-the current iOS job in 17m25s, including shared simulator tests (5m20s), Apple
+the `ios` job in 17m25s, including shared simulator tests (5m20s), Apple
 surface tests (2m29s), and an unsigned build (8m37s). This confirms hosted
-regression execution for `704fd893e59d94d8e9a4971313a773b3fa545ab6`; it
-still does not supply the suppressed crash diagnostic, symbolication,
-distribution-signed bytes, or physical reproduction. The crash gate remains
-blocked.
+regression execution for `704fd893e59d94d8e9a4971313a773b3fa545ab6`.
+Evidence-head run
+[`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+also passed against that same predecessor release-source tree. Both runs are
+non-transferable to current authority `2cdd438`.
+
+For exact current bytes, twelve targeted iOS Simulator provider service and
+mapping tests pass, including required-row rejection behavior. These bounded
+tests do not supply the suppressed crash diagnostic, symbolication, a complete
+current hosted Apple run, distribution-signed bytes, or physical reproduction.
+The crash gate remains blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

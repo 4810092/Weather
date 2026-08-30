@@ -1,7 +1,7 @@
 # Accessibility evidence matrix — 2026-08-30
 
-Status: **HISTORICAL PREDECESSOR HARNESS; CURRENT SUCCESSOR HOSTED SUITE GREEN
-ON ALL THREE PROFILES; PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
+Status: **HISTORICAL PREDECESSOR HOSTED SUITE GREEN ON ALL THREE PROFILES;
+CURRENT HOSTED, PHYSICAL ACCESSIBILITY, AND STORE DECLARATIONS BLOCKED**.
 
 This record is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It distinguishes source
@@ -19,15 +19,23 @@ all three UI profiles. Every UI job launched exactly five tests and failed the
 same two zero-node Uzbek/Russian locale selectors because the generic activity
 reset the requested locale before Compose resources were created.
 
-Current authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
+Predecessor authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
 generic activity with a dedicated activity that applies locale before
 composition, verifies Compose observes the injected language, and derives
 layout direction from the same locale. Targeted device-test ktlint,
-compilation, and merged-manifest processing pass. Exact-source hosted
+compilation, and merged-manifest processing pass. Its exact-source hosted
 [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
 at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` then passed
 all five tests on the API 24 phone in 2m24s, API 36 phone in 3m15s, and API 36
-tablet in 3m30s. No predecessor result transfers to the current authority.
+tablet in 3m30s. Evidence-head run
+[`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+also passed against that same predecessor release-source tree.
+
+Current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` changes shared
+provider decoding. Fourteen targeted Android-host and twelve targeted iOS
+Simulator provider tests pass, but neither suite executes the accessibility UI
+harness. Both hosted runs above predate that change and are non-transferable;
+the complete current hosted UI matrix is pending.
 
 ## Automated source evidence
 
@@ -41,13 +49,15 @@ UI tests for:
 - Russian onboarding at `200%` font scale.
 
 The API 24 test target uses core-library desugaring for the shared
-`kotlinx-datetime` code path. The current harness passed targeted ktlint,
-device-test compilation, and merged-manifest processing locally; it was not
-executed on a local emulator or device. Standard GitHub-hosted CI executed all
-five tests green on the API 24 phone, API 36 phone, and API 36 tablet for exact
-authority `704fd893e59d94d8e9a4971313a773b3fa545ab6`. The correct automated
-result is now `hosted/passed`; physical TalkBack, large-text, and device-layout
-coverage remains `blocked`, not inferred from emulator automation.
+`kotlinx-datetime` code path. The accessibility harness passed targeted ktlint,
+device-test compilation, and merged-manifest processing locally at the
+predecessor checkpoint; it was not executed on a local emulator or device.
+Standard GitHub-hosted CI executed all five tests green on the API 24 phone,
+API 36 phone, and API 36 tablet for exact predecessor authority
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`. The correct current automated
+result is `pending`, not `hosted/passed`; physical TalkBack, large-text, and
+device-layout coverage remains `blocked`, not inferred from predecessor
+automation or current provider tests.
 
 ## Evidence matrix
 

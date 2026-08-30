@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:704fd893e59d94d8e9a4971313a773b3fa545ab6 -->
+<!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b71817c3207b303d89c4d76909abb230319b75982564d5bcfa6d56303f28f3ad -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0652a16e939a2ff58fa52da588962e3faab120f66e9dec6bcde9c7e448a0610d -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=df5cb837c969520ddd70758ee3e14501921f1e10b4a6c91b35692daa32c600ba -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=60e37e9be9f51d7a178a3446918e59fe35d4f9a651484fe0be1bd6bfca0726bb -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,24 +54,18 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `704fd89` has no retained signed Android or
-  Apple candidate and no matching physical QA. It keeps the Apple source-
-  revision and deterministic per-target profile settings, pins 1,758
-  hosted-Linux Android and macOS/`iosArm64` dependency artifacts including the
-  Linux AAPT2 and Kotlin/Native host payloads, and seals actual source bytes in
-  the hosted candidate workflow. Historical run `33296238901` for predecessor
-  authority `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned
-  iOS in 20m38s. All three UI jobs passed the KVM gate and launched exactly five
-  tests, but each failed the same two zero-node Uzbek/Russian locale selectors.
-  Current source `704fd89` applies locale before composition through a dedicated
-  test activity. Exact-source hosted run
-  [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada`
-  passed ordinary Android/iOS and all five tests on each standard UI profile:
-  API 24 phone in 2m24s, API 36 phone in 3m15s, and API 36 tablet in 3m30s.
-  This is automated unsigned regression evidence, not physical accessibility,
-  release signing, or crash-gate closure; all predecessor/device evidence
-  remains non-transferable.
+- Current product/build source `2cdd438` has no retained signed Android or
+  Apple candidate and no matching physical QA. It inherits the Apple source-
+  revision, deterministic per-target profiles, pinned dependency graph,
+  dedicated locale test activity, and standard API 24/API 36 hosted UI matrix.
+  It adds tolerant optional Open-Meteo forecast/AQI decoding while keeping
+  required weather/time inputs fail-closed. Fourteen Android-host and twelve
+  iOS Simulator provider tests pass, including cache/timezone preservation on
+  rejected required-row responses. Hosted runs `33297505825` and
+  `33299592101` passed only for predecessor authority `704fd89`; the complete
+  hosted matrix for `2cdd438` is pending. These targeted tests are not physical
+  accessibility, release signing, or crash-gate closure; all predecessor/device
+  evidence remains non-transferable.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian
@@ -105,7 +99,7 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md`](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md`](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).

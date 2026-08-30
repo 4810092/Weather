@@ -18,22 +18,21 @@ returned only one unique app, below the 10-app completeness floor, but it is
 a non-goal diagnostic source error: `goal_evidence_complete=true`, all
 required goal surfaces are complete and failed, and the streak remains `0/7`.
 Current product/build-input commit
-`704fd893e59d94d8e9a4971313a773b3fa545ab6` resolves to phone 1.1.0 (8),
-Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It keeps fail-closed Apple
-`NimboSourceRevision` plumbing and deterministic per-target App Store profiles,
-pins 1,758 dependency artifacts, and uses a dedicated locale-aware Android UI
-test activity that applies and verifies the requested language before Compose
-resource lookup. Historical run `33296238901` for predecessor authority
-`fb591e3` passed ordinary Android and unsigned iOS plus all three KVM gates;
-each UI job launched five tests and failed the same two zero-node Uzbek/Russian
-selectors because the generic predecessor activity reset locale. That failed
-run is non-transferable. Exact-source run
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` resolves to phone 1.1.0 (8),
+Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It inherits the fail-closed Apple
+`NimboSourceRevision` plumbing, deterministic per-target App Store profiles,
+pinned dependency graph, and locale-aware Android UI harness from predecessor
+`704fd89`. It adds tolerant decoding for omitted optional Open-Meteo forecast
+and AQI arrays while keeping required weather/time rows fail-closed. Fourteen
+targeted Android-host and twelve targeted iOS Simulator provider tests pass,
+including cache/timezone preservation after rejected required-row responses.
+Hosted runs
 [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-then completed successfully in `17m30s` for `704fd89`: ordinary Android and
-unsigned iOS passed, all three KVM-gated API 24/API 36 phone/tablet jobs passed
-exactly five UI tests, and the iOS shared-simulator, Apple-surface, and unsigned
-application checks passed. Its Android and Wear artifacts are explicitly
-unsigned regression outputs; no retained signed AAB, archive, or IPA exists.
+and [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+passed only for predecessor authority `704fd89`; their ordinary Android/iOS,
+KVM-gated API 24/API 36 phone/tablet, and unsigned artifacts do not transfer.
+The complete hosted matrix for `2cdd438` is pending the next push, and no
+retained signed AAB, archive, or IPA exists for the current authority.
 The dashboard therefore reports `0/3` current artifacts byte-verified. All
 binaries, screenshots, and device results below belong to predecessor
 revisions and remain non-transferable regression evidence.
@@ -99,8 +98,11 @@ that exact weekly scope.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
 is still missing despite the bounded predecessor API 24 emulator and API 25
 physical phone plus API 36 emulator tablet/widget debug passes. Android Keychain
-metadata and the existing mode-600 keystore are present, but the protected value
-was not retrieved and upload signing remains unavailable. At 20:44 +05:00 the
+metadata and the existing mode-600 keystore are present. The protected GitHub
+environment contains the keystore payload and all three Apple provisioning
+profiles, but the two Android passwords plus the Apple distribution P12 and its
+transport password remain absent; signing therefore remains unavailable. At
+20:44 +05:00 the
 iPad was again available and paired, but lock-state and DDI queries failed
 because it had not been unlocked recently; the iPhone and watch remained
 unavailable. No exact-current signed Apple build exists, so it cannot provide
@@ -109,10 +111,10 @@ historical iOS crash still lacks a diagnostic and symbolicated report. The
 authenticated inventory path closes the API-authentication discovery gap, but
 its diagnostic request is permission-blocked by `403` and cannot recover the
 suppressed crash signature or log.
-Current `704fd89` inherits the predecessor hardening, but the executed tests and
-simulator binaries remain pinned to `9c2dce4`; neither can identify or be
-attributed to that event, and the results do not transfer to close the crash
-gate. OpenMeteo GmbH
+Current `2cdd438` inherits the preventive crash hardening and passes twelve
+targeted iOS Simulator provider tests, but neither those tests nor predecessor
+hosted/simulator binaries can identify or be attributed to the historical
+event. They do not close the crash gate. OpenMeteo GmbH
 replied at 17:25 +05:00 in ticket `234272` and
 explicitly confirmed non-commercial API entitlement under the complete terms
 sent at 06:05:07 +05:00. The pass is limited to the described free,

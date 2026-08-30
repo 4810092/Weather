@@ -1,7 +1,7 @@
 # Apple signing readiness live recheck — 2026-08-30
 
 Current release authority is
-`704fd893e59d94d8e9a4971313a773b3fa545ab6`. Every `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, or `aa6496d` build or
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. Every `704fd89`, `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, or `aa6496d` build or
 Keychain statement below is historical, non-transferable evidence; it does not
 prove current distribution-signed bytes.
 
@@ -21,6 +21,16 @@ then-documented command forced one obsolete profile onto all three products;
 that configuration defect has since been corrected. Actual private-key use
 still fails while the login Keychain is locked, so a noninteractive
 distribution archive remains unproved.
+
+For the exact current source, twelve targeted iOS Simulator provider tests
+pass, including required-row rejection behavior. The complete hosted Apple
+matrix is still pending: runs `33297505825` and `33299592101` belong only to
+predecessor `704fd89` and do not transfer.
+The protected `release-signing` environment contains 4/8 required secrets,
+including all three Apple provisioning profiles but not the distribution P12
+or its transport password. Across phone, Wear, and Apple, 0/3 current signed
+artifacts are byte-verified. The candidate workflow and physical Apple matrix
+have not run, and the crash gate remains blocked.
 
 The current physical matrix is also incomplete: one iPad is an eligible Xcode
 destination, but no concrete iPhone or Apple Watch destination is eligible.
@@ -52,7 +62,7 @@ was not invoked and no password or biometric prompt was opened.
   `python3 scripts/verify_release_artifacts.py --print-source-revision` resolved
   the then-current product/build-input revision
   `44c189209c793cf097fcc293faf8db88033e6902`. The current manifest authority is
-  `704fd893e59d94d8e9a4971313a773b3fa545ab6`; it inherits the corrected
+  `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`; it inherits the corrected
   per-target signing configuration introduced at `aa6496d` and used by the
   historical 05:30 preflight.
 - The upload manifest remains fail-closed: Apple is `source_sync: blocked`,
@@ -68,17 +78,20 @@ was not invoked and no password or biometric prompt was opened.
   ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
   surface tests, and the unsigned application build. The overall run failed on
   all three Android UI profiles. It provides neither signing nor physical QA
-  for current authority `704fd89`.
-- Exact-source run
+  for current authority `2cdd438`.
+- Predecessor exact-source run
   [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
   at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
   `ios` in 17m25s: shared simulator tests took 5m20s, Apple surface tests took
   2m29s, and the unsigned build took 8m37s. The
   `ios-simulator-test-results` GitHub archive digest is
   `1eea44358a95c8e2b58af184fd1fabd46369aec22a12975e128aa54d122994ba`.
-  This is unsigned simulator/build regression evidence, not a distribution-
-  signed archive, physical QA, or crash-gate closure; Apple remains `0/1`
-  byte-verified and blocked.
+  Evidence-head run
+  [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+  also passed against the same `704fd89` release-source tree. Both are unsigned
+  predecessor regression evidence, not current hosted execution, a
+  distribution-signed archive, physical QA, or crash-gate closure; Apple
+  remains `0/1` byte-verified and blocked.
 
 ## Certificate, key, and profiles
 

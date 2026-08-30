@@ -5,11 +5,15 @@ AND VERIFIED; STORE MUTATIONS PENDING**.
 
 This historical audit is bound to checkpoint release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. Current authority
-`704fd893e59d94d8e9a4971313a773b3fa545ab6` inherits its public-claim
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` inherits its public-claim
 separation. Public Apple remains
 `1.0.1 (4)` and public Google Play remains phone `1.0.2 (6)` plus Wear
 `1.0.2 (1000007)`. The current `1.1.0` candidate has no source-current signed
 bytes, upload, review, or public availability.
+Its 14 Android-host and 12 iOS Simulator provider tests are bounded current-
+source regression evidence only. Hosted runs `33297505825` and `33299592101`
+belong to predecessor `704fd89`; none of this evidence changes a public claim
+or store state.
 
 ## Claim matrix
 
@@ -27,7 +31,8 @@ bytes, upload, review, or public availability.
 The previous public privacy route described the candidate-only review-prompt
 timing as if it applied to public `1.0.x` products. Commit
 `e552c0f87b5774582a0215abec60be92e4245b53`, inherited by checkpoint authority
-`6f72e70fff6eb7566e06dd862e1fad09055343a4` and current authority `704fd89`,
+`6f72e70fff6eb7566e06dd862e1fad09055343a4`, predecessor authority `704fd89`,
+and current authority `2cdd438`,
 removes those timing details in
 Uzbek, Russian, and English and keeps only the version-neutral statement that
 Nimbo does not collect or store rating or review text inside the app.

@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:704fd893e59d94d8e9a4971313a773b3fa545ab6 -->
+<!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b71817c3207b303d89c4d76909abb230319b75982564d5bcfa6d56303f28f3ad -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0652a16e939a2ff58fa52da588962e3faab120f66e9dec6bcde9c7e448a0610d -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=df5cb837c969520ddd70758ee3e14501921f1e10b4a6c91b35692daa32c600ba -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=60e37e9be9f51d7a178a3446918e59fe35d4f9a651484fe0be1bd6bfca0726bb -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,27 +28,23 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 deterministic locale rerun authority — 2026-08-30
+## Nimbo 1.1.0 provider decoding authority — 2026-08-30
 
 The authoritative product/build-input revision is
-`704fd893e59d94d8e9a4971313a773b3fa545ab6`. It keeps phone `1.1.0 (8)`,
-Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
-metadata covers 1,758 artifacts. The source adds deterministic Compose UI tests,
-API 24 core-library desugaring, and standard GitHub-hosted API 24/API 36
-phone/tablet execution jobs. Historical run `33296238901` for predecessor
-authority `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned iOS
-in 20m38s. Its KVM gate passed on all three UI profiles, but each profile
-launched five tests and failed the same two zero-node Uzbek/Russian locale
-selectors. The current source replaces the generic test activity with a
-dedicated locale-configured activity. Exact-source GitHub Actions run
-[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
-overall in 17m30s: ordinary Android in 2m31s, ordinary unsigned iOS in 17m25s,
-and all three five-test UI profiles in 2m24s, 3m15s, and 3m30s. No predecessor
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. It keeps phone `1.1.0 (8)`,
+Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. It inherits the
+pinned dependency graph, deterministic locale/UI harness, API 24 desugaring,
+and standard hosted API 24/API 36 phone/tablet jobs from predecessor
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`. It adds tolerant decoding for
+omitted optional Open-Meteo forecast/AQI arrays while keeping required
+weather/time inputs fail-closed. Fourteen Android-host and twelve iOS Simulator
+provider tests pass, including cache/timezone preservation on rejected required
+rows. Hosted runs `33297505825` and `33299592101` passed only for the predecessor;
+the complete hosted matrix for this authority is pending. No predecessor
 AAB/archive hash, signed artifact, physical QA, crash diagnosis, or store state
 transfers, and the manifest remains `0/3` byte-verified.
 The current boundary is recorded in the
-[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md)
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 
 ## Historical Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30

@@ -3,10 +3,17 @@
 Status: **BLOCKED for Android phone, Wear OS, and Apple**.
 
 This is a historical point-in-time checkpoint for `9c2dce4`. Current release
-authority is `704fd893e59d94d8e9a4971313a773b3fa545ab6`; current signing truth is
+authority is `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`; current signing truth is
 recorded in the Android and Apple live readiness records dated 2026-08-30. Any
 use of `current` or `exact-current` below is scoped to this 2026-08-29
-checkpoint and does not transfer artifact or device evidence to `704fd89`.
+checkpoint and does not transfer artifact or device evidence to `2cdd438`.
+
+The current authority has 14 targeted Android-host and 12 targeted iOS
+Simulator provider tests green. Hosted runs `33297505825` and `33299592101`
+belong only to predecessor `704fd893e59d94d8e9a4971313a773b3fa545ab6` and do
+not transfer. The complete current hosted matrix is pending; the protected
+environment remains at 4/8 required secrets and 0/3 current signed artifacts
+are byte-verified.
 
 No artifact was uploaded, submitted, or published during this check. Protected
 credentials, private keys, aliases, passwords, and provisioning contents were

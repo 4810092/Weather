@@ -202,28 +202,22 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
   all embed or represent historical source. The predecessor `9c2dce4` phone and
   Wear outputs are unsigned, while its Apple build 6 is simulator-only; current
-  source `704fd89` has no retained signed candidate bytes. Historical QA
+  source `2cdd438` has no retained signed candidate bytes. Historical QA
   does not establish signing or physical coverage for the current candidates.
-  Current product/build source `704fd89` keeps the Apple source-revision and
-  deterministic per-target profile plumbing, pins 1,758 dependency artifacts,
-  and adds API 24 desugaring plus a standard GitHub-hosted API 24/API 36
-  Compose UI matrix. Historical run `33296238901` for predecessor authority
-  `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned iOS in
-  20m38s. Its KVM gate passed on all three UI profiles, but each profile
-  launched five tests and failed the same two zero-node Uzbek/Russian locale
-  selectors. Current source `704fd89` uses a dedicated test activity that
-  applies locale before composition. Exact-source GitHub Actions
-  [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-  at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada`
-  passed overall in 17m30s: ordinary Android in 2m31s, ordinary unsigned iOS in
-  17m25s, and the API 24 phone, API 36 phone, and API 36 tablet UI profiles in
-  2m24s, 3m15s, and 3m30s. All five UI tests passed on every profile. This is
-  unsigned hosted regression evidence only: prior signed/device evidence is
-  non-transferable, no current artifact is byte-verified in the upload
-  manifest, and signing, physical QA, and the crash gate remain blocked.
+  Current product/build source `2cdd438` inherits the Apple source-revision,
+  deterministic per-target profiles, pinned dependency graph, API 24
+  desugaring, and hosted Compose UI matrix. It adds tolerant decoding for
+  omitted optional Open-Meteo forecast/AQI arrays while keeping required
+  weather/time rows fail-closed. Fourteen targeted Android-host and twelve iOS
+  Simulator tests pass, including cache/timezone preservation after rejected
+  required rows. Hosted runs `33297505825` and `33299592101` passed only for
+  predecessor authority `704fd89`; the complete hosted matrix for `2cdd438` is
+  pending. Prior signed/device evidence is non-transferable, no current artifact
+  is byte-verified in the upload manifest, and signing, physical QA, and the
+  crash gate remain blocked.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
-  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md),
+  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md),
   and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 

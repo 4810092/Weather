@@ -1,8 +1,8 @@
 # Historical release artifact source sync — 2026-08-30 hosted UI rerun checkpoint
 
 Status: **HISTORICAL PREDECESSOR AUTHORITY; RUN 33296238901 FAILED ALL THREE
-ANDROID UI PROFILES; SUPERSEDED BY `704fd89`; 0/3 ARTIFACTS WERE BYTE-VERIFIED
-AT THIS CHECKPOINT**.
+ANDROID UI PROFILES; SUPERSEDED FIRST BY `704fd89` AND NOW BY `2cdd438`; 0/3
+ARTIFACTS WERE BYTE-VERIFIED AT THIS CHECKPOINT**.
 
 The authoritative product/build-input commit at this checkpoint was
 `fb591e3d16f507a5a4f794ae537ccd087523889b`. It resolves to Android phone
@@ -94,9 +94,12 @@ pass. Exact-source successor run
 [`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
 at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
 ordinary Android/iOS and all five tests on all three UI profiles. That success
-does not retroactively transfer to this failed predecessor checkpoint. Current
-signing, artifact, crash, and physical gates remain blocked at `0/3`; see the
-[current source-sync record](release-artifact-source-sync-2026-08-30-704fd89.md).
+does not retroactively transfer to this failed predecessor checkpoint.
+Successor `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` then adds provider
+decoding hardening, so the `704fd89` run does not transfer to current source
+either. Current signing, artifact, crash, and physical gates remain blocked at
+`0/3`; see the
+[current source-sync record](release-artifact-source-sync-2026-08-30-2cdd438.md).
 
 No release artifact was signed, uploaded, submitted, or published by this
 historical source-sync update.

@@ -1,9 +1,10 @@
-# Release artifact source sync — 2026-08-30 deterministic locale gate
+# Historical release artifact source sync — 2026-08-30 deterministic locale gate
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; exact-source hosted
-regression green; 0/3 current artifacts byte-verified**.
+Status: **HISTORICAL PREDECESSOR AUTHORITY; EXACT-SOURCE HOSTED REGRESSION WAS
+GREEN; SUPERSEDED BY `2cdd438`; 0/3 ARTIFACTS WERE BYTE-VERIFIED AT THIS
+CHECKPOINT**.
 
-The authoritative product/build-input commit is
+The authoritative product/build-input commit at this checkpoint was
 `704fd893e59d94d8e9a4971313a773b3fa545ab6`. It resolves to Android phone
 `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
 `1.1.0 (6)`.
@@ -11,7 +12,7 @@ The authoritative product/build-input commit is
 ## Change boundary
 
 Compared with predecessor `fb591e3d16f507a5a4f794ae537ccd087523889b`,
-the current authority changes only the Android Compose UI-test locale harness:
+the checkpoint authority changes only the Android Compose UI-test locale harness:
 
 - the test manifest launches `NimboLocaleTestActivity` instead of the generic
   `ComponentActivity`;
@@ -72,7 +73,8 @@ Public GitHub Actions
 [run 33297505825](https://github.com/4810092/Weather/actions/runs/33297505825)
 executed at evidence commit
 `163ff034c2b93ec302c4c5bee3c49168e0b33ada`, whose resolved release-source
-authority is exactly `704fd893e59d94d8e9a4971313a773b3fa545ab6`.
+authority at this checkpoint was exactly
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`.
 
 - the overall run passed in 17m30s;
 - `android-and-shared` passed in 2m31s;
@@ -107,19 +109,20 @@ distribution P12, and its transport password remain absent behind local
 Keychain authorization. No candidate workflow has run, so this partial
 provisioning changes neither artifact authority nor the `0/3` result.
 
-## Current artifact authority
+## Artifact authority at this checkpoint
 
-| Surface | Exact identity | Current signed bytes | Decision |
+| Surface | Exact identity | Signed bytes at checkpoint | Decision |
 | --- | --- | --- | --- |
 | Android phone/tablet | `1.1.0 (8)` | none bound to this revision | **BLOCKED** |
 | Wear OS | `1.1.0 (1000008)` | none bound to this revision | **BLOCKED** |
 | Apple app/widget/watch | `1.1.0 (6)` | no distribution-signed archive or IPA bound to this revision | **BLOCKED** |
 
-The schema-v2 upload manifest keeps every current SHA-256, signing-evidence
-path, and physical-QA path null. Historical candidates, unsigned artifacts,
-and device results from predecessor revisions remain non-transferable.
+The schema-v2 upload manifest at this checkpoint kept every SHA-256,
+signing-evidence path, and physical-QA path null. Historical candidates,
+unsigned artifacts, and device results from predecessor revisions remained
+non-transferable.
 
-## Remaining unblock
+## Unresolved boundary carried forward
 
 1. Unlock the local login Keychain and provision the four remaining protected
    `release-signing` inputs without exposing credentials in chat, then run the
@@ -131,5 +134,13 @@ and device results from predecessor revisions remain non-transferable.
 4. Obtain and symbolicate the suppressed iOS crash diagnostic, reproduce or
    disposition it against the current signed build, and close the crash gate.
 
+## Successor boundary
+
+Current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` adds provider
+decoding hardening. The hosted runs and unsigned artifacts documented here
+predate that change and do not transfer. Current signing, artifact, crash, and
+physical gates remain blocked at `0/3`; see the
+[current source-sync record](release-artifact-source-sync-2026-08-30-2cdd438.md).
+
 No release artifact was signed, uploaded, submitted, or published by this
-source-sync update.
+historical source-sync update.

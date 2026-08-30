@@ -1,7 +1,7 @@
 # GitHub-hosted signed-candidate readiness — 2026-08-30
 
-Status: **IMPLEMENTED; PROTECTED ENVIRONMENT CREATED; 4/8 SECRETS;
-NOT EXECUTED; 0/3 SIGNED ARTIFACTS BYTE-VERIFIED**.
+Status: **IMPLEMENTED; CURRENT HOSTED MATRIX PENDING; PROTECTED ENVIRONMENT
+CREATED; 4/8 SECRETS; NOT EXECUTED; 0/3 SIGNED ARTIFACTS BYTE-VERIFIED**.
 
 ## CI placement decision
 
@@ -105,22 +105,31 @@ Google Play, submit for review, release, or prove public availability.
   reject source mutation, unexpected root entries, stale but well-formed
   external mappings, build/current source divergence, receipt/package path
   aliasing, partial artifact inventories, and tar byte/mode drift.
-- Current source `704fd893e59d94d8e9a4971313a773b3fa545ab6`
+- Current source `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`
   inherits deterministic Compose UI coverage, API 24 core-library desugaring,
-  and standard GitHub-hosted API 24/API 36 phone/tablet jobs. Historical run
+  and standard GitHub-hosted API 24/API 36 phone/tablet jobs from predecessor
+  `704fd893e59d94d8e9a4971313a773b3fa545ab6`. It changes shared Open-Meteo
+  response decoding. Fourteen targeted Android-host and twelve targeted iOS
+  Simulator provider tests pass for the exact current bytes, including cache
+  and timezone preservation after rejected required-row responses. Those
+  bounded tests do not replace the complete hosted matrix. Historical run
   [`33296238901`](https://github.com/4810092/Weather/actions/runs/33296238901)
   for predecessor authority `fb591e3` passed ordinary Android in 1m55s,
   ordinary unsigned iOS in 20m38s, and the KVM gate on all three UI profiles.
   Each UI profile launched five tests and failed the same two zero-node
-  Uzbek/Russian locale selectors. Current source `704fd89` replaces the generic
-  test activity with a locale-configured activity. Exact-source hosted
+  Uzbek/Russian locale selectors. Predecessor source `704fd89` replaces the
+  generic test activity with a locale-configured activity. Exact-source hosted
   [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
   at evidence commit `163ff034c2b93ec302c4c5bee3c49168e0b33ada` passed
   overall in 17m30s: ordinary Android in 2m31s, ordinary iOS in 17m25s, and all
   five tests on the API 24 phone, API 36 phone, and API 36 tablet in 2m24s,
-  3m15s, and 3m30s. The predecessor result remains non-transferable. The six
-  GitHub archive digests are recorded in the current source-sync record; none
-  is a signed-candidate file hash or promoted into the upload manifest.
+  3m15s, and 3m30s. Evidence-head run
+  [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
+  also passed against the same `704fd89` release-source tree. Both results
+  predate `2cdd438` provider decoding and remain non-transferable. The six
+  GitHub archive digests from `33297505825` are recorded in its predecessor
+  source-sync record; none is a signed-candidate file hash or promoted into the
+  upload manifest.
 - Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`
   passed a standalone cold-cache Java 21 run of all 241 CI/release tasks.
   Unsigned phone vc8 SHA-256 is
@@ -158,9 +167,11 @@ Google Play, submit for review, release, or prove public availability.
 
 ## Current blocker
 
-The workflow has not been dispatched or completed, and no signed candidate
-tarball or receipt exists. The branch-restricted `release-signing` environment
-now contains 4/8 required secrets. The unsigned job does not need secrets;
+The complete hosted Android/iOS and API 24/API 36 UI matrix has not run for
+current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. The workflow
+has not been dispatched or completed, and no signed candidate tarball or
+receipt exists. The branch-restricted `release-signing` environment now
+contains 4/8 required secrets. The unsigned job does not need secrets;
 the `sign-verify` job cannot complete until the four Keychain/P12-dependent
 secrets are provisioned.
 The local login Keychain remains locked: protected Android credential reads

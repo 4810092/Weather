@@ -39,15 +39,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact-source hosted UI matrix green",
+                "current provider tests green",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact-source hosted unsigned iOS proof green",
+                "current provider tests green",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "hosted source proof green",
+                "current hosted source proof pending",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -70,7 +70,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Exact-source run 33297505825 completed successfully",
+                "complete hosted Android/iOS",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -102,7 +102,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Exact-source GitHub Actions run 33297505825 completed successfully",
+                "complete hosted matrix for this authority is pending",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 
