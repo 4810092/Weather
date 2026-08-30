@@ -13,8 +13,16 @@ authorities `fb591e3` and `704fd89`, then current authority
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`, supersede that binary identity,
 so the images remain creative provenance but cannot verify the current app
 artifact. Current-source twelve-test iOS Simulator provider coverage does not
-rerun or transfer this screenshot provenance; the complete current hosted
-matrix, signed archive, and physical Apple capture remain pending.
+rerun or transfer this screenshot provenance. Evidence-head commit
+`fb877d30b2179a489f5ce18dd06d892461436540` passed exact-source hosted CI run
+`33300967788` / #117 for `2cdd438`; its `ios` job finished in 23m59s with all
+18/18 Apple surface tests green, and its 80,294-byte
+`ios-simulator-test-results` GitHub archive has archive SHA-256
+`c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
+That archive is unsigned test/build evidence and does not recreate the twelve
+localized images or make them current-binary captures. A distribution-signed
+archive and physical Apple capture remain blocked; the signed workflow has not
+run and Apple remains `0/1` signed artifact byte-verified.
 
 ## Exact captured build and simulator boundary
 

@@ -9,8 +9,8 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=df5cb837c969520ddd70758ee3e14501921f1e10b4a6c91b35692daa32c600ba -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=60e37e9be9f51d7a178a3446918e59fe35d4f9a651484fe0be1bd6bfca0726bb -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
 This document separates implementation readiness from device QA, store review,
@@ -86,10 +86,16 @@ the captured slice”; it is never converted to a synthetic rank.
   Open-Meteo forecast/AQI arrays while keeping required weather/time inputs
   fail-closed. Fourteen targeted Android-host and twelve targeted iOS Simulator
   provider tests pass, including cache/timezone preservation after rejected
-  required rows. It has no retained signed candidate or physical QA. Hosted
-  runs `33297505825` and `33299592101` passed only for predecessor authority
-  `704fd89`; the complete hosted matrix for `2cdd438` is pending. Signed bytes,
-  physical QA, and crash diagnosis remain blocked.
+  required rows. It has no retained signed candidate or physical QA. At evidence
+  head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
+  [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
+  (`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
+  passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`,
+  API 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
+  `23m59s`, including `18/18` surface tests. Its six archived outputs are
+  unsigned/test evidence only. The protected signed workflow has not run, only
+  `4/8` signing secrets are provisioned, the manifest remains `0/3`
+  byte-verified, and physical QA and crash diagnosis remain blocked.
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful

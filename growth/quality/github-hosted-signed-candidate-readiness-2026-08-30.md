@@ -1,7 +1,8 @@
 # GitHub-hosted signed-candidate readiness — 2026-08-30
 
-Status: **IMPLEMENTED; CURRENT HOSTED MATRIX PENDING; PROTECTED ENVIRONMENT
-CREATED; 4/8 SECRETS; NOT EXECUTED; 0/3 SIGNED ARTIFACTS BYTE-VERIFIED**.
+Status: **IMPLEMENTED; EXACT-SOURCE HOSTED CI #117 GREEN; PROTECTED
+ENVIRONMENT 4/8 SECRETS; SIGNED WORKFLOW NOT EXECUTED; 0/3 SIGNED ARTIFACTS
+BYTE-VERIFIED**.
 
 ## CI placement decision
 
@@ -112,7 +113,8 @@ Google Play, submit for review, release, or prove public availability.
   response decoding. Fourteen targeted Android-host and twelve targeted iOS
   Simulator provider tests pass for the exact current bytes, including cache
   and timezone preservation after rejected required-row responses. Those
-  bounded tests do not replace the complete hosted matrix. Historical run
+  bounded local tests are retained alongside the hosted result below.
+  Historical run
   [`33296238901`](https://github.com/4810092/Weather/actions/runs/33296238901)
   for predecessor authority `fb591e3` passed ordinary Android in 1m55s,
   ordinary unsigned iOS in 20m38s, and the KVM gate on all three UI profiles.
@@ -129,7 +131,30 @@ Google Play, submit for review, release, or prove public availability.
   predate `2cdd438` provider decoding and remain non-transferable. The six
   GitHub archive digests from `33297505825` are recorded in its predecessor
   source-sync record; none is a signed-candidate file hash or promoted into the
-  upload manifest.
+  upload manifest. They remain predecessor evidence and are not relabelled by
+  the current run.
+- Evidence-head commit `fb877d30b2179a489f5ce18dd06d892461436540`
+  resolved exact product/build-input authority `2cdd438` and passed
+  GitHub-hosted CI
+  [run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+  workflow run #117, overall in 24m01s. All five jobs succeeded:
+  `android-and-shared` in 5m05s; all 5/5 tests on API 24 phone in 2m36s; all
+  5/5 tests on API 36 phone in 3m48s; all 5/5 tests on API 36 tablet in 4m18s;
+  and `ios` in 23m59s with all 18/18 Apple surface tests green.
+- Run #117 retained the following GitHub artifact archives:
+
+  | Archive | Bytes | GitHub archive SHA-256 |
+  | --- | ---: | --- |
+  | `android-ui-results-phone-api24` | 52,269 | `0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517` |
+  | `android-ui-results-phone-api36` | 302,815 | `f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1` |
+  | `android-ui-results-tablet-api36` | 281,718 | `20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c` |
+  | `android-release-unsigned` | 5,345,884 | `e499fce976974fbed15cfb5e525d738990a285215e81271954f86f5605c9cf8f` |
+  | `wear-release-unsigned` | 2,534,295 | `5a4b372e475c4c63ab58522397e7071e85928c6a1309d3c550c8b6f8cf8f6817` |
+  | `ios-simulator-test-results` | 80,294 | `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe` |
+
+  These SHA-256 values identify GitHub-created archive bytes. The archives are
+  unsigned build and test-result proof only: they are not signed-candidate file
+  hashes, a signed receipt, physical-device QA, or crash-gate closure.
 - Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`
   passed a standalone cold-cache Java 21 run of all 241 CI/release tasks.
   Unsigned phone vc8 SHA-256 is
@@ -167,10 +192,11 @@ Google Play, submit for review, release, or prove public availability.
 
 ## Current blocker
 
-The complete hosted Android/iOS and API 24/API 36 UI matrix has not run for
-current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. The workflow
-has not been dispatched or completed, and no signed candidate tarball or
-receipt exists. The branch-restricted `release-signing` environment now
+Exact-source standard CI #117 is green for current authority
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. The separate manual
+`signed-candidate` workflow has not been dispatched or completed, and no signed
+candidate tarball or receipt exists. The branch-restricted `release-signing`
+environment now
 contains 4/8 required secrets. The unsigned job does not need secrets;
 the `sign-verify` job cannot complete until the four Keychain/P12-dependent
 secrets are provisioned.
@@ -183,7 +209,7 @@ cannot be completed through that CLI session.
 The necessary human action is only to unlock the macOS login Keychain; the
 authenticated GitHub browser session is already usable. No password or private
 key should be sent in chat. After authorization, the remaining inputs can be
-exported directly into the protected environment, the hosted workflow can run,
-and its receipt can drive a separate manifest-promotion commit. Until then, the
-authoritative manifest remains blocked and the byte-verification count remains
-`0/3`.
+exported directly into the protected environment, the hosted signed-candidate
+workflow can run, and its receipt can drive a separate manifest-promotion
+commit. Until then, the authoritative manifest remains blocked and the
+byte-verification count remains `0/3`.

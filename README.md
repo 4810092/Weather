@@ -210,11 +210,16 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   omitted optional Open-Meteo forecast/AQI arrays while keeping required
   weather/time rows fail-closed. Fourteen targeted Android-host and twelve iOS
   Simulator tests pass, including cache/timezone preservation after rejected
-  required rows. Hosted runs `33297505825` and `33299592101` passed only for
-  predecessor authority `704fd89`; the complete hosted matrix for `2cdd438` is
-  pending. Prior signed/device evidence is non-transferable, no current artifact
-  is byte-verified in the upload manifest, and signing, physical QA, and the
-  crash gate remain blocked.
+  required rows. At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
+  [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
+  (`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
+  passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`,
+  API 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
+  `23m59s`, including `18/18` surface tests. Its six archived outputs are
+  unsigned/test evidence only. Prior signed/device evidence remains
+  non-transferable, the protected signed workflow has not run with its partial
+  `4/8` secret inventory, no current artifact is byte-verified in the upload
+  manifest (`0/3`), and signing, physical QA, and the crash gate remain blocked.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
   [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md),

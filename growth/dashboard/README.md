@@ -26,16 +26,18 @@ pinned dependency graph, and locale-aware Android UI harness from predecessor
 and AQI arrays while keeping required weather/time rows fail-closed. Fourteen
 targeted Android-host and twelve targeted iOS Simulator provider tests pass,
 including cache/timezone preservation after rejected required-row responses.
-Hosted runs
-[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-and [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
-passed only for predecessor authority `704fd89`; their ordinary Android/iOS,
-KVM-gated API 24/API 36 phone/tablet, and unsigned artifacts do not transfer.
-The complete hosted matrix for `2cdd438` is pending the next push, and no
-retained signed AAB, archive, or IPA exists for the current authority.
-The dashboard therefore reports `0/3` current artifacts byte-verified. All
-binaries, screenshots, and device results below belong to predecessor
-revisions and remain non-transferable regression evidence.
+At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
+[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788)
+(`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
+passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
+36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
+`23m59s`, including `18/18` surface tests. Its six archived outputs are
+unsigned/test evidence only. No retained signed AAB, archive, or IPA exists for
+the current authority: the protected signed workflow has not run and its
+environment still contains only `4/8` required secrets. The dashboard therefore
+reports `0/3` current artifacts byte-verified. Physical QA and crash diagnosis
+remain blocked; all binaries, screenshots, and device results below belong to
+predecessor revisions and remain non-transferable regression evidence.
 
 Predecessor debug APK and installed bytes
 `52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`

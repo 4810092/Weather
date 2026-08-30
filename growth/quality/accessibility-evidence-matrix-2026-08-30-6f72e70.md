@@ -1,7 +1,7 @@
 # Accessibility evidence matrix — 2026-08-30
 
-Status: **HISTORICAL PREDECESSOR HOSTED SUITE GREEN ON ALL THREE PROFILES;
-CURRENT HOSTED, PHYSICAL ACCESSIBILITY, AND STORE DECLARATIONS BLOCKED**.
+Status: **EXACT-SOURCE HOSTED SUITE GREEN ON ALL THREE ANDROID UI PROFILES;
+PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
 
 This record is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It distinguishes source
@@ -33,9 +33,25 @@ also passed against that same predecessor release-source tree.
 
 Current authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` changes shared
 provider decoding. Fourteen targeted Android-host and twelve targeted iOS
-Simulator provider tests pass, but neither suite executes the accessibility UI
-harness. Both hosted runs above predate that change and are non-transferable;
-the complete current hosted UI matrix is pending.
+Simulator provider tests pass. Evidence-head commit
+`fb877d30b2179a489f5ce18dd06d892461436540` then passed exact-source
+[run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+workflow run #117, in 24m01s overall. All five jobs succeeded, including all
+5/5 accessibility UI tests on the API 24 phone in 2m36s, API 36 phone in
+3m48s, and API 36 tablet in 4m18s; `android-and-shared` completed in 5m05s and
+`ios` completed in 23m59s with 18/18 Apple surface tests green. The two hosted
+runs above still remain preserved as non-transferable predecessor history.
+
+The three current UI-result GitHub archives are:
+
+| Archive | Bytes | GitHub archive SHA-256 |
+| --- | ---: | --- |
+| `android-ui-results-phone-api24` | 52,269 | `0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517` |
+| `android-ui-results-phone-api36` | 302,815 | `f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1` |
+| `android-ui-results-tablet-api36` | 281,718 | `20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c` |
+
+These are GitHub archive digests for hosted emulator test results, not signed
+candidate hashes or physical TalkBack/VoiceOver evidence.
 
 ## Automated source evidence
 
@@ -54,10 +70,13 @@ device-test compilation, and merged-manifest processing locally at the
 predecessor checkpoint; it was not executed on a local emulator or device.
 Standard GitHub-hosted CI executed all five tests green on the API 24 phone,
 API 36 phone, and API 36 tablet for exact predecessor authority
-`704fd893e59d94d8e9a4971313a773b3fa545ab6`. The correct current automated
-result is `pending`, not `hosted/passed`; physical TalkBack, large-text, and
-device-layout coverage remains `blocked`, not inferred from predecessor
-automation or current provider tests.
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`; run #117 now supplies the same
+5/5-per-profile hosted result for exact current authority `2cdd438`. The correct
+current automated result is `hosted/passed`. Physical TalkBack, VoiceOver,
+large-text, and device-layout coverage remains `blocked`, not inferred from
+hosted emulator automation. The protected signing environment is still 4/8
+secrets, the signed workflow has not run, and 0/3 current signed artifacts are
+byte-verified.
 
 ## Evidence matrix
 

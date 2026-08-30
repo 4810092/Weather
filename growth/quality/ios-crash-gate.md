@@ -101,7 +101,7 @@ production `1.0.1 (4)`, but the crashed app/extension binary UUID and root cause
 cannot be proven without the actual diagnostic report. App Store Connect/Xcode
 Organizer remains the authority for the missing report and affected binary.
 
-## Current code inheritance and predecessor execution evidence
+## Current code inheritance and execution evidence
 
 Current source authority `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`
 inherits through predecessor `704fd893e59d94d8e9a4971313a773b3fa545ab6`
@@ -144,10 +144,19 @@ also passed against that same predecessor release-source tree. Both runs are
 non-transferable to current authority `2cdd438`.
 
 For exact current bytes, twelve targeted iOS Simulator provider service and
-mapping tests pass, including required-row rejection behavior. These bounded
-tests do not supply the suppressed crash diagnostic, symbolication, a complete
-current hosted Apple run, distribution-signed bytes, or physical reproduction.
-The crash gate remains blocked.
+mapping tests pass, including required-row rejection behavior. Evidence-head
+commit `fb877d30b2179a489f5ce18dd06d892461436540` then passed exact-source
+[run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+workflow run #117, for authority `2cdd438` in 24m01s overall. All five jobs
+succeeded; the `ios` job finished in 23m59s with all 18/18 Apple surface tests
+green. Its 80,294-byte `ios-simulator-test-results` GitHub archive has archive
+SHA-256 `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
+The other five run archives likewise remain unsigned build/test-result proof.
+This current hosted execution does not supply the suppressed crash diagnostic,
+symbolication, distribution-signed bytes, or physical reproduction. The
+protected environment remains 4/8 secrets, the signed workflow has not run,
+and 0/3 current signed artifacts are byte-verified. The crash gate remains
+blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

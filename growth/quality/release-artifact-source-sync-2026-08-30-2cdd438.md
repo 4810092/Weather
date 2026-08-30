@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-08-30 provider decoding hardening
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; current hosted
-regression pending; 0/3 current artifacts byte-verified**.
+Status: **BLOCKED for Android phone, Wear OS, and Apple signing; exact-source
+hosted CI #117 green; 0/3 current signed artifacts byte-verified**.
 
 The authoritative product/build-input commit is
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. It resolves to Android phone
@@ -40,9 +40,39 @@ The following targeted checks passed for the exact committed bytes:
 - common-main, common-test, and Android-host-test ktlint checks;
 - repository validation for 804 source paths and `git diff --check`.
 
-These checks prove the bounded mapping/cache behavior only. They do not replace
-the complete hosted Android/iOS release matrix, distribution signing, artifact
-byte verification, physical-device QA, or post-rollout crash evidence.
+These checks prove the bounded mapping/cache behavior only. The hosted matrix
+below supplies broader unsigned regression evidence, but neither result
+replaces distribution signing, signed-artifact byte verification,
+physical-device QA, or post-rollout crash evidence.
+
+## Current-source hosted verification
+
+Evidence-head commit `fb877d30b2179a489f5ce18dd06d892461436540`
+resolved the exact product/build-input authority
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` and passed GitHub-hosted CI
+[run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+workflow run #117, in 24m01s. All five jobs succeeded:
+
+- `android-and-shared`: 5m05s;
+- `Android UI (phone-api24)`: 2m36s, all 5/5 tests green;
+- `Android UI (phone-api36)`: 3m48s, all 5/5 tests green;
+- `Android UI (tablet-api36)`: 4m18s, all 5/5 tests green;
+- `ios`: 23m59s, including all 18/18 Apple surface tests green.
+
+The run retained these GitHub artifact archives:
+
+| Archive | Bytes | GitHub archive SHA-256 |
+| --- | ---: | --- |
+| `android-ui-results-phone-api24` | 52,269 | `0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517` |
+| `android-ui-results-phone-api36` | 302,815 | `f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1` |
+| `android-ui-results-tablet-api36` | 281,718 | `20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c` |
+| `android-release-unsigned` | 5,345,884 | `e499fce976974fbed15cfb5e525d738990a285215e81271954f86f5605c9cf8f` |
+| `wear-release-unsigned` | 2,534,295 | `5a4b372e475c4c63ab58522397e7071e85928c6a1309d3c550c8b6f8cf8f6817` |
+| `ios-simulator-test-results` | 80,294 | `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe` |
+
+These values identify GitHub-created archive bytes. They are unsigned build
+and test-result proof only, not inner signed AAB/IPA hashes, a signed-candidate
+receipt, physical-device evidence, or crash-gate closure.
 
 ## Predecessor hosted evidence
 
@@ -54,11 +84,8 @@ and all three API 24/API 36 phone/tablet UI profiles. Evidence commit
 `ac1a07a14db72739b96c869eeefba79297f07e1d` also passed CI run
 [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
 for that same predecessor release-source tree. Both runs predate the provider
-decoding change and are non-transferable regression evidence for this authority.
-
-The next push must execute the standard hosted matrix against
-`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. Until that run succeeds, current
-hosted regression evidence is explicitly pending.
+decoding change and remain non-transferable predecessor evidence. They are
+retained for chronology; current hosted truth is run #117 above.
 
 ## Protected signing state
 
@@ -82,15 +109,13 @@ and device results from predecessor revisions remain non-transferable.
 
 ## Remaining unblock
 
-1. Complete the standard hosted Android/iOS and API 24/API 36 UI matrix for
-   the exact current source.
-2. Unlock the local login Keychain, provision the four remaining protected
+1. Unlock the local login Keychain, provision the four remaining protected
    signing inputs, and run the manual candidate workflow.
-3. Promote the manifest only from the verified receipt and a separately
+2. Promote the manifest only from the verified receipt and a separately
    committed signing record.
-4. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
+3. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
    evidence to the retained artifact hashes.
-5. Obtain and symbolicate the suppressed iOS crash diagnostic, reproduce or
+4. Obtain and symbolicate the suppressed iOS crash diagnostic, reproduce or
    disposition it against the current signed build, and close the crash gate.
 
 No release artifact was signed, uploaded, submitted, or published by this

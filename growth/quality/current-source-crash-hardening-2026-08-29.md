@@ -27,8 +27,16 @@ binary UUID, so none of the fixes below is attributed to that historical event.
 It also does not produce an upload-signed Android bundle, Apple archive, or
 physical Apple result.
 Hosted runs `33297505825` and `33299592101` belong only to predecessor
-`704fd89` and are non-transferable; the complete hosted matrix for `2cdd438`
-is pending.
+`704fd89` and remain non-transferable predecessor evidence. Current evidence
+head `fb877d30b2179a489f5ce18dd06d892461436540` subsequently passed
+exact-source GitHub-hosted CI run `33300967788` / #117 for `2cdd438` in
+24m01s overall: all five jobs succeeded, all 5/5 UI tests passed on each API 24
+phone, API 36 phone, and API 36 tablet profile, and all 18/18 Apple surface
+tests passed. Its six GitHub archives are unsigned build and test-result proof
+only. They do not supply the missing production crash diagnostic, signed bytes,
+physical reproduction, or crash-gate closure; the protected environment
+remains 4/8 secrets, the signed workflow has not run, and 0/3 current signed
+artifacts are byte-verified.
 
 ## Hardened boundaries
 

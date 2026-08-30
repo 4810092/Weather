@@ -12,6 +12,8 @@ the Android keystore payload and three Apple provisioning profiles. Both
 Android passwords, the Apple distribution P12, and its transport password are
 absent. Across phone, Wear, and Apple, 0/3 current signed artifacts are
 byte-verified; the candidate workflow and physical matrix have not run.
+Exact-source standard CI #117 is green, but its Android/Wear artifacts are
+explicitly unsigned and do not change that signing result.
 
 Observed at `2026-08-30 04:43:42 +05:00`. This was a read-only audit. No
 password, private-key material, protected Keychain value, signing input, or
@@ -52,10 +54,29 @@ instruction to build the superseded revision.
   [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
   also passed against the same `704fd89` release-source tree. Those predecessor
   results and archive digests are not verified current signed AAB hashes or
-  current hosted evidence. Fourteen targeted Android-host provider tests pass
-  for `2cdd438`, including cache/timezone preservation after rejected required
-  rows, but the complete current hosted matrix is pending. Android/Wear release
-  authority remains `0/2` byte-verified and blocked.
+  current hosted evidence; they remain preserved as historical execution.
+- Evidence-head commit `fb877d30b2179a489f5ce18dd06d892461436540`
+  passed exact-source
+  [run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+  workflow run #117, for authority `2cdd438`. The overall run finished in
+  24m01s: `android-and-shared` passed in 5m05s, and all 5/5 tests passed on the
+  API 24 phone in 2m36s, API 36 phone in 3m48s, and API 36 tablet in 4m18s.
+  This includes the fourteen targeted Android-host provider tests and closes
+  current hosted unsigned regression execution.
+- The current run's GitHub artifact archives are:
+
+  | Archive | Bytes | GitHub archive SHA-256 |
+  | --- | ---: | --- |
+  | `android-ui-results-phone-api24` | 52,269 | `0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517` |
+  | `android-ui-results-phone-api36` | 302,815 | `f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1` |
+  | `android-ui-results-tablet-api36` | 281,718 | `20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c` |
+  | `android-release-unsigned` | 5,345,884 | `e499fce976974fbed15cfb5e525d738990a285215e81271954f86f5605c9cf8f` |
+  | `wear-release-unsigned` | 2,534,295 | `5a4b372e475c4c63ab58522397e7071e85928c6a1309d3c550c8b6f8cf8f6817` |
+
+  These are GitHub archive digests and unsigned proof only, not inner signed
+  AAB hashes. The protected environment remains 4/8 secrets, the signed
+  workflow has not run, and Android/Wear remain `0/2` signed artifacts
+  byte-verified with physical QA blocked.
 
 ## Keystore and Keychain
 

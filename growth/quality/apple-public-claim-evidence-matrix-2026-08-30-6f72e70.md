@@ -12,8 +12,15 @@ separation. Public Apple remains
 bytes, upload, review, or public availability.
 Its 14 Android-host and 12 iOS Simulator provider tests are bounded current-
 source regression evidence only. Hosted runs `33297505825` and `33299592101`
-belong to predecessor `704fd89`; none of this evidence changes a public claim
-or store state.
+remain predecessor `704fd89` history. Current evidence head
+`fb877d30b2179a489f5ce18dd06d892461436540` passed exact-source GitHub-hosted
+CI run `33300967788` / #117 for `2cdd438` in 24m01s overall: all five jobs
+succeeded, including 5/5 tests on each Android UI profile and 18/18 Apple
+surface tests. Its six retained GitHub archives are unsigned build and
+test-result proof only. The protected environment remains 4/8 secrets, the
+signed workflow has not run, 0/3 current signed artifacts are byte-verified,
+and physical/crash gates remain blocked. None of this evidence changes a
+public claim or store state.
 
 ## Claim matrix
 

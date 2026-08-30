@@ -161,7 +161,7 @@ def sync(
         new_next = old_next
         if gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · current hosted source proof pending; 0/3 artifacts "
+                "BLOCKED · exact-source hosted proof green; 0/3 artifacts "
                 "byte-verified; signed/physical matrix missing"
             )
             new_next = (
@@ -172,13 +172,13 @@ def sync(
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · current provider tests green; current hosted, signed, "
+                "BLOCKED · exact-source hosted UI matrix green; current signed "
                 "and physical phone/tablet/widget/Wear matrix missing"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · current provider tests green; current hosted Apple, "
-                "distribution-signed build 6, and physical matrix missing"
+                "BLOCKED · exact-source hosted unsigned iOS proof green; current "
+                "distribution-signed build 6 and physical matrix missing"
             )
         if not all(
             isinstance(value, str)
@@ -302,9 +302,11 @@ def sync(
         "analytics-request inventory and confirms public 1.0.1 build 4, but "
         "the build-detail and diagnostic-signature GETs return security 403. "
         f"Current source {current_revision_short} passes twelve targeted iOS "
-        "Simulator provider mapping/service tests. Predecessor hosted run "
-        "33297505825 is non-transferable. Neither the authenticated inventory "
-        "nor these bounded regression tests identify or close the "
+        "Simulator provider mapping/service tests. Exact-source hosted run "
+        "33300967788 also passed shared Simulator tests, all 18 Apple surface-"
+        "state tests, and the unsigned application build. Neither the "
+        "authenticated inventory nor this current-source unsigned regression "
+        "identifies or closes the "
         f"historical crash for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
@@ -313,10 +315,11 @@ def sync(
         "candidate, so 0/3 current artifacts are byte-verified. Fourteen "
         "targeted Android-host and twelve targeted iOS Simulator provider "
         "tests pass, including cache preservation after rejected required-row "
-        "responses. The complete hosted Android/iOS and API 24/API 36 "
-        "phone/tablet matrix for this authority is pending. Runs 33297505825 "
-        "and 33299592101 passed only for its predecessor and are explicitly "
-        "non-transferable. The manual master-only protected GitHub-hosted workflow and "
+        "responses. Exact-source GitHub Actions run 33300967788 passed ordinary "
+        "Android/iOS plus all 15 Compose UI tests across the API 24 phone, API 36 "
+        "phone, and API 36 tablet profiles. Its retained Android/Wear bundles "
+        "and test archives are unsigned regression evidence only. The manual "
+        "master-only protected GitHub-hosted workflow and "
         "pre-manifest verifier remain configured and statically validated. The "
         "protected environment has 4/8 required secrets: its Android keystore "
         "payload and three Apple provisioning profiles are present, while two "
@@ -350,9 +353,10 @@ def sync(
         "deterministic per-target release profiles. It tolerates omitted "
         "optional Open-Meteo forecast/AQI arrays while keeping required "
         "weather/time rows fail-closed. Fourteen targeted Android-host and "
-        "twelve targeted iOS Simulator tests pass. The complete hosted matrix "
-        "for this authority is pending; predecessor runs 33297505825 and "
-        "33299592101 are non-transferable. The "
+        "twelve targeted iOS Simulator tests pass. Exact-source GitHub Actions "
+        "run 33300967788 passed ordinary Android/iOS, all 15 API 24/API 36 "
+        "phone/tablet Compose UI tests, and all 18 Apple surface-state tests. "
+        "Its retained archives are unsigned/test regression evidence only. The "
         "protected master-only hosted workflow and pre-manifest verifier are "
         "implemented but have not run because only 4/8 release-signing secrets "
         "are provisioned. No source-current signed artifact or physical-device "

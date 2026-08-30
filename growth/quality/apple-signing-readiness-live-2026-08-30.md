@@ -23,9 +23,15 @@ still fails while the login Keychain is locked, so a noninteractive
 distribution archive remains unproved.
 
 For the exact current source, twelve targeted iOS Simulator provider tests
-pass, including required-row rejection behavior. The complete hosted Apple
-matrix is still pending: runs `33297505825` and `33299592101` belong only to
-predecessor `704fd89` and do not transfer.
+pass, including required-row rejection behavior. Evidence-head commit
+`fb877d30b2179a489f5ce18dd06d892461436540` then passed exact-source
+GitHub-hosted CI run `33300967788` / #117 for authority `2cdd438`: the `ios`
+job completed in 23m59s with all 18/18 Apple surface tests green. Its
+`ios-simulator-test-results` GitHub archive is 80,294 bytes with archive
+SHA-256 `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
+This is unsigned simulator/build evidence only, not a distribution-signed
+archive or IPA. Runs `33297505825` and `33299592101` remain historical
+predecessor `704fd89` evidence.
 The protected `release-signing` environment contains 4/8 required secrets,
 including all three Apple provisioning profiles but not the distribution P12
 or its transport password. Across phone, Wear, and Apple, 0/3 current signed
@@ -92,6 +98,17 @@ was not invoked and no password or biometric prompt was opened.
   predecessor regression evidence, not current hosted execution, a
   distribution-signed archive, physical QA, or crash-gate closure; Apple
   remains `0/1` byte-verified and blocked.
+- Current evidence-head commit `fb877d30b2179a489f5ce18dd06d892461436540`
+  passed exact-source
+  [run `33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788),
+  workflow run #117, for authority `2cdd438`. The overall five-job run finished
+  in 24m01s; `ios` finished in 23m59s with 18/18 Apple surface tests green.
+  Its 80,294-byte `ios-simulator-test-results` archive has GitHub archive
+  SHA-256 `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
+  This closes current hosted unsigned regression execution only. The protected
+  environment remains 4/8 secrets, the signed workflow has not run, and Apple
+  remains `0/1` signed artifact byte-verified with physical and crash gates
+  blocked.
 
 ## Certificate, key, and profiles
 

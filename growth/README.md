@@ -5,8 +5,8 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=df5cb837c969520ddd70758ee3e14501921f1e10b4a6c91b35692daa32c600ba -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=60e37e9be9f51d7a178a3446918e59fe35d4f9a651484fe0be1bd6bfca0726bb -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=077e2584720b304fe083092b38a946e76208ddb13d3cc536e93b6157fa72e77a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
 <!-- release-authority-current:end -->
 
 Current verdict (2026-08-30): **HOLD ACQUISITION**. The canonical 00:00 +05:00
@@ -23,28 +23,30 @@ pinned dependency graph. It additionally tolerates omitted optional Open-Meteo
 forecast/AQI arrays while keeping required weather/time inputs fail-closed.
 Fourteen targeted Android-host and twelve targeted iOS Simulator tests pass,
 including preservation of cached weather and timezone after rejected required
-rows. Hosted runs
-[`33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
-and [`33299592101`](https://github.com/4810092/Weather/actions/runs/33299592101)
-passed only for predecessor source `704fd89`; they do not transfer. The complete
-standard hosted Android/iOS and API 24/API 36 phone/tablet matrix for `2cdd438`
-is pending the next push. A protected, manual GitHub-hosted workflow implements
-exact-source signing and pre-manifest byte verification. Its branch-restricted
-`release-signing` environment now contains
+rows. At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
+[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788)
+(`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
+passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
+36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
+`23m59s`, including `18/18` surface tests. Its six archived outputs are
+unsigned/test evidence only. A protected, manual GitHub-hosted workflow
+implements exact-source signing and pre-manifest byte verification. Its
+branch-restricted `release-signing` environment now contains
 4/8 required secrets: the Android keystore payload plus the app, widget, and
 watch provisioning profiles. The two Android passwords, Apple distribution
-P12, and its transport password remain absent; it has not produced a signed
-candidate. Local Keychain authorization still rejects Android password
-reads and Apple private-key use, so the authoritative result remains `0/3`
-byte-verified. The prior `9c2dce4` debug API 24/API 25/API 36, Apple simulator,
+P12, and its transport password remain absent; the signed workflow has not run
+and no signed candidate was produced. Local Keychain authorization still
+rejects Android password reads and Apple private-key use, so the authoritative
+result remains `0/3` byte-verified. The prior `9c2dce4` debug API 24/API 25/API
+36, Apple simulator,
 and localized capture results remain historical regression evidence and do not
 transfer to `2cdd438`. None closes signing,
 physical-device, TestFlight, store-state, or the release matrix.
 Signed phone vc7 and Apple build 5 are historical evidence only. OpenMeteo GmbH
 has confirmed
 the exact unpaid, non-monetized organic-promotion scope for the non-commercial
-API. The iOS crash diagnostic, complete device matrix, and reconciled console
-exports are still missing. A build, a Pages
+API. The iOS crash diagnostic, complete physical-device matrix, and reconciled
+console exports are still missing. A build, a Pages
 deployment, or historical device evidence does not close those gates.
 
 ## Evidence model
@@ -60,7 +62,7 @@ deployment, or historical device evidence does not close those gates.
 | Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Real-byte, signing, identity, source-drift, schema, and evidence checks; current result remains 0/3 verified |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Two isolated manual master-only hosted jobs, no-secret exact-source build, protected signing, closed-tree receipt/tar verification, partial 4/8-secret/Keychain blocker, and explicit no-store-upload boundary |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Authenticated branch restriction and exact 4/8-secret inventory, with no values exposed and an explicit no-run/no-signing boundary |
-| Current release source authority | [quality/release-artifact-source-sync-2026-08-30-2cdd438.md](quality/release-artifact-source-sync-2026-08-30-2cdd438.md) | Exact `2cdd438` provider-hardening identity, targeted Android/iOS verification, pending hosted matrix, partial signing setup, and explicit non-transferability of earlier artifacts/device results |
+| Current release source authority | [quality/release-artifact-source-sync-2026-08-30-2cdd438.md](quality/release-artifact-source-sync-2026-08-30-2cdd438.md) | Exact `2cdd438` provider-hardening identity, successful exact-source hosted CI #117, partial signing setup, and explicit non-transferability of earlier artifacts/device results |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |

@@ -10,10 +10,15 @@ checkpoint and does not transfer artifact or device evidence to `2cdd438`.
 
 The current authority has 14 targeted Android-host and 12 targeted iOS
 Simulator provider tests green. Hosted runs `33297505825` and `33299592101`
-belong only to predecessor `704fd893e59d94d8e9a4971313a773b3fa545ab6` and do
-not transfer. The complete current hosted matrix is pending; the protected
-environment remains at 4/8 required secrets and 0/3 current signed artifacts
-are byte-verified.
+remain predecessor evidence for `704fd893e59d94d8e9a4971313a773b3fa545ab6`.
+Current evidence head `fb877d30b2179a489f5ce18dd06d892461436540`
+subsequently passed exact-source hosted CI run `33300967788` / #117 for
+authority `2cdd438`: all five jobs succeeded in 24m01s overall, including 5/5
+tests on each API 24 phone, API 36 phone, and API 36 tablet profile plus 18/18
+Apple surface tests. Its six retained GitHub archives are unsigned build and
+test-result proof only, not signed byte verification. The protected environment
+remains at 4/8 required secrets, the signed workflow has not run, and 0/3
+current signed artifacts are byte-verified.
 
 No artifact was uploaded, submitted, or published during this check. Protected
 credentials, private keys, aliases, passwords, and provisioning contents were
