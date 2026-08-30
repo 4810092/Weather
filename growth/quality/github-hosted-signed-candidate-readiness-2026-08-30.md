@@ -3,19 +3,39 @@
 Status: **IMPLEMENTED AND STATICALLY VERIFIED; NOT EXECUTED; 0/3 SIGNED
 ARTIFACTS BYTE-VERIFIED**.
 
+## CI placement decision
+
+GitHub's public API reports `4810092/Weather` as a public repository. GitHub's
+[Actions billing documentation](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
+states that standard GitHub-hosted runners are free for public repositories,
+and its [runner table](https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job)
+lists `macos-26` as a standard public-repository runner. Therefore normal CI
+and the protected candidate workflow remain GitHub-hosted; no local or
+self-hosted Mac runner is configured. Larger runners are excluded. Artifact
+retention remains one day for unsigned inputs and seven days for the verified
+candidate/receipt to bound the separate storage allowance. Local Apple
+hardware is reserved for physical-device QA and bounded credential export,
+not routine CI.
+
 ## Implemented boundary
 
 `.github/workflows/signed-candidate.yml` is manual-only and fail-closed to
 repository `4810092/Weather` branch `master`, with `contents: read`. It uses two
 isolated standard GitHub-hosted `macos-26` jobs. `build-unsigned` has no
 environment or secret access. It resolves the blocked manifest's full source
-revision, creates a clean detached worktree, runs all 241 Android release tasks,
+revision, creates a clean standalone non-local clone, runs all 241 Android release tasks,
 creates the unsigned Apple archive, and transfers only a checksummed inert
 package retained for one day. Checkout credentials are not persisted.
+Before and after compilation, it rejects dependency-verification overrides,
+unsafe Git index flags, path-set drift, byte drift, symlink or mode drift, and
+unexpected untracked release inputs. Both completed AABs must also contain the
+exact manifest revision.
 
 `sign-verify` runs on a fresh runner behind `release-signing`. It validates the
 declared revision, checksum, and exact unsigned-input inventory before any
-secret becomes available. Signing secrets are scoped to exactly three
+secret becomes available. The full `ExportOptions.plist` must equal the
+canonical non-upload contract, including `destination=export`, before any
+secret is decoded. Signing secrets are scoped to exactly three
 consuming steps. The job pins Bundletool 1.18.3 by SHA-256, upload-signs both
 Android bundles without putting passwords in argv, imports the pinned Apple
 Distribution identity into an ephemeral Keychain, validates the three exact
@@ -27,9 +47,9 @@ secret decoding, the job checks reviewed SHA-256 pins for
 to a mode-restricted temporary directory. Immediately after Apple export it
 deletes the ephemeral Keychain, keystore, P12, installed profiles, and decoded
 profile plists. Only after those deletion checks pass does isolated Python
-rehash and execute the reviewed verifier copies. Both the detached build root
+rehash and execute the reviewed verifier copies. Both the standalone build root
 and current checkout release-source paths must match the manifest revision, so
-an otherwise valid old worktree cannot mask a stale manifest on `master`.
+an otherwise valid old clone cannot mask a stale manifest on `master`.
 
 The pre-manifest verifier snapshots a closed six-entry candidate root exactly
 once and verifies only the isolated copy. It binds both AABs, IPA, the phone R8
@@ -40,7 +60,7 @@ mutate-restore are rejected. Packaging preserves and re-extracts the verified
 tree before producing a receipt-bound tarball. Only that tarball and receipt are
 uploaded for seven days; raw staging directories and secret material are never
 artifact paths. Cleanup always removes the temporary Keychain, profiles,
-credentials, unsigned inputs, and worktree.
+credentials, unsigned inputs, and build clone.
 
 The workflow has no Git or store write permission. It does not promote the
 committed upload manifest, perform physical QA, upload to App Store Connect or
@@ -51,28 +71,36 @@ Google Play, submit for review, release, or prove public availability.
 - `actionlint` accepts the workflow.
 - Every third-party action is pinned to a reviewed full commit SHA.
 - Gradle 9.7.0 is pinned to the official wrapper SHA-256, and checked-in
-  verification metadata binds 1,700+ resolved Gradle dependency artifacts.
+  verification metadata binds 1,714 resolved Android and fresh-cache
+  `iosArm64` dependency artifacts.
 - `scripts/check_repository.py` binds the complete canonical workflow digest,
   complete action-step blocks (including `with` and artifact paths), all run
   bodies, every run shell, and each secret step's exact environment. Its
   adversarial regressions reject automatic triggers, permission escalation,
   mutable actions, xtrace, custom shells, extra environment variables,
-  post-secret command changes, and broadened artifact uploads.
+  post-secret command changes, and broadened artifact uploads. Functional
+  source-seal regressions prove a clean authority tree passes while hidden byte
+  drift behind both `skip-worktree` and `assume-unchanged` fails.
 - The signed-candidate verifier has positive all-three-artifact coverage and a
   fail-closed regression for any already-promoted manifest. Additional tests
   reject source mutation, unexpected root entries, stale but well-formed
-  external mappings, detached/current source divergence, receipt/package path
+  external mappings, build/current source divergence, receipt/package path
   aliasing, partial artifact inventories, and tar byte/mode drift.
-- A clean detached Android build at source
-  `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` passed all 241 release tasks.
+- A clean standalone cold-cache Android build at source
+  `5b98f23d0320fba4eef77f2d7c43fcbd0afd0594` passed all 241 release tasks.
   Unsigned phone vc8 SHA-256 is
-  `c80a61365f6d06529a3adb97f41afcede0b0b69a6963a444be200c138daa0be8`;
+  `c706b2c7b16923a16bdbbe9624cbaf23963e5bb0834e76c6a7c9641551e07ab2`;
   unsigned Wear vc1000008 SHA-256 is
-  `2b8b06fa6a0c21de2dd40429a746b8b88ff71942670f0814feea4ff7f650b4e8`.
+  `a126fa60ce5c8b6001f3c1c38222df19439015dc85266a3df1a0b0e1b60ec869`.
   Both embed the exact revision and pass ZIP and pinned Bundletool validation.
-- Clean exact-source unsigned Apple device build and archive actions pass for
-  app, widget, and watch `1.1.0 (6)`. Architectures are app/widget `arm64` and
-  watch `arm64_32` plus `arm64`; all three executable UUIDs match their dSYMs.
+- A clean standalone cold-cache Xcode 26.6 archive at the same source passed
+  all 28 fresh-cache Gradle tasks. Its canonical archive tree SHA-256 is
+  `5c255b8caea952d81cbe792fc9b2554a866c9d0ca40c1c0f129fc1045be0de03`.
+  App, widget, and watch are unsigned `1.1.0 (6)` products; architectures are
+  app/widget `arm64` and watch `arm64_32` plus `arm64`, all embed the exact
+  revision, and every executable UUID matches a verified dSYM.
+- Both final audits produced the same pre/post 256-entry source inventory
+  SHA-256 `65d24b7c2e18db4340ba91d45d153a11fed91659925ba4c51468ef5e8a6cc625`.
 
 ## Current blocker
 

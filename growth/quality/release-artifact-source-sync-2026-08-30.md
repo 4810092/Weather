@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-08-30
 
 Status: **HISTORICAL PREDECESSOR CHECKPOINT; it recorded 0/3 byte-verified
-artifacts and has been superseded by `aa6496d`**.
+artifacts and has been superseded by `5b98f23`**.
 
 The product/build-input commit at this checkpoint was
 `44c189209c793cf097fcc293faf8db88033e6902`. It resolves to Android phone

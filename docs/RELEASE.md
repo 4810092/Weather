@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:aa6496d0ac9011ff818d2c0dd2ec5c565317400c -->
+<!-- source_revision:5b98f23d0320fba4eef77f2d7c43fcbd0afd0594 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=9da5536c2e4521cebcd23bd7378624a4b786253f1445429712a73c7da83afd06 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=7aaef414b6034d399d1f6f4e7e455891fca4c6dfd3d2017f6c0ec631b99a86f3 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b6b2307a7ab42423ebf2951c98a5b2e66a82d2e25091b8f0806b4374c7ec1e20 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=11f7c0f5c68d45e110c563a7d25e4e188b35294f662dd4bcf9eb0b0343eef2a4 -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,18 +28,40 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 deterministic Apple signing correction — 2026-08-30
+## Nimbo 1.1.0 hosted-CI provenance hardening — 2026-08-30
 
 The authoritative product/build-input revision is
+`5b98f23d0320fba4eef77f2d7c43fcbd0afd0594`. It keeps phone `1.1.0 (8)`,
+Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
+metadata covers 1,714 resolved artifacts across the Android and fresh-cache
+`iosArm64` release graphs, including the module descriptor exposed only by an
+empty Android cache. The hosted unsigned build uses a standalone clone,
+requires both AABs to embed the exact manifest revision, forbids dependency-
+verification overrides, and independently verifies the actual release-source
+bytes, path set, file modes, symlinks, and Git index flags before and after
+compilation. Independent empty-cache runs at this exact revision passed all
+241 Android release tasks and the 28-task Apple framework build plus generic
+iOS archive; both produced the same sealed 256-entry source inventory. The
+protected signing runner verifies the complete canonical
+`ExportOptions.plist` with `destination=export` before secrets are decoded, so
+the candidate workflow cannot turn export into a store upload. No protected
+workflow run, signed artifact, store upload, or physical QA is claimed. The
+current boundary is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md)
+and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Historical Nimbo 1.1.0 deterministic Apple signing correction — 2026-08-30
+
+The product/build-input revision at this predecessor checkpoint was
 `aa6496d0ac9011ff818d2c0dd2ec5c565317400c`. It keeps the coordinated phone,
 Wear, and Apple identities and the source-binding setting, while replacing the
 obsolete global provisioning-profile override with bundle-specific App Store
 profiles for the app, widget, and watch plus a matching manual export map.
 Read-only Xcode build settings prove the three mappings. Exact-source unsigned
 Android phone/Wear release gates and Apple device build/archive plus matching
-dSYMs pass. Real Apple private-key use remains blocked, no signed candidate,
-IPA, or physical QA was produced, and 0/3 current artifacts remain
-byte-verified. The current decision is recorded in the
+dSYMs passed. Real Apple private-key use remained blocked, no signed candidate,
+IPA, or physical QA was produced, and 0/3 artifacts were byte-verified. Its
+historical decision is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-aa6496d.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 
@@ -49,11 +71,14 @@ and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 point. It is manual-only, restricted to `4810092/Weather` `master`, has
 read-only repository permissions, and uses two isolated standard GitHub-hosted
 `macos-26` jobs. The first job has no environment or secret access: it creates a
-detached worktree at the manifest's exact revision, runs the complete Android
-release gate, creates an unsigned Apple archive, and transfers only an inert,
+standalone non-local clone at the manifest's exact revision, runs the complete
+Android release gate, creates an unsigned Apple archive, verifies embedded AAB
+revisions and the sealed release-source tree, and transfers only an inert,
 checksummed one-day input package. A fresh second runner uses the protected
 `release-signing` environment, validates that input, then decodes signing
-material and signs phone, Wear OS, app, widget, and watch products.
+material and signs phone, Wear OS, app, widget, and watch products. It validates
+the exact non-upload export-options contract before any secret becomes
+available.
 
 `scripts/verify_signed_candidate.py` re-opens a single closed six-entry
 candidate tree. It binds the two AABs, IPA, Android mapping, ExportOptions, the
@@ -99,7 +124,7 @@ material is available. Reviewed hashes of the two verifier scripts are checked
 and copied before secret decoding. After export, the Keychain, P12, keystore,
 profiles, and decoded profile plists are destroyed; only then does an isolated
 Python process execute those rehashed copies. Candidate verification also
-checks both the detached build worktree and the current checkout against the
+checks both the standalone build clone and the current checkout against the
 manifest source revision, preventing an old manifest from signing stale product
 bytes after `master` advances.
 

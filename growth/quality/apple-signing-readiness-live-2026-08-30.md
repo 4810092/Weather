@@ -1,5 +1,10 @@
 # Apple signing readiness live recheck — 2026-08-30
 
+Current release authority is
+`5b98f23d0320fba4eef77f2d7c43fcbd0afd0594`. Every `aa6496d` build or
+Keychain statement below is historical, non-transferable evidence; it does not
+prove current distribution-signed bytes.
+
 The initial checkpoint at `2026-08-29T23:43:44Z` (`2026-08-30 04:43:44
 +05`) was read-only. Later bounded checks recorded below performed one
 disposable failing private-key operation and exact-source unsigned build/archive

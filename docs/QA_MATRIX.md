@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:aa6496d0ac9011ff818d2c0dd2ec5c565317400c -->
+<!-- source_revision:5b98f23d0320fba4eef77f2d7c43fcbd0afd0594 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=9da5536c2e4521cebcd23bd7378624a4b786253f1445429712a73c7da83afd06 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=7aaef414b6034d399d1f6f4e7e455891fca4c6dfd3d2017f6c0ec631b99a86f3 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=b6b2307a7ab42423ebf2951c98a5b2e66a82d2e25091b8f0806b4374c7ec1e20 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=11f7c0f5c68d45e110c563a7d25e4e188b35294f662dd4bcf9eb0b0343eef2a4 -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,10 +54,12 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `aa6496d` has no retained signed Android or Apple
-  candidate and no matching physical QA. It keeps the Apple source-revision
-  setting and adds deterministic per-target App Store profiles; all evidence
-  below belongs to predecessor revisions.
+- Current product/build source `5b98f23` has no retained signed Android or
+  Apple candidate and no matching physical QA. It keeps the Apple source-
+  revision and deterministic per-target profile settings, pins the complete
+  Android and `iosArm64` dependency graph, and seals actual source bytes in the
+  hosted candidate workflow; all device evidence below belongs to predecessor
+  revisions.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian
@@ -91,7 +93,7 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-30.md`](../growth/quality/release-artifact-source-sync-2026-08-30.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md`](../growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).

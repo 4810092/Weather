@@ -2,13 +2,18 @@
 
 Status: **BLOCKED for source-current phone and Wear OS signing**.
 
+Current release authority is
+`5b98f23d0320fba4eef77f2d7c43fcbd0afd0594`. Every `aa6496d` or `44c1892`
+build and Keychain statement below is historical, non-transferable evidence;
+it does not prove current signed bytes.
+
 Observed at `2026-08-30 04:43:42 +05:00`. This was a read-only audit. No
 password, private-key material, protected Keychain value, signing input, or
 credential environment value was printed, exported, changed, or reset. No AAB
 was built, signed, uploaded, submitted, or published.
 
-After this observation, Apple release signing inputs advanced the coordinated
-manifest authority to `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` without
+After this observation, Apple release signing inputs first advanced the
+coordinated manifest authority to `aa6496d0ac9011ff818d2c0dd2ec5c565317400c` without
 changing the Android product identity or clearing Keychain authorization. The
 `44c1892` statements below remain point-in-time audit evidence; they are not an
 instruction to build the superseded revision.
