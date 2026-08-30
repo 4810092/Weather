@@ -19,12 +19,13 @@ internal data class HourlyResponse(
     @SerialName("temperature_2m") val temperature: List<Double>,
     @SerialName("apparent_temperature") val apparentTemperature: List<Double>,
     @SerialName("weather_code") val weatherCode: List<Int>,
-    @SerialName("precipitation_probability") val precipitationProbability: List<Int?>,
-    val precipitation: List<Double?>,
+    @SerialName("precipitation_probability")
+    val precipitationProbability: List<Int?> = emptyList(),
+    val precipitation: List<Double?> = emptyList(),
     @SerialName("wind_speed_10m") val windSpeed: List<Double>,
-    @SerialName("wind_gusts_10m") val windGusts: List<Double?>,
+    @SerialName("wind_gusts_10m") val windGusts: List<Double?> = emptyList(),
     @SerialName("relative_humidity_2m") val humidity: List<Int>,
-    @SerialName("uv_index") val uvIndex: List<Double?>
+    @SerialName("uv_index") val uvIndex: List<Double?> = emptyList()
 )
 
 @Serializable
@@ -51,12 +52,12 @@ internal data class AirQualityResponse(val hourly: AirQualityHourlyResponse)
 @Serializable
 internal data class AirQualityHourlyResponse(
     val time: List<Long>,
-    @SerialName("us_aqi") val usAqi: List<Int?>,
-    @SerialName("pm2_5") val pm25: List<Double?>,
-    val pm10: List<Double?>,
-    val dust: List<Double?>,
-    val ozone: List<Double?>,
-    @SerialName("nitrogen_dioxide") val nitrogenDioxide: List<Double?>
+    @SerialName("us_aqi") val usAqi: List<Int?> = emptyList(),
+    @SerialName("pm2_5") val pm25: List<Double?> = emptyList(),
+    val pm10: List<Double?> = emptyList(),
+    val dust: List<Double?> = emptyList(),
+    val ozone: List<Double?> = emptyList(),
+    @SerialName("nitrogen_dioxide") val nitrogenDioxide: List<Double?> = emptyList()
 )
 
 @Serializable
