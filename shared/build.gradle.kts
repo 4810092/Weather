@@ -15,6 +15,7 @@ kotlin {
         namespace = "uz.ganikhodjaev.weather.shared"
         compileSdk = 36
         minSdk = 24
+        enableCoreLibraryDesugaring = true
         experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -75,6 +76,10 @@ kotlin {
             implementation(libs.ktor.client.mock)
         }
     }
+}
+
+dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 sqldelight {
