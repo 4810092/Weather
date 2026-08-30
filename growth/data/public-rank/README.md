@@ -16,7 +16,36 @@ One `YYYY-MM-DD.json` is captured in `Asia/Tashkent` time. The schema contains:
   failure unknown. The monitor exits non-zero only when missing required goal
   evidence could change the day's result.
 
-Do not edit a snapshot to make a day pass. Re-run with `--replace` only to correct a known same-day capture problem, and record the reason in the weekly review. A configuration change starts a new comparability series because the fingerprint changes.
+Do not edit a snapshot to make a day pass. A configuration change starts a new
+comparability series because the fingerprint changes. The unattended hosted
+path never uses `--replace`; correction of a known manual capture problem is a
+reviewed repository operation, not an automated rerun.
+
+## Hosted immutable state
+
+`.github/workflows/uz-rank-monitor.yml` is scheduled for `19:05 UTC` (`00:05`
+Asia/Tashkent). It reads code and configuration only from protected `master`,
+then persists the new daily snapshot, same-date evaluation, and a hash-bound
+receipt on `growth-observations`. Code from that mutable branch is never
+executed by the write-capable job.
+
+Before capture, every default-branch canonical file must be present with
+byte-identical content in the observation branch. Before persistence, the
+remote branch head must still equal the parent recorded by the read-only job.
+Installation uses exclusive links, the commit allowlist contains exactly three
+new files, and the push is non-force. An existing day or changed branch parent
+fails without capture or overwrite. A rerun therefore cannot replace the first
+committed day.
+
+If required rank evidence is `unknown`, the workflow still commits that exact
+failure evidence and its receipt, then ends red. This prevents a later retry
+from silently selecting a more favorable same-day result. Receipts live under
+`hosted-receipts/`, so the streak evaluator's root-level `*.json` scan cannot
+mistake them for canonical days.
+
+The observation branch does not itself update the public dashboard or GitHub
+Pages. Those surfaces change only after review promotes the exact branch bytes
+to `master` and the existing validation pipeline succeeds.
 
 ## Live and intraday checks
 

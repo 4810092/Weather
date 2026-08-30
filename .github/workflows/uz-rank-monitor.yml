@@ -1,0 +1,268 @@
+name: Nimbo UZ daily rank monitor
+
+on:
+  schedule:
+    - cron: "5 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nimbo-uz-rank-canonical
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      local_date: ${{ steps.context.outputs.local_date }}
+      state_parent: ${{ steps.state.outputs.state_parent }}
+      monitor_exit_code: ${{ steps.capture.outputs.monitor_exit_code }}
+      artifact_name: ${{ steps.context.outputs.artifact_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.13"
+      - name: Seal default-branch execution context
+        id: context
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "4810092/Weather"
+          test "$GITHUB_REF" = "refs/heads/master"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          case "$GITHUB_EVENT_NAME" in
+            schedule|workflow_dispatch) ;;
+            *) echo "unsupported event: $GITHUB_EVENT_NAME" >&2; exit 1 ;;
+          esac
+          local_date="$(python3 - <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          print(datetime.now(tz=ZoneInfo("Asia/Tashkent")).date().isoformat())
+          PY
+          )"
+          test -n "$local_date"
+          echo "local_date=$local_date" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=nimbo-uz-rank-$local_date" >> "$GITHUB_OUTPUT"
+      - name: Read immutable observation-branch parent
+        id: state
+        shell: bash
+        env:
+          NIMBO_STATE_BRANCH: growth-observations
+        run: |
+          set -euo pipefail
+          state_line="$(git ls-remote --heads origin "refs/heads/$NIMBO_STATE_BRANCH")"
+          if [[ -z "$state_line" ]]; then
+            state_parent=absent
+          else
+            test "$(printf '%s\n' "$state_line" | wc -l | tr -d ' ')" = 1
+            state_parent="${state_line%%[[:space:]]*}"
+            [[ "$state_parent" =~ ^[0-9a-f]{40}$ ]]
+            git fetch --no-tags --depth=1 origin \
+              "refs/heads/$NIMBO_STATE_BRANCH:refs/remotes/origin/$NIMBO_STATE_BRANCH"
+            test "$(git rev-parse "refs/remotes/origin/$NIMBO_STATE_BRANCH")" = \
+              "$state_parent"
+            git worktree add --detach "$RUNNER_TEMP/state-read" "$state_parent"
+          fi
+          echo "state_parent=$state_parent" >> "$GITHUB_OUTPUT"
+      - name: Prepare append-only canonical history
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
+          NIMBO_STATE_PARENT: ${{ steps.state.outputs.state_parent }}
+        run: |
+          set -euo pipefail
+          arguments=(
+            prepare-history
+            --source-rank-dir "$GITHUB_WORKSPACE/growth/data/public-rank"
+            --output-dir "$RUNNER_TEMP/rank-history"
+            --date "$NIMBO_LOCAL_DATE"
+          )
+          if [[ "$NIMBO_STATE_PARENT" != absent ]]; then
+            arguments+=(
+              --state-rank-dir "$RUNNER_TEMP/state-read/growth/data/public-rank"
+            )
+          fi
+          python3 scripts/growth/hosted_rank_state.py "${arguments[@]}"
+      - name: Capture exactly one UZ canonical day
+        id: capture
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
+        run: |
+          set -euo pipefail
+          snapshot="$RUNNER_TEMP/rank-history/$NIMBO_LOCAL_DATE.json"
+          set +e
+          python3 scripts/growth/monitor_public_rank.py \
+            --date "$NIMBO_LOCAL_DATE" \
+            --output "$snapshot"
+          monitor_exit_code=$?
+          set -e
+          if [[ "$monitor_exit_code" != 0 && "$monitor_exit_code" != 1 ]]; then
+            echo "monitor failed before producing a valid daily decision" >&2
+            exit "$monitor_exit_code"
+          fi
+          test -f "$snapshot"
+          echo "monitor_exit_code=$monitor_exit_code" >> "$GITHUB_OUTPUT"
+      - name: Evaluate streak and build hash-bound persistence bundle
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
+          NIMBO_STATE_PARENT: ${{ steps.state.outputs.state_parent }}
+          NIMBO_MONITOR_EXIT_CODE: ${{ steps.capture.outputs.monitor_exit_code }}
+        run: |
+          set -euo pipefail
+          evaluation="$RUNNER_TEMP/evaluation-$NIMBO_LOCAL_DATE.json"
+          python3 scripts/growth/evaluate_growth.py \
+            --as-of "$NIMBO_LOCAL_DATE" \
+            --framework "$GITHUB_WORKSPACE/growth/kpi-framework.json" \
+            --gates "$GITHUB_WORKSPACE/growth/quality/gates.json" \
+            --rank-dir "$RUNNER_TEMP/rank-history" \
+            --weekly-dir "$GITHUB_WORKSPACE/growth/data/weekly" \
+            --output "$evaluation"
+          python3 scripts/growth/hosted_rank_state.py build-bundle \
+            --source-root "$GITHUB_WORKSPACE" \
+            --snapshot "$RUNNER_TEMP/rank-history/$NIMBO_LOCAL_DATE.json" \
+            --evaluation "$evaluation" \
+            --output-dir "$RUNNER_TEMP/persistence-bundle" \
+            --date "$NIMBO_LOCAL_DATE" \
+            --source-revision "$GITHUB_SHA" \
+            --state-parent "$NIMBO_STATE_PARENT" \
+            --monitor-exit-code "$NIMBO_MONITOR_EXIT_CODE" \
+            --repository "$GITHUB_REPOSITORY" \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-attempt "$GITHUB_RUN_ATTEMPT" \
+            --event-name "$GITHUB_EVENT_NAME" \
+            --ref "$GITHUB_REF"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ${{ steps.context.outputs.artifact_name }}
+          path: ${{ runner.temp }}/persistence-bundle
+          if-no-files-found: error
+          retention-days: 14
+
+  persist:
+    if: github.ref == 'refs/heads/master'
+    needs: capture
+    permissions:
+      actions: read
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: ${{ needs.capture.outputs.artifact_name }}
+          path: ${{ runner.temp }}/persistence-bundle
+      - name: Revalidate bundle and remote parent
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ needs.capture.outputs.local_date }}
+          NIMBO_STATE_PARENT: ${{ needs.capture.outputs.state_parent }}
+          NIMBO_MONITOR_EXIT_CODE: ${{ needs.capture.outputs.monitor_exit_code }}
+          NIMBO_STATE_BRANCH: growth-observations
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "4810092/Weather"
+          test "$GITHUB_REF" = "refs/heads/master"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python3 scripts/growth/hosted_rank_state.py validate-bundle \
+            --source-root "$GITHUB_WORKSPACE" \
+            --bundle-dir "$RUNNER_TEMP/persistence-bundle" \
+            --date "$NIMBO_LOCAL_DATE" \
+            --source-revision "$GITHUB_SHA" \
+            --state-parent "$NIMBO_STATE_PARENT" \
+            --monitor-exit-code "$NIMBO_MONITOR_EXIT_CODE"
+          remote_line="$(git ls-remote --heads origin "refs/heads/$NIMBO_STATE_BRANCH")"
+          if [[ "$NIMBO_STATE_PARENT" = absent ]]; then
+            test -z "$remote_line"
+          else
+            test "$(printf '%s\n' "$remote_line" | wc -l | tr -d ' ')" = 1
+            remote_parent="${remote_line%%[[:space:]]*}"
+            test "$remote_parent" = "$NIMBO_STATE_PARENT"
+          fi
+      - name: Install only the no-clobber daily state
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ needs.capture.outputs.local_date }}
+          NIMBO_STATE_PARENT: ${{ needs.capture.outputs.state_parent }}
+          NIMBO_MONITOR_EXIT_CODE: ${{ needs.capture.outputs.monitor_exit_code }}
+          NIMBO_STATE_BRANCH: growth-observations
+        run: |
+          set -euo pipefail
+          state_root="$RUNNER_TEMP/state-write"
+          if [[ "$NIMBO_STATE_PARENT" = absent ]]; then
+            git worktree add --detach "$state_root" "$GITHUB_SHA"
+          else
+            git fetch --no-tags --depth=1 origin \
+              "refs/heads/$NIMBO_STATE_BRANCH:refs/remotes/origin/$NIMBO_STATE_BRANCH"
+            test "$(git rev-parse "refs/remotes/origin/$NIMBO_STATE_BRANCH")" = \
+              "$NIMBO_STATE_PARENT"
+            git worktree add --detach "$state_root" "$NIMBO_STATE_PARENT"
+          fi
+          git -C "$state_root" switch -c "$NIMBO_STATE_BRANCH"
+          test -z "$(git -C "$state_root" status --porcelain=v1)"
+          python3 scripts/growth/hosted_rank_state.py install-bundle \
+            --source-root "$GITHUB_WORKSPACE" \
+            --bundle-dir "$RUNNER_TEMP/persistence-bundle" \
+            --state-root "$state_root" \
+            --date "$NIMBO_LOCAL_DATE" \
+            --source-revision "$GITHUB_SHA" \
+            --state-parent "$NIMBO_STATE_PARENT" \
+            --monitor-exit-code "$NIMBO_MONITOR_EXIT_CODE"
+          expected_paths=(
+            "growth/data/public-rank/$NIMBO_LOCAL_DATE.json"
+            "growth/data/public-rank/hosted-receipts/$NIMBO_LOCAL_DATE.json"
+            "growth/reports/evaluation-$NIMBO_LOCAL_DATE.json"
+          )
+          git -C "$state_root" add -- "${expected_paths[@]}"
+          for path in "${expected_paths[@]}"; do
+            test "$(git -C "$state_root" hash-object --no-filters "$path")" = \
+              "$(git -C "$state_root" rev-parse ":$path")"
+          done
+          expected_names="$(printf '%s\n' "${expected_paths[@]}" | sort)"
+          actual_names="$(git -C "$state_root" diff --cached --name-only | sort)"
+          test "$actual_names" = "$expected_names"
+          test "$(git -C "$state_root" diff --cached --diff-filter=A --name-only | sort)" = \
+            "$expected_names"
+          test -z "$(git -C "$state_root" diff --name-only)"
+          test -z "$(git -C "$state_root" ls-files --others --exclude-standard)"
+          git -C "$state_root" diff --cached --check
+      - name: Commit and non-force push the exact state transition
+        shell: bash
+        env:
+          NIMBO_LOCAL_DATE: ${{ needs.capture.outputs.local_date }}
+          NIMBO_MONITOR_EXIT_CODE: ${{ needs.capture.outputs.monitor_exit_code }}
+          NIMBO_STATE_BRANCH: growth-observations
+        run: |
+          set -euo pipefail
+          state_root="$RUNNER_TEMP/state-write"
+          git -C "$state_root" config user.name "github-actions[bot]"
+          git -C "$state_root" config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$state_root" commit -m \
+            "growth(rank): capture UZ $NIMBO_LOCAL_DATE"
+          state_commit="$(git -C "$state_root" rev-parse HEAD)"
+          git -C "$state_root" push origin \
+            "HEAD:refs/heads/$NIMBO_STATE_BRANCH"
+          remote_commit="$(git -C "$state_root" ls-remote --heads origin \
+            "refs/heads/$NIMBO_STATE_BRANCH" | cut -f1)"
+          test "$remote_commit" = "$state_commit"
+          if [[ "$NIMBO_MONITOR_EXIT_CODE" != 0 ]]; then
+            echo "Canonical unknown evidence was persisted; failing closed." >&2
+            exit "$NIMBO_MONITOR_EXIT_CODE"
+          fi

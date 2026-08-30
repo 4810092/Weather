@@ -95,7 +95,16 @@ The public monitor does not log in, use cookies, bypass access controls, or clai
 
 ## Daily public monitor
 
-Run once per day while the host timezone is `Asia/Tashkent`:
+The canonical unattended capture is
+[`.github/workflows/uz-rank-monitor.yml`](../.github/workflows/uz-rank-monitor.yml).
+GitHub schedules it at `19:05 UTC`, which is `00:05` in fixed-offset
+`Asia/Tashkent`, and it also supports a bounded manual dispatch from `master`.
+The capture job is read-only. A separate job receives `contents: write` only
+after a hash-bound snapshot/evaluation bundle has been built, and can push only
+the reviewed three-file state transition to the dedicated
+`growth-observations` branch.
+
+For a deliberate local diagnostic run:
 
 ```sh
 python3 scripts/growth/monitor_public_rank.py
@@ -117,15 +126,16 @@ not replace or supplement the one canonical daily result. `--stdout` emits the
 full current capture without writing a file. See
 [data/public-rank/README.md](data/public-rank/README.md) for the exact contract.
 
-The Codex task has an active local heartbeat named
-`Nimbo UZ rank and domain monitor` on a temporary hourly cadence while crash
-and release-access blockers are unresolved. It refreshes the public
-rank/evaluation state when needed and may append a local intraday observation
-without changing the canonical daily streak input; on
-Mondays it also imports a new user-supplied, valid seven-day console CSV when
-one is present. It never bypasses authentication or 2FA. The optional macOS launchd template in
-[automation](automation) remains uninstalled, avoiding a duplicate machine
-scheduler.
+The hosted branch is the unattended rank authority; the workflow never pushes
+to protected `master`, publishes Pages, changes store state, sends outreach, or
+imports authenticated console data. A reviewed merge may promote its exact
+snapshot and evaluation bytes to `master`, after which the existing dashboard
+and Pages checks run normally. Until that merge, the public dashboard is
+honestly older than the hosted observation branch. The optional macOS launchd
+template in [automation](automation) remains uninstalled and must not run in
+parallel with the hosted canonical capture. Review-inbox and weekly authenticated
+console operations remain separate because they require signed-in evidence and
+are not rank-monitor responsibilities.
 
 ## Weekly console import
 
