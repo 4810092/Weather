@@ -202,15 +202,15 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
   all embed or represent historical source. The predecessor `9c2dce4` phone and
   Wear outputs are unsigned, while its Apple build 6 is simulator-only; current
-  source `65b2eb9` has no retained signed candidate bytes. Historical QA
+  source `ed1b791` has no retained signed candidate bytes. Historical QA
   does not establish signing or physical coverage for the current candidates.
-  Current product/build source `65b2eb9` keeps the Apple source-revision and
+  Current product/build source `ed1b791` keeps the Apple source-revision and
   deterministic per-target profile plumbing, pins the complete Android and
   `iosArm64` dependency graph, and seals actual source bytes in the hosted
   candidate workflow; prior unsigned and device evidence is non-transferable.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
-  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md),
+  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md),
   and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 

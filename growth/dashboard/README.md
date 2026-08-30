@@ -18,15 +18,15 @@ returned only one unique app, below the 10-app completeness floor, but it is
 a non-goal diagnostic source error: `goal_evidence_complete=true`, all
 required goal surfaces are complete and failed, and the streak remains `0/7`.
 Current product/build-input commit
-`65b2eb939466c493557a3ddac580e913cd0f58f3` resolves to phone 1.1.0 (8),
+`ed1b791b8d1a059e62409713102740e08d014de2` resolves to phone 1.1.0 (8),
 Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It keeps fail-closed Apple
 `NimboSourceRevision` plumbing and deterministic per-target App Store profiles,
-pins 1,715 Android and fresh-cache `iosArm64` dependency artifacts, including
-the Linux AAPT2 runner binary, and seals
+pins 1,716 hosted-Linux Android and macOS/`iosArm64` dependency artifacts,
+including Linux AAPT2 and Kotlin/Native host payloads, and seals
 actual source bytes in the hosted candidate path, but no retained signed AAB,
 archive, or IPA exists for it.
-Independent empty-cache exact-authority Android and Apple compile/archive
-audits pass, but their unsigned outputs are regression evidence only.
+Independent predecessor `65b2eb9` Android and Apple compile/archive audits
+pass, but their unsigned outputs do not transfer; the current hosted rerun is pending.
 The dashboard therefore reports `0/3` current artifacts byte-verified. All
 binaries, screenshots, and device results below belong to predecessor
 revisions and remain non-transferable regression evidence.
@@ -102,7 +102,7 @@ historical iOS crash still lacks a diagnostic and symbolicated report. The
 authenticated inventory path closes the API-authentication discovery gap, but
 its diagnostic request is permission-blocked by `403` and cannot recover the
 suppressed crash signature or log.
-Current `65b2eb9` inherits the predecessor hardening, but the executed tests and
+Current `ed1b791` inherits the predecessor hardening, but the executed tests and
 simulator binaries remain pinned to `9c2dce4`; neither can identify or be
 attributed to that event, and the results do not transfer to close the crash
 gate. OpenMeteo GmbH

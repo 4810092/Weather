@@ -71,11 +71,14 @@ Google Play, submit for review, release, or prove public availability.
 - `actionlint` accepts the workflow.
 - Every third-party action is pinned to a reviewed full commit SHA.
 - Gradle 9.7.0 is pinned to the official wrapper SHA-256, and checked-in
-  verification metadata binds 1,715 resolved hosted-Linux Android and
+  verification metadata binds 1,716 resolved hosted-Linux Android and
   fresh-cache macOS `iosArm64` dependency artifacts. The Linux-specific
   `aapt2-9.3.1-15703166-linux.jar` is pinned to independently checked Google
   Maven bytes with SHA-256
   `e772a3dae8354764f1b0793903218427f483982445207f2e4ffc8c2026755bd4`.
+  The Linux Kotlin/Native 2.4.10 prebuilt payload is pinned to independently
+  checked Maven Central bytes with SHA-256
+  `c9e356e8518144f275f1514cfe38b07db949f93e47e054832b8974fff1fd33e0`.
 - `scripts/check_repository.py` binds the complete canonical workflow digest,
   complete action-step blocks (including `with` and artifact paths), all run
   bodies, every run shell, and each secret step's exact environment. Its
@@ -89,25 +92,29 @@ Google Play, submit for review, release, or prove public availability.
   reject source mutation, unexpected root entries, stale but well-formed
   external mappings, build/current source divergence, receipt/package path
   aliasing, partial artifact inventories, and tar byte/mode drift.
-- Current source `65b2eb939466c493557a3ddac580e913cd0f58f3`
+- Current source `ed1b791b8d1a059e62409713102740e08d014de2`
+  adds only the Linux Kotlin/Native prebuilt checksum exposed by public CI run
+  `33291190834`. Its exact hosted rerun is pending; no current unsigned binary
+  hash or hosted-green claim is transferred from its predecessor.
+- Predecessor source `65b2eb939466c493557a3ddac580e913cd0f58f3`
   passed a standalone cold-cache Java 21 run of all 241 CI/release tasks.
   Unsigned phone vc8 SHA-256 is
   `9a4d113fda6601f18cd6614f5b0797a715c9081fd52ecc41f0ec5401cfb2d8f4`;
   unsigned Wear vc1000008 SHA-256 is
   `2801b13123a4da6f70f448cc7f638a4315a08c4e4ab21c73acfb665c48515b45`.
   Both embed the exact revision and pass ZIP and pinned Bundletool validation.
-- A standalone cold-cache Xcode 26.6 archive at current source passed all 28
+- A standalone cold-cache Xcode 26.6 archive at the same predecessor source passed all 28
   fresh-cache Gradle tasks. Its canonical archive-tree SHA-256 is
   `8fc6c4693542f15d9518ea2217bf373986e4c10a96ebbb06e39f3dcfef4fe85f`.
   App, widget, and watch are unsigned `1.1.0 (6)` products, embed the exact
   revision, and have UUID-matched dSYMs that pass `dwarfdump --verify`.
-- Both current audits produced the same pre/post 256-entry canonical source
+- Those predecessor audits produced the same pre/post 256-entry canonical source
   inventory SHA-256
   `ef3ddacdbad75043300e2fb8b0ad6267bcf8894046bb6378df2025ecf8214edb`.
-- Public CI run `33289915383` diagnosed the predecessor metadata gap: its
-  Ubuntu job rejected the unpinned Linux AAPT2 artifact while its independent
-  macOS job passed. A post-fix hosted rerun is still required before hosted CI
-  can be called green.
+- Public CI runs `33289915383` and `33291190834` diagnosed the two macOS-hidden
+  host payload gaps in sequence: Linux AAPT2 and Linux Kotlin/Native prebuilt.
+  A current post-fix hosted rerun is still required before hosted CI can be
+  called green.
 - At predecessor source
   `5b98f23d0320fba4eef77f2d7c43fcbd0afd0594` passed all 241 release tasks.
   Unsigned phone vc8 SHA-256 is

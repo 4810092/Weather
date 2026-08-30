@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:65b2eb939466c493557a3ddac580e913cd0f58f3 -->
+<!-- source_revision:ed1b791b8d1a059e62409713102740e08d014de2 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e0f53d4d50e08daa4c2ea7633d2d3d38a2af2508521d8aae8ce2c05356fd1c5b -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0f0f4b4d58e0dec7cd1000377839f4b0c0b67e783f42bcdc2ac6b94904f1876c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4cf27d1e463313f525a43af7ff7699312729ec5afa3192f5a72725f662d00e3a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=aa63127a1b36d45d5a73398c0a450df7d77e54e7fe39f20c7f1b592f6692a7af -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,9 +28,25 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30
+## Nimbo 1.1.0 hosted Linux Kotlin verification closure — 2026-08-30
 
 The authoritative product/build-input revision is
+`ed1b791b8d1a059e62409713102740e08d014de2`. It keeps phone `1.1.0 (8)`,
+Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
+metadata now covers 1,716 artifacts across the hosted-Linux Android and
+macOS/`iosArm64` graphs. The only new release input is the Linux Kotlin/Native
+2.4.10 prebuilt payload exposed by public CI run `33291190834`; its official
+Maven Central bytes have SHA-256
+`c9e356e8518144f275f1514cfe38b07db949f93e47e054832b8974fff1fd33e0`.
+The exact hosted rerun is pending. No predecessor AAB/archive hash, signed
+artifact, physical QA, or store state transfers to this revision, and the
+manifest remains `0/3` byte-verified. The current boundary is recorded in the
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md)
+and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
+
+## Historical Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30
+
+The product/build-input revision at this predecessor checkpoint was
 `65b2eb939466c493557a3ddac580e913cd0f58f3`. It keeps phone `1.1.0 (8)`,
 Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
 metadata now covers 1,715 artifacts across the hosted-Linux Android and
@@ -50,7 +66,7 @@ the unsigned Apple archive-tree SHA-256 is
 All embed the exact authority and pass their identity checks. These outputs are
 regression evidence only: no protected workflow run, signed artifact, physical
 QA, or store upload is claimed, and the manifest remains `0/3` byte-verified.
-The current boundary is recorded in the
+Its historical boundary is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 
@@ -72,7 +88,7 @@ protected signing runner verifies the complete canonical
 `ExportOptions.plist` with `destination=export` before secrets are decoded, so
 the candidate workflow cannot turn export into a store upload. No protected
 workflow run, signed artifact, store upload, or physical QA is claimed. The
-current boundary is recorded in the
+historical boundary is recorded in the
 [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-5b98f23.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 

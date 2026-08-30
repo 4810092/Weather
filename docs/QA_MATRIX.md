@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:65b2eb939466c493557a3ddac580e913cd0f58f3 -->
+<!-- source_revision:ed1b791b8d1a059e62409713102740e08d014de2 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e0f53d4d50e08daa4c2ea7633d2d3d38a2af2508521d8aae8ce2c05356fd1c5b -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=0f0f4b4d58e0dec7cd1000377839f4b0c0b67e783f42bcdc2ac6b94904f1876c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4cf27d1e463313f525a43af7ff7699312729ec5afa3192f5a72725f662d00e3a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=aa63127a1b36d45d5a73398c0a450df7d77e54e7fe39f20c7f1b592f6692a7af -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,13 +54,13 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `65b2eb9` has no retained signed Android or
+- Current product/build source `ed1b791` has no retained signed Android or
   Apple candidate and no matching physical QA. It keeps the Apple source-
-  revision and deterministic per-target profile settings, pins 1,715
+  revision and deterministic per-target profile settings, pins 1,716
   hosted-Linux Android and macOS/`iosArm64` dependency artifacts including the
-  Linux AAPT2 runner, and seals actual source bytes in the hosted candidate
-  workflow. Exact empty-cache Android and Apple regression builds pass; all
-  device evidence below belongs to predecessor revisions.
+  Linux AAPT2 and Kotlin/Native host payloads, and seals actual source bytes in
+  the hosted candidate workflow. Exact predecessor `65b2eb9` builds pass but
+  do not transfer; all device evidence below belongs to predecessor revisions.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian
@@ -94,7 +94,7 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md`](../growth/quality/release-artifact-source-sync-2026-08-30-65b2eb9.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md`](../growth/quality/release-artifact-source-sync-2026-08-30-ed1b791.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).
