@@ -117,14 +117,17 @@ the captured slice”; it is never converted to a synthetic rank.
   render/tap, large text, rotation, and process health. The physical APK uses
   the debug certificate, and the tablet/widget pass is emulator-only: there is
   still no upload-signed current phone artifact or matching release-certificate
-  physical matrix. Apple build 6 has predecessor Release-simulator hashes, and its
-  localized iPhone phone capture set contains twelve source-bound
-  `9c2dce4` simulator sources across four real states per locale. The attempted
-  Apple offline transition was not captured and is not claimed. That proves
-  localized phone screenshot provenance only; Apple Watch sources remain
-  historical build-5 simulator evidence. It has no
-  distribution-signed archive or physical result. None of this evidence is an
-  uploadable artifact.
+  physical matrix. Exact source `2cdd438` now has bounded simulator evidence on
+  all three remaining watch/phone surfaces: the unsigned iPhone Release
+  Simulator passed live-provider EN/RU/UZ capture and `40/40` cold launches;
+  unsigned watchOS build 6 rendered an explicitly stale retained preview-like
+  `UserDefaults` fixture in EN/RU/UZ and passed `30/30`; and the Wear OS API 37
+  debug emulator rendered a stale cached Mountain View Data Layer item in
+  EN/RU/UZ and passed the additional `10/10` restored-English loop. Neither
+  watch result is a fresh paired transfer. The
+  [exact-current simulator/emulator record](../growth/quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md)
+  is unsigned/debug and non-physical; none of it is an uploadable artifact or a
+  gate closure.
 - The unreleased Android candidates pin `androidx.fragment:fragment:1.9.0`
   across phone, shared Android, and Wear OS. Release dependency manifests no
   longer contain Fragment 1.1.0 as the selected version.
@@ -141,9 +144,11 @@ the captured slice”; it is never converted to a synthetic rank.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
   remains scoped to build 5. Current Apple build 6 has no distribution-signed
-  archive or physical runtime result. Its exact-product ad-hoc simulator hash and
+  archive or physical runtime result. The new exact `2cdd438` unsigned Simulator
+  evidence is current regression proof only. The checked-in
   [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
-  do not imply the current `2cdd438` binary, App Store Connect, or TestFlight upload.
+  remains predecessor `9c2dce4` creative evidence; neither record implies App
+  Store Connect or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
   remains API 30. Predecessor product source `9c2dce4` passes a clean, no-snapshot API
   24 debug run covering no-permission quick-city, live weather, first-forecast
@@ -169,15 +174,19 @@ the captured slice”; it is never converted to a synthetic rank.
   Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
   creatives, and localized EN/RU/UZ Play feature graphics. Real EN/RU/UZ
-  Android captures prove Best Time, 10-day/AQI, and offline claims. Apple
-  Twelve EN/RU/UZ iPhone phone sources from source-bound predecessor `9c2dce4`
+  Android captures prove Best Time, 10-day/AQI, and offline claims. The twelve
+  checked-in EN/RU/UZ iPhone phone sources from predecessor `9c2dce4`
   build-6 simulator app cover overview, recent comparison, selected timeline,
   and details states per locale. They prove localized live product pixels for
   the phone creative pack, not signing, physical QA, TestFlight, or store state.
   The attempted Apple offline transition was not captured and is not claimed.
-  The watch story uses locale-matched simulator/emulator captures. The Apple
-  Watch capture is build-5 UI evidence and cannot satisfy build-6 QA; neither
-  platform capture is physical-watch QA. The draft was not submitted for review
+  A separate private exact `2cdd438` set proves the same bounded iPhone states
+  against the live provider, but does not silently replace checked-in assets.
+  The checked-in watch story still uses locale-matched historical
+  simulator/emulator captures. Separate exact-current watchOS evidence renders
+  a stale retained preview-like fixture, while exact-current Wear evidence
+  renders a stale cached Mountain View Data Layer item; neither is a fresh
+  paired transfer or physical-watch QA. The draft was not submitted for review
   or published.
   The uncaptured home-screen widget story remains excluded.
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
@@ -229,7 +238,11 @@ recorded only after direct store evidence.
    25 onboarding/live/Best Time/tip/offline/recovery/process-health scope, but
    its debug certificate cannot satisfy this signed-artifact matrix. Its
    byte-identical API 36 tablet/widget emulator pass likewise does not replace
-   physical-tablet or signed-candidate QA.
+   physical-tablet or signed-candidate QA. The exact-current iPhone/watchOS
+   Simulator and Wear OS emulator report likewise remains unsigned/debug and
+   non-physical; the watch states are stale retained/cached data rather than
+   fresh paired transfers, so it cannot satisfy any signed-artifact or physical
+   gate.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.

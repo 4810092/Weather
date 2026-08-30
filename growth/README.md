@@ -45,10 +45,16 @@ and pulled installed APK SHA-256
 `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
 This is debug-certificate regression evidence, not upload-signed or
 Play-delivered proof, so it does not change the gate or manifest. The prior
-`9c2dce4` debug API 24/API 25/API 36, Apple simulator,
-and localized capture results remain historical regression evidence and do not
-transfer to `2cdd438`. None closes signing,
-physical-device, TestFlight, store-state, or the release matrix.
+predecessor-only Apple/Wear simulator gap is now narrowed by exact `2cdd438`
+unsigned/debug evidence: the iPhone Simulator passed EN/RU/UZ live-provider
+capture plus `40/40` cold launches; watchOS build 6 rendered an explicitly
+stale retained preview-like `UserDefaults` fixture in EN/RU/UZ and passed
+`30/30` cold launches; and the Wear OS API 37 debug emulator rendered the
+stale cached Mountain View Data Layer item in EN/RU/UZ and passed the additional
+`10/10` restored-English cold loop. Neither watch result proves a fresh paired
+transfer. The prior `9c2dce4` Android API 24/API 25/API 36 results remain
+historical. None of this closes signing, physical-device, TestFlight/Play,
+store-state, or the release matrix.
 Signed phone vc7 and Apple build 5 are historical evidence only. OpenMeteo GmbH
 has confirmed
 the exact unpaid, non-monetized organic-promotion scope for the non-commercial
@@ -78,6 +84,7 @@ deployment, or historical device evidence does not close those gates.
 | Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact `9c2dce4` no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
 | Android exact-product physical QA | [quality/android-current-product-physical-smoke-2026-08-29.md](quality/android-current-product-physical-smoke-2026-08-29.md) | Exact `9c2dce4` debug-certificate API 25 onboarding/live/late-day Best Time/tip/offline/recovery/process-health pass; explicitly not upload-signed, tablet/widget, or Wear evidence |
 | Android current-authority physical QA | [quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md](quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` debug-certificate physical API 25 denied-location/search/live/cache/recovery/widget/process-health pass; explicitly not upload-signed, physical-tablet, or Wear evidence |
+| Exact-current Apple/Wear simulator/emulator QA | [quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md](quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` iPhone live-provider EN/RU/UZ plus 40-loop evidence, watchOS retained preview-like stale fixture plus 30-loop evidence, and Wear OS cached stale Data Layer plus 10-loop evidence; explicitly unsigned/debug, unpaired, and non-physical |
 | Android exact-product tablet/widget QA | [quality/android-current-product-tablet-widget-smoke-2026-08-29.md](quality/android-current-product-tablet-widget-smoke-2026-08-29.md) | Byte-identical exact `9c2dce4` debug APK on an API 36 tablet emulator: Uzbek layout, live forecast, Best Time, durable tip, widget render/tap, large text, rotation, process health, and explicit non-physical/non-upload boundary |
 | Historical signed Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Historical phone vc7 clean API 25 live/search/cold-start evidence and uninstall boundary |
 | Trust and feedback QA | [quality/android-trust-feedback-smoke-2026-08-29.md](quality/android-trust-feedback-smoke-2026-08-29.md) | Exact-commit API 25 fresh-install plus API 36 preserved-data update, support/rate destinations, byte identity, and cleanup boundary |

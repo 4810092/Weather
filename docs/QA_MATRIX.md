@@ -94,28 +94,30 @@ and its explicit external-build provenance boundary are recorded in
   byte-identical debug APK also passed predecessor API 36 tablet layout,
   Uzbek live forecast, Best Time, durable-tip, home-screen widget render/tap,
   large-text, rotation, and process-health checks on an emulator. It is not a
-  physical-tablet result. API 37 round-Wear Empty/Fresh/Stale checks remain
-  prior regression evidence for `ee7c36f`; current upload-signed physical
-  tablet/widget and paired Wear OS coverage is absent.
-- Apple app, widget, and watch compiled from predecessor commit `9c2dce4` for the
-  simulator and have matching hash/UUID/dSYM evidence. The app and widget emit
-  iOS 15 minimum load commands, the watch emits watchOS 10, and 18 deterministic
-  surface tests pass. The prior build-6 device archive attempt failed at the
-  Widget CodeSign step and produced no archive or IPA; protected signing was not
-  retried for `9c2dce4`. Twelve EN/RU/UZ iPhone phone sources come from
-  the source-bound `9c2dce4` build-6 simulator app and cover four real states
-  per locale, but prove screenshot provenance only. The attempted Apple offline
-  transition was not captured and is not claimed. Apple Watch sources remain
-  historical build-5 simulator evidence. Build 6 still has no
-  distribution-signed archive, no iOS 15/16
-  runtime widget render, and no physical iPhone, iPad, widget, or paired-watch
-  result.
+  physical-tablet result. Exact `2cdd438` now also has an API 37 round-Wear
+  debug-emulator pass: EN/RU/UZ render the honestly stale cached Mountain View
+  Data Layer item and the restored-English cold loop passes `10/10` with no
+  PID-scoped fatal match. No fresh paired-phone refresh occurred; current
+  upload-signed physical tablet/widget and paired Wear OS coverage is absent.
+- Exact `2cdd438` Apple app/widget Release Simulator bytes embed the full source
+  revision. On iPhone 16 Pro Max / iOS 18.1, EN/RU/UZ each passed the real
+  Tashkent quick-city and live-provider flow, twelve localized states were
+  inspected, and `40/40` cold launches produced no product-scoped fatal match
+  or new Nimbo crash report. The exact-current unsigned watchOS build 6 also
+  rendered EN/RU/UZ and passed `30/30` cold launches, but it used an explicitly
+  stale retained `UserDefaults` snapshot matching the preview-like fixture, not
+  a live provider response or fresh phone transfer. Build 6 still has no
+  distribution-signed archive, iOS 15/16 runtime widget render, physical
+  iPhone/iPad/watch result, or fresh paired-watch evidence.
 - Unit, host, simulator, repository, localization, migration, R8, and unsigned
   release-build checks are useful regression evidence. They are not signing,
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
   [`growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md`](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md).
+  The bounded exact-current iPhone/watchOS Simulator and Wear OS emulator
+  evidence is recorded in
+  [`growth/quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md`](../growth/quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).
@@ -131,9 +133,9 @@ and its explicit external-build provenance boundary are recorded in
 | --- | --- | --- |
 | Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact-product API 24 emulator and physical API 25 debug evidence exists, but current signed physical phone coverage does not |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — API 37 round emulator render passes; no exact-current signed physical-watch or paired handoff result |
-| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-source simulator builds and 18 surface tests pass, but older-runtime rendering, signing, and physical evidence are absent |
-| Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — no current physical-watch result |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact-current API 37 debug emulator localized stale-cache render and cold loop pass; no fresh refresh, upload-signed physical watch, or paired handoff result |
+| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes, but widget placement, older-runtime rendering, signing, and physical evidence are absent |
+| Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — exact-current unsigned simulator localization and 30-loop evidence uses a stale preview-like retained fixture; no fresh paired transfer or physical-watch result |
 
 ## Historical evidence — non-transferable
 
