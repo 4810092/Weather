@@ -57,10 +57,10 @@ Executed from the repository root on 2026-08-30:
 ```text
 python3 -m compileall -q scripts
 python3 -m unittest discover -s scripts/growth/tests -p 'test_*.py'
-203 tests passed
+242 tests passed
 
 python3 scripts/check_repository.py
-776 source paths passed
+787 source paths passed
 
 python3 scripts/verify_release_artifacts.py
 0 byte-verified, 3 fail-closed blocked
@@ -89,6 +89,9 @@ python3 scripts/build_site.py --output build/pages-ci
 python3 scripts/build_site.py --output build/pages-drafts-ci --include-drafts
 34 localized pages built
 
+actionlint .github/workflows/ci.yml .github/workflows/signed-candidate.yml
+passed
+
 git diff --check
 passed
 ```
@@ -107,9 +110,9 @@ trees; rejects extra/symlink/special entries and mutation or mutate-restore;
 then packages, re-extracts, and rehashes a receipt-bound tar while preserving
 verified internal file modes.
 
-The candidate path separately validates the detached build worktree and the
+The candidate path separately validates the standalone build clone and the
 current checkout's release-source paths against the manifest revision. A clean
-old worktree can no longer hide product/build-input drift on `master`. Receipt
+old clone can no longer hide product/build-input drift on `master`. Receipt
 schema v2 also requires exactly phone, Wear, and Apple results, distinct
 receipt/package paths, and a final package existence/hash recheck.
 
@@ -134,8 +137,9 @@ necessary for the separate physical-device QA gate.
 
 The Gradle wrapper distribution now has the official 9.7.0 SHA-256 pin, normal
 and protected workflows use full-commit action pins, and dependency
-verification metadata covers every artifact resolved by the complete release
-task set. This materially narrows but does not eliminate hosted-runner,
+verification metadata covers all 1,714 artifacts resolved by the complete
+Android and fresh-cache `iosArm64` release graphs. This materially narrows but
+does not eliminate hosted-runner,
 toolchain, repository-review, or initially bootstrapped dependency trust; no
 separate cryptographic build attestation is claimed.
 
