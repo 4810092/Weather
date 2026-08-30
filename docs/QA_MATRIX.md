@@ -3,12 +3,12 @@
 Status date: August 30, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:fb591e3d16f507a5a4f794ae537ccd087523889b -->
+<!-- source_revision:704fd893e59d94d8e9a4971313a773b3fa545ab6 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4f659218736d49b1b890a97fa138f1c608339811f499ebfdca1c292597053519 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=89301d01c36c517481db279ae54377e5c0b4b8b87e77eddbe9b0ddc4271147e5 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
 <!-- release-authority-current:end -->
 
 This document separates the exact `1.1.0` release candidate from historical
@@ -54,15 +54,19 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `fb591e3` has no retained signed Android or
+- Current product/build source `704fd89` has no retained signed Android or
   Apple candidate and no matching physical QA. It keeps the Apple source-
   revision and deterministic per-target profile settings, pins 1,758
   hosted-Linux Android and macOS/`iosArm64` dependency artifacts including the
   Linux AAPT2 and Kotlin/Native host payloads, and seals actual source bytes in
-  the hosted candidate workflow. Predecessor run `33295070238` passed ordinary
-  Android/iOS, failed two phone visibility checks, and stopped the tablet job
-  at the KVM permission gate. The current source fixes those exact failures;
-  its rerun is pending. All predecessor and device evidence is non-transferable.
+  the hosted candidate workflow. Historical run `33296238901` for predecessor
+  authority `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned
+  iOS in 20m38s. All three UI jobs passed the KVM gate and launched exactly five
+  tests, but each failed the same two zero-node Uzbek/Russian locale selectors.
+  Current source `704fd89` applies locale before composition through a dedicated
+  test activity; targeted ktlint, compilation, and manifest processing pass,
+  while its hosted rerun is pending. All predecessor and device evidence is
+  non-transferable.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
   The exact debug phone APK passed fresh-install physical API 25 Russian
@@ -96,7 +100,7 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-30-fb591e3.md`](../growth/quality/release-artifact-source-sync-2026-08-30-fb591e3.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md`](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md).
   The exact product-commit Android emulator matrix and Apple simulator/test
   boundary are recorded separately in
   [`growth/quality/surface-freshness-2026-08-29.md`](../growth/quality/surface-freshness-2026-08-29.md).

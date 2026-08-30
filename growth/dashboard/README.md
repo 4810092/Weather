@@ -18,16 +18,17 @@ returned only one unique app, below the 10-app completeness floor, but it is
 a non-goal diagnostic source error: `goal_evidence_complete=true`, all
 required goal surfaces are complete and failed, and the streak remains `0/7`.
 Current product/build-input commit
-`fb591e3d16f507a5a4f794ae537ccd087523889b` resolves to phone 1.1.0 (8),
+`704fd893e59d94d8e9a4971313a773b3fa545ab6` resolves to phone 1.1.0 (8),
 Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It keeps fail-closed Apple
 `NimboSourceRevision` plumbing and deterministic per-target App Store profiles,
-pins 1,758 dependency artifacts, and adds deterministic Compose UI coverage
-with API 24 core-library desugaring. Predecessor hosted run `33295070238`
-passed the ordinary Android/iOS jobs but failed both phone UI jobs on two
-visibility assertions and stopped the tablet job at the KVM permission gate.
-The current source fixes those exact failures; no rerun or retained signed AAB,
-archive, or IPA exists for it. All predecessor compile and hosted results do
-not transfer.
+pins 1,758 dependency artifacts, and uses a dedicated locale-aware Android UI
+test activity that applies and verifies the requested language before Compose
+resource lookup. Historical run `33296238901` for predecessor authority
+`fb591e3` passed ordinary Android and unsigned iOS plus all three KVM gates;
+each UI job launched five tests and failed the same two zero-node Uzbek/Russian
+selectors because the generic predecessor activity reset locale. That failed
+run is non-transferable. No hosted rerun or retained signed AAB, archive, or
+IPA exists yet for `704fd89`.
 The dashboard therefore reports `0/3` current artifacts byte-verified. All
 binaries, screenshots, and device results below belong to predecessor
 revisions and remain non-transferable regression evidence.
@@ -103,7 +104,7 @@ historical iOS crash still lacks a diagnostic and symbolicated report. The
 authenticated inventory path closes the API-authentication discovery gap, but
 its diagnostic request is permission-blocked by `403` and cannot recover the
 suppressed crash signature or log.
-Current `fb591e3` inherits the predecessor hardening, but the executed tests and
+Current `704fd89` inherits the predecessor hardening, but the executed tests and
 simulator binaries remain pinned to `9c2dce4`; neither can identify or be
 attributed to that event, and the results do not transfer to close the crash
 gate. OpenMeteo GmbH

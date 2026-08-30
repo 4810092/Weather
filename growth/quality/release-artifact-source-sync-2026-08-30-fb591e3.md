@@ -1,9 +1,10 @@
-# Release artifact source sync — 2026-08-30 hosted UI rerun gate
+# Historical release artifact source sync — 2026-08-30 hosted UI rerun checkpoint
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; hosted rerun pending;
-0/3 current artifacts byte-verified**.
+Status: **HISTORICAL PREDECESSOR AUTHORITY; RUN 33296238901 FAILED ALL THREE
+ANDROID UI PROFILES; SUPERSEDED BY `704fd89`; 0/3 ARTIFACTS WERE BYTE-VERIFIED
+AT THIS CHECKPOINT**.
 
-The authoritative product/build-input commit is
+The authoritative product/build-input commit at this checkpoint was
 `fb591e3d16f507a5a4f794ae537ccd087523889b`. It resolves to Android phone
 `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
 `1.1.0 (6)`.
@@ -11,7 +12,7 @@ The authoritative product/build-input commit is
 ## Change boundary
 
 Compared with predecessor `6f72e70fff6eb7566e06dd862e1fad09055343a4`,
-the current authority changes only the hosted Android UI proof path:
+this checkpoint authority changed only the hosted Android UI proof path:
 
 - Uzbek, Arabic, and Russian localized onboarding-title checks now use
   `performScrollTo()` before visibility assertions. Uzbek and Arabic popular-
@@ -28,7 +29,7 @@ the current authority changes only the hosted Android UI proof path:
 The production weather behavior, store versions, signing identities, provider
 endpoint, verification metadata, and upload policy are unchanged. Per the
 hosted-only CI decision, no broad Gradle/Xcode suite or emulator matrix was run
-locally for this authority.
+locally for this checkpoint authority.
 
 Strict dependency verification still contains `1,758` artifact entries. The
 complete `gradle/verification-metadata.xml` SHA-256 remains
@@ -51,32 +52,47 @@ was `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It failed overall after 12m24s:
   existed but was not read/write-accessible to the runner user.
 
 That failed run is bounded historical regression evidence only. Its unsigned
-artifacts and failed-test reports are not upload candidates and do not transfer
-to `fb591e3`. No hosted run has completed for the current authority; the exact-
-source Android, iOS, and three-job UI rerun remains pending.
+artifacts and failed-test reports are not upload candidates and did not transfer
+to `fb591e3`.
 
-## Current artifact authority
+Public GitHub Actions
+[run 33296238901](https://github.com/4810092/Weather/actions/runs/33296238901)
+later executed at evidence commit
+`23617f361671a35245b2a892631fab73025b09b0`, whose release-source authority was
+this exact `fb591e3` checkpoint:
 
-| Surface | Exact identity | Current signed bytes | Decision |
+- `android-and-shared` passed in 1m55s;
+- `ios` passed in 20m38s;
+- the fail-closed KVM gate passed on API 24 phone, API 36 phone, and API 36
+  tablet;
+- every UI job launched exactly five tests and every job failed the same two
+  zero-node Uzbek/Russian locale selectors.
+
+The run failed overall. It proved that scrolling did not resolve localization:
+the generic activity reset device configuration before Compose resources were
+created. These results are historical and do not transfer to successor
+authority `704fd89`.
+
+## Artifact authority at this checkpoint
+
+| Surface | Exact identity | Signed bytes at checkpoint | Decision |
 | --- | --- | --- | --- |
 | Android phone/tablet | `1.1.0 (8)` | none bound to this revision | **BLOCKED** |
 | Wear OS | `1.1.0 (1000008)` | none bound to this revision | **BLOCKED** |
 | Apple app/widget/watch | `1.1.0 (6)` | no distribution-signed archive or IPA bound to this revision | **BLOCKED** |
 
-The schema-v2 upload manifest keeps every current SHA-256, signing-evidence
-path, and physical-QA path null. Historical candidates, unsigned artifacts,
-and device results from predecessor revisions remain non-transferable.
+The schema-v2 upload manifest at this checkpoint kept every SHA-256, signing-
+evidence path, and physical-QA path null. Historical candidates, unsigned
+artifacts, and device results from predecessor revisions remained non-transferable.
 
-## Remaining unblock
+## Successor boundary
 
-1. Push the evidence commit and obtain a green ordinary hosted rerun for this
-   exact authority, including both ordinary jobs and all three Android UI jobs.
-2. Provision the eight required protected `release-signing` environment inputs
-   without exposing credentials in chat, then run the manual candidate workflow.
-3. Promote the manifest only from the verified receipt and a separately
-   committed signing record.
-4. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
-   evidence to the retained artifact hashes.
+Successor authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
+generic test activity with a dedicated activity that applies locale before
+composition. Targeted device-test ktlint, compilation, and manifest processing
+pass, but no hosted rerun exists for that successor. The current signing,
+artifact, and physical matrix remains blocked at `0/3`; see the
+[current source-sync record](release-artifact-source-sync-2026-08-30-704fd89.md).
 
 No release artifact was signed, uploaded, submitted, or published by this
-source-sync update.
+historical source-sync update.

@@ -3,8 +3,10 @@
 Status: **PUBLIC AND CANDIDATE CLAIMS SEPARATED; PRIVACY CORRECTION DEPLOYED
 AND VERIFIED; STORE MUTATIONS PENDING**.
 
-This audit is bound to release-source authority
-`6f72e70fff6eb7566e06dd862e1fad09055343a4`. Public Apple remains
+This historical audit is bound to checkpoint release-source authority
+`6f72e70fff6eb7566e06dd862e1fad09055343a4`. Current authority
+`704fd893e59d94d8e9a4971313a773b3fa545ab6` inherits its public-claim
+separation. Public Apple remains
 `1.0.1 (4)` and public Google Play remains phone `1.0.2 (6)` plus Wear
 `1.0.2 (1000007)`. The current `1.1.0` candidate has no source-current signed
 bytes, upload, review, or public availability.
@@ -24,8 +26,9 @@ bytes, upload, review, or public availability.
 
 The previous public privacy route described the candidate-only review-prompt
 timing as if it applied to public `1.0.x` products. Commit
-`e552c0f87b5774582a0215abec60be92e4245b53`, inherited by current authority
-`6f72e70fff6eb7566e06dd862e1fad09055343a4`, removes those timing details in
+`e552c0f87b5774582a0215abec60be92e4245b53`, inherited by checkpoint authority
+`6f72e70fff6eb7566e06dd862e1fad09055343a4` and current authority `704fd89`,
+removes those timing details in
 Uzbek, Russian, and English and keeps only the version-neutral statement that
 Nimbo does not collect or store rating or review text inside the app.
 

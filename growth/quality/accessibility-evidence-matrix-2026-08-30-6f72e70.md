@@ -1,7 +1,8 @@
 # Accessibility evidence matrix — 2026-08-30
 
-Status: **HISTORICAL PREDECESSOR HARNESS; HOSTED RUN EXECUTED BUT FAILED TWO
-VIEWPORT ASSERTIONS; PHYSICAL ACCESSIBILITY AND STORE DECLARATIONS BLOCKED**.
+Status: **HISTORICAL PREDECESSOR HARNESS; LATEST PREDECESSOR HOSTED RUN FAILED
+TWO LOCALE SELECTORS ON ALL THREE PROFILES; PHYSICAL ACCESSIBILITY AND STORE
+DECLARATIONS BLOCKED**.
 
 This record is bound to release-source authority
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It distinguishes source
@@ -12,9 +13,19 @@ declaration.
 Hosted run `33295070238` later executed all five tests on both phone API 24 and
 API 36, but each phone job failed the Uzbek onboarding-title and Russian 200%
 font-scale title visibility assertions; the tablet job stopped before emulator
-start at the KVM permission gate. Current authority `fb591e3` contains the
-bounded fixes and still requires a complete green hosted rerun. No predecessor
-result transfers to the current authority.
+start at the KVM permission gate. Successor authority `fb591e3` corrected those
+viewport and KVM setup defects. Historical run `33296238901` then passed
+ordinary Android in 1m55s, ordinary unsigned iOS in 20m38s, and the KVM gate on
+all three UI profiles. Every UI job launched exactly five tests and failed the
+same two zero-node Uzbek/Russian locale selectors because the generic activity
+reset the requested locale before Compose resources were created.
+
+Current authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` replaces the
+generic activity with a dedicated activity that applies locale before
+composition, verifies Compose observes the injected language, and derives
+layout direction from the same locale. Targeted device-test ktlint,
+compilation, and merged-manifest processing pass. A hosted rerun for `704fd89`
+has not occurred, and no predecessor result transfers to the current authority.
 
 ## Automated source evidence
 
@@ -28,10 +39,12 @@ UI tests for:
 - Russian onboarding at `200%` font scale.
 
 The API 24 test target uses core-library desugaring for the shared
-`kotlinx-datetime` code path. Per the hosted-only CI decision, no current test
-APK was assembled or executed locally. Standard GitHub-hosted CI is configured
+`kotlinx-datetime` code path. The current harness passed targeted ktlint,
+device-test compilation, and merged-manifest processing locally; it was not
+executed on a local emulator or device. Standard GitHub-hosted CI is configured
 to execute the suite on an API 24 phone, API 36 phone, and API 36 tablet. Until
-those jobs are green, the correct result is `configured/pending`, not `passed`.
+those jobs are green for `704fd89`, the correct result is
+`configured/pending`, not `passed`.
 
 ## Evidence matrix
 

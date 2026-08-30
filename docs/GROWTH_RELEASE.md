@@ -5,12 +5,12 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:fb591e3d16f507a5a4f794ae537ccd087523889b -->
+<!-- source_revision:704fd893e59d94d8e9a4971313a773b3fa545ab6 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4f659218736d49b1b890a97fa138f1c608339811f499ebfdca1c292597053519 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=89301d01c36c517481db279ae54377e5c0b4b8b87e77eddbe9b0ddc4271147e5 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
 <!-- release-authority-current:end -->
 
 This document separates implementation readiness from device QA, store review,
@@ -79,16 +79,20 @@ the captured slice”; it is never converted to a synthetic rank.
 - Coordinated current source identities are assigned: Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  Current product/build source is `fb591e3`; it keeps fail-closed
+  Current product/build source is `704fd89`; it keeps fail-closed
   `NimboSourceRevision` plumbing, assigns a distinct App Store profile to each
   Apple product, pins 1,758 dependency artifacts, and adds deterministic
   Compose UI tests, API 24 core-library desugaring, plus standard GitHub-hosted
   API 24/API 36 phone/tablet jobs.
-  It has no retained signed candidate or physical QA. Predecessor hosted run
-  `33295070238` passed ordinary Android/iOS, failed two phone viewport
-  assertions, and stopped the tablet job at the KVM permission gate. The
-  current source fixes those exact failures; its complete hosted rerun is
-  pending and the predecessor result does not transfer.
+  It has no retained signed candidate or physical QA. Historical hosted run
+  `33296238901` for predecessor authority `fb591e3` passed ordinary Android in
+  1m55s and ordinary unsigned iOS in 20m38s. The KVM gate passed on all three
+  UI jobs; each launched exactly five tests and failed the same two zero-node
+  Uzbek/Russian locale selectors because the generic activity reset locale.
+  Current source `704fd89` applies the test locale before composition through a
+  dedicated activity. Targeted device-test ktlint, compilation, and merged-
+  manifest processing pass; its complete hosted rerun is pending, and the
+  predecessor result does not transfer.
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful
@@ -119,14 +123,14 @@ the captured slice”; it is never converted to a synthetic rank.
   cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
   text, TalkBack, cached-network fallback/recovery, and contextual review-prompt
   dismissal/no immediate repeat. Those results do not transfer to current
-  phone vc8; [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-fb591e3.md)
+  phone vc8; [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md)
   records the boundary.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
   remains scoped to build 5. Current Apple build 6 has no distribution-signed
   archive or physical runtime result. Its exact-product ad-hoc simulator hash and
   [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
-  do not imply the current `fb591e3` binary, App Store Connect, or TestFlight upload.
+  do not imply the current `704fd89` binary, App Store Connect, or TestFlight upload.
 - Phone/tablet support lowered from API 26 to the planned API 24 floor; Wear OS
   remains API 30. Predecessor product source `9c2dce4` passes a clean, no-snapshot API
   24 debug run covering no-permission quick-city, live weather, first-forecast

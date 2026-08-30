@@ -2,13 +2,19 @@
 
 Status: **BLOCKED for Android phone, Wear OS, and Apple**.
 
+This is a historical point-in-time checkpoint for `9c2dce4`. Current release
+authority is `704fd893e59d94d8e9a4971313a773b3fa545ab6`; current signing truth is
+recorded in the Android and Apple live readiness records dated 2026-08-30. Any
+use of `current` or `exact-current` below is scoped to this 2026-08-29
+checkpoint and does not transfer artifact or device evidence to `704fd89`.
+
 No artifact was uploaded, submitted, or published during this check. Protected
 credentials, private keys, aliases, passwords, and provisioning contents were
 not printed, exported, replaced, or reset.
 
-## Current source
+## Source at this checkpoint
 
-The exact product commit is
+The exact product commit at this checkpoint was
 `9c2dce4200dbba5487c8c458ade4616005fde6e6`.
 
 ### Android phone
@@ -89,7 +95,7 @@ These products contain only Xcode linker-generated ad-hoc signatures. They
 have no Team Identifier, bound Info.plist, sealed resources, distribution
 signature, xcarchive, exported IPA, or upload eligibility.
 
-The current source passed the shared iOS simulator test, 18 Swift surface tests,
+The checkpoint source passed the shared iOS simulator test, 18 Swift surface tests,
 and fresh Release simulator builds for app, WidgetKit, and watch. The executable
 UUIDs are app `44F5F65F-080A-3F89-B5E5-D052EDF9A219`, widget
 `4DB04672-B8CF-3BD7-909B-D0869C744ABB`, and watch
@@ -204,5 +210,5 @@ Publication remains blocked until all of the following are true:
 5. The signed artifacts pass the required physical phone/tablet/widget/watch
    matrix. No physical Apple pass currently exists.
 
-This record proves only current local readiness and the signing blocker. It is
+This record proves only point-in-time local readiness and the signing blocker. It is
 not proof of store upload, review, rollout, or public availability.

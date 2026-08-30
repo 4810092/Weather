@@ -202,19 +202,22 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
   all embed or represent historical source. The predecessor `9c2dce4` phone and
   Wear outputs are unsigned, while its Apple build 6 is simulator-only; current
-  source `fb591e3` has no retained signed candidate bytes. Historical QA
+  source `704fd89` has no retained signed candidate bytes. Historical QA
   does not establish signing or physical coverage for the current candidates.
-  Current product/build source `fb591e3` keeps the Apple source-revision and
+  Current product/build source `704fd89` keeps the Apple source-revision and
   deterministic per-target profile plumbing, pins 1,758 dependency artifacts,
   and adds API 24 desugaring plus a standard GitHub-hosted API 24/API 36
-  Compose UI matrix. Predecessor run `33295070238` passed the ordinary Android
-  and iOS jobs but failed both phone UI jobs on two viewport assumptions and
-  stopped the tablet job at the KVM permission gate. The current source fixes
-  those exact failures; its hosted rerun is pending. Prior CI, unsigned, and
-  device evidence is non-transferable.
+  Compose UI matrix. Historical run `33296238901` for predecessor authority
+  `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned iOS in
+  20m38s. Its KVM gate passed on all three UI profiles, but each profile
+  launched five tests and failed the same two zero-node Uzbek/Russian locale
+  selectors. Current source `704fd89` uses a dedicated test activity that
+  applies locale before composition; targeted device-test ktlint, compilation,
+  and manifest processing pass, while its hosted rerun remains pending. Prior
+  CI, unsigned, and device evidence is non-transferable.
   See the [growth
   implementation checkpoint](docs/GROWTH_RELEASE.md), the
-  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-fb591e3.md),
+  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md),
   and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 

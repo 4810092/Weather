@@ -1,9 +1,9 @@
-# Release artifact source sync — 2026-08-30 hosted UI gate
+# Historical release artifact source sync — 2026-08-30 hosted UI checkpoint
 
-Status: **BLOCKED for Android phone, Wear OS, and Apple; ordinary hosted CI
-run 33295070238 failed; 0/3 current artifacts byte-verified**.
+Status: **HISTORICAL PREDECESSOR AUTHORITY; ORDINARY HOSTED CI RUN 33295070238
+FAILED; 0/3 ARTIFACTS WERE BYTE-VERIFIED AT THIS CHECKPOINT**.
 
-The authoritative product/build-input commit is
+The authoritative product/build-input commit at this checkpoint was
 `6f72e70fff6eb7566e06dd862e1fad09055343a4`. It resolves to Android phone
 `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
 `1.1.0 (6)`.
@@ -21,9 +21,9 @@ The final authority also enables core-library desugaring for the KMP Android
 library, preventing the API 24 test target from relying on unavailable direct
 `java.time` classes used by `kotlinx-datetime`.
 
-Per the hosted-only CI decision, the final authority was not assembled or
+Per the hosted-only CI decision, this checkpoint authority was not assembled or
 executed locally. A predecessor test APK compiled before the desugaring change
-is not current and is excluded from release and execution evidence.
+was not checkpoint-current and is excluded from release and execution evidence.
 
 Strict dependency verification now contains `1,758` artifact entries. The
 complete `gradle/verification-metadata.xml` SHA-256 is
@@ -31,7 +31,7 @@ complete `gradle/verification-metadata.xml` SHA-256 is
 The added test dependencies are version-catalogued and the generated allowlist
 remains fail-closed.
 
-## CI placement and current evidence
+## CI placement and checkpoint evidence
 
 Ordinary CI remains exclusively on standard GitHub-hosted runners. The
 workflow now declares an independent Android UI matrix on `ubuntu-24.04` for:
@@ -83,33 +83,27 @@ abbreviated form (`2d73fdf6…d1d5`) and is therefore not promoted as an exact
 artifact identity. No run output changes the upload manifest or transfers
 predecessor physical-device evidence to this authority.
 
-## Current artifact authority
+## Artifact authority at this checkpoint
 
-| Surface | Exact identity | Current signed bytes | Decision |
+| Surface | Exact identity | Signed bytes at checkpoint | Decision |
 | --- | --- | --- | --- |
 | Android phone/tablet | `1.1.0 (8)` | none bound to this revision | **BLOCKED** |
 | Wear OS | `1.1.0 (1000008)` | none bound to this revision | **BLOCKED** |
 | Apple app/widget/watch | `1.1.0 (6)` | no distribution-signed archive or IPA bound to this revision | **BLOCKED** |
 
-The schema-v2 upload manifest keeps every current SHA-256, signing-evidence
-path, and physical-QA path null. Historical candidates, unsigned artifacts,
-and device results from predecessor revisions remain non-transferable.
+The schema-v2 upload manifest at this checkpoint kept every SHA-256, signing-
+evidence path, and physical-QA path null. Historical candidates, unsigned
+artifacts, and device results from predecessor revisions remained non-transferable.
 
-## Remaining unblock
+## Successor outcome and remaining boundary
 
-1. Correct the two phone visibility assertions and the standard-runner KVM
-   permission setup, then obtain a green ordinary hosted CI rerun for the new
-   exact release-source authority, including all three Android UI matrix jobs
-   and the existing Android/iOS jobs.
-2. Unlock the existing login Keychain locally, then provision the eight
-   existing signing inputs into the branch-restricted `release-signing`
-   environment without sending credentials through chat.
-3. Run the manual hosted workflow and retain its receipt-bound candidate tar
-   and schema-v2 receipt.
-4. Promote the manifest only from the verified receipt and a separate committed
-   signing record.
-5. Run the exact signed physical phone/tablet/widget/watch matrix and bind its
-   evidence to the retained artifact hashes.
+Successor authority `fb591e3` corrected the viewport and KVM setup defects.
+Historical run `33296238901` then passed ordinary Android/iOS and the KVM gate
+on all three profiles, but each profile launched five tests and failed the same
+two zero-node Uzbek/Russian locale selectors. Current authority `704fd89` uses
+a dedicated locale-configured activity; targeted ktlint, compilation, and
+manifest processing pass, while its hosted rerun remains pending. Signing,
+artifact verification, and the exact physical matrix remain blocked at `0/3`.
 
 No release artifact was signed, uploaded, submitted, or published by this
-source-sync update.
+historical source-sync update.

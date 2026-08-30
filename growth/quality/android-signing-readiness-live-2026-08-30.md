@@ -3,7 +3,7 @@
 Status: **BLOCKED for source-current phone and Wear OS signing**.
 
 Current release authority is
-`fb591e3d16f507a5a4f794ae537ccd087523889b`. Every `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`. Every `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, `aa6496d`, or `44c1892`
 build and Keychain statement below is historical, non-transferable evidence;
 it does not prove current signed bytes.
 
@@ -30,6 +30,10 @@ instruction to build the superseded revision.
 - Android phone remains package `uz.ganikhodjaev.weather`, version `1.1.0 (8)`,
   min SDK 24, target SDK 36. Wear OS remains the same package, version
   `1.1.0 (1000008)`, min SDK 30, target SDK 36.
+- Historical run `33296238901` for predecessor authority `fb591e3` passed its
+  ordinary unsigned Android job in 1m55s. The overall run failed all three UI
+  profiles, and its unsigned outputs do not establish signing for current
+  authority `704fd89`; the current hosted rerun remains pending.
 
 ## Keystore and Keychain
 
@@ -69,17 +73,18 @@ valid from 2024-03-27 through 2049-03-21 and has SHA-256
 returns 4 only for the expected self-signed-chain/timestamp warnings; no
 integrity failure was observed.
 
-The current local `app/build/outputs/bundle/release/app-release.aab` and
+At the initial observation, the local
+`app/build/outputs/bundle/release/app-release.aab` and
 `wearApp/build/outputs/bundle/release/wearApp-release.aab` have zero JAR
 signature entries and embed revision
 `dd88d77f0ccce74bb2a3b3390885fa87a642f536`, not the manifest authority. They
-are neither source-current candidates nor uploadable artifacts. No retained
-AAB currently combines source revision `44c1892…`, the phone/Wear release
-identities above, and the pinned upload certificate.
+were neither source-current candidates nor uploadable artifacts. No retained
+AAB now combines current revision `704fd89…`, the phone/Wear release identities
+above, and the pinned upload certificate.
 
 ## 05:30 exact-source recheck
 
-A fresh authorization probe against current authority `aa6496d` returned the
+A fresh authorization probe against then-current authority `aa6496d` returned the
 same fail-closed result: `security show-keychain-info` and both protected-value
 reads exited 51, while a passwordless unlock attempt exited 152 with
 `Unable to obtain authorization for this operation`. No protected value was
@@ -116,7 +121,7 @@ After both exact protected lookups return status 0, resolve the current full
 revision only through `verify_release_artifacts.py --print-source-revision`,
 build from a standalone checkout detached at that revision, and retain outputs under a new
 mode-700 external directory such as
-`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-aa6496d/`,
+`/Users/khasan/work/ganikhodjaev/.nimbo-release/android/1.1.0-source-704fd89/`,
 and sign to the manifest filenames `nimbo-phone-1.1.0-vc8.aab` and
 `nimbo-wear-1.1.0-vc1000008.aab`. The live JDK 17 `jarsigner` does not support
 the previously proposed `-storepass:env` / `-keypass:env` modifiers. The safe

@@ -12,12 +12,12 @@ hashes, signing, and QA do not transfer to the exact current source. Nothing in
 live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:fb591e3d16f507a5a4f794ae537ccd087523889b -->
+<!-- source_revision:704fd893e59d94d8e9a4971313a773b3fa545ab6 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4f659218736d49b1b890a97fa138f1c608339811f499ebfdca1c292597053519 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=89301d01c36c517481db279ae54377e5c0b4b8b87e77eddbe9b0ddc4271147e5 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=08975a95be4cfb1ca12eeb06e268bac1ca5196dac208a10bc31b9f39848a01b8 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=816ae4d91baeb072934ad286905cd08eae944a7aef02437d850dec2f4f2adcba -->
 <!-- release-authority-current:end -->
 
 ## Version identity
@@ -28,21 +28,24 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 hosted UI rerun authority — 2026-08-30
+## Nimbo 1.1.0 deterministic locale rerun authority — 2026-08-30
 
 The authoritative product/build-input revision is
-`fb591e3d16f507a5a4f794ae537ccd087523889b`. It keeps phone `1.1.0 (8)`,
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`. It keeps phone `1.1.0 (8)`,
 Wear `1.1.0 (1000008)`, and Apple `1.1.0 (6)` unchanged. Strict dependency
 metadata covers 1,758 artifacts. The source adds deterministic Compose UI tests,
 API 24 core-library desugaring, and standard GitHub-hosted API 24/API 36
-phone/tablet execution jobs. Predecessor run `33295070238` passed ordinary
-Android/iOS, failed two phone viewport assertions, and stopped the tablet job
-at the KVM permission gate. The current source fixes those exact failures; its
-hosted rerun is pending and does not inherit the predecessor result. No
+phone/tablet execution jobs. Historical run `33296238901` for predecessor
+authority `fb591e3` passed ordinary Android in 1m55s and ordinary unsigned iOS
+in 20m38s. Its KVM gate passed on all three UI profiles, but each profile
+launched five tests and failed the same two zero-node Uzbek/Russian locale
+selectors. The current source replaces the generic test activity with a
+dedicated locale-configured activity; targeted ktlint, compilation, and
+manifest processing pass, while its hosted rerun is pending. No
 predecessor AAB/archive hash, signed artifact, physical QA, or
 store state transfers either, and the manifest remains `0/3` byte-verified.
 The current boundary is recorded in the
-[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-fb591e3.md)
+[source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-704fd89.md)
 and [schema-v2 upload manifest](../store/upload-manifest-1.1.0.json).
 
 ## Historical Nimbo 1.1.0 hosted Linux verification closure — 2026-08-30

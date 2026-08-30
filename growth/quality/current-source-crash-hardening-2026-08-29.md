@@ -8,11 +8,12 @@ scope** for exact product commit
 
 At the time of this record, the pinned product descended directly from
 crash-hardening commit `97c26cb` and added only the localized, user-initiated
-support and store-rating paths plus their tests. Current product source is
-`9c2dce4200dbba5487c8c458ade4616005fde6e6`; it also contains the later durable
-first-forecast activation tip and storage-failure hardening. See
-`growth/quality/ios-crash-gate.md` for the current-source boundary. None of the
-historical hashes below is relabelled exact-current.
+support and store-rating paths plus their tests. The product source current at
+that checkpoint was `9c2dce4200dbba5487c8c458ade4616005fde6e6`; it also contains
+the later durable first-forecast activation tip and storage-failure hardening.
+Current authority `704fd893e59d94d8e9a4971313a773b3fa545ab6` inherits that code,
+but none of the historical hashes below is relabelled exact-current. See
+`growth/quality/ios-crash-gate.md` for the current-source boundary.
 
 This result does **not** close `ios_crash_gate`. The production `1.0.1 (4)`
 crash on 2026-08-25 still has no downloadable `.ips`, stack, incident ID, or

@@ -1,7 +1,7 @@
 # Apple signing readiness live recheck — 2026-08-30
 
 Current release authority is
-`fb591e3d16f507a5a4f794ae537ccd087523889b`. Every `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, or `aa6496d` build or
+`704fd893e59d94d8e9a4971313a773b3fa545ab6`. Every `fb591e3`, `6f72e70`, `e552c0f`, `ed1b791`, `65b2eb9`, `5b98f23`, or `aa6496d` build or
 Keychain statement below is historical, non-transferable evidence; it does not
 prove current distribution-signed bytes.
 
@@ -51,10 +51,10 @@ was not invoked and no password or biometric prompt was opened.
 - At that same checkpoint,
   `python3 scripts/verify_release_artifacts.py --print-source-revision` resolved
   the then-current product/build-input revision
-  `44c189209c793cf097fcc293faf8db88033e6902`. Later HEAD commits do not alter
-  the verifier-owned release inputs. The current manifest authority is
-  `aa6496d0ac9011ff818d2c0dd2ec5c565317400c`, which contains the corrected
-  per-target signing configuration used by the 05:30 preflight.
+  `44c189209c793cf097fcc293faf8db88033e6902`. The current manifest authority is
+  `704fd893e59d94d8e9a4971313a773b3fa545ab6`; it inherits the corrected
+  per-target signing configuration introduced at `aa6496d` and used by the
+  historical 05:30 preflight.
 - The upload manifest remains fail-closed: Apple is `source_sync: blocked`,
   with no current IPA SHA-256 or signing/physical evidence. The JSON verifier
   reports Apple `byte_verified: false`.
@@ -64,6 +64,11 @@ was not invoked and no password or biometric prompt was opened.
 - Repository and store-metadata checks passed. CI contains unsigned Apple
   builds only (`CODE_SIGNING_ALLOWED=NO`); it is not an alternative
   distribution-signing path.
+- Historical run `33296238901` for predecessor authority `fb591e3` passed its
+  ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
+  surface tests, and the unsigned application build. The overall run failed on
+  all three Android UI profiles. It provides neither signing nor physical QA
+  for current authority `704fd89`, whose hosted rerun remains pending.
 
 ## Certificate, key, and profiles
 
