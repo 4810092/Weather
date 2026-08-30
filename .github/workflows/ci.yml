@@ -115,6 +115,12 @@ jobs:
       - name: Require hardware-accelerated KVM
         shell: bash
         run: |
+          mkdir -p build/android-ui-diagnostics
+          {
+            id
+            ls -l /dev/kvm
+            stat /dev/kvm
+          } > "build/android-ui-diagnostics/${{ matrix.name }}-kvm.txt" 2>&1 || true
           test -c /dev/kvm || {
             echo "::error::Standard runner has no /dev/kvm; refusing an unreliable software-emulation fallback."
             exit 1
@@ -123,6 +129,7 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          sudo chmod 0666 /dev/kvm
           test -r /dev/kvm && test -w /dev/kvm || {
             echo "::error::KVM exists but is not accessible to the runner user."
             exit 1
@@ -138,7 +145,7 @@ jobs:
           disable-animations: true
           disable-linux-hw-accel: false
           emulator-options: >-
-            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio
+            -no-window -gpu swiftshader_indirect -accel on -no-snapshot -noaudio
             -no-boot-anim -camera-back none
           script: bash scripts/run_android_ui_ci.sh '${{ matrix.name }}' '${{ matrix.system_image_api_level }}'
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

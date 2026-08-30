@@ -181,6 +181,10 @@ class WeatherScreenAndroidUiTest {
                 setContent { TestWeatherScreen(state = onboardingState()) }
 
                 onNodeWithText("Tashqariga chiqish uchun eng yaxshi vaqtni toping.")
+                    .performScrollTo()
+                    .assertIsDisplayed()
+                onNodeWithText("O‘zbekistondagi mashhur shaharlar")
+                    .performScrollTo()
                     .assertIsDisplayed()
                 onNodeWithText("Toshkent").assertIsDisplayed()
                 onNodeWithText("Samarqand").assertIsDisplayed()
@@ -198,7 +202,10 @@ class WeatherScreenAndroidUiTest {
             runComposeUiTest {
                 setContent { TestWeatherScreen(state = onboardingState()) }
 
-                onNodeWithText("طقس يبدو مألوفًا.").assertIsDisplayed()
+                onNodeWithText("طقس يبدو مألوفًا.").performScrollTo().assertIsDisplayed()
+                onNodeWithText("مدن شهيرة في أوزبكستان")
+                    .performScrollTo()
+                    .assertIsDisplayed()
                 onNodeWithText("طشقند").assertIsDisplayed()
                 onNodeWithText("سمرقند").assertIsDisplayed()
                 val tashkent = onNodeWithText("طشقند").fetchSemanticsNode().boundsInRoot.center.x
@@ -219,7 +226,9 @@ class WeatherScreenAndroidUiTest {
                 )
             }
 
-            onNodeWithText("Найдите лучшее время для прогулки.").assertIsDisplayed()
+            onNodeWithText("Найдите лучшее время для прогулки.")
+                .performScrollTo()
+                .assertIsDisplayed()
             onNode(hasSetTextAction()).performScrollTo().assertIsDisplayed()
             onNodeWithText("Использовать приблизительное местоположение")
                 .performScrollTo()

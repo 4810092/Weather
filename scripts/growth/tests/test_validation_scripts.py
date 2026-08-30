@@ -1190,6 +1190,12 @@ class ValidationScriptsTest(unittest.TestCase):
         self.assertIn("bash scripts/test_ios_surfaces.sh", ci)
         self.assertIn("shared/build/test-results/iosSimulatorArm64Test", ci)
         self.assertIn("shared/build/reports/tests/iosSimulatorArm64Test", ci)
+        kvm_chmod = ci.index("sudo chmod 0666 /dev/kvm")
+        kvm_rw_check = ci.index("test -r /dev/kvm && test -w /dev/kvm")
+        self.assertLess(kvm_chmod, kvm_rw_check)
+        self.assertIn("disable-linux-hw-accel: false", ci)
+        self.assertIn("-accel on", ci)
+        self.assertNotIn("disable-linux-hw-accel: true", ci)
 
         build_site = (ROOT / "scripts/build_site.py").read_text()
         self.assertIn("verify_dashboard_report(artifact, source)", build_site)
