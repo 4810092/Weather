@@ -74,8 +74,12 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "protected environment secrets are not provisioned",
+                "protected environment has 4/8 required secrets",
                 issues["release_artifact_source_sync_missing"],
+            )
+            self.assertIn(
+                "four remaining protected release-signing secrets",
+                rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertNotIn(
                 "exact-current 9c2dce4",
@@ -91,6 +95,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "pre-manifest verifier are implemented",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "only 4/8 release-signing secrets are provisioned",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

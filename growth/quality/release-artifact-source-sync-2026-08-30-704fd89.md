@@ -100,6 +100,13 @@ does not establish distribution signing, transfer any archive digest into the
 upload manifest, provide physical-device QA, or diagnose the suppressed iOS
 crash.
 
+At `2026-08-30 12:29 +05:00`, the protected `release-signing` environment
+contained 4/8 required secrets: the Android keystore payload and the app,
+widget, and watch provisioning profiles. The two Android passwords, Apple
+distribution P12, and its transport password remain absent behind local
+Keychain authorization. No candidate workflow has run, so this partial
+provisioning changes neither artifact authority nor the `0/3` result.
+
 ## Current artifact authority
 
 | Surface | Exact identity | Current signed bytes | Decision |
@@ -114,8 +121,9 @@ and device results from predecessor revisions remain non-transferable.
 
 ## Remaining unblock
 
-1. Provision the eight required protected `release-signing` environment inputs
-   without exposing credentials in chat, then run the manual candidate workflow.
+1. Unlock the local login Keychain and provision the four remaining protected
+   `release-signing` inputs without exposing credentials in chat, then run the
+   manual candidate workflow.
 2. Promote the manifest only from the verified receipt and a separately
    committed signing record.
 3. Run the exact signed physical phone/tablet/widget/watch matrix and bind its

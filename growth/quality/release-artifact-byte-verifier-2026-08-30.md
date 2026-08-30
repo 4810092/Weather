@@ -129,11 +129,14 @@ verified in the protected two-job GitHub-hosted macOS path: an isolated
 no-secret exact-source build followed by a fresh signing runner and immutable,
 receipt-bound artifact delivery. All third-party actions are full-SHA pinned,
 and the repository validator locks the complete workflow, action blocks, run
-bodies, shells, secret environments, and artifact paths. The protected secrets
-are not provisioned and the workflow has not run, so ordinary CI and Pages
-receive no signing material and all three manifest entries remain blocked. A
-local or self-hosted Mac runner is not required for CI; local hardware remains
-necessary for the separate physical-device QA gate.
+bodies, shells, secret environments, and artifact paths. The protected
+environment contains 4/8 required secrets: the Android keystore payload and
+three Apple provisioning profiles are present, while two Android passwords,
+the Apple distribution P12, and its transport password remain absent. The
+workflow has not run, so ordinary CI and Pages receive no signing material and
+all three manifest entries remain blocked. A local or self-hosted Mac runner is
+not required for CI; local hardware remains necessary for the separate
+physical-device QA gate.
 
 The Gradle wrapper distribution now has the official 9.7.0 SHA-256 pin, normal
 and protected workflows use full-commit action pins, and dependency

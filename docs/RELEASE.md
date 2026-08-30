@@ -182,7 +182,7 @@ publish metadata, or promote `store/upload-manifest-1.1.0.json`. Its receipt is
 pre-manifest byte evidence only. The resulting hashes and a separate committed
 signing record must promote the manifest before the ordinary artifact verifier
 can return `verified-current`; exact-byte physical QA remains a separate gate.
-Current readiness and the unprovisioned-secret boundary are recorded in
+Current readiness and the partial-provisioning boundary are recorded in
 [the hosted signing evidence](../growth/quality/github-hosted-signed-candidate-readiness-2026-08-30.md).
 
 ## Nimbo 1.1.0 Apple source-binding checkpoint — 2026-08-30

@@ -33,9 +33,10 @@ ordinary Android/iOS and all five tests on the API 24 phone, API 36 phone, and
 API 36 tablet profiles. A protected, manual GitHub-hosted workflow implements
 exact-source signing and pre-manifest byte verification. All prior
 compile and hosted results, including run `33291750686` for `ed1b791`, do not
-transfer. Its
-branch-restricted `release-signing` environment now exists, but its eight
-required secrets have not been provisioned and it has not produced a signed
+transfer. Its branch-restricted `release-signing` environment now contains
+4/8 required secrets: the Android keystore payload plus the app, widget, and
+watch provisioning profiles. The two Android passwords, Apple distribution
+P12, and its transport password remain absent; it has not produced a signed
 candidate. Local Keychain authorization still rejects Android password
 reads and Apple private-key use, so the authoritative result remains `0/3`
 byte-verified. The prior `9c2dce4` debug API 24/API 25/
@@ -60,8 +61,8 @@ deployment, or historical device evidence does not close those gates.
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
 | Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Real-byte, signing, identity, source-drift, schema, and evidence checks; current result remains 0/3 verified |
-| GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Two isolated manual master-only hosted jobs, no-secret exact-source build, protected signing, closed-tree receipt/tar verification, missing-secret/Keychain blocker, and explicit no-store-upload boundary |
-| GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Authenticated creation of the branch-restricted environment, public proof that master is protected, explicit 0/8-secret state, and no-run/no-signing boundary |
+| GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Two isolated manual master-only hosted jobs, no-secret exact-source build, protected signing, closed-tree receipt/tar verification, partial 4/8-secret/Keychain blocker, and explicit no-store-upload boundary |
+| GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Authenticated branch restriction and exact 4/8-secret inventory, with no values exposed and an explicit no-run/no-signing boundary |
 | Current release source authority | [quality/release-artifact-source-sync-2026-08-30-704fd89.md](quality/release-artifact-source-sync-2026-08-30-704fd89.md) | Exact `704fd89` product/build identity, historical run #113 locale diagnosis, custom-activity hosted-rerun boundary, non-upload export contract, and explicit non-transferability of every earlier artifact/device result |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
