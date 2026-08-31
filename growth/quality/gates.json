@@ -36,7 +36,7 @@
     "store_policy_console_clearance": {
       "status": "pass",
       "blocks_publication": true,
-      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. At 13:59:40 +05:00, UZ Custom Store Listing 4834799756935529888 was saved only as Draft, not submitted for review or published; Publishing overview still showed the latest publication on 2026-08-27. This is point-in-time Console evidence, not a guarantee against later review. See growth/quality/store-policy-console-2026-08-28.md and growth/quality/google-play-console-2026-08-29.md."
+      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. An authenticated read-only recheck at 2026-08-31 23:17–23:23 +05:00 confirmed that review request 14 contains only the Uzbekistan Custom Store Listing en-US and ru-RU store data and is На рассмотрении. Managed publishing is off and the latest verified publication remains 2026-08-27. This proves review submission, not approval, publication, propagation, or a later policy guarantee. See growth/quality/store-policy-console-2026-08-28.md, growth/quality/google-play-console-2026-08-29.md, and growth/quality/google-play-console-2026-08-31.md."
     }
   },
   "scale_status": "hold",

@@ -17,6 +17,9 @@ DEFAULT_ARTIFACT = ROOT / "growth/dashboard/artifact.json"
 DEFAULT_GATE_SQL = ROOT / "growth/dashboard/gate_snapshot.sql"
 DEFAULT_GATES = ROOT / "growth/quality/gates.json"
 DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-08-31.json"
+DEFAULT_BASELINE = ROOT / "growth/baseline/2026-08-31.json"
+DEFAULT_BASELINE_SQL = ROOT / "growth/dashboard/baseline_snapshot.sql"
+DEFAULT_DRIVER_SQL = ROOT / "growth/dashboard/driver_comparison.sql"
 
 
 def _load_object(path: Path) -> dict[str, Any]:
@@ -114,15 +117,84 @@ def sync(
     gates_path: Path,
     evaluation_path: Path,
     generated_at: str,
+    *,
+    baseline_path: Path = DEFAULT_BASELINE,
+    baseline_sql_path: Path = DEFAULT_BASELINE_SQL,
+    driver_sql_path: Path = DEFAULT_DRIVER_SQL,
 ) -> None:
     artifact = _load_object(artifact_path)
     gates_payload = _load_object(gates_path)
     evaluation = _load_object(evaluation_path)
+    baseline = _load_object(baseline_path)
     gates = gates_payload.get("gates")
     datasets = artifact.get("snapshot", {}).get("datasets")
     rows = datasets.get("gate_snapshot") if isinstance(datasets, dict) else None
     if not isinstance(gates, dict) or not isinstance(rows, list):
         raise ValueError("gate registry or dashboard gate_snapshot is malformed")
+
+    google_metrics = baseline.get("platforms", {}).get("google", {}).get("metrics")
+    if not isinstance(google_metrics, dict):
+        raise ValueError("baseline Google metrics are malformed")
+    installations = google_metrics.get("installations")
+    first_launches = google_metrics.get("first_launches")
+    monthly_active_devices = google_metrics.get("monthly_active_users")
+    if not all(
+        isinstance(value, int) and not isinstance(value, bool) and value >= 0
+        for value in (installations, first_launches, monthly_active_devices)
+    ):
+        raise ValueError("baseline current Google counts are malformed")
+    if installations == 0:
+        raise ValueError("baseline installations cannot support a launch ratio")
+    first_launch_rate = round(first_launches / installations, 4)
+
+    platform_rows = datasets.get("platform_baseline")
+    headline_rows = datasets.get("headline_metrics")
+    driver_rows = datasets.get("driver_comparison")
+    if (
+        not isinstance(platform_rows, list)
+        or not isinstance(headline_rows, list)
+        or len(headline_rows) != 1
+        or not isinstance(headline_rows[0], dict)
+        or not isinstance(driver_rows, list)
+    ):
+        raise ValueError("dashboard baseline datasets are malformed")
+    current_google = {
+        "Installations": (str(installations), "live_global_last_28_days_2026-08-31"),
+        "First launches": (str(first_launches), "live_global_last_28_days_2026-08-31"),
+        "Monthly active devices": (
+            str(monthly_active_devices),
+            "live_global_last_28_days_2026-08-31",
+        ),
+    }
+    seen_google: set[str] = set()
+    for row in platform_rows:
+        if not isinstance(row, dict):
+            raise ValueError("dashboard platform_baseline contains a non-object row")
+        if row.get("platform") != "Google Play":
+            continue
+        metric = row.get("metric")
+        if metric == "Monthly active users":
+            metric = "Monthly active devices"
+            row["metric"] = metric
+            row["metric_label"] = "Google Play · Monthly active devices"
+        current = current_google.get(metric)
+        if current is None:
+            continue
+        row["value"], row["evidence_class"] = current
+        seen_google.add(metric)
+    if seen_google != set(current_google):
+        raise ValueError("dashboard current Google baseline rows are incomplete")
+    headline_rows[0]["first_launch_rate"] = first_launch_rate
+    launch_driver = [
+        row
+        for row in driver_rows
+        if isinstance(row, dict)
+        and row.get("metric") == "First launch / install"
+        and row.get("series") == "Baseline"
+    ]
+    if len(launch_driver) != 1:
+        raise ValueError("dashboard first-launch driver row is missing or duplicated")
+    launch_driver[0]["rate"] = first_launch_rate
 
     evaluation_gates = {
         gate.get("id"): gate
@@ -240,49 +312,50 @@ def sync(
         if isinstance(source, dict) and isinstance(source.get("id"), str)
     }
     baseline_source = source_by_id.get("baseline_snapshot")
+    driver_source = source_by_id.get("driver_comparison")
     gate_source = source_by_id.get("gate_snapshot")
     evaluation_source = source_by_id.get("evaluation_snapshot")
     if (
         not isinstance(baseline_source, dict)
+        or not isinstance(driver_source, dict)
         or not isinstance(gate_source, dict)
         or not isinstance(evaluation_source, dict)
     ):
         raise ValueError("dashboard gate/evaluation sources are missing")
     baseline_query = baseline_source.get("query")
+    driver_query = driver_source.get("query")
     gate_query = gate_source.get("query")
     evaluation_query = evaluation_source.get("query")
     if (
         not isinstance(baseline_query, dict)
+        or not isinstance(driver_query, dict)
         or not isinstance(gate_query, dict)
         or not isinstance(evaluation_query, dict)
     ):
         raise ValueError("dashboard gate/evaluation source queries are malformed")
-    metric_definitions = baseline_query.get("metric_definitions")
-    if not isinstance(metric_definitions, list):
-        raise ValueError("dashboard baseline metric definitions are malformed")
-    old_play_definitions = (
-        "Play conversion is the reported Play value and remains unreconciled",
-        "Play conversion is the historical reported baseline; exact weekly "
-        "all-country and UZ listing populations are reported separately",
+    baseline_query["sql"] = baseline_sql_path.read_text(encoding="utf-8")
+    baseline_query["description"] = (
+        "Loads the bounded 2026-08-31 store evidence while keeping current "
+        "Apple observations and current global Play dashboard counts distinct "
+        "from stale listing metrics."
     )
-    new_play_definition = (
-        "Play conversion is the 2026-08-28 reported baseline and was not "
-        "revalidated on 2026-08-31"
-    )
-    if new_play_definition not in metric_definitions:
-        old_play_definition = next(
-            (
-                definition
-                for definition in old_play_definitions
-                if definition in metric_definitions
-            ),
-            None,
-        )
-        if old_play_definition is None:
-            raise ValueError("dashboard Play conversion metric definition is missing")
-        metric_definitions[
-            metric_definitions.index(old_play_definition)
-        ] = new_play_definition
+    baseline_query["filters"] = [
+        "Snapshot date 2026-08-31",
+        "Apple overview current; Apple ratings carried forward from 2026-08-28",
+        "Google installs, first launches, and monthly active devices are current global last-28-days counts",
+        "Google impressions, listing conversion, and ratings are carried forward from 2026-08-28",
+        "No cross-platform or cross-window denominator coercion",
+    ]
+    baseline_query["metric_definitions"] = [
+        "Apple conversion is the App Store Connect reported 4.86% and is not recomputed from supplied counts",
+        "Retention is insufficient and remains unknown rather than zero",
+        "Play conversion is the 2026-08-28 reported baseline and was not revalidated on 2026-08-31",
+        f"First launch rate is {first_launches} / {installations} = {first_launch_rate:.2%} and remains directional",
+        "Monthly active users is displayed as the Play Console's monthly active devices count",
+    ]
+    driver_query["sql"] = driver_sql_path.read_text(encoding="utf-8")
+    baseline_query["executed_at"] = generated_at
+    driver_query["executed_at"] = generated_at
     scale_reason = gates_payload.get("scale_status_reason")
     scale_status = gates_payload.get("scale_status")
     if not isinstance(scale_reason, str) or not isinstance(scale_status, str):
@@ -333,8 +406,11 @@ def sync(
         "The 2026-08-31 App Store overview is available as a read-only observation "
         "(300 impressions, 23 product-page views, 8 first downloads, 1 redownload, "
         "3 updates, 4.86% reported conversion, and insufficient retention), but no "
-        "raw export or reporting-window metadata is attached. Google overview "
-        "values are carried forward from 2026-08-28 and were not revalidated. The "
+        "raw export or reporting-window metadata is attached. The authenticated "
+        f"Play dashboard currently reports {installations} installs, {first_launches} "
+        f"device first launches, and {monthly_active_devices} monthly active devices "
+        "for its global last-28-days scope. Play impressions, listing conversion, "
+        "and ratings remain carried forward from 2026-08-28. The "
         "validated Google Play aggregate for 2026-08-18..2026-08-24 remains "
         "separate: all-country listing traffic is 26 visitors and 11 unique "
         "install clicks, while UZ is 0 visitors and 0 clicks, so UZ conversion is "
@@ -390,9 +466,70 @@ def sync(
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
         raise ValueError("dashboard manifest is malformed")
+    cards = {
+        card.get("id"): card
+        for card in manifest.get("cards", [])
+        if isinstance(card, dict) and isinstance(card.get("id"), str)
+    }
+    play_conversion_card = cards.get("play_conversion")
+    first_launch_card = cards.get("first_launch_rate")
+    if not isinstance(play_conversion_card, dict) or not isinstance(
+        first_launch_card, dict
+    ):
+        raise ValueError("dashboard Play KPI cards are missing")
+    play_conversion_card["description"] = (
+        "Play listing conversion remains the reported 2026-08-28 value. Its "
+        "source numerator and denominator were not shown in the August 31 global "
+        "dashboard recheck, so it is not a reconciled KPI."
+    )
+    first_launch_card["description"] = (
+        f"Directional global last-28-days calculation: {first_launches} device "
+        f"first launches divided by {installations} installs = "
+        f"{first_launch_rate:.2%}. The UI does not prove identical populations."
+    )
+    tables = {
+        table.get("id"): table
+        for table in manifest.get("tables", [])
+        if isinstance(table, dict) and isinstance(table.get("id"), str)
+    }
+    baseline_table = tables.get("baseline_table")
+    if not isinstance(baseline_table, dict):
+        raise ValueError("dashboard baseline table is missing")
+    baseline_table["subtitle"] = (
+        "Apple overview values and selected global Play last-28-days counts are "
+        "current to August 31; stale listing metrics are marked explicitly."
+    )
     blocks = manifest.get("blocks")
     if not isinstance(blocks, list) or not blocks or not isinstance(blocks[0], dict):
         raise ValueError("dashboard verdict block is missing")
+    play_context_blocks = [
+        block
+        for block in blocks
+        if isinstance(block, dict) and block.get("id") == "play_console_context"
+    ]
+    if len(play_context_blocks) != 1:
+        raise ValueError("dashboard Play Console context block is missing or duplicated")
+    play_context_blocks[0]["body"] = (
+        "## Authenticated Play context\n\n"
+        f"At 23:17–23:23 +05:00 on August 31, the global last-28-days dashboard "
+        f"reported {installations} installs, {first_launches} device first launches, "
+        f"and {monthly_active_devices} monthly active devices. The directional "
+        f"first-launch ratio is {first_launch_rate:.2%}; it is not promoted to a "
+        "decision-eligible cohort rate because the UI does not prove identical "
+        "populations. Play impressions, listing conversion, ratings, and production "
+        "details remain carried forward where explicitly marked. The separate "
+        "August 18–24 Store Listings import remains authoritative for its own window: "
+        "26 all-country visitors and 11 unique install clicks, while UZ had zero "
+        "visitors and zero clicks.\n\n"
+        "Review request 14 contains only the Uzbekistan Custom Store Listing's en-US "
+        "and ru-RU store data and is under review. Managed publishing is off; approval, "
+        "publication, propagation, and rank impact are not verified. Phone Internal "
+        "track 4700083514281298386 is active with the selected four-account License "
+        "testers group. Wear Internal track 4699242452771231163 remains inactive with "
+        "zero selected groups. No Play-delivered install is claimed. Evidence: "
+        "growth/quality/google-play-console-2026-08-31.md and "
+        "growth/quality/internal-store-delivery-2026-08-31.md."
+    )
     verdict = blocks[0].get("body")
     if not isinstance(verdict, str):
         raise ValueError("dashboard verdict body is malformed")
@@ -432,7 +569,9 @@ def sync(
         "tester group and remains inactive. Apple accepted the exact IPA as build 6 "
         "with VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone/"
         "tablet/widget/Wear runtime QA and TestFlight beta distribution/install remain "
-        "missing. "
+        "missing. Google review request 14 contains only the Uzbekistan Custom Store "
+        "Listing en-US and ru-RU data and is under review; this is not publication or "
+        "rank evidence. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -604,6 +743,21 @@ def sync(
         "only a manual-release 1.1.0 version also returned 403, and no version or "
         "localization draft was created. No localization, screenshot, Custom Product "
         "Page, production submission, or release mutation followed.",
+    )
+    verdict = verdict.replace(
+        "Google overview values are carried forward from August 28 and were not "
+        "revalidated on August 31.",
+        f"Google Play's global last-28-days dashboard counts were revalidated on "
+        f"August 31 at {installations} installs, {first_launches} device first "
+        f"launches, and {monthly_active_devices} monthly active devices; listing "
+        "impressions, conversion, and ratings remain carried forward where marked.",
+    )
+    verdict = verdict.replace(
+        "Google Play Custom Store Listing 4834799756935529888 remains an "
+        "Uzbekistan-only draft.",
+        "Google Play Custom Store Listing 4834799756935529888 is under review in "
+        "request 14 with en-US and ru-RU store data; approval, publication, and "
+        "propagation are not verified.",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at

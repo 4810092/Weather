@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "snapshot_date": "2026-08-31",
-  "recorded_at": "2026-08-31T14:30:00+05:00",
+  "recorded_at": "2026-08-31T23:23:18+05:00",
   "timezone": "Asia/Tashkent",
-  "evidence_class": "reported_app_store_connect_values_plus_carried_forward_google_baseline",
+  "evidence_class": "reported_store_console_values_with_mixed_documented_windows",
   "provenance": {
-    "source": "Authoritative read-only App Store Connect values supplied for 2026-08-31; Google Play values carried forward unchanged from growth/baseline/2026-08-28.json and not revalidated",
+    "source": "Authoritative read-only App Store Connect values plus an authenticated Google Play Console dashboard, Publishing overview, review history, and Internal-track recheck on 2026-08-31",
     "raw_exports_attached": false,
     "live_console_rechecked_in_this_snapshot": true,
     "storefront_scope": "not_provided_for_overview_values",
-    "report_window": "not_provided",
+    "report_window": "Apple overview window not provided; Google installs, first launches, and monthly active devices are the global last-28-days dashboard values",
     "country_breakdown_available": false,
     "source_breakdown_available": false,
     "device_breakdown_available": false,
@@ -80,13 +80,19 @@
       }
     },
     "google": {
-      "evidence_status": "carried_forward_from_2026-08-28_not_revalidated",
+      "evidence_status": "global_overview_revalidated_2026-08-31_with_listing_metrics_carried_forward",
       "metrics": {
         "reported_impressions": 779,
-        "installations": 21,
-        "first_launches": 14,
-        "monthly_active_users": 11,
+        "reported_impressions_evidence": "carried_forward_from_2026-08-28_not_revalidated",
+        "installations": 25,
+        "installations_evidence": "authenticated_global_last_28_days_dashboard_2026-08-31",
+        "first_launches": 18,
+        "first_launches_evidence": "authenticated_global_last_28_days_by_device_dashboard_2026-08-31",
+        "monthly_active_users": 13,
+        "monthly_active_users_label": "monthly_active_devices",
+        "monthly_active_users_evidence": "authenticated_global_last_28_days_dashboard_2026-08-31",
         "reported_conversion_rate_pct": 40.82,
+        "reported_conversion_rate_evidence": "carried_forward_from_2026-08-28_not_revalidated",
         "reported_ratings_count_from_plan": 1,
         "console_ratings_status": "insufficient_data",
         "android_vitals_status": "insufficient_data",
@@ -107,8 +113,40 @@
           "active_since": "2026-08-27T19:43:00+05:00",
           "countries": 177
         },
+        "internal_phone": {
+          "version": "1.1.0",
+          "version_code": 8,
+          "track_id": "4700083514281298386",
+          "track_status": "active",
+          "release_status": "available_to_internal_testers",
+          "selected_tester_group_count": 1,
+          "selected_tester_account_count": 4,
+          "store_delivered_install_verified": false
+        },
+        "internal_wear": {
+          "version": "1.1.0",
+          "version_code": 1000008,
+          "track_id": "4699242452771231163",
+          "track_status": "inactive",
+          "release_status": "available_to_internal_testers",
+          "selected_tester_group_count": 0,
+          "store_delivered_install_verified": false
+        },
+        "uz_custom_store_listing": {
+          "listing_id": "4834799756935529888",
+          "status": "in_review",
+          "submission_id": 14,
+          "submitted_at_displayed": "2026-08-31 14:41",
+          "managed_publishing": false,
+          "locales": {
+            "en-US": "Nimbo: Ob-havo va prognoz",
+            "ru-RU": "Nimbo: Погода и прогноз"
+          },
+          "public_availability_verified": false
+        },
         "unpublished_changes": false,
-        "verified_on": "2026-08-28"
+        "changes_in_review": true,
+        "verified_on": "2026-08-31"
       }
     }
   },
@@ -127,10 +165,10 @@
     },
     {
       "id": "google_first_launches_over_installations",
-      "value_pct": 66.67,
+      "value_pct": 72.0,
       "matches_target": false,
       "target_pct": 80.0,
-      "interpretation": "Directional only until installation and first-launch populations and date windows are confirmed comparable; both values were last rechecked on 2026-08-28."
+      "interpretation": "Directional only: the authenticated Play dashboard labels both values as global last-28-days aggregates, but it does not prove that install and first-launch populations are identical."
     }
   ],
   "known_gaps": [
@@ -139,6 +177,8 @@
     "The reported App Store conversion rate cannot be reproduced from the supplied counts and must remain the console-reported 4.86%.",
     "Retention is explicitly insufficient; D7 retention, DAU/MAU denominator, ratings average, iOS sessions, and user-loss rate remain unknown.",
     "Two public iOS 1.0.1 (4) crashes are reported, one on 2026-08-25 and one on 2026-08-29. No diagnostic, stack, incident/signature ID, or crashed-binary UUID is available.",
-    "Google Play overview and release-state values were carried forward from 2026-08-28 and were not revalidated on 2026-08-31."
+    "Google Play impressions, listing conversion, ratings, production-country count, and production phone details remain carried forward from 2026-08-28; the August 31 recheck covered only the global dashboard counts, Publishing state, review history, and both Internal tracks.",
+    "The Play dashboard's 25 installs, 18 device first launches, and 13 monthly active devices are global last-28-days values, not Uzbekistan-only evidence and not a weekly cohort.",
+    "The Uzbekistan Custom Store Listing is under review, not published; managed publishing is off, and public propagation has not been verified."
   ]
 }

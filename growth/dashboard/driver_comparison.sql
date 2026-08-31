@@ -8,6 +8,6 @@ FROM (
     ('Apple conversion', 'Target', 0.1500),
     ('Play conversion', 'Baseline', 0.4082),
     ('Play conversion', 'Target', 0.3500),
-    ('First launch / install', 'Baseline', 0.6667),
+    ('First launch / install', 'Baseline', 0.7200),
     ('First launch / install', 'Target', 0.8000)
 ) AS drivers(metric, series, rate);

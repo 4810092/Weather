@@ -34,6 +34,34 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
 
             artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
+            baseline_rows = {
+                row["metric"]: row
+                for row in artifact["snapshot"]["datasets"]["platform_baseline"]
+                if row["platform"] == "Google Play"
+            }
+            self.assertEqual(baseline_rows["Installations"]["value"], "25")
+            self.assertEqual(baseline_rows["First launches"]["value"], "18")
+            self.assertEqual(
+                baseline_rows["Monthly active devices"]["value"], "13"
+            )
+            self.assertEqual(
+                baseline_rows["Installations"]["evidence_class"],
+                "live_global_last_28_days_2026-08-31",
+            )
+            self.assertEqual(
+                artifact["snapshot"]["datasets"]["headline_metrics"][0][
+                    "first_launch_rate"
+                ],
+                0.72,
+            )
+            self.assertIn(
+                "request 14",
+                next(
+                    block["body"]
+                    for block in artifact["manifest"]["blocks"]
+                    if block["id"] == "play_console_context"
+                ),
+            )
             rows = {
                 row["gate_id"]: row
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]

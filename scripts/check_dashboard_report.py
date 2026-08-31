@@ -330,6 +330,11 @@ def _verify_baseline_and_driver_parity(
             f"baseline/framework source schema is incomplete: {error}"
         ) from error
 
+    google_monthly_active_metric = (
+        "Monthly active devices"
+        if google.get("monthly_active_users_label") == "monthly_active_devices"
+        else "Monthly active users"
+    )
     baseline_expected = {
         "App Store · Impressions": ("App Store", "Impressions", str(apple["reported_impressions"])),
         "App Store · First-time downloads": ("App Store", "First-time downloads", str(apple["first_time_downloads"])),
@@ -339,7 +344,11 @@ def _verify_baseline_and_driver_parity(
         "Google Play · Impressions": ("Google Play", "Impressions", str(google["reported_impressions"])),
         "Google Play · Installations": ("Google Play", "Installations", str(google["installations"])),
         "Google Play · First launches": ("Google Play", "First launches", str(google["first_launches"])),
-        "Google Play · Monthly active users": ("Google Play", "Monthly active users", str(google["monthly_active_users"])),
+        f"Google Play · {google_monthly_active_metric}": (
+            "Google Play",
+            google_monthly_active_metric,
+            str(google["monthly_active_users"]),
+        ),
         "Google Play · Conversion rate": ("Google Play", "Conversion rate", f"{google['reported_conversion_rate_pct']:.2f}%"),
         "Google Play · Ratings": ("Google Play", "Ratings", str(google["reported_ratings_count_from_plan"])),
     }

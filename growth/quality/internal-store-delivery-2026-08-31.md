@@ -54,6 +54,19 @@ product source revision
 - The track itself remains `Неактивно` because zero tester groups are
   attached. No Wear installation or paired-device run has occurred.
 
+## Google Play / Uzbekistan store listing
+
+- An authenticated read-only recheck at `2026-08-31 23:17–23:23` confirmed
+  that review request `14` is `На рассмотрении`.
+- The reviewed change contains only the Uzbekistan Custom Store Listing store
+  data for `en-US` (`Nimbo: Ob-havo va prognoz`) and `ru-RU`
+  (`Nimbo: Погода и прогноз`).
+- Managed publishing is off and the latest verified publication remains
+  `2026-08-27`.
+- This is review submission evidence, not approval, publication, propagation,
+  or rank impact. See
+  [google-play-console-2026-08-31.md](google-play-console-2026-08-31.md).
+
 ## Boundary
 
 The phone Internal release is tester-addressable, while the Wear release is

@@ -19,8 +19,11 @@ is decisive and failed, so the verified Top-10 streak remains `0/7`.
 The current App Store Connect overview reports 300 impressions, 23 product-page
 views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported
 conversion, with insufficient retention. That conversion is preserved as
-reported because the available counts/window do not reproduce it. Google
-overview values are carried forward from 2026-08-28. The validated
+reported because the available counts/window do not reproduce it. The current
+global Play last-28-days dashboard reports 25 installs, 18 device first
+launches, and 13 monthly active devices. The directional `18 / 25 = 72%` is
+not treated as a reconciled cohort rate. Play impressions, listing conversion,
+and ratings remain carried forward from 2026-08-28. The validated
 2026-08-18..2026-08-24 Play export has 26 all-country visitors and 11 unique
 install clicks, while UZ has 0 visitors and 0 clicks; UZ conversion is
 `UNKNOWN`, not zero.
@@ -67,9 +70,11 @@ iOS 15 runtime is available.
 
 Two public iOS `1.0.1 (4)` crashes—August 25 and August 29—still lack
 diagnostics and symbolication. The August 29 event maps to iPhone; the earlier
-device/OS dimension is suppressed. Google UZ Custom Store Listing
-`4834799756935529888` remains an unpublished draft, public Play production
-remains `1.0.2 (6)`. Exact phone `1.1.0 (8)` and Wear `1.1.0 (1000008)` are on
+device/OS dimension is suppressed. Google review request `14` contains only
+the UZ Custom Store Listing `4834799756935529888` en-US and ru-RU store data
+and is under review; it is not yet approved or published. Public Play
+production remains `1.0.2 (6)`. Exact phone `1.1.0 (8)` and Wear
+`1.1.0 (1000008)` are on
 their separate Play Internal tracks, but the phone invite is unaccepted and the
 Wear track has no tester group. Authenticated App Store Connect inventory now
 reports exact Apple build `1.1.0 (6)` as `VALID` and `APP_STORE_ELIGIBLE`;
