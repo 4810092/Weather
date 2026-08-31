@@ -605,7 +605,7 @@ jobs:
           [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" | awk '{print $1}')" == \
             "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa" ]]
           [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/release_artifact_verifier.py" | awk '{print $1}')" == \
-            "8b99c81951002b19cb6d0c096871e36f222ec2df6fac762603442e194fc41a99" ]]
+            "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7" ]]
           install -m 500 \
             "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" \
             "$verifier_root/verify_signed_candidate.py"
@@ -640,7 +640,7 @@ jobs:
               archive.extractall(destination, filter="data")
           if {entry.name for entry in destination.iterdir()} != expected_roots:
               raise SystemExit("unsigned-input archive inventory mismatch")
-          export_options = dict([
+          source_export_options = dict([
               ("destination", "export"),
               ("manageAppVersionAndBuildNumber", False),
               ("method", "app-store-connect"),
@@ -664,12 +664,22 @@ jobs:
           ])
           import plistlib
 
-          actual_export_options = plistlib.loads(
-              (destination / "ExportOptions.plist").read_bytes()
+          export_options_path = destination / "ExportOptions.plist"
+          actual_source_export_options = plistlib.loads(
+              export_options_path.read_bytes()
           )
-          if actual_export_options != export_options:
+          if actual_source_export_options != source_export_options:
               raise SystemExit(
-                  "ExportOptions.plist differs from the non-upload canonical contract"
+                  "source ExportOptions.plist differs from the non-upload canonical contract"
+              )
+          effective_export_options = dict(source_export_options)
+          effective_export_options["signingStyle"] = "automatic"
+          export_options_path.write_bytes(
+              plistlib.dumps(effective_export_options, sort_keys=False)
+          )
+          if plistlib.loads(export_options_path.read_bytes()) != effective_export_options:
+              raise SystemExit(
+                  "effective ExportOptions.plist was not normalized for Xcode-managed profiles"
               )
           PY
           {
@@ -944,7 +954,7 @@ jobs:
           [[ "$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/verify_signed_candidate.py" | awk '{print $1}')" == \
             "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa" ]]
           [[ "$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/release_artifact_verifier.py" | awk '{print $1}')" == \
-            "8b99c81951002b19cb6d0c096871e36f222ec2df6fac762603442e194fc41a99" ]]
+            "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7" ]]
           python3 -I -B - \
             "$NIMBO_VERIFIER_ROOT" \
             --repository-root "$GITHUB_WORKSPACE" \

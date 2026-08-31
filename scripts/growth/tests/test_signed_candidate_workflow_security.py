@@ -475,7 +475,17 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
                 '(\"destination\", \"upload\")',
                 1,
             ),
-            "canonical non-upload export options",
+            "source and effective non-upload export options",
+        )
+
+    def test_effective_xcode_managed_signing_style_is_automatic(self) -> None:
+        self.assert_rejected(
+            self.workflow.replace(
+                'effective_export_options[\"signingStyle\"] = \"automatic\"',
+                'effective_export_options[\"signingStyle\"] = \"manual\"',
+                1,
+            ),
+            "source and effective non-upload export options",
         )
 
     def test_repository_export_options_are_exact_non_upload_contract(self) -> None:

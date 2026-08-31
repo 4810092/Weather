@@ -15,6 +15,7 @@ from datetime import datetime
 from unittest import mock
 
 from scripts.release_artifact_verifier import (
+    ANDROID_PACKAGE_ID,
     APPLE_DISTRIBUTION_CERTIFICATE_SHA256,
     APPLE_TEAM_ID,
     EXPECTED_POLICY,
@@ -363,10 +364,27 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         (self.artifact_root / "ExportOptions.plist").write_bytes(
             plistlib.dumps(
                 {
+                    "destination": "export",
                     "method": "app-store-connect",
+                    "signingCertificate": "Apple Distribution",
+                    "signingStyle": "automatic",
                     "teamID": APPLE_TEAM_ID,
                     "uploadSymbols": True,
                     "manageAppVersionAndBuildNumber": False,
+                    "provisioningProfiles": {
+                        ANDROID_PACKAGE_ID: (
+                            "iOS Team Store Provisioning Profile: "
+                            + ANDROID_PACKAGE_ID
+                        ),
+                        f"{ANDROID_PACKAGE_ID}.watchkitapp": (
+                            "iOS Team Store Provisioning Profile: "
+                            f"{ANDROID_PACKAGE_ID}.watchkitapp"
+                        ),
+                        f"{ANDROID_PACKAGE_ID}.widget": (
+                            "iOS Team Store Provisioning Profile: "
+                            f"{ANDROID_PACKAGE_ID}.widget"
+                        ),
+                    },
                 }
             )
         )
@@ -1320,6 +1338,28 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
                     b"fixture-apple-development-certificate"
                 ).hexdigest()
             },
+        )
+
+    def test_apple_export_options_require_xcode_managed_signing(self) -> None:
+        manifest = self.manifest("apple")
+        path = self.write_apple_candidate()
+        manifest["artifacts"]["apple"]["sha256"] = hashlib.sha256(
+            path.read_bytes()
+        ).hexdigest()
+        export_options_path = self.artifact_root / "ExportOptions.plist"
+        export_options = plistlib.loads(export_options_path.read_bytes())
+        export_options["signingStyle"] = "manual"
+        export_options_path.write_bytes(plistlib.dumps(export_options))
+
+        results, failures = self.verify_apple(manifest)
+
+        self.assertFalse(results["apple"].byte_verified)
+        self.assertTrue(
+            any(
+                "ExportOptions.plist signingStyle 'manual' differs"
+                in failure
+                for failure in failures
+            )
         )
 
     def test_apple_archive_requires_exact_nimbo_app_product(self) -> None:

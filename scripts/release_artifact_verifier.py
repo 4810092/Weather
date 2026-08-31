@@ -1983,10 +1983,26 @@ def _verify_apple(
         archive_zip.close()
         return None
     expected_export_options = {
+        "destination": "export",
         "method": "app-store-connect",
+        "signingCertificate": "Apple Distribution",
+        "signingStyle": "automatic",
         "teamID": APPLE_TEAM_ID,
         "uploadSymbols": True,
         "manageAppVersionAndBuildNumber": False,
+        "provisioningProfiles": {
+            ANDROID_PACKAGE_ID: (
+                "iOS Team Store Provisioning Profile: " + ANDROID_PACKAGE_ID
+            ),
+            f"{ANDROID_PACKAGE_ID}.watchkitapp": (
+                "iOS Team Store Provisioning Profile: "
+                f"{ANDROID_PACKAGE_ID}.watchkitapp"
+            ),
+            f"{ANDROID_PACKAGE_ID}.widget": (
+                "iOS Team Store Provisioning Profile: "
+                f"{ANDROID_PACKAGE_ID}.widget"
+            ),
+        },
     }
     for key, expected in expected_export_options.items():
         if export_options.get(key) != expected:
