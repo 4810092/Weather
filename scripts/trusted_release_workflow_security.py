@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "226f600f0838682e3a7d1ee015ee7239e69ce4a102e29b9cb31217151a45cf45"
+TRUSTED_SHA256 = "21dac87eb72f5c38f2e45a59319c0ef1683d57ec3d044b2405650c2c8996151e"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -19,7 +19,7 @@ TRUSTED_REQUIRED = (
     "  workflow_run:",
     "      - CI",
     "      - completed",
-    "  contents: read",
+    "permissions: {}",
     "github.repository == '4810092/Weather'",
     "github.repository_id == '1329018769'",
     "github.event.workflow_run.workflow_id == 330787648",
@@ -29,6 +29,19 @@ TRUSTED_REQUIRED = (
     "github.event.workflow_run.head_branch == 'master'",
     "github.event.workflow_run.repository.id == 1329018769",
     "github.event.workflow_run.head_repository.id == 1329018769",
+    "  stage:",
+    "Stage exact unpublished candidate without repository checkout",
+    "contents: write",
+    "$GITHUB_EVENT_PATH",
+    "live master changed during candidate staging",
+    "staged candidate asset inventory mismatch",
+    "retention-days: 1",
+    "compression-level: 0",
+    "  verify:",
+    "needs: stage",
+    "needs.stage.result == 'success'",
+    "actions: read",
+    "contents: read",
     "runs-on: macos-26",
     "ref: ${{ github.event.workflow_run.head_sha }}",
     "persist-credentials: false",
@@ -37,7 +50,6 @@ TRUSTED_REQUIRED = (
     "source CI commit is stale relative to live master",
     "live master changed during trusted verification",
     "draft storage tag unexpectedly resolves before verification",
-    "draft storage tag unexpectedly resolves after verification",
     "repos/4810092/Weather/releases/379745439",
     "repos/4810092/Weather/releases/assets/537966386",
     "repos/4810092/Weather/releases/assets/537966414",
@@ -45,9 +57,11 @@ TRUSTED_REQUIRED = (
     '"prerelease": True',
     '"published_at": None',
     '"immutable": False',
-    "len(release_assets) != 2",
     "draft release asset ID set mismatch",
-    "downloaded draft asset inventory mismatch",
+    "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+    "name: trusted-candidate-stage-${{ github.event.workflow_run.head_sha }}",
+    "downloaded staged asset inventory mismatch",
+    "post-verification staged asset inventory mismatch",
     "candidate package member inventory mismatch",
     "candidate package regular-file count mismatch",
     "candidate package directory count mismatch",
@@ -121,6 +135,22 @@ def _single_top_level_block(text: str, key: str) -> list[str] | None:
     return block
 
 
+def _single_job_block(text: str, name: str) -> str | None:
+    lines = text.splitlines()
+    header = f"  {name}:"
+    indexes = [index for index, line in enumerate(lines) if line == header]
+    if len(indexes) != 1:
+        return None
+    start = indexes[0]
+    end = len(lines)
+    for index in range(start + 1, len(lines)):
+        line = lines[index]
+        if line.startswith("  ") and not line.startswith("    ") and line.endswith(":"):
+            end = index
+            break
+    return "\n".join(lines[start:end]) + "\n"
+
+
 def validate_trusted_release_workflow(text: str) -> list[str]:
     failures: list[str] = []
     if _single_top_level_block(text, "on") != [
@@ -131,10 +161,12 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         "      - completed",
     ]:
         failures.append("trigger must be exactly completed workflow_run for CI")
-    if _single_top_level_block(text, "permissions") != ["  contents: read"]:
-        failures.append("trusted workflow permissions must be exactly contents: read")
-    if text.count("  verify:\n") != 1 or "  build:\n" in text or "  deploy:\n" in text:
-        failures.append("trusted workflow must contain exactly the verify job")
+    if text.count("permissions: {}\n") != 1 or _single_top_level_block(text, "permissions") is not None:
+        failures.append("trusted workflow must deny all permissions at top level")
+    stage = _single_job_block(text, "stage")
+    verify = _single_job_block(text, "verify")
+    if stage is None or verify is None or "  build:\n" in text or "  deploy:\n" in text:
+        failures.append("trusted workflow must contain exactly stage and verify jobs")
     for marker in TRUSTED_REQUIRED:
         if marker not in text:
             failures.append(f"trusted workflow marker missing: {marker}")
@@ -143,11 +175,9 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         "pull_request_target",
         "self-hosted",
         "secrets.",
-        "contents: write",
         "actions: write",
         "id-token:",
         "actions/cache",
-        "actions/download-artifact",
         "gh run download",
         "/artifacts/",
         "environment:",
@@ -160,21 +190,65 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
     for marker in forbidden:
         if marker in text:
             failures.append(f"trusted workflow contains forbidden capability: {marker}")
+    if stage is not None:
+        if "    permissions:\n      contents: write\n" not in stage:
+            failures.append("stage permissions must be exactly contents: write")
+        stage_forbidden = (
+            "actions: read",
+            "actions/checkout@",
+            "actions/download-artifact@",
+            "actions/setup-",
+            "scripts/",
+            "git ",
+            "gh release",
+            "--method",
+            "-X POST",
+            "-X PUT",
+            "-X PATCH",
+            "-X DELETE",
+        )
+        for marker in stage_forbidden:
+            if marker in stage:
+                failures.append(f"staging job contains forbidden capability: {marker}")
+        if stage.count("uses:") != 1 or stage.count("actions/upload-artifact@") != 1:
+            failures.append("staging job may only use the pinned upload-artifact action")
+    if verify is not None:
+        if "    permissions:\n      actions: read\n      contents: read\n" not in verify:
+            failures.append("verify permissions must be exactly actions and contents read")
+        verify_forbidden = (
+            "contents: write",
+            "repos/4810092/Weather/releases/",
+            "gh release",
+            "--method",
+            "run-id:",
+            "repository:",
+            "github-token:",
+            "merge-multiple:",
+        )
+        for marker in verify_forbidden:
+            if marker in verify:
+                failures.append(f"verification job contains forbidden capability: {marker}")
+        if verify.count("actions/download-artifact@") != 1:
+            failures.append("verification job must download one same-run staged artifact")
+        if verify.count("actions/upload-artifact@") != 1:
+            failures.append("verification job must upload one non-secret receipt")
     if text.count("repos/4810092/Weather/releases/379745439") != 2:
-        failures.append("draft release must be checked exactly before and after")
+        failures.append("staging job must check draft release exactly before and after")
     if text.count("repos/4810092/Weather/releases/assets/537966386") != 3:
         failures.append("package asset must use only three fixed API calls")
     if text.count("repos/4810092/Weather/releases/assets/537966414") != 3:
         failures.append("receipt asset must use only three fixed API calls")
-    if text.count("repos/4810092/Weather/git/ref/heads/master") != 2:
-        failures.append("live master must be checked exactly before and after")
+    if text.count("repos/4810092/Weather/git/ref/heads/master") != 4:
+        failures.append("stage and verify must each check live master before and after")
     if text.count(
         "repos/4810092/Weather/git/matching-refs/tags/"
         "nimbo-candidate-v1.1.0-2cdd438-run-33381050098"
-    ) != 2:
-        failures.append("draft storage Git tag absence must be checked twice")
-    if text.count("actions/upload-artifact@") != 1:
-        failures.append("only one pinned receipt upload action is allowed")
+    ) != 3:
+        failures.append("draft storage Git tag absence must be checked twice in stage and once in verify")
+    if text.count("actions/upload-artifact@") != 2:
+        failures.append("only staged bytes and the non-secret receipt may be uploaded")
+    if text.count("actions/download-artifact@") != 1:
+        failures.append("only one same-run candidate download action is allowed")
     if text.count("actions/checkout@") != 1:
         failures.append("trusted workflow must use one pinned checkout action")
     if text.count("set +x") != 3:

@@ -17,8 +17,9 @@ In the machine-validated block, `byte_verified=true` records the exact
 freshly reopened artifact bytes behind the atomic `3/3 verified-current`
 manifest promotion. The release surface remains **BLOCKED** because all
 physical evidence fields are still empty and the crash, internal-delivery, and
-device gates remain open. A protected hosted macOS repeat is pending until its
-workflow executes; it is not claimed here as already passed.
+device gates remain open. Every successful current-`master` CI run must pass
+the protected no-checkout staging job and separate read-only hosted macOS
+verifier before Pages or later artifact use.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -108,9 +109,10 @@ the captured slice”; it is never converted to a synthetic rank.
   extracted the closed tree, checked pinned Bundletool 1.18.3, and returned
   `byte_verified=true` for the exact phone, Wear, and Apple outputs. The
   manifest now promotes the set atomically to `3/3 verified-current` while its
-  top-level status remains `draft-blocked`. Because the draft is mutable, the
-  protected read-only hosted macOS repeat remains pending until its workflow
-  executes on `master`; no hosted repeat pass is claimed yet. Exact
+  top-level status remains `draft-blocked`. Because the draft is mutable, every
+  successful current-`master` CI run must pass the protected no-checkout
+  staging job and separate read-only hosted macOS verifier before Pages or
+  later artifact use. Exact
   source `2cdd438` also has a bounded clean physical General Mobile API 25 debug
   pass covering denied location, Bukhara search, live/cache/recovery, widget,
   process health, and cleanup, with local and pulled installed APK SHA-256

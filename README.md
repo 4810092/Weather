@@ -216,9 +216,12 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
   and returned `byte_verified=true` for all three exact signed artifacts. The
   upload manifest now promotes the set atomically to `3/3 verified-current`
-  while remaining `draft-blocked`. The draft is mutable, and the protected
-  read-only hosted macOS repeat is pending until its workflow executes on
-  `master`; every later use must recheck the exact release and asset identity.
+  while remaining `draft-blocked`. The draft is mutable. Every successful CI
+  run for current `master` must pass the protected hosted chain: an isolated
+  Ubuntu job with no repository checkout stages only the two exact assets,
+  then a separate read-only macOS job reopens and verifies every byte. Pages is
+  downstream of that verifier, and every later artifact use must recheck the
+  exact release and asset identity.
   The exact-source debug Android phone/widget smoke remains
   valid regression evidence, but the upload-derived phone/tablet/widget/Wear
   matrix, TestFlight iPhone/iPad/widget/watch matrix, iOS crash diagnosis, and

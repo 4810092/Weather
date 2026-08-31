@@ -23,9 +23,10 @@ exact package and receipt as hash-bound assets in unpublished draft release
 `379745439` and rechecked their API sizes and digests. A fresh local macOS run
 then downloaded the exact draft assets, safely extracted the closed tree,
 verified pinned Bundletool 1.18.3, and returned `byte_verified=true` for the
-exact phone, Wear, and Apple bytes. The draft remains mutable; a protected
-read-only hosted macOS repeat is pending until its workflow executes on
-`master`, and no hosted repeat pass is claimed yet.
+exact phone, Wear, and Apple bytes. The draft remains mutable. Every successful
+current-`master` CI run must pass the protected hosted chain: a no-checkout
+Ubuntu job stages only the two exact assets, then a separate read-only macOS
+job reopens and verifies every byte before Pages can run.
 Its full `source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
@@ -62,16 +63,16 @@ that copy, and re-hashes both the staged and source bytes before returning.
 Public pull-request CI performs the static manifest contract without private
 signed inputs. Full byte authority remains a protected GitHub-hosted macOS
 verification responsibility, including pinned Bundletool for Android. The
-local full pass authorized the atomic `3/3 verified-current` promotion, while
-the protected hosted repeat remains pending until the workflow executes after
-successful CI on `master`; the top-level manifest and physical gates therefore
-remain blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
+local full pass authorized the atomic `3/3 verified-current` promotion. The
+protected staging and read-only macOS verifier must pass for each successful
+current-`master` CI run; the top-level manifest and physical gates remain
+blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
 the tree was clean when they were built. Protected run `33381050098` has now
 supplied that same-clean-checkout build/sign/verify provenance and a retained
-closed package. The pending protected hosted repeat must download the exact
-mutable draft assets and reopen those bytes through the complete pinned
-verifier before later use. The local full pass and exact promoted hashes are
+closed package. The protected hosted chain must recheck the exact mutable draft
+assets and reopen those bytes through the complete pinned verifier before later
+use. The local full pass and exact promoted hashes are
 recorded in
 [`growth/quality/release-artifact-full-verification-2026-08-31-local.md`](../growth/quality/release-artifact-full-verification-2026-08-31-local.md)
 and

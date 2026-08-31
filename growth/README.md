@@ -12,9 +12,9 @@
 The machine field `byte_verified=true` records the fresh full verification of
 the exact promoted bytes. All three manifest entries are atomically
 `verified-current`, while the top-level manifest remains `draft-blocked`
-because physical QA and internal delivery are still missing. The protected
-hosted macOS repeat is pending until its workflow executes; no hosted repeat
-pass is claimed yet.
+because physical QA and internal delivery are still missing. Every successful
+current-`master` CI run must pass the protected no-checkout staging job and
+separate read-only hosted macOS verifier before Pages or later artifact use.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -36,8 +36,8 @@ to the expiring Actions artifact. A fresh local macOS run then downloaded those
 exact assets, safely extracted the closed tree, checked pinned Bundletool
 1.18.3, and returned `byte_verified=true` for the exact phone, Wear, and Apple
 artifacts. The committed manifest now holds `3/3 verified-current` atomically
-and remains `draft-blocked`. The draft remains mutable, and the protected
-hosted macOS repeat is pending until its workflow executes on `master`.
+and remains `draft-blocked`. The draft remains mutable, so the protected staged
+hosted chain is mandatory for each current master before later artifact use.
 The exact-source API 25 debug phone/widget pass remains valid regression
 evidence, but upload-derived Android phone/tablet/widget/Wear and TestFlight
 iPhone/iPad/widget/watch coverage are missing. The iPhone is currently locked,
@@ -61,7 +61,7 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected hosted repeat pending before later artifact use |
+| Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
 | Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |

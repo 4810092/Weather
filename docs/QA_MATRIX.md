@@ -14,9 +14,9 @@ Status date: August 31, 2026.
 In the machine-validated block, `byte_verified=true` records the fresh local
 full-verifier pass and atomic `3/3 verified-current` promotion. The fail-closed
 surface status remains **BLOCKED** because the physical gates and every
-artifact physical-evidence field remain blocked/null. The protected hosted
-macOS repeat is pending until its workflow executes; no hosted repeat pass is
-claimed.
+artifact physical-evidence field remain blocked/null. Every successful
+current-`master` CI run must pass the protected no-checkout staging job and
+separate read-only hosted macOS verifier before Pages or later artifact use.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -54,8 +54,8 @@ also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
 and the exact App Store Connect `ExportOptions.plist`; build 6 now has a
 retained, `verified-current` distribution archive and IPA. A fresh local macOS
-run reopened the exact materialized assets and completed the atomic promotion;
-the protected hosted repeat remains pending until its workflow executes. The
+run reopened the exact materialized assets and completed the atomic promotion.
+The protected staged hosted chain is mandatory for every current master. The
 single staged directory layout and action-time command are documented in
 [`store/README.md`](../store/README.md). The verifier
 and its explicit external-build provenance boundary are recorded in
@@ -78,8 +78,8 @@ and its explicit external-build provenance boundary are recorded in
   `379745439`. A fresh local macOS run then downloaded those exact assets,
   safely extracted the closed tree, verified pinned Bundletool 1.18.3, and
   returned `byte_verified=true` for all three outputs. The manifest is now
-  atomically `3/3 verified-current` and remains `draft-blocked`; the draft is
-  mutable and the protected hosted repeat is pending. Hosted
+  atomically `3/3 verified-current` and remains `draft-blocked`; the mutable
+  draft must pass staged hosted revalidation before later use. Hosted
   signing/materialization is not physical accessibility, Play/TestFlight
   delivery, or crash-gate closure. A
   clean isolated exact-source debug

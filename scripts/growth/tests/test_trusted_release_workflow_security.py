@@ -62,7 +62,10 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
 
     def test_permissions_secrets_and_runner_mutations_are_rejected(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("  contents: read\n", "  contents: write\n", 1)
+            self.trusted.replace("      contents: write\n", "      contents: read\n", 1)
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace("      contents: read\n", "      contents: write\n", 1)
         )
         self.assert_trusted_rejected(
             self.trusted.replace("GH_TOKEN: ${{ github.token }}", "GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}", 1)
@@ -84,6 +87,48 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
             self.trusted.replace(marker, "      - uses: actions/cache@v4\n" + marker, 1)
         )
 
+    def test_staging_job_cannot_checkout_or_mutate_repository(self) -> None:
+        marker = "      - name: Stage exact unpublished candidate without repository checkout\n"
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                marker,
+                "      - uses: actions/checkout@v6\n" + marker,
+                1,
+            )
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                "          gh api \\\n",
+                "          gh api --method DELETE \\\n",
+                1,
+            )
+        )
+
+    def test_verifier_download_is_same_run_and_tokenless(self) -> None:
+        marker = "          path: ${{ runner.temp }}/nimbo-trusted-release/downloads\n"
+        self.assert_trusted_rejected(
+            self.trusted.replace(marker, marker + "          run-id: 1\n", 1)
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                marker,
+                marker + "          github-token: ${{ secrets.ADMIN_TOKEN }}\n",
+                1,
+            )
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace("          retention-days: 1\n", "          retention-days: 90\n", 1)
+        )
+
+    def test_verifier_requires_successful_staging_job(self) -> None:
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                "needs.stage.result == 'success' &&\n",
+                "always() &&\n",
+                1,
+            )
+        )
+
     def test_fixed_release_and_asset_endpoints_are_immutable(self) -> None:
         self.assert_trusted_rejected(
             self.trusted.replace("releases/379745439", "releases/latest", 1)
@@ -100,7 +145,11 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
             self.trusted.replace('"draft": True', '"draft": False', 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("if len(release_assets) != 2:", "if False:", 1)
+            self.trusted.replace(
+                "if not isinstance(assets, list) or len(assets) != 2:",
+                "if False:",
+                1,
+            )
         )
 
     def test_tar_safety_cannot_be_replaced_with_bulk_extraction(self) -> None:

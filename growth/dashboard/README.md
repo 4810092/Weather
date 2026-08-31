@@ -43,8 +43,9 @@ verified-current` after a fresh local macOS full-byte pass reopened the draft
 assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
 and returned `byte_verified=true` for phone, Wear, and Apple. The top-level
 manifest remains `draft-blocked` because physical QA and internal delivery are
-missing. The draft is mutable and the protected hosted macOS repeat is pending
-until its workflow executes on `master`; no hosted repeat pass is claimed. The
+missing. The draft is mutable, so every successful current-`master` CI run must
+pass protected no-checkout staging and the separate read-only hosted macOS
+verifier before Pages or later artifact use. The
 exact-source API 25 debug phone/widget smoke remains regression evidence;
 upload-derived Android
 phone/tablet/widget/Wear and TestFlight iPhone/iPad/widget/watch physical

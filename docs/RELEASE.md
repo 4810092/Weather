@@ -11,8 +11,9 @@ hash-bound package and receipt in unpublished draft release `379745439`. A
 fresh local macOS run reopened those exact assets and returned
 `byte_verified=true` for phone, Wear, and Apple, so the manifest now promotes
 the set atomically to `3/3 verified-current` while remaining `draft-blocked`.
-The protected read-only hosted macOS repeat is pending until its workflow
-executes on `master`; it is not claimed as passed. No 1.1.0 artifact
+Every successful current-`master` CI run must pass the protected no-checkout
+staging job and separate read-only hosted macOS verifier before Pages or later
+artifact use. No 1.1.0 artifact
 has been uploaded to a store, processed, installed through an internal track,
 submitted, or published. Store consoles remain the authority for live status.
 
@@ -28,8 +29,8 @@ submitted, or published. Store consoles remain the authority for live status.
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level
 manifest remains `draft-blocked` because physical QA and store delivery are
-still absent. The protected hosted macOS repeat remains pending until its
-workflow executes; no hosted repeat pass is claimed.
+still absent. The protected staged hosted chain remains mandatory for every
+current master.
 
 ## Version identity
 
@@ -53,8 +54,8 @@ and Apple IPA
 
 The manifest promotes the complete set atomically to `verified-current`; all
 physical-QA evidence remains null and top-level status remains
-`draft-blocked`. A protected read-only hosted macOS repeat after successful CI
-on `master` is pending until its workflow executes. This is not store upload,
+`draft-blocked`. Successful CI on current `master` must be followed by the
+protected no-checkout staging job and separate read-only macOS verifier. This is not store upload,
 internal delivery, physical QA, crash diagnosis, publication, or ranking
 evidence. See the [full-verification record](../growth/quality/release-artifact-full-verification-2026-08-31-local.md).
 
@@ -81,7 +82,7 @@ This is a durable draft-materialization PASS relative to the expiring Actions
 artifact, not release readiness. GitHub reports the draft as mutable rather
 than immutable, and the single Ubuntu job did not run the complete verifier.
 The later local checkpoint above supplies the atomic `3/3 verified-current`
-promotion; the protected hosted repeat is still pending and physical QA, store
+promotion; the protected hosted chain remains mandatory and physical QA, store
 delivery, crash diagnosis, review, release, and availability remain
 independent. See the
 [materialization record](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
@@ -117,8 +118,8 @@ This closes protected signing and pre-manifest candidate verification only.
 At this checkpoint the schema-v2 upload manifest remained fail-closed because
 there was no hosted materialization route to the private retained bytes. The
 later draft-materialization and local full-byte checkpoints above close that
-storage and manifest-promotion gap. The protected hosted verifier repeat is
-still pending until its workflow executes. The Android candidate still needs an upload-derived
+storage and manifest-promotion gap. The protected staged hosted verifier is
+mandatory for each current master. The Android candidate still needs an upload-derived
 physical phone/tablet/widget/Wear matrix. The App Store-profile IPA must be
 uploaded unchanged and exercised through TestFlight; it is not directly
 installable. Crash diagnosis, store processing, review, rollout, and public

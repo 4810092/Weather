@@ -7,8 +7,7 @@ on:
     types:
       - completed
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
   group: trusted-release-verification-${{ github.event.workflow_run.head_sha }}
@@ -18,7 +17,7 @@ env:
   PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
-  verify:
+  stage:
     if: >-
       github.repository == '4810092/Weather' &&
       github.repository_id == '1329018769' &&
@@ -32,6 +31,266 @@ jobs:
       github.event.workflow_run.repository.full_name == '4810092/Weather' &&
       github.event.workflow_run.head_repository.id == 1329018769 &&
       github.event.workflow_run.head_repository.full_name == '4810092/Weather'
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Stage exact unpublished candidate without repository checkout
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          NIMBO_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          trusted_root="$RUNNER_TEMP/nimbo-trusted-stage"
+          metadata_root="$trusted_root/metadata"
+          download_root="$trusted_root/downloads"
+          install -d -m 700 "$trusted_root" "$metadata_root" "$download_root"
+
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/379745439 \
+            > "$metadata_root/release.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$metadata_root/package.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$metadata_root/receipt.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$metadata_root/master.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-2cdd438-run-33381050098 \
+            > "$metadata_root/tag.before.json"
+
+          gh api \
+            -H "Accept: application/octet-stream" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$download_root/signed-candidate-bytes.tar.gz"
+          gh api \
+            -H "Accept: application/octet-stream" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$download_root/signed-candidate-receipt.json"
+
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/379745439 \
+            > "$metadata_root/release.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$metadata_root/package.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$metadata_root/receipt.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$metadata_root/master.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-2cdd438-run-33381050098 \
+            > "$metadata_root/tag.after.json"
+
+          python3 -I - \
+            "$GITHUB_EVENT_PATH" \
+            "$metadata_root" \
+            "$download_root" \
+            "$NIMBO_SOURCE_RUN_ID" \
+            "$NIMBO_SOURCE_SHA" <<'PY'
+          import hashlib
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          event = json.loads(Path(sys.argv[1]).read_text())
+          metadata_root = Path(sys.argv[2])
+          download_root = Path(sys.argv[3])
+          expected_run_id = int(sys.argv[4])
+          expected_sha = sys.argv[5]
+          if re.fullmatch(r"[0-9a-f]{40}", expected_sha) is None:
+              raise SystemExit("source SHA is not one full lowercase commit identity")
+          if event.get("action") != "completed":
+              raise SystemExit("workflow_run action mismatch")
+          source_run = event.get("workflow_run")
+          if not isinstance(source_run, dict):
+              raise SystemExit("workflow_run payload is missing")
+          expected_run = {
+              "id": expected_run_id,
+              "workflow_id": 330787648,
+              "path": ".github/workflows/ci.yml",
+              "event": "push",
+              "status": "completed",
+              "conclusion": "success",
+              "head_branch": "master",
+              "head_sha": expected_sha,
+          }
+          for key, value in expected_run.items():
+              if source_run.get(key) != value:
+                  raise SystemExit(f"source CI event {key} mismatch")
+          for label, value in (
+              ("event repository", event.get("repository")),
+              ("source repository", source_run.get("repository")),
+              ("source head_repository", source_run.get("head_repository")),
+          ):
+              if not isinstance(value, dict):
+                  raise SystemExit(f"{label} binding is missing")
+              if value.get("id") != 1329018769 or value.get("full_name") != "4810092/Weather":
+                  raise SystemExit(f"{label} mismatch")
+
+          expected_release = {
+              "id": 379745439,
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 2cdd438",
+              "tag_name": "nimbo-candidate-v1.1.0-2cdd438-run-33381050098",
+              "target_commitish": "30a67edf2968878e22bd05497bcd20c64cba7fc7",
+              "draft": True,
+              "prerelease": True,
+              "published_at": None,
+              "immutable": False,
+          }
+          expected_assets = {
+              537966386: {
+                  "name": "signed-candidate-bytes.tar.gz",
+                  "size": 58073521,
+                  "digest": "sha256:60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+                  "content_type": "application/octet-stream",
+              },
+              537966414: {
+                  "name": "signed-candidate-receipt.json",
+                  "size": 11711,
+                  "digest": "sha256:c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+                  "content_type": "application/octet-stream",
+              },
+          }
+          for phase in ("before", "after"):
+              release = json.loads((metadata_root / f"release.{phase}.json").read_text())
+              for key, value in expected_release.items():
+                  if release.get(key) != value:
+                      raise SystemExit(f"{phase} draft release {key} mismatch")
+              assets = release.get("assets")
+              if not isinstance(assets, list) or len(assets) != 2:
+                  raise SystemExit(f"{phase} draft release asset count mismatch")
+              by_id = {asset.get("id"): asset for asset in assets if isinstance(asset, dict)}
+              if set(by_id) != set(expected_assets):
+                  raise SystemExit(f"{phase} draft release asset ID set mismatch")
+              for asset_id, specification in expected_assets.items():
+                  endpoint_name = "package" if asset_id == 537966386 else "receipt"
+                  endpoint_asset = json.loads(
+                      (metadata_root / f"{endpoint_name}.{phase}.json").read_text()
+                  )
+                  for label, asset in (("release", by_id[asset_id]), ("endpoint", endpoint_asset)):
+                      if asset.get("id") != asset_id:
+                          raise SystemExit(f"{phase} {label} asset ID mismatch")
+                      for key, value in specification.items():
+                          if asset.get(key) != value:
+                              raise SystemExit(f"{phase} {label} asset {asset_id} {key} mismatch")
+                      if asset.get("state") != "uploaded":
+                          raise SystemExit(f"{phase} {label} asset is not uploaded: {asset_id}")
+              master = json.loads((metadata_root / f"master.{phase}.json").read_text())
+              master_object = master.get("object")
+              if (
+                  master.get("ref") != "refs/heads/master"
+                  or not isinstance(master_object, dict)
+                  or master_object.get("type") != "commit"
+                  or master_object.get("sha") != expected_sha
+              ):
+                  raise SystemExit(f"live master changed during candidate staging: {phase}")
+              tag_refs = json.loads((metadata_root / f"tag.{phase}.json").read_text())
+              if tag_refs != []:
+                  raise SystemExit(f"draft storage tag unexpectedly resolves: {phase}")
+
+          expected_downloads = {
+              "signed-candidate-bytes.tar.gz": (
+                  58073521,
+                  "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+              ),
+              "signed-candidate-receipt.json": (
+                  11711,
+                  "c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+              ),
+          }
+          if sorted(path.name for path in download_root.iterdir()) != sorted(expected_downloads):
+              raise SystemExit("staged candidate asset inventory mismatch")
+          for name, (size, digest) in expected_downloads.items():
+              path = download_root / name
+              if path.is_symlink() or not path.is_file() or path.stat().st_size != size:
+                  raise SystemExit(f"staged candidate asset mismatch: {name}")
+              if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+                  raise SystemExit(f"staged candidate asset digest mismatch: {name}")
+
+          receipt = json.loads((download_root / "signed-candidate-receipt.json").read_text())
+          if receipt.get("schema_version") != 3:
+              raise SystemExit("candidate receipt schema mismatch")
+          if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
+              raise SystemExit("candidate receipt state mismatch")
+          if receipt.get("source_revision") != "2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652":
+              raise SystemExit("candidate receipt source revision mismatch")
+          if receipt.get("package") != {
+              "candidate_tree_sha256": "c91ea40ae12fd59aacfee77f03ba75240951b5797c16b23487ce334eb85502fa",
+              "filename": "signed-candidate-bytes.tar.gz",
+              "format": "tar.gz",
+              "sha256": "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+          }:
+              raise SystemExit("candidate receipt package binding mismatch")
+          expected_artifacts = {
+              "android_phone": "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+              "wear_os": "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
+              "apple": "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
+          }
+          artifacts = receipt.get("artifacts")
+          if not isinstance(artifacts, dict) or set(artifacts) != set(expected_artifacts):
+              raise SystemExit("candidate receipt artifact inventory mismatch")
+          for artifact_id, digest in expected_artifacts.items():
+              artifact = artifacts[artifact_id]
+              if (
+                  artifact.get("source_sync") != "candidate-verified"
+                  or artifact.get("byte_verified") is not True
+                  or artifact.get("sha256") != digest
+              ):
+                  raise SystemExit(f"candidate receipt artifact mismatch: {artifact_id}")
+          PY
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: trusted-candidate-stage-${{ github.event.workflow_run.head_sha }}
+          path: |
+            ${{ runner.temp }}/nimbo-trusted-stage/downloads/signed-candidate-bytes.tar.gz
+            ${{ runner.temp }}/nimbo-trusted-stage/downloads/signed-candidate-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+  verify:
+    needs: stage
+    if: >-
+      needs.stage.result == 'success' &&
+      github.repository == '4810092/Weather' &&
+      github.repository_id == '1329018769' &&
+      github.event.workflow_run.workflow_id == 330787648 &&
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.status == 'completed' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'master' &&
+      github.event.workflow_run.repository.id == 1329018769 &&
+      github.event.workflow_run.repository.full_name == '4810092/Weather' &&
+      github.event.workflow_run.head_repository.id == 1329018769 &&
+      github.event.workflow_run.head_repository.full_name == '4810092/Weather'
+    permissions:
+      actions: read
+      contents: read
     runs-on: macos-26
     timeout-minutes: 25
     steps:
@@ -133,102 +392,16 @@ jobs:
           test "$(git symbolic-ref --quiet --short HEAD || true)" = ""
           python3 scripts/trusted_release_workflow_security.py
 
-      - name: Download exact unpublished candidate assets
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: trusted-candidate-stage-${{ github.event.workflow_run.head_sha }}
+          path: ${{ runner.temp }}/nimbo-trusted-release/downloads
+
+      - name: Validate exact staged candidate assets
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          set +x
           set -euo pipefail
-          trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
-          metadata_root="$trusted_root/metadata"
-          download_root="$trusted_root/downloads"
-          install -d -m 700 "$trusted_root" "$metadata_root" "$download_root"
-
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/379745439 \
-            > "$metadata_root/release.before.json"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966386 \
-            > "$metadata_root/package.before.json"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966414 \
-            > "$metadata_root/receipt.before.json"
-
-          python3 -I - "$metadata_root" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          root = Path(sys.argv[1])
-          release = json.loads((root / "release.before.json").read_text())
-          package = json.loads((root / "package.before.json").read_text())
-          receipt = json.loads((root / "receipt.before.json").read_text())
-          expected_release = {
-              "id": 379745439,
-              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 2cdd438",
-              "tag_name": "nimbo-candidate-v1.1.0-2cdd438-run-33381050098",
-              "target_commitish": "30a67edf2968878e22bd05497bcd20c64cba7fc7",
-              "draft": True,
-              "prerelease": True,
-              "published_at": None,
-              "immutable": False,
-          }
-          for key, value in expected_release.items():
-              if release.get(key) != value:
-                  raise SystemExit(f"draft release {key} mismatch")
-
-          expected_assets = {
-              537966386: {
-                  "name": "signed-candidate-bytes.tar.gz",
-                  "size": 58073521,
-                  "digest": "sha256:60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
-                  "content_type": "application/octet-stream",
-              },
-              537966414: {
-                  "name": "signed-candidate-receipt.json",
-                  "size": 11711,
-                  "digest": "sha256:c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
-                  "content_type": "application/octet-stream",
-              },
-          }
-          release_assets = release.get("assets")
-          if not isinstance(release_assets, list):
-              raise SystemExit("draft release assets are missing")
-          if {asset.get("id") for asset in release_assets if isinstance(asset, dict)} != set(expected_assets):
-              raise SystemExit("draft release asset ID set mismatch")
-          if len(release_assets) != 2:
-              raise SystemExit("draft release asset count mismatch")
-          release_by_id = {asset["id"]: asset for asset in release_assets}
-          for asset_id, specification in expected_assets.items():
-              for label, asset in (
-                  ("release", release_by_id[asset_id]),
-                  ("asset endpoint", package if asset_id == 537966386 else receipt),
-              ):
-                  if asset.get("id") != asset_id:
-                      raise SystemExit(f"{label} asset ID mismatch")
-                  for key, value in specification.items():
-                      if asset.get(key) != value:
-                          raise SystemExit(f"{label} asset {asset_id} {key} mismatch")
-                  if asset.get("state") != "uploaded":
-                      raise SystemExit(f"{label} asset {asset_id} is not uploaded")
-                  if asset.get("url") != f"https://api.github.com/repos/4810092/Weather/releases/assets/{asset_id}":
-                      raise SystemExit(f"{label} asset {asset_id} API URL mismatch")
-          PY
-
-          gh api \
-            -H "Accept: application/octet-stream" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966386 \
-            > "$download_root/signed-candidate-bytes.tar.gz"
-          gh api \
-            -H "Accept: application/octet-stream" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966414 \
-            > "$download_root/signed-candidate-receipt.json"
+          download_root="$RUNNER_TEMP/nimbo-trusted-release/downloads"
           python3 -I - "$download_root" <<'PY'
           import hashlib
           import json
@@ -248,15 +421,15 @@ jobs:
           }
           inventory = sorted(path.name for path in root.iterdir())
           if inventory != sorted(expected):
-              raise SystemExit("downloaded draft asset inventory mismatch")
+              raise SystemExit("downloaded staged asset inventory mismatch")
           for name, (size, digest) in expected.items():
               path = root / name
               if path.is_symlink() or not path.is_file():
-                  raise SystemExit(f"downloaded asset is not one regular file: {name}")
+                  raise SystemExit(f"downloaded staged asset is not one regular file: {name}")
               if path.stat().st_size != size:
-                  raise SystemExit(f"downloaded asset size mismatch: {name}")
+                  raise SystemExit(f"downloaded staged asset size mismatch: {name}")
               if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-                  raise SystemExit(f"downloaded asset digest mismatch: {name}")
+                  raise SystemExit(f"downloaded staged asset digest mismatch: {name}")
 
           receipt = json.loads((root / "signed-candidate-receipt.json").read_text())
           if receipt.get("schema_version") != 3:
@@ -290,7 +463,6 @@ jobs:
               ):
                   raise SystemExit(f"candidate receipt artifact mismatch: {artifact_id}")
           PY
-
       - name: Safely extract exact candidate package
         shell: bash
         run: |
@@ -539,7 +711,7 @@ jobs:
           )
           PY
 
-      - name: Revalidate unpublished release and current master
+      - name: Revalidate current master and exact staged files
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -548,29 +720,13 @@ jobs:
           set +x
           set -euo pipefail
           trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
-          metadata_root="$trusted_root/metadata"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/379745439 \
-            > "$metadata_root/release.after.json"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966386 \
-            > "$metadata_root/package.after.json"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/537966414 \
-            > "$metadata_root/receipt.after.json"
+          master_json="$trusted_root/master.after.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             repos/4810092/Weather/git/ref/heads/master \
-            > "$metadata_root/master.after.json"
-          gh api \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-2cdd438-run-33381050098 \
-            > "$metadata_root/tag.after.json"
+            > "$master_json"
           python3 -I - \
-            "$metadata_root" \
+            "$master_json" \
             "$NIMBO_SOURCE_SHA" \
             "$trusted_root/downloads" <<'PY'
           import hashlib
@@ -578,65 +734,15 @@ jobs:
           import sys
           from pathlib import Path
 
-          root = Path(sys.argv[1])
-          expected_sha = sys.argv[2]
-          release = json.loads((root / "release.after.json").read_text())
-          expected_release = {
-              "id": 379745439,
-              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 2cdd438",
-              "tag_name": "nimbo-candidate-v1.1.0-2cdd438-run-33381050098",
-              "target_commitish": "30a67edf2968878e22bd05497bcd20c64cba7fc7",
-              "draft": True,
-              "prerelease": True,
-              "published_at": None,
-              "immutable": False,
-          }
-          for key, value in expected_release.items():
-              if release.get(key) != value:
-                  raise SystemExit(f"post-verification draft release {key} mismatch")
-          expected_assets = {
-              537966386: (
-                  "signed-candidate-bytes.tar.gz",
-                  58073521,
-                  "sha256:60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
-              ),
-              537966414: (
-                  "signed-candidate-receipt.json",
-                  11711,
-                  "sha256:c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
-              ),
-          }
-          assets = release.get("assets")
-          if not isinstance(assets, list) or len(assets) != 2:
-              raise SystemExit("post-verification draft release asset count mismatch")
-          by_id = {asset.get("id"): asset for asset in assets if isinstance(asset, dict)}
-          if set(by_id) != set(expected_assets):
-              raise SystemExit("post-verification draft release asset ID set mismatch")
-          for asset_id, (name, size, digest) in expected_assets.items():
-              release_asset = by_id[asset_id]
-              endpoint_name = "package.after.json" if asset_id == 537966386 else "receipt.after.json"
-              endpoint_asset = json.loads((root / endpoint_name).read_text())
-              for label, asset in (("release", release_asset), ("endpoint", endpoint_asset)):
-                  if (
-                      asset.get("id") != asset_id
-                      or asset.get("name") != name
-                      or asset.get("size") != size
-                      or asset.get("digest") != digest
-                      or asset.get("state") != "uploaded"
-                  ):
-                      raise SystemExit(f"post-verification {label} asset mismatch: {asset_id}")
-          master = json.loads((root / "master.after.json").read_text())
+          master = json.loads(Path(sys.argv[1]).read_text())
           master_object = master.get("object")
           if (
               master.get("ref") != "refs/heads/master"
               or not isinstance(master_object, dict)
               or master_object.get("type") != "commit"
-              or master_object.get("sha") != expected_sha
+              or master_object.get("sha") != sys.argv[2]
           ):
               raise SystemExit("live master changed during trusted verification")
-          tag_refs = json.loads((root / "tag.after.json").read_text())
-          if tag_refs != []:
-              raise SystemExit("draft storage tag unexpectedly resolves after verification")
           downloads = Path(sys.argv[3])
           expected_downloads = {
               "signed-candidate-bytes.tar.gz": (
@@ -649,16 +755,15 @@ jobs:
               ),
           }
           if sorted(path.name for path in downloads.iterdir()) != sorted(expected_downloads):
-              raise SystemExit("post-verification downloaded asset inventory mismatch")
+              raise SystemExit("post-verification staged asset inventory mismatch")
           for name, (size, digest) in expected_downloads.items():
               path = downloads / name
               if path.is_symlink() or not path.is_file() or path.stat().st_size != size:
-                  raise SystemExit(f"post-verification downloaded asset mismatch: {name}")
+                  raise SystemExit(f"post-verification staged asset mismatch: {name}")
               if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-                  raise SystemExit(f"post-verification downloaded asset digest mismatch: {name}")
+                  raise SystemExit(f"post-verification staged asset digest mismatch: {name}")
           PY
           test -z "$(git status --porcelain=v1 --untracked-files=all)"
-
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: trusted-release-verification-${{ github.event.workflow_run.head_sha }}
