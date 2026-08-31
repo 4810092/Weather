@@ -5,15 +5,17 @@
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=37ea0b19882dec2f313f51d4b91a2c1c395d7b4820eda440a26deb8e4e98037a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
 The machine field `byte_verified=true` records the fresh full verification of
 the exact promoted bytes. All three manifest entries are atomically
 `verified-current`, while the top-level manifest remains `draft-blocked`
-because the remaining Android/Wear and Apple physical matrices and internal
-delivery are still missing. The phone entry now binds the exact AAB-derived
+because authorized tester access, TestFlight beta distribution, and the
+remaining Android/Wear and Apple physical matrices are still missing. The
+exact candidates have reached their internal store channels, but no
+store-delivered install exists. The phone entry binds the exact AAB-derived
 physical API 25 evidence; it does not satisfy the shared Android/Wear gate.
 Every successful current-`master` CI run must pass the protected no-checkout
 staging job and separate read-only hosted macOS verifier before Pages or later
@@ -44,12 +46,15 @@ hosted chain is mandatory for each current master before later artifact use.
 Trusted run `33405849102` completed that chain for evidence head `b07192e`.
 The exact phone AAB was then converted with pinned Bundletool to an upload-key-
 signed universal APK and passed a clean physical API 25 smoke with identical
-installed bytes. Play Internal and Play-app-signing delivery, a physical
-tablet/widget, paired Wear, and TestFlight iPhone/iPad/widget/watch coverage
-remain missing. The iPhone and iPad are paired, booted, and Developer Mode
-enabled; the paired watch has Developer Mode disabled and no developer tunnel.
-No store upload, processing, internal distribution, review, release, or
-availability is claimed.
+installed bytes. Exact phone and Wear AABs are now accepted on their separate
+Play Internal tracks, but the phone invite is unaccepted and the Wear track is
+inactive without testers, so no Play-delivered install exists. Exact Apple
+build 6 completed App Store Connect processing as `VALID` and
+`APP_STORE_ELIGIBLE`, but TestFlight beta distribution and the physical
+iPhone/iPad/widget/watch matrix remain missing. The iPhone and iPad are paired,
+booted, and Developer Mode enabled; the paired watch has Developer Mode disabled
+and no developer tunnel. No production submission, review, rollout, public
+availability, or rank is claimed.
 
 OpenMeteo GmbH has confirmed the exact unpaid, non-monetized organic-promotion
 scope for the non-commercial API. Two public iOS `1.0.1 (4)` crashes remain
@@ -67,6 +72,7 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
+| Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
 | Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
 | Trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-08-31-hosted.md](quality/release-artifact-full-verification-2026-08-31-hosted.md) | Protected run `33405849102` revalidated the mutable draft and all exact bytes; every later use must repeat the same check |
 | Exact Android phone physical smoke | [quality/android-phone-vc8-physical-smoke-2026-08-31.md](quality/android-phone-vc8-physical-smoke-2026-08-31.md) | Exact AAB-derived upload-key-signed APK passed clean API 25 install/live/cache/share/recovery; it is not Play delivery or the full Android/Wear matrix |

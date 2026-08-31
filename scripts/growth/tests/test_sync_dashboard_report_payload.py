@@ -10,9 +10,11 @@ from pathlib import Path
 
 from scripts.growth.sync_dashboard_report_payload import (
     DashboardPayloadSyncError,
+    FALLBACK_ID,
     PAYLOAD_TEMPLATE_ID,
     _payload_template,
     replace_embedded_payload,
+    replace_static_fallback,
     sync_dashboard_report_payload,
 )
 
@@ -39,23 +41,38 @@ def _report(
         f"{opening}\n{content}\n{closing_tag}\n"
         '<template id="data-analytics-portable-reader-runtime-source" '
         'data-compression="gzip-base64">runtime-bytes</template>\n'
-        "<p>legacy no-JS fallback stays byte-identical</p>\n"
+        f'<main id="{FALLBACK_ID}" class="portable-fallback">'
+        "<p>legacy no-JS fallback</p></main>\n"
         "</body></html>\n"
     )
 
 
 class SyncDashboardReportPayloadTest(unittest.TestCase):
-    def test_sync_is_deterministic_and_changes_only_payload_content(self) -> None:
+    def test_sync_is_deterministic_and_refreshes_payload_and_fallback(self) -> None:
         artifact = {
-            "surface": {"title": "Nimbo — O‘zbekiston"},
-            "manifest": {"generatedAt": "2026-08-31T18:00:00Z"},
-            "snapshot": {"datasets": {"rows": [{"value": 1}]}},
+            "surface": "dashboard",
+            "manifest": {
+                "title": "Nimbo — O‘zbekiston",
+                "generatedAt": "2026-08-31T18:00:00Z",
+                "cards": [],
+                "charts": [],
+                "tables": [],
+                "blocks": [
+                    {
+                        "id": "current_status",
+                        "type": "markdown",
+                        "body": "## Current status\n\nBuild 6 is **VALID**.",
+                    }
+                ],
+            },
+            "snapshot": {
+                "status": "blocked",
+                "accessIssues": [],
+                "datasets": {"rows": [{"value": 1}]},
+            },
             "sources": [],
         }
         original = _report()
-        original_target = _payload_template(original)
-        self.assertIsNotNone(original_target.content_end)
-        original_suffix = original[original_target.content_end :]
 
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -72,14 +89,10 @@ class SyncDashboardReportPayloadTest(unittest.TestCase):
             synchronized_target = _payload_template(synchronized)
             self.assertIsNotNone(synchronized_target.content_end)
 
-            self.assertEqual(
-                original[: original_target.content_start],
-                synchronized[: synchronized_target.content_start],
-            )
-            self.assertEqual(
-                original_suffix,
-                synchronized[synchronized_target.content_end :],
-            )
+            self.assertNotIn("legacy no-JS fallback", synchronized)
+            self.assertIn('data-canonical-generated-at="2026-08-31T18:00:00Z"', synchronized)
+            self.assertIn("Nimbo — O‘zbekiston", synchronized)
+            self.assertIn("Build 6 is <strong>VALID</strong>.", synchronized)
             self.assertEqual(stat.S_IMODE(report_path.stat().st_mode), 0o640)
 
             encoded = "".join(
@@ -95,6 +108,22 @@ class SyncDashboardReportPayloadTest(unittest.TestCase):
             first_bytes = report_path.read_bytes()
             self.assertFalse(sync_dashboard_report_payload(artifact_path, report_path))
             self.assertEqual(report_path.read_bytes(), first_bytes)
+
+    def test_missing_static_fallback_fails_closed(self) -> None:
+        artifact = {
+            "manifest": {
+                "title": "Nimbo",
+                "generatedAt": "2026-08-31T18:00:00Z",
+                "cards": [],
+                "charts": [],
+                "tables": [],
+                "blocks": [],
+            },
+            "snapshot": {"status": "blocked", "accessIssues": [], "datasets": {}},
+            "sources": [],
+        }
+        with self.assertRaisesRegex(DashboardPayloadSyncError, "exactly one.*main"):
+            replace_static_fallback("<html><body></body></html>", artifact)
 
     def test_missing_payload_template_fails_closed(self) -> None:
         with self.assertRaisesRegex(

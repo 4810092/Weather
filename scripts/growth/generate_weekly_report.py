@@ -91,9 +91,9 @@ GUARDRAIL_LABELS = {
 GATE_ACTIONS = {
     "ios_crash_gate": (
         "Engineering",
-        "Obtain and symbolicate any diagnostic Apple exposes, upload the exact "
-        "retained IPA unchanged to TestFlight, complete the iPhone, iPad, widget, "
-        "and watch matrix, and collect post-rollout crash evidence before "
+        "Obtain and symbolicate any diagnostic Apple exposes, confirm TestFlight "
+        "beta-group distribution for processed build 6, complete the iPhone, iPad, "
+        "widget, and watch matrix, and collect post-rollout crash evidence before "
         "acquisition resumes.",
     ),
     "open_meteo_promotion_clearance": (
@@ -109,15 +109,16 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Deliver the exact phone and Wear AABs through Play Internal, rerun the phone "
-        "scope against the Play-delivered package, and complete physical tablet, "
-        "widget, and paired Wear OS QA.",
+        "Accept the phone Internal invite, install and rerun the phone scope from "
+        "Play, attach the existing License testers group to the inactive Wear "
+        "Internal track and install it, then complete physical tablet, widget, and "
+        "paired Wear OS QA.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Upload the exact retained IPA unchanged to TestFlight, install it on the "
-        "ready iPhone and iPad, restore watch readiness, then complete iPhone, iPad, "
-        "widget, and watch QA.",
+        "Confirm TestFlight beta-group distribution for processed build 6, install "
+        "it on the ready iPhone and iPad, restore watch readiness, then complete "
+        "iPhone, iPad, widget, and watch QA.",
     ),
     "domain_activation": (
         "Web operations",

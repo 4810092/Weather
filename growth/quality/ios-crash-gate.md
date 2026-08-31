@@ -176,10 +176,12 @@ signatures, and dSYM UUIDs. Its IPA SHA-256 is
 `7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0`;
 the full pre-manifest evidence is in
 [`signed-candidate-run-33381050098.md`](signed-candidate-run-33381050098.md).
-That preventive candidate is not the crashed public build, has not been
-uploaded or exercised through TestFlight, and supplies neither production
-diagnostic nor symbolication. The committed upload manifest and crash gate
-therefore remain blocked.
+That exact preventive candidate completed Transporter delivery, and App Store
+Connect now reports build 6 as `VALID` and `APP_STORE_ELIGIBLE`. It is not the
+crashed public build, has not been installed through TestFlight, and supplies
+neither production diagnostic nor symbolication. TestFlight beta-group
+distribution and the exact physical matrix remain unverified, so the committed
+upload manifest and crash gate remain blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

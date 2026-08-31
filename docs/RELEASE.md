@@ -13,25 +13,51 @@ fresh local macOS run reopened those exact assets and returned
 the set atomically to `3/3 verified-current` while remaining `draft-blocked`.
 Every successful current-`master` CI run must pass the protected no-checkout
 staging job and separate read-only hosted macOS verifier before Pages or later
-artifact use. No 1.1.0 artifact
-has been uploaded to a store, processed, installed through an internal track,
-submitted, or published. Store consoles remain the authority for live status.
+artifact use. On August 31, the exact Apple `1.1.0 (6)` IPA completed
+Transporter delivery and App Store Connect processing with build state `VALID`
+and audience `APP_STORE_ELIGIBLE`. The
+exact phone `1.1.0 (8)` and Wear `1.1.0 (1000008)` AABs were published to
+their separate Google Play Internal tracks. The phone release is available to
+the attached four-tester `License testers` group, but its invitation has not
+been accepted and no Play-delivered install exists. The Wear release is
+uploaded and assigned, but its track is inactive because it has no tester
+group. No production submission, rollout, review, public availability, or
+store-delivered physical QA is claimed. Store consoles remain the authority
+for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=37ea0b19882dec2f313f51d4b91a2c1c395d7b4820eda440a26deb8e4e98037a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
+
+## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
+
+Transporter reported exact Apple build `1.1.0 (6)` as delivered at 21:40
+Asia/Tashkent; at 21:51 it still reported `THE APP IS PROCESSING`. A subsequent
+authenticated App Store Connect relationship GET returned the same build as
+`VALID` and `APP_STORE_ELIGIBLE`, uploaded at 21:47:14. TestFlight beta-group
+distribution and installation remain unverified. Google Play reported exact
+phone `1.1.0 (8)` available to internal testers at 21:47 on
+track `4700083514281298386`, with the existing four-tester `License testers`
+group attached. The General Mobile invite opens but has not been accepted, so
+there is no Play-delivered install. At 21:49 Play reported exact Wear OS
+`1.1.0 (1000008)` available on Internal track `4699242452771231163`, while
+the track remained inactive because it has zero tester groups. Production was
+untouched. Exact hashes and the processing, tester, installation, and
+publication boundaries are recorded in the
+[internal store-delivery evidence](../growth/quality/internal-store-delivery-2026-08-31.md).
 
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level
-manifest remains `draft-blocked` because store delivery and the remaining
-Android/Wear and Apple physical matrices are absent. The phone entry now binds
-the exact AAB-derived physical API 25 pass. The protected staged hosted chain
-remains mandatory for every current master.
+manifest remains `draft-blocked` because authorized tester access, TestFlight
+beta distribution, store-delivered runtime QA, and the remaining Android/Wear
+and Apple physical matrices are absent. The phone entry now binds the exact
+AAB-derived physical API 25 pass. The protected staged hosted chain remains
+mandatory for every current master.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 

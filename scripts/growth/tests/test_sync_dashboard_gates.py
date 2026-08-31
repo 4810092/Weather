@@ -39,15 +39,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact AAB-derived upload-key phone/API 25 passed",
+                "exact phone and Wear AABs are on separate Play Internal tracks",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact App Store-profile distribution IPA retained",
+                "exact build 6 is VALID and App Store eligible",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact retained IPA unchanged to TestFlight",
+                "TestFlight beta-group distribution for processed build 6",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
@@ -90,7 +90,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "Play Internal",
+                "authorized tester access",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

@@ -146,10 +146,9 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "Play Internal delivery plus byte-linked physical phone, tablet, widget, and Wear OS 1.1.0 (1000008) runtime matrix",
-    "unchanged TestFlight delivery and physical iPhone, iPad, widget, and watch runtime matrix for Apple 1.1.0 (6)",
-    "App Store base 1.1.0 keyword approval before CPP keyword assignment",
-    "write-capable App Store Connect and Google Play upload paths"
+    "Play-delivered physical phone, tablet, widget, and Wear OS 1.1.0 (1000008) runtime matrix after completing authorized tester access",
+    "TestFlight beta-group distribution and physical iPhone, iPad, widget, and watch runtime matrix for processed Apple 1.1.0 (6)",
+    "App Store base 1.1.0 keyword approval before CPP keyword assignment"
   ],
   "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."
 }

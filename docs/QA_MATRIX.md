@@ -7,8 +7,8 @@ Status date: August 31, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=37ea0b19882dec2f313f51d4b91a2c1c395d7b4820eda440a26deb8e4e98037a -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
 In the machine-validated block, `byte_verified=true` records the full-verifier
@@ -118,10 +118,12 @@ and its explicit external-build provenance boundary are recorded in
   or new Nimbo crash report. The exact-current unsigned watchOS build 6 also
   rendered EN/RU/UZ and passed `30/30` cold launches, but it used an explicitly
   stale retained `UserDefaults` snapshot matching the preview-like fixture, not
-  a live provider response or fresh phone transfer. Build 6 now has a verified
-  App Store distribution archive/IPA, but it has not been uploaded or processed
-  by TestFlight and has no iOS 15/16 runtime widget render, physical
-  iPhone/iPad/watch result, or fresh paired-watch evidence.
+  a live provider response or fresh phone transfer. Exact build 6 now has a
+  verified App Store distribution archive/IPA and completed App Store Connect
+  processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group
+  distribution/install remains unverified and there is no iOS 15/16 runtime
+  widget render, physical iPhone/iPad/watch result, or fresh paired-watch
+  evidence.
 - Unit, host, simulator, repository, localization, migration, R8, and unsigned
   release-build checks are useful regression evidence. They are not signing,
   install-over-production, TestFlight/Play delivery, physical-device, review,
@@ -146,10 +148,10 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — the exact AAB-derived upload-key-signed APK passed clean physical API 25 onboarding/live/share/offline/recovery/health with identical installed bytes, but Play Internal and Play-app-signing delivery plus the remaining accessibility/update scope are absent |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — the exact AAB-derived upload-key-signed APK passed clean physical API 25 onboarding/live/share/offline/recovery/health with identical installed bytes; exact vc8 is available on Play Internal and its invite opens, but the invite is unaccepted, no Play-delivered install exists, and accessibility/update coverage remains absent |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact-current API 37 debug emulator localized stale-cache render and cold loop pass; no fresh refresh, upload-signed physical watch, or paired handoff result |
-| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and the signed artifact is verified-current, but unchanged TestFlight delivery, widget placement, older-runtime rendering, and physical evidence are absent |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact vc1000008 is available on its Wear Internal track, but the track is inactive with zero tester groups; exact-current API 37 debug emulator stale-cache render/cold loop passes, while Play-delivered physical watch and paired handoff remain absent |
+| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and exact build 6 is processed `VALID` / `APP_STORE_ELIGIBLE`, but TestFlight beta distribution/install, widget placement, older-runtime rendering, and physical evidence are absent |
 | Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — exact-current unsigned simulator localization and 30-loop evidence uses a stale preview-like retained fixture; no fresh paired transfer or physical-watch result |
 
 ## Historical evidence — non-transferable

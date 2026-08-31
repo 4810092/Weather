@@ -13,6 +13,19 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.growth.sync_dashboard_report_payload import (
+        DashboardPayloadSyncError,
+        FALLBACK_ID,
+        render_static_fallback,
+    )
+except ModuleNotFoundError:  # Direct execution with scripts/ on sys.path.
+    from growth.sync_dashboard_report_payload import (
+        DashboardPayloadSyncError,
+        FALLBACK_ID,
+        render_static_fallback,
+    )
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARTIFACT = REPO_ROOT / "growth/dashboard/artifact.json"
@@ -93,6 +106,23 @@ def embedded_artifact_payload(report: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise DashboardConsistencyError("dashboard payload must be a JSON object")
     return payload
+
+
+def static_fallback(report: Path) -> str:
+    try:
+        source = report.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise DashboardConsistencyError(f"cannot read dashboard report: {error}") from error
+    opening = f'<main id="{FALLBACK_ID}"'
+    if source.count(opening) != 1:
+        raise DashboardConsistencyError(
+            f"dashboard report must contain exactly one {FALLBACK_ID!r} main"
+        )
+    start = source.index(opening)
+    end = source.find("</main>", start)
+    if end < 0:
+        raise DashboardConsistencyError("dashboard static fallback main is not closed")
+    return source[start : end + len("</main>")]
 
 
 def _repo_file(repo_root: Path, relative: str) -> Path:
@@ -603,6 +633,17 @@ def verify_dashboard_report(
                 f"(artifact generatedAt={artifact_generated!r}, "
                 f"report generatedAt={report_generated!r}); regenerate report.html"
             )
+    try:
+        expected_fallback = render_static_fallback(canonical)
+    except DashboardPayloadSyncError as error:
+        raise DashboardConsistencyError(
+            f"dashboard canonical fallback cannot be rendered: {error}"
+        ) from error
+    if static_fallback(report) != expected_fallback:
+        raise DashboardConsistencyError(
+            "dashboard static fallback does not match artifact.json; "
+            "regenerate report.html"
+        )
 
 
 def parse_args() -> argparse.Namespace:
@@ -621,7 +662,7 @@ def main() -> int:
         return 1
     print(
         "Dashboard consistency check passed: cited sources, artifact.json, "
-        "and report.html agree."
+        "embedded payload, and static fallback agree."
     )
     return 0
 

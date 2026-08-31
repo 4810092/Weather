@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synchronize the portable dashboard's embedded canonical artifact payload."""
+"""Synchronize the portable dashboard payload and semantic static fallback."""
 
 from __future__ import annotations
 
@@ -8,11 +8,13 @@ import base64
 import binascii
 from dataclasses import dataclass
 import gzip
+from html import escape
 from html.parser import HTMLParser
 import io
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 import tempfile
@@ -25,6 +27,7 @@ DEFAULT_ARTIFACT = REPO_ROOT / "growth/dashboard/artifact.json"
 DEFAULT_REPORT = REPO_ROOT / "growth/dashboard/report.html"
 PAYLOAD_TEMPLATE_ID = "data-analytics-portable-artifact-payload-source"
 PAYLOAD_COMPRESSION = "gzip-base64"
+FALLBACK_ID = "data-analytics-portable-fallback"
 
 
 class DashboardPayloadSyncError(ValueError):
@@ -265,6 +268,288 @@ def replace_embedded_payload(report: str, artifact: dict[str, Any]) -> str:
     return report[: target.content_start] + replacement + report[target.content_end :]
 
 
+def _object(value: Any, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise DashboardPayloadSyncError(f"dashboard artifact {label} must be an object")
+    return value
+
+
+def _array(value: Any, label: str) -> list[Any]:
+    if not isinstance(value, list):
+        raise DashboardPayloadSyncError(f"dashboard artifact {label} must be an array")
+    return value
+
+
+def _text(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
+def _format_value(value: Any, value_format: str | None = None) -> str:
+    if value_format == "percent" and isinstance(value, (int, float)):
+        rendered = f"{value * 100:.2f}".rstrip("0").rstrip(".")
+        return f"{rendered}%"
+    if value_format == "number" and isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return _text(value)
+
+
+def _inline_markdown(value: str) -> str:
+    rendered = escape(value)
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", rendered)
+
+
+def _render_markdown(body: Any) -> str:
+    if not isinstance(body, str):
+        raise DashboardPayloadSyncError("dashboard markdown block body must be text")
+    parts: list[str] = []
+    for paragraph in (item.strip() for item in body.split("\n\n")):
+        if not paragraph:
+            continue
+        if paragraph.startswith("## "):
+            parts.append(f"<h2>{_inline_markdown(paragraph[3:])}</h2>")
+        else:
+            parts.append(f"<p>{_inline_markdown(paragraph)}</p>")
+    return "".join(parts)
+
+
+def _render_metric_strip(
+    block: dict[str, Any],
+    cards_by_id: dict[str, dict[str, Any]],
+    datasets: dict[str, Any],
+) -> str:
+    articles: list[str] = []
+    for card_id in _array(block.get("cardIds", []), "metric-strip cardIds"):
+        card = cards_by_id.get(_text(card_id))
+        if card is None:
+            raise DashboardPayloadSyncError(f"dashboard card is missing: {card_id}")
+        dataset_id = _text(card.get("dataset"))
+        rows = _array(datasets.get(dataset_id), f"dataset {dataset_id}")
+        row = _object(rows[0], f"dataset {dataset_id} first row") if rows else {}
+        metrics = _array(card.get("metrics"), f"card {card_id} metrics")
+        if not metrics:
+            raise DashboardPayloadSyncError(f"dashboard card has no metrics: {card_id}")
+        primary = _object(metrics[0], f"card {card_id} primary metric")
+        value = _format_value(row.get(_text(primary.get("field"))), primary.get("format"))
+        badges: list[str] = []
+        for raw_metric in metrics[1:]:
+            metric = _object(raw_metric, f"card {card_id} secondary metric")
+            metric_value = _format_value(
+                row.get(_text(metric.get("field"))), metric.get("format")
+            )
+            badges.append(
+                '<span class="portable-metric-badge">'
+                f'<span>{escape(_text(metric.get("label")))}</span> '
+                f"<strong>{escape(metric_value)}</strong></span>"
+            )
+        articles.append(
+            '<article class="portable-metric-card" '
+            f'data-artifact-id="metric:{escape(_text(block.get("id")))}:{escape(_text(card_id))}" '
+            'data-artifact-kind="card">'
+            f'<p class="portable-metric-label">{escape(_text(primary.get("label")))}</p>'
+            f'<p class="portable-metric-value">{escape(value)}</p>'
+            f'<p class="portable-card-description">{escape(_text(card.get("description")))}</p>'
+            f'<div class="portable-metric-badges">{"".join(badges)}</div>'
+            "</article>"
+        )
+    return f'<section class="portable-metric-grid">{"".join(articles)}</section>'
+
+
+def _render_table(
+    title: str,
+    subtitle: str,
+    columns: list[dict[str, Any]],
+    rows: list[Any],
+) -> str:
+    headers = "".join(
+        f'<th scope="col">{escape(_text(column.get("label")))}</th>'
+        for column in columns
+    )
+    rendered_rows: list[str] = []
+    for raw_row in rows:
+        row = _object(raw_row, f"table {title} row")
+        rendered_rows.append(
+            "<tr>"
+            + "".join(
+                f'<td>{escape(_text(row.get(_text(column.get("field")))))}</td>'
+                for column in columns
+            )
+            + "</tr>"
+        )
+    return (
+        '<section class="portable-content-card portable-table-card">'
+        f'<header class="portable-visual-header"><h2>{escape(title)}</h2>'
+        f"<p>{escape(subtitle)}</p></header>"
+        '<div class="portable-table-scroll"><table>'
+        f"<caption>{escape(title)}</caption><thead><tr>{headers}</tr></thead>"
+        f"<tbody>{''.join(rendered_rows)}</tbody></table></div></section>"
+    )
+
+
+def _render_chart_as_table(
+    chart: dict[str, Any], datasets: dict[str, Any]
+) -> str:
+    encodings = _object(chart.get("encodings"), f"chart {chart.get('id')} encodings")
+    columns: list[dict[str, Any]] = []
+    for channel in ("x", "color", "y"):
+        encoding = encodings.get(channel)
+        if isinstance(encoding, dict):
+            columns.append(
+                {
+                    "field": encoding.get("field"),
+                    "label": encoding.get("label") or encoding.get("field"),
+                }
+            )
+    dataset_id = _text(chart.get("dataset"))
+    rows = _array(datasets.get(dataset_id), f"dataset {dataset_id}")
+    normalized: list[dict[str, Any]] = []
+    for raw_row in rows:
+        row = dict(_object(raw_row, f"chart {chart.get('id')} row"))
+        for encoding in encodings.values():
+            if isinstance(encoding, dict):
+                field = _text(encoding.get("field"))
+                row[field] = _format_value(row.get(field), encoding.get("format"))
+        normalized.append(row)
+    return _render_table(
+        _text(chart.get("title")),
+        _text(chart.get("subtitle")),
+        columns,
+        normalized,
+    )
+
+
+def render_static_fallback(artifact: dict[str, Any]) -> str:
+    """Render a deterministic semantic fallback from the canonical artifact."""
+    manifest = _object(artifact.get("manifest"), "manifest")
+    snapshot = _object(artifact.get("snapshot"), "snapshot")
+    datasets = _object(snapshot.get("datasets"), "snapshot datasets")
+    title = _text(manifest.get("title"))
+    generated_at = _text(manifest.get("generatedAt"))
+    status = _text(snapshot.get("status"))
+    cards_by_id = {
+        _text(card.get("id")): card
+        for card in (
+            _object(item, "manifest card")
+            for item in _array(manifest.get("cards", []), "manifest cards")
+        )
+    }
+    tables_by_id = {
+        _text(table.get("id")): table
+        for table in (
+            _object(item, "manifest table")
+            for item in _array(manifest.get("tables", []), "manifest tables")
+        )
+    }
+    charts_by_id = {
+        _text(chart.get("id")): chart
+        for chart in (
+            _object(item, "manifest chart")
+            for item in _array(manifest.get("charts", []), "manifest charts")
+        )
+    }
+
+    issues = []
+    for raw_issue in _array(snapshot.get("accessIssues", []), "snapshot accessIssues"):
+        issue = _object(raw_issue, "snapshot access issue")
+        issues.append(
+            f'<li><strong>{escape(_text(issue.get("dataset")))}:</strong> '
+            f'{escape(_text(issue.get("message")))}</li>'
+        )
+    notice = ""
+    if issues:
+        notice = (
+            '<section class="portable-notice" aria-labelledby="portable-access-issues">'
+            '<h2 id="portable-access-issues">Data access issues</h2>'
+            f"<ul>{''.join(issues)}</ul></section>"
+        )
+
+    rendered_blocks: list[str] = []
+    for raw_block in _array(manifest.get("blocks", []), "manifest blocks"):
+        block = _object(raw_block, "manifest block")
+        block_type = _text(block.get("type"))
+        content = ""
+        if block_type == "markdown":
+            content = f'<section class="portable-markdown">{_render_markdown(block.get("body"))}</section>'
+        elif block_type == "metric-strip":
+            content = _render_metric_strip(block, cards_by_id, datasets)
+        elif block_type == "table":
+            table_id = _text(block.get("tableId"))
+            table = tables_by_id.get(table_id)
+            if table is None:
+                raise DashboardPayloadSyncError(f"dashboard table is missing: {table_id}")
+            columns = [
+                _object(item, f"table {table_id} column")
+                for item in _array(table.get("columns"), f"table {table_id} columns")
+            ]
+            dataset_id = _text(table.get("dataset"))
+            content = _render_table(
+                _text(table.get("title")),
+                _text(table.get("subtitle")),
+                columns,
+                _array(datasets.get(dataset_id), f"dataset {dataset_id}"),
+            )
+        elif block_type == "chart":
+            chart_id = _text(block.get("chartId"))
+            chart = charts_by_id.get(chart_id)
+            if chart is None:
+                raise DashboardPayloadSyncError(f"dashboard chart is missing: {chart_id}")
+            content = _render_chart_as_table(chart, datasets)
+        else:
+            raise DashboardPayloadSyncError(f"unsupported dashboard block type: {block_type}")
+        rendered_blocks.append(
+            '<div class="portable-block portable-layout-full" '
+            f'data-artifact-block-id="{escape(_text(block.get("id")))}" '
+            f'data-artifact-block-type="{escape(block_type)}">{content}</div>'
+        )
+
+    source_items: list[str] = []
+    for raw_source in _array(artifact.get("sources", []), "sources"):
+        source = _object(raw_source, "source")
+        query = _object(source.get("query"), f"source {source.get('id')} query")
+        source_items.append(
+            f'<li><strong>{escape(_text(source.get("label")))}</strong>'
+            f'<span class="portable-source-meta">{escape(_text(source.get("path")))} · '
+            f'{escape(_text(query.get("executed_at")))}</span>'
+            f'<p>{escape(_text(query.get("description")))}</p></li>'
+        )
+    sources = (
+        '<section class="portable-sources" aria-labelledby="portable-sources-heading">'
+        '<h2 id="portable-sources-heading">Sources</h2>'
+        f"<ol>{''.join(source_items)}</ol></section>"
+    )
+
+    return (
+        f'<main id="{FALLBACK_ID}" class="portable-fallback" '
+        'data-portable-fallback="true" data-portable-surface="dashboard" '
+        f'data-canonical-generated-at="{escape(generated_at)}">'
+        '<header class="portable-page-header"><div class="portable-page-heading">'
+        '<p class="portable-surface-label">Data Analytics dashboard</p>'
+        f"<h1>{escape(title)}</h1></div><div class=\"portable-page-meta\">"
+        f'<span class="portable-status">{escape(status)}</span>'
+        f'<time datetime="{escape(generated_at)}">{escape(generated_at)}</time>'
+        f"</div></header>{notice}<div class=\"portable-block-stack\">"
+        f"{''.join(rendered_blocks)}</div>{sources}</main>"
+    )
+
+
+def replace_static_fallback(report: str, artifact: dict[str, Any]) -> str:
+    """Replace exactly one semantic fallback with canonical rendered content."""
+    opening = f'<main id="{FALLBACK_ID}"'
+    if report.count(opening) != 1:
+        raise DashboardPayloadSyncError(
+            f"dashboard report must contain exactly one {FALLBACK_ID!r} main"
+        )
+    start = report.index(opening)
+    end = report.find("</main>", start)
+    if end < 0:
+        raise DashboardPayloadSyncError("dashboard static fallback main is not closed")
+    end += len("</main>")
+    return report[:start] + render_static_fallback(artifact) + report[end:]
+
+
 def _atomic_write_utf8(path: Path, content: str) -> None:
     try:
         mode = stat.S_IMODE(path.stat().st_mode)
@@ -297,10 +582,11 @@ def _atomic_write_utf8(path: Path, content: str) -> None:
 
 
 def sync_dashboard_report_payload(artifact_path: Path, report_path: Path) -> bool:
-    """Synchronize the report payload atomically; return whether bytes changed."""
+    """Synchronize report payload and fallback; return whether bytes changed."""
     artifact = _load_artifact(artifact_path)
     report = _read_utf8(report_path, "dashboard report")
-    synchronized = replace_embedded_payload(report, artifact)
+    synchronized = replace_static_fallback(report, artifact)
+    synchronized = replace_embedded_payload(synchronized, artifact)
     if synchronized == report:
         return False
     _atomic_write_utf8(report_path, synchronized)
@@ -322,7 +608,7 @@ def main() -> int:
         print(f"Dashboard payload sync failed: {error}", file=sys.stderr)
         return 1
     result = "updated" if changed else "already current"
-    print(f"Dashboard embedded artifact payload {result}: {arguments.report}")
+    print(f"Dashboard payload and static fallback {result}: {arguments.report}")
     return 0
 
 

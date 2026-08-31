@@ -161,9 +161,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, upload "
-                "the exact retained IPA unchanged to TestFlight, complete the "
-                "iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
+                "Obtain and symbolicate any diagnostic Apple exposes, confirm "
+                "TestFlight beta-group distribution for processed build 6, complete "
+                "the iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
             )
         elif gate_id == "release_artifact_source_sync":
             row["decision"] = (
@@ -177,23 +177,23 @@ def sync(
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact AAB-derived upload-key phone/API 25 passed; "
-                "Play-delivered phone/tablet/widget/Wear matrix missing"
+                "BLOCKED · exact phone and Wear AABs are on separate Play Internal "
+                "tracks; Play-delivered phone/tablet/widget/Wear matrix missing"
             )
             new_next = (
-                "Deliver the exact phone and Wear AABs through Play Internal, rerun "
+                "Complete authorized tester access, accept the phone invite, rerun "
                 "the phone scope against the Play-delivered package, and complete "
                 "physical tablet/widget and paired Wear OS QA"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact App Store-profile distribution IPA retained; TestFlight "
-                "iPhone/iPad/widget/watch matrix missing"
+                "BLOCKED · exact build 6 is VALID and App Store eligible; TestFlight "
+                "beta distribution and iPhone/iPad/widget/watch matrix missing"
             )
             new_next = (
-                "Upload the exact retained IPA unchanged to TestFlight, install it "
-                "on the ready iPhone and iPad, restore watch readiness, then run "
-                "the complete iPhone/iPad/widget/watch matrix"
+                "Confirm TestFlight beta-group distribution for processed build 6, "
+                "install it on the ready iPhone and iPad, restore watch readiness, "
+                "then run the complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -354,8 +354,9 @@ def sync(
         "33300967788 also passed shared Simulator tests, all 18 Apple surface-"
         "state tests, and the unsigned application build. Protected run "
         "33381050098 additionally produced a retained, independently verified "
-        "distribution-signed 1.1.0 (6) IPA/archive. That candidate is not the "
-        "crashed public build, has not been exercised through TestFlight, identifies "
+        "distribution-signed 1.1.0 (6) IPA/archive. The same exact build is now "
+        "VALID and APP_STORE_ELIGIBLE in App Store Connect, but is not the crashed "
+        "public build, has not been installed through TestFlight, identifies "
         "neither production event, and does not close the crash gate for current "
         f"source authority {current_revision_short}."
     )
@@ -379,10 +380,12 @@ def sync(
         "b07192e, revalidating the live draft and returning byte_verified=true for "
         "all three artifacts. The committed upload manifest is atomically 3/3 "
         "verified-current and remains draft-blocked. The draft is mutable and the "
-        "protected chain must recheck it before every later use. The Play-delivered "
-        "Android physical matrix and TestFlight Apple matrix remain "
-        "missing; two public iOS crashes still lack diagnostics. No store upload, "
-        "processing, submission, release, or availability is claimed."
+        "protected chain must recheck it before every later use. Those exact bytes "
+        "were subsequently accepted into separate phone and Wear Play Internal "
+        "tracks and Apple build 6 completed processing as VALID and APP_STORE_ELIGIBLE. "
+        "Play-delivered Android runtime QA and TestFlight beta installation remain "
+        "missing; two public iOS crashes still lack diagnostics. No production "
+        "submission, review, rollout, public availability, or rank is claimed."
     )
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
@@ -423,8 +426,12 @@ def sync(
         "draft-blocked. The exact phone AAB was then converted without rebuilding into "
         "an upload-key-signed universal APK; installed and pulled bytes matched at "
         "e970352d…, and the clean physical API 25 onboarding/live/share/offline/"
-        "recovery smoke passed. This is not Play app-signing-key delivery, so the "
-        "Play-delivered phone/tablet/widget/Wear and TestFlight Apple matrices remain "
+        "recovery smoke passed. The exact phone and Wear AABs are now accepted on "
+        "their separate Play Internal tracks; the phone has an existing four-account "
+        "tester group but its invite is unaccepted, while the Wear track has no "
+        "tester group and remains inactive. Apple accepted the exact IPA as build 6 "
+        "with VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone/"
+        "tablet/widget/Wear runtime QA and TestFlight beta distribution/install remain "
         "missing. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
@@ -465,16 +472,16 @@ def sync(
         "There is no exact-current signed phone/Wear artifact, distribution-"
         "signed Apple archive, iOS 15 runtime pass, or matching physical matrix.",
         "Exact-current signed phone/Wear and Apple artifacts are retained, "
-        "byte-verified, and manifest-promoted, but not store-delivered; "
-        "there is no iOS 15 runtime pass or matching physical matrix.",
+        "byte-verified, manifest-promoted, and accepted into their internal store "
+        "channels; there is no iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
         "There is no retained, accepted, byte-verified exact-current signed "
         "phone/Wear artifact or distribution-signed Apple archive, and no iOS "
         "15 runtime pass or matching physical matrix.",
         "Exact-current signed phone/Wear and Apple artifacts are retained, "
-        "byte-verified, and manifest-promoted, but not store-delivered; "
-        "there is no iOS 15 runtime pass or matching physical matrix.",
+        "byte-verified, manifest-promoted, and accepted into their internal store "
+        "channels; there is no iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
         "Android Keychain metadata and the existing mode-600 keystore remain "
@@ -561,7 +568,42 @@ def sync(
         "Exact-current signed phone/Wear and Apple candidates are retained and "
         "byte-verified, but they are not manifest-promoted or store-delivered;",
         "Exact-current signed phone/Wear and Apple candidates are retained, "
+        "byte-verified, manifest-promoted, and accepted into their internal store "
+        "channels;",
+    )
+    verdict = verdict.replace(
+        "Exact-current signed phone/Wear and Apple candidates are retained, "
         "byte-verified, and manifest-promoted, but not store-delivered;",
+        "Exact-current signed phone/Wear and Apple candidates are retained, "
+        "byte-verified, manifest-promoted, and accepted into their internal store "
+        "channels;",
+    )
+    verdict = verdict.replace(
+        "At the August 31 read-only device check, the iPad mini 5 was paired, "
+        "unlocked, and DDI-ready with Nimbo absent; the iPhone 14 Pro was paired "
+        "but locked/DDI-blocked, and the paired Series 5 watch was visible but "
+        "offline for detail/app queries.",
+        "At the August 31 read-only device check, the iPhone 14 Pro and iPad mini 5 "
+        "were paired, booted, and Developer Mode enabled; the iPad had no Nimbo "
+        "install. The paired Series 5 watch was compatible, but Developer Mode was "
+        "disabled and its developer tunnel disconnected.",
+    )
+    verdict = verdict.replace(
+        "Authenticated App Store Connect inventory reads expose public iOS 1.0.1 "
+        "with valid build 4 and no 1.1.0 version or builds 5/6. Build-detail and "
+        "diagnostic-signature GETs for build 4 returned security 403. One bounded "
+        "POST attempting to create only a manual-release 1.1.0 version also "
+        "returned 403; the final authenticated GET again returned zero 1.1.0 "
+        "versions, proving that no partial version or localization draft was "
+        "created. No build, localization, screenshot, Custom Product Page, "
+        "submission, or release mutation followed.",
+        "Authenticated App Store Connect relationship inventory now exposes exact "
+        "build 6 as VALID and APP_STORE_ELIGIBLE, uploaded at 2026-08-31 21:47:14 "
+        "Asia/Tashkent. Direct prerelease/TestFlight-detail GETs remain permission-"
+        "blocked with security 403. The earlier bounded POST attempting to create "
+        "only a manual-release 1.1.0 version also returned 403, and no version or "
+        "localization draft was created. No localization, screenshot, Custom Product "
+        "Page, production submission, or release mutation followed.",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at

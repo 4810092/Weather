@@ -27,6 +27,7 @@ from scripts.check_dashboard_report import (
     verify_dashboard_report,
     verify_dashboard_sources,
 )
+from scripts.growth.sync_dashboard_report_payload import render_static_fallback
 from scripts.check_store_assets import (
     inspect_image,
     load_creative_manifest,
@@ -69,7 +70,9 @@ def portable_report(payload: dict) -> str:
         )
     ).decode("ascii")
     return (
-        "<html><body><template "
+        "<html><body>"
+        f"{render_static_fallback(payload)}"
+        "<template "
         'id="data-analytics-portable-artifact-payload-source" '
         'data-compression="gzip-base64">'
         f"{encoded}</template></body></html>"
@@ -1117,8 +1120,19 @@ class ValidationScriptsTest(unittest.TestCase):
     def test_dashboard_report_must_embed_exact_canonical_artifact(self) -> None:
         artifact = {
             "surface": "dashboard",
-            "manifest": {"generatedAt": "2026-08-28T00:00:00Z"},
-            "snapshot": {"status": "partial"},
+            "manifest": {
+                "title": "Nimbo dashboard test",
+                "generatedAt": "2026-08-28T00:00:00Z",
+                "cards": [],
+                "charts": [],
+                "tables": [],
+                "blocks": [],
+            },
+            "snapshot": {
+                "status": "partial",
+                "accessIssues": [],
+                "datasets": {},
+            },
             "sources": [],
         }
         embedded = {"ok": True, "widget_type": "artifact", **artifact}
@@ -1133,6 +1147,38 @@ class ValidationScriptsTest(unittest.TestCase):
             artifact_path.write_text(json.dumps(artifact))
             with self.assertRaisesRegex(
                 DashboardConsistencyError, "does not match artifact.json"
+            ):
+                verify_dashboard_report(artifact_path, report_path)
+
+    def test_dashboard_report_rejects_stale_static_fallback(self) -> None:
+        artifact = {
+            "surface": "dashboard",
+            "manifest": {
+                "title": "Nimbo dashboard test",
+                "generatedAt": "2026-08-31T18:00:00Z",
+                "cards": [],
+                "charts": [],
+                "tables": [],
+                "blocks": [],
+            },
+            "snapshot": {
+                "status": "blocked",
+                "accessIssues": [],
+                "datasets": {},
+            },
+            "sources": [],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            artifact_path = Path(directory) / "artifact.json"
+            report_path = Path(directory) / "report.html"
+            artifact_path.write_text(json.dumps(artifact))
+            report_path.write_text(
+                portable_report(artifact).replace(
+                    "Nimbo dashboard test", "Stale dashboard title", 1
+                )
+            )
+            with self.assertRaisesRegex(
+                DashboardConsistencyError, "static fallback does not match"
             ):
                 verify_dashboard_report(artifact_path, report_path)
 
