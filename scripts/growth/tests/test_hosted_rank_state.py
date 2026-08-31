@@ -133,6 +133,49 @@ class HostedRankStateTest(unittest.TestCase):
             self.assertEqual(existing.read_bytes(), preserved)
             self.assertFalse((root / "history").exists())
 
+    def test_prepare_history_can_copy_an_existing_day_for_idempotent_noop(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            existing = source / f"{DAY}.json"
+            self.write_json(existing, {"date": DAY, "marker": "first-writer"})
+
+            copied = prepare_history(
+                source_rank_dir=source,
+                state_rank_dir=None,
+                output_dir=root / "history",
+                expected_date=DAY,
+                allow_existing_date=True,
+            )
+
+            self.assertEqual(copied, [root / "history" / f"{DAY}.json"])
+            self.assertEqual(copied[0].read_bytes(), existing.read_bytes())
+
+    def test_idempotent_noop_still_rejects_default_state_divergence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            state = root / "state"
+            self.write_json(
+                source / f"{DAY}.json",
+                {"date": DAY, "marker": "default-only"},
+            )
+            state.mkdir()
+
+            with self.assertRaisesRegex(
+                HostedRankStateError,
+                f"default branch contains {DAY}, but the observation branch does not",
+            ):
+                prepare_history(
+                    source_rank_dir=source,
+                    state_rank_dir=state,
+                    output_dir=root / "history",
+                    expected_date=DAY,
+                    allow_existing_date=True,
+                )
+
+            self.assertFalse((root / "history").exists())
+
     def test_state_branch_must_contain_byte_identical_default_history(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

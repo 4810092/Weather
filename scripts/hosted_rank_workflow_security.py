@@ -63,8 +63,13 @@ def validate_hosted_rank_workflow(text: str) -> list[str]:
     job_names = re.findall(r"(?m)^  ([a-z][a-z0-9-]*):$", jobs_block)
     if job_names != ["capture", "persist"]:
         failures.append("workflow must contain exactly capture and persist jobs")
-    if text.count("    if: github.ref == 'refs/heads/master'") != 2:
-        failures.append("both jobs must reject non-master execution")
+    if lines.count("    if: github.ref == 'refs/heads/master'") != 1:
+        failures.append("capture job must reject non-master execution")
+    if lines.count(
+        "    if: github.ref == 'refs/heads/master' && "
+        "needs.capture.outputs.already_exists != 'true'"
+    ) != 1:
+        failures.append("persist job must reject non-master and canonical-day no-op")
     if text.count("      contents: write") != 1:
         failures.append("contents: write must appear only on the persist job")
     if "      actions: read\n      contents: write\n" not in text:
@@ -113,6 +118,10 @@ def validate_hosted_rank_workflow(text: str) -> list[str]:
         "diff --cached --diff-filter=A": 1,
         "hash-object --no-filters": 1,
         "Canonical unknown evidence was persisted; failing closed.": 1,
+        "--allow-existing-date": 1,
+        "already_exists: ${{ steps.history.outputs.already_exists }}": 1,
+        "echo \"already_exists=$already_exists\" >> \"$GITHUB_OUTPUT\"": 1,
+        "if: steps.history.outputs.already_exists != 'true'": 3,
     }
     for marker, expected_count in required_counts.items():
         if marker == "hosted_rank_state.py prepare-history":

@@ -22,6 +22,7 @@ jobs:
       state_parent: ${{ steps.state.outputs.state_parent }}
       monitor_exit_code: ${{ steps.capture.outputs.monitor_exit_code }}
       artifact_name: ${{ steps.context.outputs.artifact_name }}
+      already_exists: ${{ steps.history.outputs.already_exists }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -73,6 +74,7 @@ jobs:
           fi
           echo "state_parent=$state_parent" >> "$GITHUB_OUTPUT"
       - name: Prepare append-only canonical history
+        id: history
         shell: bash
         env:
           NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
@@ -84,6 +86,7 @@ jobs:
             --source-rank-dir "$GITHUB_WORKSPACE/growth/data/public-rank"
             --output-dir "$RUNNER_TEMP/rank-history"
             --date "$NIMBO_LOCAL_DATE"
+            --allow-existing-date
           )
           if [[ "$NIMBO_STATE_PARENT" != absent ]]; then
             arguments+=(
@@ -91,8 +94,16 @@ jobs:
             )
           fi
           python3 scripts/growth/hosted_rank_state.py "${arguments[@]}"
+          if [[ -f "$RUNNER_TEMP/rank-history/$NIMBO_LOCAL_DATE.json" ]]; then
+            already_exists=true
+            echo "Canonical day $NIMBO_LOCAL_DATE is already preserved; no-op."
+          else
+            already_exists=false
+          fi
+          echo "already_exists=$already_exists" >> "$GITHUB_OUTPUT"
       - name: Capture exactly one UZ canonical day
         id: capture
+        if: steps.history.outputs.already_exists != 'true'
         shell: bash
         env:
           NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
@@ -112,6 +123,7 @@ jobs:
           test -f "$snapshot"
           echo "monitor_exit_code=$monitor_exit_code" >> "$GITHUB_OUTPUT"
       - name: Evaluate streak and build hash-bound persistence bundle
+        if: steps.history.outputs.already_exists != 'true'
         shell: bash
         env:
           NIMBO_LOCAL_DATE: ${{ steps.context.outputs.local_date }}
@@ -142,6 +154,7 @@ jobs:
             --event-name "$GITHUB_EVENT_NAME" \
             --ref "$GITHUB_REF"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: steps.history.outputs.already_exists != 'true'
         with:
           name: ${{ steps.context.outputs.artifact_name }}
           path: ${{ runner.temp }}/persistence-bundle
@@ -149,7 +162,7 @@ jobs:
           retention-days: 14
 
   persist:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' && needs.capture.outputs.already_exists != 'true'
     needs: capture
     permissions:
       actions: read

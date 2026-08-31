@@ -89,6 +89,19 @@ class HostedRankWorkflowSecurityTest(unittest.TestCase):
         mutated = self.workflow.replace(marker, "", 1)
         self.assert_rejected(mutated, "marker count differs")
 
+    def test_existing_day_noop_must_be_explicitly_opted_in(self) -> None:
+        mutated = self.workflow.replace("            --allow-existing-date\n", "", 1)
+        self.assert_rejected(mutated, "marker count differs")
+
+    def test_persist_must_skip_an_already_canonical_day(self) -> None:
+        mutated = self.workflow.replace(
+            "    if: github.ref == 'refs/heads/master' && "
+            "needs.capture.outputs.already_exists != 'true'",
+            "    if: github.ref == 'refs/heads/master'",
+            1,
+        )
+        self.assert_rejected(mutated, "canonical-day no-op")
+
     def test_mutable_state_branch_code_cannot_execute(self) -> None:
         self.assert_rejected(
             self.workflow.replace(

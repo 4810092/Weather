@@ -104,6 +104,7 @@ def prepare_history(
     state_rank_dir: Path | None,
     output_dir: Path,
     expected_date: str,
+    allow_existing_date: bool = False,
 ) -> list[Path]:
     """Copy the authoritative history after proving source/state consistency."""
 
@@ -111,7 +112,7 @@ def prepare_history(
     if output_dir.exists():
         raise HostedRankStateError(f"history output already exists: {output_dir}")
     source = _canonical_files(source_rank_dir, "default-branch rank directory")
-    if expected_date in source:
+    if expected_date in source and not allow_existing_date:
         raise HostedRankStateError(
             f"canonical day already exists on the default branch: {expected_date}"
         )
@@ -120,7 +121,7 @@ def prepare_history(
         authoritative = source
     else:
         state = _canonical_files(state_rank_dir, "observation-branch rank directory")
-        if expected_date in state:
+        if expected_date in state and not allow_existing_date:
             raise HostedRankStateError(
                 f"canonical day already exists on {OBSERVATION_BRANCH}: {expected_date}"
             )
@@ -523,6 +524,7 @@ def build_parser() -> argparse.ArgumentParser:
     prepare.add_argument("--state-rank-dir", type=Path)
     prepare.add_argument("--output-dir", type=Path, required=True)
     prepare.add_argument("--date", required=True)
+    prepare.add_argument("--allow-existing-date", action="store_true")
 
     for command in ("build-bundle", "validate-bundle", "install-bundle"):
         child = subparsers.add_parser(command)
@@ -556,6 +558,7 @@ def main(argv: list[str] | None = None) -> int:
                 state_rank_dir=args.state_rank_dir,
                 output_dir=args.output_dir,
                 expected_date=args.date,
+                allow_existing_date=args.allow_existing_date,
             )
             print(f"Prepared {len(copied)} immutable canonical snapshots.")
         elif args.command == "build-bundle":

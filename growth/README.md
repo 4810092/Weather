@@ -76,6 +76,7 @@ or historical device result does not close those independent gates.
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
 | Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
 | Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share and `font_scale=1.3` smoke, active Wear tester track, fail-closed TalkBack service incompatibility, and remaining offline/tablet/widget/Wear boundaries |
+| Hosted rank idempotency | [quality/hosted-rank-idempotency-2026-09-01.md](quality/hosted-rank-idempotency-2026-09-01.md) | Existing September 1 snapshot preserved byte-for-byte after a duplicate scheduled capture; strict validated no-op behavior awaits hosted dispatch proof |
 | Google Play September 1 checkpoint | [quality/google-play-console-2026-09-01.md](quality/google-play-console-2026-09-01.md) | Pending UZ Custom Store Listing review, unchanged rolling dashboard aggregates, fail-closed unavailable Android Vitals rates, and old-production technical recommendations reconciled against the accepted 1.1.0 source |
 | Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
 | Trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-08-31-hosted.md](quality/release-artifact-full-verification-2026-08-31-hosted.md) | Protected run `33405849102` revalidated the mutable draft and all exact bytes; every later use must repeat the same check |
@@ -119,6 +120,11 @@ The capture job is read-only. A separate job receives `contents: write` only
 after a hash-bound snapshot/evaluation bundle has been built, and can push only
 the reviewed three-file state transition to the dedicated
 `growth-observations` branch.
+If the local calendar day is already present in the validated authoritative
+history, a repeated schedule or manual dispatch is a success no-op: capture,
+artifact upload, and persistence are all skipped. This never relaxes the
+append-only boundary—missing or divergent default/observation state still
+fails before the write-capable job can start.
 
 For a deliberate local diagnostic run:
 
