@@ -29,7 +29,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact_path,
                 gate_sql_path,
                 ROOT / "growth/quality/gates.json",
-                ROOT / "growth/reports/evaluation-2026-08-31.json",
+                ROOT / "growth/reports/evaluation-2026-09-01.json",
                 "2026-08-30T12:34:56Z",
             )
 
@@ -63,6 +63,22 @@ class SyncDashboardGatesTest(unittest.TestCase):
                     "first_launch_rate"
                 ],
                 0.72,
+            )
+            self.assertEqual(
+                artifact["snapshot"]["datasets"]["headline_metrics"][0][
+                    "apple_weather_rank"
+                ],
+                ">192",
+            )
+            rank_rows = {
+                row["check"]: row
+                for row in artifact["snapshot"]["datasets"]["rank_snapshot"]
+            }
+            self.assertEqual(
+                rank_rows["App Store · Weather chart"]["observed_rank"], "66"
+            )
+            self.assertEqual(
+                rank_rows["App Store search · weather"]["observed_rank"], ">192"
             )
             self.assertIn(
                 "request 14",
@@ -211,6 +227,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 "fixed logged-out gl=UZ recheck on September 1",
                 artifact["manifest"]["blocks"][0]["body"],
             )
+            self.assertIn(
+                "canonical 2026-09-01 capture",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            evaluation_source = next(
+                source
+                for source in artifact["sources"]
+                if source["id"] == "evaluation_snapshot"
+            )
+            self.assertEqual(
+                evaluation_source["path"],
+                "growth/reports/evaluation-2026-09-01.json",
+            )
             self.assertNotIn(
                 "neither candidate run yielded a retained",
                 artifact["manifest"]["blocks"][0]["body"],
@@ -228,7 +257,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 (ROOT / "growth/dashboard/gate_snapshot.sql", gate_sql_path),
                 (ROOT / "growth/quality/gates.json", gates_path),
                 (
-                    ROOT / "growth/reports/evaluation-2026-08-31.json",
+                    ROOT / "growth/reports/evaluation-2026-09-01.json",
                     evaluation_path,
                 ),
             ):

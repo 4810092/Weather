@@ -16,10 +16,13 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ARTIFACT = ROOT / "growth/dashboard/artifact.json"
 DEFAULT_GATE_SQL = ROOT / "growth/dashboard/gate_snapshot.sql"
 DEFAULT_GATES = ROOT / "growth/quality/gates.json"
-DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-08-31.json"
+DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-09-01.json"
+DEFAULT_RANK = ROOT / "growth/data/public-rank/2026-09-01.json"
 DEFAULT_BASELINE = ROOT / "growth/baseline/2026-08-31.json"
 DEFAULT_BASELINE_SQL = ROOT / "growth/dashboard/baseline_snapshot.sql"
 DEFAULT_DRIVER_SQL = ROOT / "growth/dashboard/driver_comparison.sql"
+DEFAULT_RANK_SQL = ROOT / "growth/dashboard/rank_snapshot.sql"
+DEFAULT_FRAMEWORK = ROOT / "growth/kpi-framework.json"
 
 
 def _load_object(path: Path) -> dict[str, Any]:
@@ -31,6 +34,22 @@ def _load_object(path: Path) -> dict[str, Any]:
 
 def _sql_literal(value: str) -> str:
     return "'" + value.replace("'", "''") + "'"
+
+
+def _observed_rank(surface: dict[str, Any]) -> str:
+    rank = surface.get("target_rank")
+    bound = surface.get("target_rank_bound")
+    if isinstance(rank, int) and not isinstance(rank, bool) and rank > 0 and bound is None:
+        return str(rank)
+    if rank is None and isinstance(bound, str) and re.fullmatch(r">[1-9]\d*", bound):
+        return bound
+    raise ValueError(f"rank surface {surface.get('surface_id')!r} is malformed")
+
+
+def _number_word(value: int) -> str:
+    return {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}.get(
+        value, str(value)
+    )
 
 
 def _stage_text(path: Path, content: str) -> Path:
@@ -121,16 +140,61 @@ def sync(
     baseline_path: Path = DEFAULT_BASELINE,
     baseline_sql_path: Path = DEFAULT_BASELINE_SQL,
     driver_sql_path: Path = DEFAULT_DRIVER_SQL,
+    rank_path: Path = DEFAULT_RANK,
+    rank_sql_path: Path = DEFAULT_RANK_SQL,
+    framework_path: Path = DEFAULT_FRAMEWORK,
 ) -> None:
     artifact = _load_object(artifact_path)
     gates_payload = _load_object(gates_path)
     evaluation = _load_object(evaluation_path)
     baseline = _load_object(baseline_path)
+    rank = _load_object(rank_path)
+    framework = _load_object(framework_path)
     gates = gates_payload.get("gates")
     datasets = artifact.get("snapshot", {}).get("datasets")
     rows = datasets.get("gate_snapshot") if isinstance(datasets, dict) else None
     if not isinstance(gates, dict) or not isinstance(rows, list):
         raise ValueError("gate registry or dashboard gate_snapshot is malformed")
+
+    try:
+        rank_date = rank["date"]
+        captured_at = rank["captured_at"]
+        rank_evaluation = rank["evaluation"]
+        rank_apple = rank["surfaces"]["apple"]
+        rank_google = rank["surfaces"]["google"]
+        requirements = framework["primary_goal"]["daily_requirements"]
+        top10_goal = evaluation["top10_goal"]
+    except (KeyError, TypeError) as error:
+        raise ValueError(f"rank/evaluation/framework source is malformed: {error}") from error
+    if (
+        not isinstance(rank_date, str)
+        or not isinstance(captured_at, str)
+        or rank.get("goal_evidence_complete") is not True
+        or rank_evaluation.get("complete") is not True
+        or evaluation.get("as_of") != rank_date
+        or top10_goal.get("as_of_snapshot_present") is not True
+        or top10_goal.get("current_config_fingerprint")
+        != rank.get("config_fingerprint")
+    ):
+        raise ValueError("rank and evaluation are not one complete comparable day")
+    profiles = requirements.get("google_required_profiles")
+    if not isinstance(profiles, list) or not profiles or not all(
+        isinstance(profile, str) and profile for profile in profiles
+    ):
+        raise ValueError("rank framework profiles are malformed")
+    weather_rank = _observed_rank(rank_apple["search"]["weather"])
+    category_rank = _observed_rank(rank_apple["category"])
+    rank_target = requirements["apple_weather_chart_rank_lte"]
+    google_rank_target = requirements["google_weather_category_rank_lte"]
+    generic_target = requirements["generic_queries_required"]
+    quorum = requirements["generic_query_profile_quorum"]
+    query_ids = set(rank_google["search"][profiles[0]])
+    if any(set(rank_google["search"][profile]) != query_ids for profile in profiles):
+        raise ValueError("rank profiles do not share one fixed query set")
+    query_count = len(query_ids)
+    qualifying_queries = rank_evaluation.get("google_generic_top10_query_count")
+    if not isinstance(qualifying_queries, int) or isinstance(qualifying_queries, bool):
+        raise ValueError("rank generic-query evaluation is malformed")
 
     platforms = baseline.get("platforms", {})
     apple_metrics = platforms.get("apple", {}).get("metrics")
@@ -176,6 +240,59 @@ def sync(
         or not isinstance(driver_rows, list)
     ):
         raise ValueError("dashboard baseline datasets are malformed")
+    rank_rows = [
+        {
+            "check": "App Store search · weather",
+            "result": f"{weather_rank} · target ≤{rank_target}",
+            "surface": "App Store UZ search",
+            "profile": "all",
+            "query": "weather",
+            "observed_rank": weather_rank,
+            "target_rank": rank_target,
+            "evidence_class": "fixed_public_capture",
+        },
+        {
+            "check": "App Store · Weather chart",
+            "result": f"{category_rank} · target ≤{rank_target}",
+            "surface": "App Store UZ Weather chart",
+            "profile": "official",
+            "query": "category",
+            "observed_rank": category_rank,
+            "target_rank": rank_target,
+            "evidence_class": "fixed_public_capture",
+        },
+    ]
+    for profile in profiles:
+        observed = _observed_rank(rank_google["category"][profile])
+        rank_rows.append(
+            {
+                "check": f"Google category · {profile}",
+                "result": f"{observed} · target ≤{google_rank_target}",
+                "surface": "Google Play UZ Weather category",
+                "profile": profile,
+                "query": "category",
+                "observed_rank": observed,
+                "target_rank": google_rank_target,
+                "evidence_class": "fixed_logged_out_capture",
+            }
+        )
+    rank_rows.append(
+        {
+            "check": "Google generic-query quorum",
+            "result": f"{qualifying_queries}/{query_count} qualify · target ≥{generic_target}",
+            "surface": "Google Play UZ generic-query quorum",
+            "profile": f"{quorum}-of-{len(profiles)} profiles",
+            "query": f"{_number_word(query_count)} configured queries",
+            "observed_rank": f"{qualifying_queries} qualifying queries",
+            "target_rank": generic_target,
+            "evidence_class": "fixed_logged_out_capture",
+        }
+    )
+    datasets["rank_snapshot"] = rank_rows
+    headline_rows[0]["top10_streak_days"] = top10_goal["current_streak_days"]
+    headline_rows[0]["top10_streak_target"] = top10_goal["required_days"]
+    headline_rows[0]["apple_weather_rank"] = weather_rank
+    headline_rows[0]["rank_target"] = rank_target
     current_google = {
         "Installations": (str(installations), "live_global_last_28_days_2026-08-31"),
         "First launches": (str(first_launches), "live_global_last_28_days_2026-08-31"),
@@ -339,22 +456,26 @@ def sync(
     }
     baseline_source = source_by_id.get("baseline_snapshot")
     driver_source = source_by_id.get("driver_comparison")
+    rank_source = source_by_id.get("rank_snapshot")
     gate_source = source_by_id.get("gate_snapshot")
     evaluation_source = source_by_id.get("evaluation_snapshot")
     if (
         not isinstance(baseline_source, dict)
         or not isinstance(driver_source, dict)
+        or not isinstance(rank_source, dict)
         or not isinstance(gate_source, dict)
         or not isinstance(evaluation_source, dict)
     ):
         raise ValueError("dashboard gate/evaluation sources are missing")
     baseline_query = baseline_source.get("query")
     driver_query = driver_source.get("query")
+    rank_query = rank_source.get("query")
     gate_query = gate_source.get("query")
     evaluation_query = evaluation_source.get("query")
     if (
         not isinstance(baseline_query, dict)
         or not isinstance(driver_query, dict)
+        or not isinstance(rank_query, dict)
         or not isinstance(gate_query, dict)
         or not isinstance(evaluation_query, dict)
     ):
@@ -380,6 +501,23 @@ def sync(
         "Monthly active users is displayed as the Play Console's monthly active devices count",
     ]
     driver_query["sql"] = driver_sql_path.read_text(encoding="utf-8")
+    rank_query["sql"] = rank_sql_path.read_text(encoding="utf-8")
+    rank_query["description"] = (
+        "Loads the complete required goal surfaces from the canonical public-rank "
+        "capture while preserving bounded absences; one auxiliary non-goal Apple "
+        "query is incomplete."
+    )
+    rank_query["executed_at"] = captured_at
+    rank_query["tables_used"] = [
+        f"inline rank values backed by growth/data/public-rank/{rank_date}.json"
+    ]
+    rank_query["filters"] = [
+        f"Snapshot date {rank_date}",
+        "Storefront UZ",
+        "Google logged-out profiles " + ", ".join(profiles),
+        "diagnostic_capture_complete=false because auxiliary Apple Toshkent ob-havo search returned only one unique app",
+        "goal_evidence_complete=true and evaluation.complete=true for all required goal surfaces",
+    ]
     baseline_query["executed_at"] = generated_at
     driver_query["executed_at"] = generated_at
     scale_reason = gates_payload.get("scale_status_reason")
@@ -400,6 +538,25 @@ def sync(
     )
     gate_query["sql"] = sql
     gate_query["executed_at"] = generated_at
+    evaluation_source["label"] = f"{rank_date} growth evaluation"
+    evaluation_source["path"] = f"growth/reports/evaluation-{rank_date}.json"
+    evaluation_query["sql"] = (
+        "SELECT * FROM (VALUES ("
+        f"{_sql_literal(rank_date)},{top10_goal['current_streak_days']},"
+        f"{top10_goal['required_days']},"
+        f"{'TRUE' if top10_goal['goal_achieved'] else 'FALSE'},TRUE)) "
+        "AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)"
+    )
+    evaluation_query["description"] = (
+        "Loads the evaluated Top-10 streak state for the latest UZ rank day."
+    )
+    evaluation_query["tables_used"] = [
+        f"inline evaluation values backed by growth/reports/evaluation-{rank_date}.json"
+    ]
+    evaluation_query["filters"] = [
+        "Current comparable config fingerprint",
+        f"Consecutive complete required goal days through {rank_date}",
+    ]
     evaluation_query["executed_at"] = generated_at
     snapshot = artifact.get("snapshot")
     if not isinstance(snapshot, dict):
@@ -502,10 +659,27 @@ def sync(
     }
     play_conversion_card = cards.get("play_conversion")
     first_launch_card = cards.get("first_launch_rate")
+    apple_search_card = cards.get("apple_search_rank")
     if not isinstance(play_conversion_card, dict) or not isinstance(
         first_launch_card, dict
-    ):
+    ) or not isinstance(apple_search_card, dict):
         raise ValueError("dashboard Play KPI cards are missing")
+    apple_search_card["description"] = (
+        f"Canonical {rank_date} UZ App Store public search for the non-branded "
+        f"query weather records {weather_rank}; the August 28 baseline was #81. "
+        "A bounded absence is not converted into a synthetic rank."
+    )
+    apple_search_metrics = apple_search_card.get("metrics")
+    if not isinstance(apple_search_metrics, list):
+        raise ValueError("dashboard Apple rank card metrics are malformed")
+    apple_search_values = [
+        metric
+        for metric in apple_search_metrics
+        if isinstance(metric, dict) and metric.get("field") == "apple_weather_rank"
+    ]
+    if len(apple_search_values) != 1:
+        raise ValueError("dashboard Apple rank card value is missing or duplicated")
+    apple_search_values[0]["format"] = "text" if weather_rank.startswith(">") else "number"
     play_conversion_card["description"] = (
         "Play listing conversion remains the reported 2026-08-28 value. Its "
         "source numerator and denominator were not shown in the August 31 global "
@@ -522,8 +696,13 @@ def sync(
         if isinstance(table, dict) and isinstance(table.get("id"), str)
     }
     baseline_table = tables.get("baseline_table")
-    if not isinstance(baseline_table, dict):
+    rank_table = tables.get("rank_table")
+    if not isinstance(baseline_table, dict) or not isinstance(rank_table, dict):
         raise ValueError("dashboard baseline table is missing")
+    rank_table["subtitle"] = (
+        "The required goal surfaces are complete and fail every category surface "
+        "plus the generic-query quorum; one auxiliary Apple query was too sparse."
+    )
     baseline_table["subtitle"] = (
         "Apple overview values and selected global Play last-28-days counts are "
         "current to August 31; the Apple UZ rating was publicly rechecked on "
@@ -532,6 +711,25 @@ def sync(
     blocks = manifest.get("blocks")
     if not isinstance(blocks, list) or not blocks or not isinstance(blocks[0], dict):
         raise ValueError("dashboard verdict block is missing")
+    manifest_sources = manifest.get("sources")
+    if not isinstance(manifest_sources, list):
+        raise ValueError("dashboard manifest sources are malformed")
+    for source_rows in (sources, manifest_sources):
+        rank_entries = [
+            source
+            for source in source_rows
+            if isinstance(source, dict) and source.get("id") == "rank_snapshot"
+        ]
+        evaluation_entries = [
+            source
+            for source in source_rows
+            if isinstance(source, dict) and source.get("id") == "evaluation_snapshot"
+        ]
+        if len(rank_entries) != 1 or len(evaluation_entries) != 1:
+            raise ValueError("dashboard rank/evaluation source registry is malformed")
+        rank_entries[0]["label"] = f"{rank_date} UZ rank snapshot"
+        evaluation_entries[0]["label"] = f"{rank_date} growth evaluation"
+        evaluation_entries[0]["path"] = f"growth/reports/evaluation-{rank_date}.json"
     play_context_blocks = [
         block
         for block in blocks
@@ -567,6 +765,41 @@ def sync(
     verdict = blocks[0].get("body")
     if not isinstance(verdict, str):
         raise ValueError("dashboard verdict body is malformed")
+    rank_summary = (
+        "Nimbo is **not ready to scale acquisition**. The canonical "
+        f"{rank_date} capture at {captured_at} fails every required goal surface, "
+        f"so the verified streak remains {top10_goal['current_streak_days']}/"
+        f"{top10_goal['required_days']}: Apple weather search is {weather_rank}, "
+        f"the official Apple Weather chart is #{category_rank}, all three fixed "
+        "logged-out Google category profiles are outside the first 30, and "
+        f"{qualifying_queries}/{query_count} generic Google queries qualify. The "
+        "auxiliary Apple Toshkent ob-havo search returned only one unique result "
+        "and remains a non-goal diagnostic error; required goal evidence is "
+        "complete. The current App Store Connect overview reports 300 impressions, "
+        "23 product-page views, 8 first downloads, 1 redownload, 3 updates, and "
+        "4.86% conversion; retention is insufficient. The conversion is preserved "
+        "as reported because the supplied counts and report window do not reproduce "
+        f"it. A separate public Apple UZ lookup reports {apple_ratings} rating at "
+        f"{apple_average_rating:.1f} while public version 1.0.1 remains live. Public "
+        "iOS 1.0.1 (4) has two reported crashes, one on August 25 and one on August "
+        "29. The August 29 event maps to iPhone; the August 25 device/OS dimension "
+        "is suppressed or unavailable, and neither exposes a diagnostic, stack, "
+        "incident/signature ID, or crashed-binary UUID. The crash gate therefore "
+        "remains blocked. Google Play's global last-28-days dashboard counts were "
+        f"revalidated on August 31 at {installations} installs, {first_launches} "
+        f"device first launches, and {monthly_active_devices} monthly active devices; "
+        "listing impressions, conversion, and ratings remain carried forward where "
+        "marked."
+    )
+    verdict, rank_summary_count = re.subn(
+        r"## Current verdict\n\n.*?\n\nCurrent product/build-input commit",
+        "## Current verdict\n\n" + rank_summary + "\n\nCurrent product/build-input commit",
+        verdict,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if rank_summary_count != 1:
+        raise ValueError("dashboard verdict rank summary is missing")
     current_summary = (
         "Current product/build-input commit "
         + current_revision
@@ -819,6 +1052,9 @@ def main() -> int:
     parser.add_argument("--gate-sql", type=Path, default=DEFAULT_GATE_SQL)
     parser.add_argument("--gates", type=Path, default=DEFAULT_GATES)
     parser.add_argument("--evaluation", type=Path, default=DEFAULT_EVALUATION)
+    parser.add_argument("--rank", type=Path, default=DEFAULT_RANK)
+    parser.add_argument("--rank-sql", type=Path, default=DEFAULT_RANK_SQL)
+    parser.add_argument("--framework", type=Path, default=DEFAULT_FRAMEWORK)
     parser.add_argument("--generated-at", required=True)
     arguments = parser.parse_args()
     sync(
@@ -827,6 +1063,9 @@ def main() -> int:
         arguments.gates,
         arguments.evaluation,
         arguments.generated_at,
+        rank_path=arguments.rank,
+        rank_sql_path=arguments.rank_sql,
+        framework_path=arguments.framework,
     )
     return 0
 

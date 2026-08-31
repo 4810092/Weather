@@ -9,8 +9,9 @@ reader and a compact semantic no-JavaScript fallback from the same manifest,
 datasets, blocks, tables, access issues, and source summaries.
 
 The dashboard is intentionally `blocked`, with scale status `hold`.
-The canonical `2026-08-31T02:51:00+05:00` capture places Nimbo at `#88`
-for Apple `weather` and `#40` in the official Apple UZ Weather chart.
+The canonical `2026-09-01T01:02:39+05:00` capture places Nimbo outside the
+first 192 Apple `weather` results (`>192`) and at `#66` in the official Apple
+UZ Weather chart.
 All three fixed Google category profiles remain outside the first 30 and
 `0/5` generic Google queries qualify. The incomplete auxiliary Apple
 `Toshkent ob-havo` result is not a required goal surface; required evidence
@@ -20,6 +21,9 @@ The current App Store Connect overview reports 300 impressions, 23 product-page
 views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported
 conversion, with insufficient retention. That conversion is preserved as
 reported because the available counts/window do not reproduce it. The current
+public Apple UZ lookup reports one rating at `5.0` while version `1.0.1`
+remains live; this aggregate is not review-inbox or `1.1.0` publication proof.
+The current
 global Play last-28-days dashboard reports 25 installs, 18 device first
 launches, and 13 monthly active devices. The directional `18 / 25 = 72%` is
 not treated as a reconciled cohort rate. Play impressions, listing conversion,

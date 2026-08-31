@@ -36,14 +36,14 @@ EXPECTED_SOURCE_PATHS = {
     "baseline_snapshot": "growth/dashboard/baseline_snapshot.sql",
     "driver_comparison": "growth/dashboard/driver_comparison.sql",
     "rank_snapshot": "growth/dashboard/rank_snapshot.sql",
-    "evaluation_snapshot": "growth/reports/evaluation-2026-08-31.json",
+    "evaluation_snapshot": "growth/reports/evaluation-2026-09-01.json",
     "gate_snapshot": "growth/dashboard/gate_snapshot.sql",
     "quality_guardrail_snapshot": "growth/dashboard/guardrail_snapshot.sql",
 }
 BACKING_JSON_PATHS = {
     "baseline": "growth/baseline/2026-08-31.json",
-    "rank": "growth/data/public-rank/2026-08-31.json",
-    "evaluation": "growth/reports/evaluation-2026-08-31.json",
+    "rank": "growth/data/public-rank/2026-09-01.json",
+    "evaluation": "growth/reports/evaluation-2026-09-01.json",
     "framework": "growth/kpi-framework.json",
     "gates": "growth/quality/gates.json",
 }
@@ -398,12 +398,12 @@ def _verify_rank_parity(
             f"rank/framework source schema is incomplete: {error}"
         ) from error
     if (
-        rank.get("date") != "2026-08-31"
+        rank.get("date") != "2026-09-01"
         or rank.get("goal_evidence_complete") is not True
         or not evaluation.get("complete")
     ):
         raise DashboardConsistencyError(
-            "dashboard rank source must be the complete 2026-08-31 goal snapshot"
+            "dashboard rank source must be the complete 2026-09-01 goal snapshot"
         )
     weather_rank = _observed_rank(apple["search"]["weather"])
     category_rank = _observed_rank(apple["category"])
@@ -592,7 +592,9 @@ def verify_dashboard_sources(
     _verify_evaluation_and_gate_parity(datasets, evaluation, framework, gates)
 
     headline = datasets["headline_metrics"][0]
-    apple_weather = rank["surfaces"]["apple"]["search"]["weather"]["target_rank"]
+    apple_weather = _observed_rank(
+        rank["surfaces"]["apple"]["search"]["weather"]
+    )
     driver_definitions = {row["id"]: row for row in framework["drivers"]}
     apple_metrics = baseline["platforms"]["apple"]["metrics"]
     google_metrics = baseline["platforms"]["google"]["metrics"]
