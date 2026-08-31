@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=37ea0b19882dec2f313f51d4b91a2c1c395d7b4820eda440a26deb8e4e98037a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d5026ac1181d9ded18a6883775b3f5efa24e881a8d59ed86f6bddd264824e900 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -44,7 +44,7 @@ UZ-only.
 | Apple internal delivery | Exact `1.1.0 (6)` completed Transporter delivery. App Store Connect build ID `37307a66-1c14-4c7a-8140-83d6868d6a25` is `VALID` and `APP_STORE_ELIGIBLE`; TestFlight beta-group distribution and installation remain unverified. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Exact phone `1.1.0 (8)` is available on Internal track `4700083514281298386` with the four-account License testers group; the invite is unaccepted and there is no Play-delivered install. Exact Wear `1.1.0 (1000008)` is available on Internal track `4699242452771231163`, but the track is inactive with zero tester groups and no install. Production was not changed. |
+| Google Play Internal | Exact phone `1.1.0 (8)` is available on Internal track `4700083514281298386`; opt-in is accepted and Google Play delivered the Play-signed split set to the dedicated API 25 target for a bounded cold/live/share/process-health pass. Exact Wear `1.1.0 (1000008)` is available on Internal track `4699242452771231163`; the four-account License testers group is attached and the track is active, but no physical Wear install exists. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
@@ -123,9 +123,10 @@ the captured slice”; it is never converted to a synthetic rank.
   passed clean API 25 onboarding, Tashkent live forecast, share chooser,
   proven-offline cache/fallback, online recovery, and PID-scoped health checks.
   The exact phone and Wear AABs are now accepted on their separate Play
-  Internal tracks, but the phone invite is unaccepted and the Wear track has no
-  tester group. There is no Play-delivered install, physical tablet/widget, or
-  paired Wear result. Exact Apple build 6 also completed App Store Connect
+  Internal tracks. Google Play delivered phone vc8 to the dedicated API 25
+  target and the bounded cold/live/share/process-health pass succeeds. The Wear
+  License testers group is attached and that track is active, but physical
+  tablet/widget and paired Wear results remain absent. Exact Apple build 6 also completed App Store Connect
   processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group and
   runtime coverage remain unverified. The iOS crash diagnosis remains blocked.
   See the
@@ -252,9 +253,9 @@ availability; each external state must be recorded separately.
 3. Trusted hosted run `33405849102` has completed the required full pinned
    verifier against the mutable draft for evidence head `b07192e`; repeat that
    protected chain before every later use. Complete the remaining delivery-
-   linked matrix: complete authorized tester access, accept the phone Internal
-   invite, verify the Play-delivered phone package, add physical tablet/widget
-   and paired Wear coverage, confirm beta-group distribution for processed
+   linked matrix: complete proven-offline and accessibility checks on the
+   Play-delivered phone package, add physical tablet/widget and paired Wear
+   coverage plus post-delivery vitals, confirm beta-group distribution for processed
    Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch
    QA. The iPad mini 5 and iPhone 14 Pro are
    paired, booted, and Developer Mode enabled. The iPad has no Nimbo install;

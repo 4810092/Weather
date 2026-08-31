@@ -109,10 +109,9 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Accept the phone Internal invite, install and rerun the phone scope from "
-        "Play, attach the existing License testers group to the inactive Wear "
-        "Internal track and install it, then complete physical tablet, widget, and "
-        "paired Wear OS QA.",
+        "Complete proven-offline and accessibility checks on the Play-delivered "
+        "phone package, physical tablet and widget coverage, a Play-delivered paired "
+        "Wear OS install/handoff, and post-delivery vitals.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",

@@ -6,6 +6,12 @@ successfully. The phone invite has not been accepted, and the Wear internal
 track has no tester group. No store-delivered installation or production
 change is claimed.
 
+Follow-up: the phone invite was accepted, Google Play delivered phone
+`1.1.0 (8)` for a bounded API 25 smoke, and the Wear tester track became active
+on `2026-09-01`. Those later states are recorded separately in
+[play-delivered-android-smoke-2026-09-01.md](play-delivered-android-smoke-2026-09-01.md);
+the remainder of this file preserves the August 31 checkpoint.
+
 All times below are `Asia/Tashkent` (`UTC+05:00`). The observations come from
 the authenticated Transporter and Google Play Console interfaces. Artifact
 identity is bound to the retained, independently byte-verified release set for

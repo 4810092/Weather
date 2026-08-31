@@ -392,13 +392,13 @@ def sync(
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact phone and Wear AABs are on separate Play Internal "
-                "tracks; Play-delivered phone/tablet/widget/Wear matrix missing"
+                "BLOCKED · Play-delivered phone vc8 cold/live/share smoke passes; "
+                "offline/tablet/widget/Wear/accessibility matrix remains incomplete"
             )
             new_next = (
-                "Complete authorized tester access, accept the phone invite, rerun "
-                "the phone scope against the Play-delivered package, and complete "
-                "physical tablet/widget and paired Wear OS QA"
+                "Complete proven-offline and accessibility checks on the Play-delivered "
+                "phone package, physical tablet/widget and paired Wear OS QA, and "
+                "post-delivery vitals"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
@@ -645,8 +645,11 @@ def sync(
         "protected chain must recheck it before every later use. Those exact bytes "
         "were subsequently accepted into separate phone and Wear Play Internal "
         "tracks and Apple build 6 completed processing as VALID and APP_STORE_ELIGIBLE. "
-        "Play-delivered Android runtime QA and TestFlight beta installation remain "
-        "missing; two public iOS crashes still lack diagnostics. No production "
+        "A bounded Play-delivered Android phone cold/live/share smoke now passes and "
+        "the Wear Internal track is active with testers. TestFlight beta installation, "
+        "Play-delivered phone offline/accessibility, tablet/widget/Wear coverage, and "
+        "post-delivery vitals remain missing; two public iOS crashes still lack "
+        "diagnostics. No production "
         "submission, review, rollout, public availability, or rank is claimed."
     )
     manifest = artifact.get("manifest")
@@ -756,10 +759,12 @@ def sync(
         "title Nimbo in both Uzbek and Russian product pages, so propagation is "
         "explicitly not verified. Phone Internal "
         "track 4700083514281298386 is active with the selected four-account License "
-        "testers group. Wear Internal track 4699242452771231163 remains inactive with "
-        "zero selected groups. No Play-delivered install is claimed. Evidence: "
+        "testers group. On September 1 the General Mobile opt-in was accepted and "
+        "Google Play delivered version 1.1.0 (8) for a bounded API 25 cold/live/share "
+        "smoke. Wear Internal track 4699242452771231163 now has the same tester list "
+        "and reports Active, but no physical Wear install exists. Evidence: "
         "growth/quality/google-play-console-2026-08-31.md and "
-        "growth/quality/internal-store-delivery-2026-08-31.md, with public response "
+        "growth/quality/play-delivered-android-smoke-2026-09-01.md, with public response "
         "hashes in growth/quality/google-play-public-propagation-2026-09-01.md."
     )
     verdict = blocks[0].get("body")
@@ -831,12 +836,14 @@ def sync(
         "an upload-key-signed universal APK; installed and pulled bytes matched at "
         "e970352d…, and the clean physical API 25 onboarding/live/share/offline/"
         "recovery smoke passed. The exact phone and Wear AABs are now accepted on "
-        "their separate Play Internal tracks; the phone has an existing four-account "
-        "tester group but its invite is unaccepted, while the Wear track has no "
-        "tester group and remains inactive. Apple accepted the exact IPA as build 6 "
-        "with VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone/"
-        "tablet/widget/Wear runtime QA and TestFlight beta distribution/install remain "
-        "missing. Google review request 14 contains only the Uzbekistan Custom Store "
+        "their separate Play Internal tracks. The phone opt-in is accepted and Google "
+        "Play delivered vc8 to the General Mobile API 25 target; cold start, Tashkent "
+        "live forecast, Best Time, share chooser, and process-health checks pass. The "
+        "Wear License testers group is attached and that track is active, but no "
+        "physical Wear install exists. Apple accepted the exact IPA as build 6 with "
+        "VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone offline/"
+        "accessibility, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
+        "install remain missing. Google review request 14 contains only the Uzbekistan Custom Store "
         "Listing en-US and ru-RU data and is under review; this is not publication or "
         "rank evidence. A fixed logged-out gl=UZ recheck on September 1 still exposed "
         "the pre-review public title Nimbo for both Uzbek and Russian product pages; "

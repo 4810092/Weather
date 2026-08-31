@@ -15,14 +15,15 @@ Every successful current-`master` CI run must pass the protected no-checkout
 staging job and separate read-only hosted macOS verifier before Pages or later
 artifact use. On August 31, the exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
-and audience `APP_STORE_ELIGIBLE`. The
-exact phone `1.1.0 (8)` and Wear `1.1.0 (1000008)` AABs were published to
-their separate Google Play Internal tracks. The phone release is available to
-the attached four-tester `License testers` group, but its invitation has not
-been accepted and no Play-delivered install exists. The Wear release is
-uploaded and assigned, but its track is inactive because it has no tester
-group. No production submission, rollout, review, public availability, or
-store-delivered physical QA is claimed. Store consoles remain the authority
+and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
+`1.1.0 (1000008)` AABs were published to their separate Google Play Internal
+tracks. On September 1 the phone opt-in was accepted and Google Play installed
+the Play-signed split set on the dedicated API 25 target; bounded
+cold/onboarding/live Tashkent/Best Time/share/process-health checks pass. The
+four-account `License testers` group is also attached to Wear Internal and that
+track is active, but no physical Wear install exists. No production submission,
+rollout, review, public availability, or complete delivery-linked physical
+matrix is claimed. Store consoles remain the authority
 for live status.
 
 <!-- release-authority-current:start -->
@@ -30,7 +31,7 @@ for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=37ea0b19882dec2f313f51d4b91a2c1c395d7b4820eda440a26deb8e4e98037a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d5026ac1181d9ded18a6883775b3f5efa24e881a8d59ed86f6bddd264824e900 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -51,11 +52,24 @@ untouched. Exact hashes and the processing, tester, installation, and
 publication boundaries are recorded in the
 [internal store-delivery evidence](../growth/quality/internal-store-delivery-2026-08-31.md).
 
+## Nimbo 1.1.0 Play-delivered phone and Wear tester checkpoint — 2026-09-01
+
+The phone Internal opt-in is accepted. Google Play installed exact version
+`1.1.0 (8)` on the dedicated General Mobile API 25 target with installer
+`com.android.vending`, API 25 `armeabi-v7a`/`xhdpi`/locale splits, and the
+expected Google-managed Play App Signing certificate. Cold onboarding without
+location, live Tashkent forecast, Best Time, native share dispatch, and bounded
+process-health checks pass. The physical offline attempt is not counted because
+a disconnected connectivity state was not proven. The existing four-account
+License testers group is attached to Wear Internal and the exact vc1000008 track
+now reports active; no physical watch install or paired handoff is claimed. See
+the [Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
+
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level
-manifest remains `draft-blocked` because authorized tester access, TestFlight
-beta distribution, store-delivered runtime QA, and the remaining Android/Wear
-and Apple physical matrices are absent. The phone entry now binds the exact
+manifest remains `draft-blocked`. The September 1 follow-up closes the bounded
+phone tester/delivery subset, but TestFlight beta distribution and the remaining
+Android/Wear and Apple physical matrices are absent. The phone entry binds the exact
 AAB-derived physical API 25 pass. The protected staged hosted chain remains
 mandatory for every current master.
 

@@ -117,7 +117,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact phone and Wear AABs are on separate Play Internal tracks",
+                "Play-delivered phone vc8 cold/live/share smoke passes",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -168,7 +168,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "authorized tester access",
+                "proven-offline and accessibility checks",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

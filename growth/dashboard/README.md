@@ -56,8 +56,9 @@ The committed upload manifest now promotes the exact set atomically to `3/3
 verified-current` after a fresh local macOS full-byte pass reopened the draft
 assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
 and returned `byte_verified=true` for phone, Wear, and Apple. The top-level
-manifest remains `draft-blocked` because authorized tester access, TestFlight
-beta distribution, and store-delivered physical QA are missing. The draft is
+manifest remains `draft-blocked`; the bounded phone tester/delivery subset now
+passes, while TestFlight beta distribution and the remaining delivery-linked
+physical matrix are missing. The draft is
 mutable, so every successful current-`master` CI run must
 pass protected no-checkout staging and the separate read-only hosted macOS
 verifier before Pages or later artifact use. The exact upload-key-signed phone
@@ -65,9 +66,11 @@ AAB was converted to an APK set without rebuilding; its universal APK matched
 the installed package byte-for-byte and passed clean API 25 phone smoke,
 including onboarding, live forecast, share, offline cache/error, recovery, and
 process-log checks. Evidence is retained in
-`growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md`. Play-delivered
-phone validation and physical tablet/widget/Wear coverage remain blocked, as
-does the TestFlight iPhone/iPad/widget/watch matrix. The iPhone 14 Pro and iPad
+`growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md`. Google Play
+then delivered vc8 to the dedicated API 25 target; bounded cold/live/share/
+process-health checks pass and the Wear tester track is active. Proven-offline,
+accessibility, physical tablet/widget/Wear coverage remain blocked, as does the
+TestFlight iPhone/iPad/widget/watch matrix. The iPhone 14 Pro and iPad
 mini 5 are paired, booted, and have Developer Mode enabled. The paired Series 5
 watch has Developer Mode disabled and its developer tunnel is disconnected; no
 iOS 15 runtime is available.
@@ -78,9 +81,10 @@ device/OS dimension is suppressed. Google review request `14` contains only
 the UZ Custom Store Listing `4834799756935529888` en-US and ru-RU store data
 and is under review; it is not yet approved or published. Public Play
 production remains `1.0.2 (6)`. Exact phone `1.1.0 (8)` and Wear
-`1.1.0 (1000008)` are on
-their separate Play Internal tracks, but the phone invite is unaccepted and the
-Wear track has no tester group. Authenticated App Store Connect inventory now
+`1.1.0 (1000008)` are on their separate Play Internal tracks. The phone opt-in
+is accepted and the Play-signed vc8 package is installed; the Wear License
+testers group is attached and its track is active, but no physical Wear install
+exists. Authenticated App Store Connect inventory now
 reports exact Apple build `1.1.0 (6)` as `VALID` and `APP_STORE_ELIGIBLE`;
 TestFlight beta distribution/install remains unverified. No production review,
 rollout, public availability, or rank follows from these internal states.
