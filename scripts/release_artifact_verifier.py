@@ -1581,10 +1581,12 @@ def _verify_apple_product(
                 f"{product_owner}: signed app-group entitlement must be a string array"
             )
         expected_group = f"group.{ANDROID_PACKAGE_ID}"
-        if product["app_group"] and expected_group not in groups:
-            failures.append(f"{product_owner}: signed app-group entitlement is missing")
-        if not product["app_group"] and groups:
-            failures.append(f"{product_owner}: unexpected signed app-group entitlement")
+        expected_groups = {expected_group} if product["app_group"] else set()
+        if set(groups) != expected_groups:
+            failures.append(
+                f"{product_owner}: signed app-group entitlements {sorted(groups)} "
+                f"differ from expected {sorted(expected_groups)}"
+            )
 
     profile_path = bundle / "embedded.mobileprovision"
     if not _require_contained_entry(
@@ -1608,10 +1610,31 @@ def _verify_apple_product(
         failures,
     )
     profile_certificate_hashes: set[str] = set()
+    profile_uuid: str | None = None
+    profile_name: str | None = None
+    profile_application_identifier: str | None = None
     if profile is not None:
         profile_teams = profile.get("TeamIdentifier")
         profile_entitlements = profile.get("Entitlements")
         developer_certificates = profile.get("DeveloperCertificates")
+        raw_profile_uuid = profile.get("UUID")
+        raw_profile_name = profile.get("Name")
+        if isinstance(raw_profile_uuid, str) and raw_profile_uuid:
+            profile_uuid = raw_profile_uuid.upper()
+        else:
+            failures.append(f"{product_owner}: provisioning UUID is missing")
+        if isinstance(raw_profile_name, str) and raw_profile_name:
+            profile_name = raw_profile_name
+        else:
+            failures.append(f"{product_owner}: provisioning name is missing")
+        expected_profile_name = (
+            "iOS Team Store Provisioning Profile: " + str(product["bundle_id"])
+        )
+        if distribution_required and profile_name != expected_profile_name:
+            failures.append(
+                f"{product_owner}: provisioning name {profile_name!r} differs "
+                f"from expected {expected_profile_name!r}"
+            )
         if profile_teams != [APPLE_TEAM_ID]:
             failures.append(f"{product_owner}: provisioning TeamIdentifier is invalid")
         expiration = profile.get("ExpirationDate")
@@ -1652,9 +1675,11 @@ def _verify_apple_product(
         if not isinstance(profile_entitlements, dict):
             failures.append(f"{product_owner}: provisioning entitlements are missing")
         else:
-            profile_application_identifier = profile_entitlements.get(
+            raw_profile_application_identifier = profile_entitlements.get(
                 "application-identifier"
             )
+            if isinstance(raw_profile_application_identifier, str):
+                profile_application_identifier = raw_profile_application_identifier
             allowed_profile_identifiers = {expected_application_identifier}
             if not distribution_required:
                 allowed_profile_identifiers.add(f"{APPLE_TEAM_ID}.*")
@@ -1690,13 +1715,14 @@ def _verify_apple_product(
                 )
                 profile_groups = []
             expected_group = f"group.{ANDROID_PACKAGE_ID}"
-            if product["app_group"] and expected_group not in profile_groups:
+            expected_profile_groups = (
+                {expected_group} if product["app_group"] else set()
+            )
+            if set(profile_groups) != expected_profile_groups:
                 failures.append(
-                    f"{product_owner}: provisioning app-group entitlement is missing"
-                )
-            if not product["app_group"] and profile_groups:
-                failures.append(
-                    f"{product_owner}: unexpected provisioning app-group entitlement"
+                    f"{product_owner}: provisioning app-group entitlements "
+                    f"{sorted(profile_groups)} differ from expected "
+                    f"{sorted(expected_profile_groups)}"
                 )
 
     with tempfile.TemporaryDirectory(prefix="nimbo-codesign-cert-") as directory:
@@ -1826,6 +1852,12 @@ def _verify_apple_product(
         "source_revision": revision,
         "team_id": APPLE_TEAM_ID,
         "signer_sha256": next(iter(fingerprints), None),
+        "provisioning_profile": {
+            "uuid": profile_uuid,
+            "name": profile_name,
+            "application_identifier": profile_application_identifier,
+            "sha256": _sha256_file(profile_path),
+        },
         "macho_uuids": rendered_executable_uuids,
     }
 
@@ -2004,12 +2036,19 @@ def _verify_apple(
             ),
         },
     }
-    for key, expected in expected_export_options.items():
-        if export_options.get(key) != expected:
-            failures.append(
-                f"{owner}: ExportOptions.plist {key} "
-                f"{export_options.get(key)!r} differs from expected {expected!r}"
-            )
+    if export_options != expected_export_options:
+        missing = sorted(set(expected_export_options) - set(export_options))
+        unexpected = sorted(set(export_options) - set(expected_export_options))
+        differing = sorted(
+            key
+            for key in set(export_options) & set(expected_export_options)
+            if export_options[key] != expected_export_options[key]
+        )
+        failures.append(
+            f"{owner}: ExportOptions.plist differs from the exact expected "
+            f"contract; missing={missing}, unexpected={unexpected}, "
+            f"differing={differing}"
+        )
 
     try:
         archive_info = plistlib.loads((apple_archive / "Info.plist").read_bytes())

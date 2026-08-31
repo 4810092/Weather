@@ -1,13 +1,22 @@
-# iOS crash gate — 2026-08-28, refreshed 2026-08-30
+# iOS crash gate — 2026-08-28, refreshed 2026-08-31
 
 Status: **BLOCKED**. Do not scale public acquisition or send outreach while this gate is blocked.
 
 ## Evidence reviewed
 
-- A fresh authenticated App Store Connect UI review on `2026-08-29` confirmed
-  the same single production crash on `2026-08-25` for app version `1.0.1`.
-  Grouping the crash metric by device type and platform version exposed only
-  suppressed `-` values, so neither dimension can be used as incident evidence.
+- The authoritative App Store Connect overview on `2026-08-31` reports two
+  crashes for the public iOS `1.0.1 (4)` build: one on `2026-08-25` and one on
+  `2026-08-29`. The August 29 event maps to iPhone; the August 25 device/OS
+  dimension is suppressed or unavailable. Neither event exposes a diagnostic,
+  stack, incident/signature ID, or crashed-binary UUID.
+- The same overview reports 300 impressions, 23 product-page views, 8 first
+  downloads, 1 redownload, 3 updates, and 4.86% conversion. Retention is
+  insufficient. These aggregate growth values do not identify either crash,
+  and the supplied counts/window do not reproduce the reported conversion.
+- The authenticated App Store Connect UI review on `2026-08-29` had shown only
+  the then-visible `2026-08-25` crash for app version `1.0.1`. That point-in-time
+  one-crash state is preserved for audit history but is superseded by the
+  `2026-08-31` two-crash total.
 - Xcode 26.6 Organizer was opened locally for the Nimbo product. Its Crashes
   view reports `Error Downloading Crashes List — A developer account is
   required for downloading crashes list.` No account/authentication change was
@@ -15,10 +24,11 @@ Status: **BLOCKED**. Do not scale public acquisition or send outreach while this
   the separate current-source private-signing authorization failure is recorded
   in `growth/quality/signing-readiness-2026-08-29.md`.
 
-- App Store Connect Analytics' own read-only time-series request was reproduced
+- App Store Connect Analytics' earlier read-only time-series request was reproduced
   with `adamId=6799886897`, measure `crashes`, daily frequency, and exact app-
   version option `1.0.1 (4)` for `2026-05-30` through `2026-08-27` UTC. The
-  response reports total `1`, `2026-08-25: 1`, and `meetsThreshold=true`.
+  response reported total `1`, `2026-08-25: 1`, and `meetsThreshold=true` for
+  that bounded window. It predates and does not exclude the `2026-08-29` event.
   It contains no incident/signature ID, device, OS, stack, binary UUID,
   affected-user count, or downloadable diagnostic log.
 - The corresponding version-and-device view is `Insufficient data`.
@@ -38,7 +48,8 @@ Status: **BLOCKED**. Do not scale public acquisition or send outreach while this
 - Older local Nimbo archives also exist, but an older dSYM must not be used unless its UUID matches the missing crash report.
 
 At `2026-08-29 11:03 +05:00`, a broader read-only recovery audit confirmed the
-same boundary. `dwarfdump --verify` passed for the app, widget, and watch dSYM
+then-known one-event boundary. `dwarfdump --verify` passed for the app, widget,
+and watch dSYM
 bundles in the retained build-4 archive, and their UUIDs match every shipped
 build-4 executable listed above. No production-matching `.ips` or `.crash`
 payload was found in the repository, `.nimbo-release`, user or system
@@ -64,12 +75,13 @@ found no production diagnostic payload:
   `NimboWidget` and `NimboWatch` processes as active/suspended alongside the
   host process inventory; the largest process is unrelated. Its date, platform,
   process UUIDs, and event class do not match or diagnose the production iOS
-  crash from `2026-08-25`, so it was not copied into the repository.
+  crash from `2026-08-25` or the later-reported `2026-08-29` event, so it was
+  not copied into the repository.
 - One paired iOS device is visible to Xcode, but the read-only CoreDevice
   `systemCrashLogs` file-service query failed because the device is locked. No
   device-log absence is inferred from that failed query. Even a successful
   query could only recover diagnostics present on that physical device, not the
-  suppressed report from another opted-in production user.
+  suppressed reports from other opted-in production users.
 - No App Store Connect API key/configuration or common issuer/key environment
   variable is present in this repository, the usual user configuration paths,
   or the current process environment. A later bounded host-wide audit did find
@@ -95,11 +107,12 @@ found no production diagnostic payload:
   plus the bounded local record in
   `growth/quality/app-store-connect-api-2026-08-29.md`.
 
-The absence of a local report and Apple's low-volume suppression do not mean the
-crash is fixed or harmless. The authoritative aggregate pins the event to
-production `1.0.1 (4)`, but the crashed app/extension binary UUID and root cause
-cannot be proven without the actual diagnostic report. App Store Connect/Xcode
-Organizer remains the authority for the missing report and affected binary.
+The absence of local reports and Apple's low-volume suppression do not mean the
+crashes are fixed or harmless. The authoritative aggregates pin both events to
+production `1.0.1 (4)`, but the crashed app/extension binary UUIDs and root
+causes cannot be proven without the actual diagnostic reports. App Store
+Connect/Xcode Organizer remains the authority for the missing reports and
+affected binaries.
 
 ## Current code inheritance and execution evidence
 
@@ -122,15 +135,15 @@ and watch `c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728`.
 Their binary and dSYM UUIDs match, the shared iOS simulator suite and 18 Apple
 surface tests pass, and source-bound Release simulator builds succeed. The code
 is inherited by `2cdd438`, but these executed results and binary identities are
-non-transferable; neither can be attributed to the suppressed historical crash
-without its missing diagnostic.
+non-transferable; neither can be attributed to either suppressed production
+crash without the missing diagnostics.
 
 Historical run `33296238901` for intermediate authority `fb591e3` passed its
 ordinary unsigned iOS job in 20m38s, including shared simulator tests, Apple
 surface tests, and the unsigned application build. The overall run failed all
 three Android UI profiles. This is unsigned predecessor regression evidence,
-not a signed or physical result, and it neither diagnoses the suppressed crash
-nor transfers to current authority `2cdd438`.
+not a signed or physical result, and it diagnoses neither suppressed crash nor
+transfers to current authority `2cdd438`.
 
 Predecessor exact-source hosted
 [run `33297505825`](https://github.com/4810092/Weather/actions/runs/33297505825)
@@ -152,11 +165,23 @@ succeeded; the `ios` job finished in 23m59s with all 18/18 Apple surface tests
 green. Its 80,294-byte `ios-simulator-test-results` GitHub archive has archive
 SHA-256 `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
 The other five run archives likewise remain unsigned build/test-result proof.
-This current hosted execution does not supply the suppressed crash diagnostic,
-symbolication, distribution-signed bytes, or physical reproduction. The
-protected environment remains 4/8 secrets, the signed workflow has not run,
-and 0/3 current signed artifacts are byte-verified. The crash gate remains
-blocked.
+This current hosted execution does not supply either suppressed crash
+diagnostic, symbolication, distribution-signed bytes, or physical reproduction.
+The protected release-signing environment now contains all 8/8 required
+secrets, and candidate runs
+[`33368227872`](https://github.com/4810092/Weather/actions/runs/33368227872)
+and
+[`33375162729`](https://github.com/4810092/Weather/actions/runs/33375162729)
+executed. The first stopped at Apple export because a manual signing style was
+incompatible with Xcode-managed profiles. The second signed the Android phone
+and Wear bundles and completed Apple archive export, but the fail-closed byte
+verifier rejected both the exported and retained app/widget because Xcode had
+omitted their required App Group entitlement. Cleanup succeeded and the signed
+candidate package was not uploaded. The repository now contains a bounded
+re-signing correction plus exact ExportOptions, protected-profile, workflow,
+and verifier provenance checks, but that correction has not yet passed a new
+hosted run. No signed receipt exists and 0/3 current artifacts remain
+byte-verified. The crash gate remains blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are
@@ -167,9 +192,9 @@ bounded simulator path, but it is not relabelled as current-source evidence.
 
 These are preventive source and simulator results only. The simulator products
 are ad-hoc linked, not distribution-signed, and no physical iPhone result
-exists. Because the historical production report, stack, incident ID, and
-crashed binary UUID remain unavailable, no current change is attributed to the
-2026-08-25 event and `ios_crash_gate` remains **BLOCKED**.
+exists. Because the production reports, stacks, incident IDs, and crashed
+binary UUIDs remain unavailable, no current change is attributed to either the
+`2026-08-25` or `2026-08-29` event and `ios_crash_gate` remains **BLOCKED**.
 
 ## Required close-out evidence
 
@@ -177,7 +202,7 @@ Immediate recovery paths, in priority order:
 
 1. Authenticate the existing developer account in Xcode, including user-handled
    2FA if requested, then refresh Organizer > Crashes for Nimbo and export the
-   actual build-4 incident if Apple exposes it.
+   actual build-4 diagnostics for both events if Apple exposes them.
 2. If Apple grants a role/key access path that is permitted to read diagnostics,
    repeat the already-authenticated build `1.0.1 (4)` signature query and
    download any returned anonymized log. The current key is verified for app and
@@ -186,7 +211,7 @@ Immediate recovery paths, in priority order:
    local-reproduction aid; do not treat that device's result as the missing
    opted-in production report.
 
-1. Export or download the actual crash report from Xcode Organizer/App Store Connect, preserving incident ID, app version/build, OS/device, occurrence window, affected users, and binary image UUIDs.
+1. Export or download the actual crash diagnostics for both App Store Connect events, preserving incident ID, app version/build, OS/device, occurrence window, affected users, and binary image UUIDs.
 2. Match every crashed binary UUID to the exact archived dSYM; symbolicate until application frames contain function/file/line information where symbols permit.
 3. Classify the root cause and either reproduce it or explain why reproduction is not possible from the evidence.
 4. Implement and test a fix in the owning product code when the crash is actionable.

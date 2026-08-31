@@ -309,7 +309,7 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
     def test_reviewed_verifier_digest_change_is_rejected(self) -> None:
         self.assert_rejected(
             self.workflow.replace(
-                "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa",
+                "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
                 "0" * 64,
                 1,
             ),

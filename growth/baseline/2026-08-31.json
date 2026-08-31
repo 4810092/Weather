@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-08-31",
+  "recorded_at": "2026-08-31T14:30:00+05:00",
+  "timezone": "Asia/Tashkent",
+  "evidence_class": "reported_app_store_connect_values_plus_carried_forward_google_baseline",
+  "provenance": {
+    "source": "Authoritative read-only App Store Connect values supplied for 2026-08-31; Google Play values carried forward unchanged from growth/baseline/2026-08-28.json and not revalidated",
+    "raw_exports_attached": false,
+    "live_console_rechecked_in_this_snapshot": true,
+    "storefront_scope": "not_provided_for_overview_values",
+    "report_window": "not_provided",
+    "country_breakdown_available": false,
+    "source_breakdown_available": false,
+    "device_breakdown_available": false,
+    "version_breakdown_available": true
+  },
+  "platforms": {
+    "apple": {
+      "metrics": {
+        "reported_impressions": 300,
+        "first_time_downloads": 8,
+        "product_page_views": 23,
+        "redownloads": 1,
+        "updates": 3,
+        "reported_conversion_rate_pct": 4.86,
+        "ratings_count": 0,
+        "ratings_count_evidence": "carried_forward_from_2026-08-28_not_revalidated",
+        "reported_crashes": 2,
+        "retention_status": "insufficient_data"
+      },
+      "crash_evidence": {
+        "app_version": "1.0.1",
+        "build": "4",
+        "total": 2,
+        "events": [
+          {
+            "date": "2026-08-25",
+            "count": 1,
+            "device": "suppressed_or_unavailable",
+            "os_version": "suppressed_or_unavailable"
+          },
+          {
+            "date": "2026-08-29",
+            "count": 1,
+            "device": "iPhone",
+            "os_version": "suppressed_or_unavailable"
+          }
+        ],
+        "diagnostic_available": false,
+        "stack_trace_available": false,
+        "crashed_binary_uuid_available": false,
+        "incident_or_signature_id_available": false
+      },
+      "release_state": {
+        "version": "1.0.1",
+        "build": "4",
+        "status": "public",
+        "verified_on": "2026-08-31"
+      },
+      "search_observations": [
+        {
+          "query": "weather",
+          "storefront": "UZ",
+          "rank": 88,
+          "approximate": false,
+          "surface": "public Apple Search API response order",
+          "captured_at": "2026-08-31T02:51:00+05:00",
+          "evidence": "growth/data/public-rank/2026-08-31.json"
+        }
+      ],
+      "category_observation": {
+        "storefront": "UZ",
+        "category": "Weather",
+        "rank": 40,
+        "approximate": false,
+        "surface": "official Apple-hosted Top Free Weather chart order",
+        "captured_at": "2026-08-31T02:51:00+05:00",
+        "evidence": "growth/data/public-rank/2026-08-31.json"
+      }
+    },
+    "google": {
+      "evidence_status": "carried_forward_from_2026-08-28_not_revalidated",
+      "metrics": {
+        "reported_impressions": 779,
+        "installations": 21,
+        "first_launches": 14,
+        "monthly_active_users": 11,
+        "reported_conversion_rate_pct": 40.82,
+        "reported_ratings_count_from_plan": 1,
+        "console_ratings_status": "insufficient_data",
+        "android_vitals_status": "insufficient_data",
+        "public_install_badge_lower_bound": 10
+      },
+      "release_state": {
+        "phone": {
+          "version": "1.0.2",
+          "version_code": 6,
+          "production_status": "active",
+          "countries": 177,
+          "version_specific_installations": 4
+        },
+        "wear": {
+          "version": "1.0.2",
+          "version_code": 1000007,
+          "production_status": "active",
+          "active_since": "2026-08-27T19:43:00+05:00",
+          "countries": 177
+        },
+        "unpublished_changes": false,
+        "verified_on": "2026-08-28"
+      }
+    }
+  },
+  "reproducibility_checks": [
+    {
+      "id": "apple_first_downloads_over_reported_impressions",
+      "value_pct": 2.67,
+      "matches_reported_conversion": false,
+      "interpretation": "Not a contradiction: the supplied first-time downloads and unqualified impressions are not the documented numerator and denominator for the reported App Store conversion metric. The source window and exact metric populations remain unavailable."
+    },
+    {
+      "id": "google_installations_over_reported_impressions",
+      "value_pct": 2.7,
+      "matches_reported_conversion": false,
+      "interpretation": "The carried-forward 40.82% has no attached denominator or report definition and is preserved only as reported."
+    },
+    {
+      "id": "google_first_launches_over_installations",
+      "value_pct": 66.67,
+      "matches_target": false,
+      "target_pct": 80.0,
+      "interpretation": "Directional only until installation and first-launch populations and date windows are confirmed comparable; both values were last rechecked on 2026-08-28."
+    }
+  ],
+  "known_gaps": [
+    "No raw App Store Connect export or reporting-window metadata is attached; the Apple overview is a read-only console observation.",
+    "Country and acquisition-source cuts are absent; device and OS are suppressed or unavailable for one crash.",
+    "The reported App Store conversion rate cannot be reproduced from the supplied counts and must remain the console-reported 4.86%.",
+    "Retention is explicitly insufficient; D7 retention, DAU/MAU denominator, ratings average, iOS sessions, and user-loss rate remain unknown.",
+    "Two public iOS 1.0.1 (4) crashes are reported, one on 2026-08-25 and one on 2026-08-29. No diagnostic, stack, incident/signature ID, or crashed-binary UUID is available.",
+    "Google Play overview and release-state values were carried forward from 2026-08-28 and were not revalidated on 2026-08-31."
+  ]
+}

@@ -23,14 +23,14 @@ EXPECTED_SOURCE_PATHS = {
     "baseline_snapshot": "growth/dashboard/baseline_snapshot.sql",
     "driver_comparison": "growth/dashboard/driver_comparison.sql",
     "rank_snapshot": "growth/dashboard/rank_snapshot.sql",
-    "evaluation_snapshot": "growth/reports/evaluation-2026-08-30.json",
+    "evaluation_snapshot": "growth/reports/evaluation-2026-08-31.json",
     "gate_snapshot": "growth/dashboard/gate_snapshot.sql",
     "quality_guardrail_snapshot": "growth/dashboard/guardrail_snapshot.sql",
 }
 BACKING_JSON_PATHS = {
-    "baseline": "growth/baseline/2026-08-28.json",
-    "rank": "growth/data/public-rank/2026-08-30.json",
-    "evaluation": "growth/reports/evaluation-2026-08-30.json",
+    "baseline": "growth/baseline/2026-08-31.json",
+    "rank": "growth/data/public-rank/2026-08-31.json",
+    "evaluation": "growth/reports/evaluation-2026-08-31.json",
     "framework": "growth/kpi-framework.json",
     "gates": "growth/quality/gates.json",
 }
@@ -329,9 +329,9 @@ def _verify_baseline_and_driver_parity(
 
     first_launch_rate = round(google["first_launches"] / google["installations"], 4)
     expected_driver_rows = [
-        {"metric": "Apple conversion", "series": "Baseline", "rate": apple["reported_conversion_rate_pct"] / 100},
+        {"metric": "Apple conversion", "series": "Baseline", "rate": round(apple["reported_conversion_rate_pct"] / 100, 4)},
         {"metric": "Apple conversion", "series": "Target", "rate": driver_definitions["apple_conversion_rate_pct"]["target"] / 100},
-        {"metric": "Play conversion", "series": "Baseline", "rate": google["reported_conversion_rate_pct"] / 100},
+        {"metric": "Play conversion", "series": "Baseline", "rate": round(google["reported_conversion_rate_pct"] / 100, 4)},
         {"metric": "Play conversion", "series": "Target", "rate": driver_definitions["google_store_listing_ctr_pct"]["target"] / 100},
         {"metric": "First launch / install", "series": "Baseline", "rate": first_launch_rate},
         {"metric": "First launch / install", "series": "Target", "rate": driver_definitions["first_launch_rate_pct"]["target"] / 100},
@@ -359,12 +359,12 @@ def _verify_rank_parity(
             f"rank/framework source schema is incomplete: {error}"
         ) from error
     if (
-        rank.get("date") != "2026-08-30"
+        rank.get("date") != "2026-08-31"
         or rank.get("goal_evidence_complete") is not True
         or not evaluation.get("complete")
     ):
         raise DashboardConsistencyError(
-            "dashboard rank source must be the complete 2026-08-30 goal snapshot"
+            "dashboard rank source must be the complete 2026-08-31 goal snapshot"
         )
     weather_rank = _observed_rank(apple["search"]["weather"])
     category_rank = _observed_rank(apple["category"])
@@ -562,9 +562,9 @@ def verify_dashboard_sources(
         "top10_streak_target": evaluation["top10_goal"]["required_days"],
         "apple_weather_rank": apple_weather,
         "rank_target": framework["primary_goal"]["daily_requirements"]["apple_weather_chart_rank_lte"],
-        "apple_conversion": apple_metrics["reported_conversion_rate_pct"] / 100,
+        "apple_conversion": round(apple_metrics["reported_conversion_rate_pct"] / 100, 4),
         "apple_conversion_target": driver_definitions["apple_conversion_rate_pct"]["target"] / 100,
-        "play_conversion": google_metrics["reported_conversion_rate_pct"] / 100,
+        "play_conversion": round(google_metrics["reported_conversion_rate_pct"] / 100, 4),
         "play_conversion_target": driver_definitions["google_store_listing_ctr_pct"]["target"] / 100,
         "first_launch_rate": round(google_metrics["first_launches"] / google_metrics["installations"], 4),
         "first_launch_target": driver_definitions["first_launch_rate_pct"]["target"] / 100,

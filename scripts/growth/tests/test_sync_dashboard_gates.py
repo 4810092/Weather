@@ -29,7 +29,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact_path,
                 gate_sql_path,
                 ROOT / "growth/quality/gates.json",
-                ROOT / "growth/reports/evaluation-2026-08-30.json",
+                ROOT / "growth/reports/evaluation-2026-08-31.json",
                 "2026-08-30T12:34:56Z",
             )
 
@@ -47,7 +47,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact-source hosted proof green",
+                "signing inputs 8/8",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -66,7 +66,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "master-only protected GitHub-hosted workflow",
+                "Candidate run 33368227872",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -78,11 +78,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "protected environment has 4/8 required secrets",
+                "all 8/8 signing inputs",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "four remaining protected release-signing secrets",
+                "Run the hardened master-only hosted workflow",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertNotIn(
@@ -98,11 +98,27 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "pre-manifest verifier are implemented",
+                "exact provenance correction is implemented",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "only 4/8 release-signing secrets are provisioned",
+                "has all 8/8 signing inputs",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "The August 29 event maps to iPhone",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "hosted proof of the current correction remains pending",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "No retained, accepted, byte-verified source-current signed artifact",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "There is no retained, accepted, byte-verified exact-current signed",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -126,7 +142,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 (ROOT / "growth/dashboard/gate_snapshot.sql", gate_sql_path),
                 (ROOT / "growth/quality/gates.json", gates_path),
                 (
-                    ROOT / "growth/reports/evaluation-2026-08-30.json",
+                    ROOT / "growth/reports/evaluation-2026-08-31.json",
                     evaluation_path,
                 ),
             ):

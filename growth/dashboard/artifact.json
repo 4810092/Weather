@@ -4,7 +4,7 @@
     "version": 1,
     "surface": "dashboard",
     "title": "Nimbo UZ Growth Control Room",
-    "generatedAt": "2026-08-30T14:30:12+05:00",
+    "generatedAt": "2026-08-31T15:06:23+05:00",
     "cards": [
       {
         "id": "top10_streak",
@@ -28,7 +28,7 @@
         "id": "apple_search_rank",
         "dataset": "headline_metrics",
         "sourceId": "rank_snapshot",
-        "description": "Exact position in the canonical 2026-08-30 UZ App Store public search response for the non-branded query weather; #87 versus the August 28 baseline #81.",
+        "description": "Exact position in the canonical 2026-08-31 UZ App Store public search response for the non-branded query weather; #88 versus the August 28 baseline #81.",
         "metrics": [
           {
             "label": "Apple weather rank",
@@ -46,7 +46,7 @@
         "id": "apple_conversion",
         "dataset": "headline_metrics",
         "sourceId": "baseline_snapshot",
-        "description": "App Store Connect reported conversion. The 15% target is evaluated only after at least 500 eligible impressions.",
+        "description": "Current App Store Connect reported conversion is 4.86% on 300 reported impressions. The supplied counts do not reproduce the metric, and the 15% target is evaluated only after at least 500 eligible impressions.",
         "metrics": [
           {
             "label": "Apple conversion",
@@ -64,7 +64,7 @@
         "id": "play_conversion",
         "dataset": "headline_metrics",
         "sourceId": "baseline_snapshot",
-        "description": "Historical Play summary conversion baseline. Its source numerator and denominator are not attached, so it is not yet a reconciled KPI; later authenticated Play contexts are documented separately.",
+        "description": "Play summary conversion is carried forward from 2026-08-28 and was not revalidated on 2026-08-31. Its source numerator and denominator are not attached, so it is not a reconciled KPI.",
         "metrics": [
           {
             "label": "Play conversion",
@@ -152,8 +152,8 @@
       },
       {
         "id": "baseline_table",
-        "title": "Historical store baseline",
-        "subtitle": "The dated baseline remains fixed; later rolling Play observations stay separate and are not forced into a common denominator.",
+        "title": "Store evidence snapshot",
+        "subtitle": "Apple overview values are current to August 31; Apple ratings and all Google rows are carried forward from August 28 and marked as such.",
         "dataset": "platform_baseline",
         "sourceId": "baseline_snapshot",
         "columns": [
@@ -228,7 +228,7 @@
     "sources": [
       {
         "id": "baseline_snapshot",
-        "label": "Versioned store-console baseline",
+        "label": "2026-08-31 store evidence snapshot",
         "path": "growth/dashboard/baseline_snapshot.sql"
       },
       {
@@ -238,13 +238,13 @@
       },
       {
         "id": "rank_snapshot",
-        "label": "2026-08-30 UZ rank snapshot",
+        "label": "2026-08-31 UZ rank snapshot",
         "path": "growth/dashboard/rank_snapshot.sql"
       },
       {
         "id": "evaluation_snapshot",
-        "label": "2026-08-30 growth evaluation",
-        "path": "growth/reports/evaluation-2026-08-30.json"
+        "label": "2026-08-31 growth evaluation",
+        "path": "growth/reports/evaluation-2026-08-31.json"
       },
       {
         "id": "gate_snapshot",
@@ -261,7 +261,7 @@
       {
         "id": "snapshot_context",
         "type": "markdown",
-        "body": "## Current verdict\n\nNimbo is **not ready to scale acquisition**. The canonical August 30 capture at 00:00:25 +05:00 still fails every required goal surface, so the verified streak remains 0/7: Apple weather search is #87, the official Apple Weather chart is #22, all three fixed logged-out Google category profiles are outside the first 30, and 0/5 generic Google queries qualify. The auxiliary Apple Toshkent ob-havo search returned only one unique result and is a non-goal diagnostic error; goal evidence remains complete. The historical iOS 1.0.1 crash still has no diagnostic or symbolicated stack. Current product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6), with fail-closed Apple source-revision plumbing and deterministic per-target release profiles. It tolerates omitted optional Open-Meteo forecast/AQI arrays while keeping required weather/time rows fail-closed. Fourteen targeted Android-host and twelve targeted iOS Simulator tests pass. Exact-source GitHub Actions run 33300967788 passed ordinary Android/iOS, all 15 API 24/API 36 phone/tablet Compose UI tests, and all 18 Apple surface-state tests. Its retained archives are unsigned/test regression evidence only. Exact-source debug APK and pulled installed bytes share SHA-256 prefix d66c8f0 and passed a bounded physical API 25 phone/widget smoke, including denied location, Bukhara search, live forecast, cache/recovery, process health, and cleanup. This is debug-certificate evidence, not upload signing. The protected master-only hosted workflow and pre-manifest verifier are implemented but have not run because only 4/8 release-signing secrets are provisioned. No source-current signed artifact or complete signed physical-device matrix exists, so 0/3 current artifacts are byte-verified and the signed/physical gates remain blocked. Predecessor commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic storage-failure exception escapes and adds four throwing-repository regressions, but all of its binaries, screenshots, and device results are historical and non-transferable. OpenMeteo GmbH confirmed non-commercial API entitlement in ticket 234272 for the exact free, non-monetized, unpaid-organic-promotion scope. Predecessor phone and Wear AABs embed 9c2dce4, pass Bundletool and ZIP integrity, and have zero signature entries. Their SHA-256 values are b7c7acb6e90189e8d73e5b8a5f780bf1d3ab36f43edaf3d5076a1dba4e22d4e5 and 2d73fdf1e4fd661a96a699a9fd2ef7b2e989b0f4ab019692ce7c97465673d3fa. Predecessor Apple app, widget, and watch Release simulator hashes are b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849, 7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff, and c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728; UUID-matched dSYMs verify, but all are ad-hoc simulator products. The full Gradle release gate, shared iOS simulator suite, 18 Apple surface tests, and localization parity pass. A clean predecessor physical General Mobile API 25 run passed Tashkent without location permission, live forecast, truthful late-day Best Time, durable-tip persistence, offline cache, recovery, process health, and cleanup; built and installed APK bytes matched at 52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730 and the product-scoped fatal/ANR/SSL/CertPath/trust-anchor filter had zero matches. The exact-source API 24 emulator APK 168bb6acdb95453a8dfd141947edbcb9292b756fd3429fffa56fc4baf125dbec retains its live/cache/recovery pass. The byte-identical predecessor debug APK and API 36 installed bytes 52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730 also passed a fresh no-snapshot Pixel Tablet emulator smoke in Uzbek: landscape onboarding, live forecast, Best Time, durable-tip persistence, home-screen widget render/tap, large text, rotation, process health, and cleanup passed. This is emulator debug evidence, not physical-tablet or upload-signed release proof. Twelve EN/RU/UZ iPhone phone sources now come from the source-bound predecessor 9c2dce4 build-6 simulator app and cover overview, recent comparison, selected timeline, and 10-day/AQI details in each locale. The attempted Apple offline transition was not captured and no Apple offline-state source is claimed. This proves localized phone screenshot provenance only, not signing, physical-device, TestFlight, or store state. Apple Watch sources remain historical build-5 simulator evidence, and prior API 37 round-Wear evidence remains historical. There is no exact-current signed phone/Wear artifact, distribution-signed Apple archive, iOS 15 runtime pass, or matching physical matrix. Android Keychain metadata and the existing mode-600 keystore are present, but protected signing access remains unavailable. At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone and watch remained unavailable. Google Play Custom Store Listing 4834799756935529888 remains an Uzbekistan-only draft. Authenticated App Store Connect inventory reads expose public iOS 1.0.1 with valid build 4 and no 1.1.0 version or builds 5/6. Build-detail and diagnostic-signature GETs for build 4 returned security 403. One bounded POST attempting to create only a manual-release 1.1.0 version also returned 403; the final authenticated GET again returned zero 1.1.0 versions, proving that no partial version or localization draft was created. No build, localization, screenshot, Custom Product Page, submission, or release mutation followed. Apple subtitles and creatives remain repository-prepared payloads, not an App Store Connect draft or public store state. The same authenticated preflight found zero existing analytics report requests. Exactly one bounded ONGOING analytics-report-request POST for app 6799886897 returned security 403 without a resource ID; it was not retried, and no duplicate, report instance, segment, user-level data, or PII was created or downloaded. Automated weekly Apple analytics remains permission-blocked for the current key. The domain and point-in-time store-policy gates remain pass, every critical console guardrail remains unknown, and the latest validated weekly Play slice has zero UZ visitors, so UZ conversion remains unknown; its 42.31% all-country rate is diagnostic only. Scale status remains hold; public outreach and acquisition scaling remain gated on crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails."
+        "body": "## Current verdict\n\nNimbo is **not ready to scale acquisition**. The canonical August 31 capture at 02:51:00 +05:00 fails every required goal surface, so the verified streak remains 0/7: Apple weather search is #88, the official Apple Weather chart is #40, all three fixed logged-out Google category profiles are outside the first 30, and 0/5 generic Google queries qualify. The auxiliary Apple Toshkent ob-havo search returned only one unique result and remains a non-goal diagnostic error; required goal evidence is complete. The current App Store Connect overview reports 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% conversion; retention is insufficient. The conversion is preserved as reported because the supplied counts and report window do not reproduce it. Public iOS 1.0.1 (4) now has two reported crashes, one on August 25 and one on August 29. The August 29 event maps to iPhone; the August 25 device/OS dimension is suppressed or unavailable, and neither exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. The crash gate therefore remains blocked. Google overview values are carried forward from August 28 and were not revalidated on August 31.\n\nCurrent product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6), with fail-closed Apple source-revision plumbing and deterministic per-target release profiles. It tolerates omitted optional Open-Meteo forecast/AQI arrays while keeping required weather/time rows fail-closed. Fourteen targeted Android-host and twelve targeted iOS Simulator tests pass. Exact-source GitHub Actions run 33300967788 passed ordinary Android/iOS, all 15 API 24/API 36 phone/tablet Compose UI tests, and all 18 Apple surface-state tests. Its retained archives are unsigned/test regression evidence only. Exact-source debug APK and pulled installed bytes share SHA-256 prefix d66c8f0 and passed a bounded physical API 25 phone/widget smoke, including denied location, Bukhara search, live forecast, cache/recovery, process health, and cleanup. This is debug-certificate evidence, not upload signing. The protected master-only hosted workflow has all 8/8 signing inputs. Candidate run 33368227872 failed Apple export; run 33375162729 signed both Android bundles and exported Apple bytes, then correctly rejected the Apple app and widget because their required App Group was missing. Cleanup succeeded and no signed package was uploaded. A bounded entitlement re-signing and exact provenance correction is implemented but has not yet passed hosted execution. No retained, accepted, byte-verified source-current signed artifact or complete signed physical-device matrix exists, so 0/3 current artifacts are byte-verified and the signed/physical gates remain blocked. Predecessor commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic storage-failure exception escapes and adds four throwing-repository regressions, but all of its binaries, screenshots, and device results are historical and non-transferable. OpenMeteo GmbH confirmed non-commercial API entitlement in ticket 234272 for the exact free, non-monetized, unpaid-organic-promotion scope. Predecessor phone and Wear AABs embed 9c2dce4, pass Bundletool and ZIP integrity, and have zero signature entries. Their SHA-256 values are b7c7acb6e90189e8d73e5b8a5f780bf1d3ab36f43edaf3d5076a1dba4e22d4e5 and 2d73fdf1e4fd661a96a699a9fd2ef7b2e989b0f4ab019692ce7c97465673d3fa. Predecessor Apple app, widget, and watch Release simulator hashes are b7c3ba937658007b07ee9ad8e85ddc892e90f423e7839e0dc112a1070ea04849, 7191acd40334d4d9fec6062bc5023450fefbb55006fbd92f57109f41eb27a7ff, and c310c785750ffa779e5dfdc30384088fca889deddb11417f2b4e8e0e30109728; UUID-matched dSYMs verify, but all are ad-hoc simulator products. The full Gradle release gate, shared iOS simulator suite, 18 Apple surface tests, and localization parity pass. A clean predecessor physical General Mobile API 25 run passed Tashkent without location permission, live forecast, truthful late-day Best Time, durable-tip persistence, offline cache, recovery, process health, and cleanup; built and installed APK bytes matched at 52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730 and the product-scoped fatal/ANR/SSL/CertPath/trust-anchor filter had zero matches. The exact-source API 24 emulator APK 168bb6acdb95453a8dfd141947edbcb9292b756fd3429fffa56fc4baf125dbec retains its live/cache/recovery pass. The byte-identical predecessor debug APK and API 36 installed bytes 52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730 also passed a fresh no-snapshot Pixel Tablet emulator smoke in Uzbek: landscape onboarding, live forecast, Best Time, durable-tip persistence, home-screen widget render/tap, large text, rotation, process health, and cleanup passed. This is emulator debug evidence, not physical-tablet or upload-signed release proof. Twelve EN/RU/UZ iPhone phone sources now come from the source-bound predecessor 9c2dce4 build-6 simulator app and cover overview, recent comparison, selected timeline, and 10-day/AQI details in each locale. The attempted Apple offline transition was not captured and no Apple offline-state source is claimed. This proves localized phone screenshot provenance only, not signing, physical-device, TestFlight, or store state. Apple Watch sources remain historical build-5 simulator evidence, and prior API 37 round-Wear evidence remains historical. There is no retained, accepted, byte-verified exact-current signed phone/Wear artifact or distribution-signed Apple archive, and no iOS 15 runtime pass or matching physical matrix. Android Keychain metadata and the existing mode-600 keystore remain present. The protected environment now contains all 8/8 signing inputs, but neither candidate run yielded a retained, byte-verified package; hosted proof of the current correction remains pending. At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone and watch remained unavailable. Google Play Custom Store Listing 4834799756935529888 remains an Uzbekistan-only draft. Authenticated App Store Connect inventory reads expose public iOS 1.0.1 with valid build 4 and no 1.1.0 version or builds 5/6. Build-detail and diagnostic-signature GETs for build 4 returned security 403. One bounded POST attempting to create only a manual-release 1.1.0 version also returned 403; the final authenticated GET again returned zero 1.1.0 versions, proving that no partial version or localization draft was created. No build, localization, screenshot, Custom Product Page, submission, or release mutation followed. Apple subtitles and creatives remain repository-prepared payloads, not an App Store Connect draft or public store state. The same authenticated preflight found zero existing analytics report requests. Exactly one bounded ONGOING analytics-report-request POST for app 6799886897 returned security 403 without a resource ID; it was not retried, and no duplicate, report instance, segment, user-level data, or PII was created or downloaded. Automated weekly Apple analytics remains permission-blocked for the current key. The domain and point-in-time store-policy gates remain pass, every critical console guardrail remains unknown, and the latest validated weekly Play slice has zero UZ visitors, so UZ conversion remains unknown; its 42.31% all-country rate is diagnostic only. Scale status remains hold; public outreach and acquisition scaling remain gated on crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails."
       },
       {
         "id": "headline_strip",
@@ -319,16 +319,16 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-30T14:30:12+05:00",
+    "generatedAt": "2026-08-31T15:06:23+05:00",
     "status": "blocked",
     "datasets": {
       "headline_metrics": [
         {
           "top10_streak_days": 0,
           "top10_streak_target": 7,
-          "apple_weather_rank": 87,
+          "apple_weather_rank": 88,
           "rank_target": 10,
-          "apple_conversion": 0.0405,
+          "apple_conversion": 0.0486,
           "apple_conversion_target": 0.15,
           "play_conversion": 0.4082,
           "play_conversion_target": 0.35,
@@ -340,7 +340,7 @@
         {
           "metric": "Apple conversion",
           "series": "Baseline",
-          "rate": 0.0405
+          "rate": 0.0486
         },
         {
           "metric": "Apple conversion",
@@ -371,21 +371,21 @@
       "rank_snapshot": [
         {
           "check": "App Store search · weather",
-          "result": "87 · target ≤10",
+          "result": "88 · target ≤10",
           "surface": "App Store UZ search",
           "profile": "all",
           "query": "weather",
-          "observed_rank": "87",
+          "observed_rank": "88",
           "target_rank": 10,
           "evidence_class": "fixed_public_capture"
         },
         {
           "check": "App Store · Weather chart",
-          "result": "22 · target ≤10",
+          "result": "40 · target ≤10",
           "surface": "App Store UZ Weather chart",
           "profile": "official",
           "query": "category",
-          "observed_rank": "22",
+          "observed_rank": "40",
           "target_rank": 10,
           "evidence_class": "fixed_public_capture"
         },
@@ -435,78 +435,78 @@
           "metric_label": "App Store · Impressions",
           "platform": "App Store",
           "metric": "Impressions",
-          "value": "206",
-          "evidence_class": "reported_console_readout"
+          "value": "300",
+          "evidence_class": "live_console_2026-08-31"
         },
         {
           "metric_label": "App Store · First-time downloads",
           "platform": "App Store",
           "metric": "First-time downloads",
-          "value": "5",
-          "evidence_class": "reported_console_readout"
+          "value": "8",
+          "evidence_class": "live_console_2026-08-31"
         },
         {
           "metric_label": "App Store · Conversion rate",
           "platform": "App Store",
           "metric": "Conversion rate",
-          "value": "4.05%",
-          "evidence_class": "reported_console_readout"
+          "value": "4.86%",
+          "evidence_class": "live_console_2026-08-31_reported"
         },
         {
           "metric_label": "App Store · Ratings",
           "platform": "App Store",
           "metric": "Ratings",
           "value": "0",
-          "evidence_class": "reported_console_readout"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "App Store · Crashes",
           "platform": "App Store",
           "metric": "Crashes",
-          "value": "1",
-          "evidence_class": "live_console_2026-08-29"
+          "value": "2",
+          "evidence_class": "live_console_2026-08-31"
         },
         {
           "metric_label": "Google Play · Impressions",
           "platform": "Google Play",
           "metric": "Impressions",
           "value": "779",
-          "evidence_class": "reported_console_readout"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "Google Play · Installations",
           "platform": "Google Play",
           "metric": "Installations",
           "value": "21",
-          "evidence_class": "live_console_2026-08-28"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "Google Play · First launches",
           "platform": "Google Play",
           "metric": "First launches",
           "value": "14",
-          "evidence_class": "live_console_2026-08-28"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "Google Play · Monthly active users",
           "platform": "Google Play",
           "metric": "Monthly active users",
           "value": "11",
-          "evidence_class": "live_console_2026-08-28"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "Google Play · Conversion rate",
           "platform": "Google Play",
           "metric": "Conversion rate",
           "value": "40.82%",
-          "evidence_class": "reported_console_readout"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         },
         {
           "metric_label": "Google Play · Ratings",
           "platform": "Google Play",
           "metric": "Ratings",
           "value": "1",
-          "evidence_class": "reported_console_readout"
+          "evidence_class": "carried_forward_2026-08-28_not_revalidated"
         }
       ],
       "gate_snapshot": [
@@ -515,7 +515,7 @@
           "gate": "iOS crash gate",
           "decision": "BLOCKED · diagnostic absent; signed physical and post-rollout evidence required",
           "status": "blocked",
-          "evidence": "Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Current product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 inherits the preventive storage-failure hardening and adds tolerant optional Open-Meteo decoding. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed; its 23m59s iOS job completed shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. This current-source unsigned regression cannot identify or be attributed to the historical crash. Diagnostic access and symbolication, an exact distribution-signed physical iPhone/iPad pass, and post-rollout crash evidence remain missing.",
+          "evidence": "Authenticated App Store Connect now reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29. The 2026-08-29 event maps to iPhone; the 2026-08-25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. Current product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 inherits preventive storage-failure hardening and tolerant optional Open-Meteo decoding, while exact-source hosted run 33300967788 passed shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. That preventive unsigned regression evidence cannot identify or be attributed to either production event. Diagnostic access and symbolication, an exact distribution-signed physical iPhone/iPad pass, and post-rollout crash evidence remain missing.",
           "next_action": "Obtain any diagnostic report Apple later exposes, symbolicate if available, run exact signed physical iPhone QA, and collect post-rollout evidence"
         },
         {
@@ -529,17 +529,17 @@
         {
           "gate_id": "release_artifact_source_sync",
           "gate": "Release artifact source sync",
-          "decision": "BLOCKED · exact-source hosted proof green; 0/3 artifacts byte-verified; signed/physical matrix missing",
+          "decision": "BLOCKED · signing inputs 8/8; latest candidate rejected fail-closed; 0/3 artifacts byte-verified",
           "status": "blocked",
-          "evidence": "Product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It inherits the deterministic hosted UI harness, API 24 desugaring, fail-closed source-revision plumbing, bundle-specific Apple profiles, non-upload export contract, and pinned dependency graph from predecessor 704fd893e59d94d8e9a4971313a773b3fa545ab6. It additionally tolerates omitted optional forecast/AQI arrays while keeping required weather/time inputs fail-closed; 14 targeted Android-host and 12 targeted iOS Simulator tests pass. Exact-source GitHub Actions run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 completed successfully in about 24m01s: android-and-shared passed in 5m05s; the API 24 phone, API 36 phone, and API 36 tablet jobs passed all 15/15 UI tests in 2m36s, 3m48s, and 4m18s; and the iOS job passed in 23m59s with 18/18 Apple surface-state tests plus shared Simulator tests and the unsigned application build. Its six retained GitHub archive digests are test or unsigned regression evidence only: Android e499fce976974fbed15cfb5e525d738990a285215e81271954f86f5605c9cf8f, Wear 5a4b372e475c4c63ab58522397e7071e85928c6a1309d3c550c8b6f8cf8f6817, API 24 UI 0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517, API 36 phone UI f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1, API 36 tablet UI 20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c, and iOS results c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe. The protected release-signing environment contains 4/8 inputs; the two Android passwords, Apple P12, and its transport password remain absent behind the locked local Keychain, and the candidate workflow has not run. The schema-v2 manifest keeps all current artifact hashes and signing/physical evidence null; 0/3 artifacts are byte-verified and the gate remains blocked.",
-          "next_action": "Unlock the local login Keychain, provision the four remaining protected release-signing secrets, run the master-only hosted workflow, promote its verified receipt, and bind exact physical QA to the retained bytes"
+          "evidence": "Product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Exact-source GitHub Actions run 33300967788 passed the ordinary Android/iOS jobs, all 15 Compose UI tests across the API 24 phone, API 36 phone, and API 36 tablet profiles, and all 18 Apple surface-state tests. The protected release-signing environment now contains all 8/8 required secrets. Candidate run 33368227872 stopped at Apple export because a manual signing style was incompatible with Xcode-managed profiles. Run 33375162729 signed the Android phone and Wear bundles and completed Apple archive export, but the fail-closed byte verifier rejected the exported and retained app/widget because Xcode omitted their required App Group entitlement; cleanup succeeded and signed-candidate upload was skipped. The repository now contains an unproven hosted correction that restores only the App Group authorized by the protected profiles and requires exact ExportOptions, protected-profile UUID/name/SHA, workflow, and verifier provenance. Until a new hosted run passes, no signed package or schema-v3 receipt exists, 0/3 current artifacts are byte-verified, and the manifest remains blocked.",
+          "next_action": "Run the hardened master-only hosted workflow, independently verify and retain its receipt and bytes, then bind exact physical QA to those retained artifacts"
         },
         {
           "gate_id": "android_physical_smoke",
           "gate": "Android device smoke",
           "decision": "BLOCKED · exact-source debug API 25 phone/widget pass; upload-signed phone/tablet/widget/Wear matrix missing",
           "status": "blocked",
-          "evidence": "Product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 exact debug APK and pulled installed bytes SHA-256 d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047 passed a clean physical General Mobile Android 7.1.1 / API 25 smoke in Russian. Denied approximate location, ordinary Bukhara search, live Open-Meteo forecast, cached cold start, explicit failed-refresh warning, network recovery, populated home-screen widget render/tap, process health, and cleanup passed; the retained post-recovery log and final PID-scoped fatal/ANR/SSL/CertPath/trust-anchor filters had zero matches. Exact-source hosted run 33300967788 also passed the ordinary Android/shared job and all 15/15 Compose UI tests across API 24 phone, API 36 phone, and API 36 tablet. The physical APK uses the debug certificate and is not upload-signed or Play-delivered. No source-current upload-signed phone or Wear artifact exists, and the byte-linked upload-signed phone/tablet/widget matrix plus paired physical Wear OS result remain missing. The gate remains blocked.",
+          "evidence": "Product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 exact debug APK and pulled installed bytes SHA-256 d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047 passed a clean physical General Mobile Android 7.1.1 / API 25 smoke in Russian. Denied approximate location, ordinary Bukhara search, live Open-Meteo forecast, cached cold start, explicit failed-refresh warning, network recovery, populated home-screen widget render/tap, process health, and cleanup passed; the retained post-recovery log and final PID-scoped fatal/ANR/SSL/CertPath/trust-anchor filters had zero matches. Exact-source hosted run 33300967788 also passed the ordinary Android/shared job and all 15/15 Compose UI tests across API 24 phone, API 36 phone, and API 36 tablet. The physical APK uses the debug certificate and is not upload-signed or Play-delivered. No source-current upload-signed phone or Wear artifact has been retained, accepted, and byte-verified, and the byte-linked upload-signed phone/tablet/widget matrix plus paired physical Wear OS result remain missing. The gate remains blocked.",
           "next_action": "Sign and verify phone vc8, then run the exact signed artifact on phone and tablet plus widget and paired Wear OS paths"
         },
         {
@@ -547,7 +547,7 @@
           "gate": "iOS physical smoke",
           "decision": "BLOCKED · exact-source hosted unsigned iOS proof green; current distribution-signed build 6 and physical matrix missing",
           "status": "blocked",
-          "evidence": "Historical product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 retains simulator-only Apple 1.1.0 (6) app/widget/watch and localized creative evidence, but it does not transfer to current authority 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652. Twelve targeted current-source iOS Simulator provider tests pass. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed its 23m59s iOS job, including shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. There is no source-current distribution-signed archive or IPA, iOS 15 runtime pass, or physical iPhone/iPad/widget/paired-watch result. The gate remains blocked.",
+          "evidence": "Historical product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 retains simulator-only Apple 1.1.0 (6) app/widget/watch and localized creative evidence, but it does not transfer to current authority 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652. Twelve targeted current-source iOS Simulator provider tests pass. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed its 23m59s iOS job, including shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. There is no retained, accepted, byte-verified source-current distribution-signed archive or IPA, iOS 15 runtime pass, or physical iPhone/iPad/widget/paired-watch result. The gate remains blocked.",
           "next_action": "Create and verify distribution-signed build 6, re-establish CoreDevice readiness, then run the exact artifact on iPhone, iPad, widget, and paired watch paths"
         },
         {
@@ -654,7 +654,7 @@
       {
         "id": "raw_store_exports_missing",
         "dataset": "baseline",
-        "message": "Current App Store Connect analytics exports remain unavailable. The validated Google Play aggregate for 2026-08-18..2026-08-24 is retained without PII: all-country listing traffic is 26 visitors and 11 unique install clicks, while UZ is 0 visitors and 0 clicks. UZ conversion is therefore UNKNOWN because its denominator is zero; the derived 42.31% all-country rate is diagnostic only. Exact-scope first launch, retention, active-use, ratings, vitals, and user-loss evidence remains unavailable."
+        "message": "The 2026-08-31 App Store overview is available as a read-only observation (300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, 4.86% reported conversion, and insufficient retention), but no raw export or reporting-window metadata is attached. Google overview values are carried forward from 2026-08-28 and were not revalidated. The validated Google Play aggregate for 2026-08-18..2026-08-24 remains separate: all-country listing traffic is 26 visitors and 11 unique install clicks, while UZ is 0 visitors and 0 clicks, so UZ conversion is UNKNOWN."
       },
       {
         "id": "apple_analytics_report_request_forbidden",
@@ -664,12 +664,12 @@
       {
         "id": "ios_crash_report_missing",
         "dataset": "gates",
-        "message": "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, but privacy suppression exposes no report, stack, UUID, device, or OS. An existing API key authenticates for app, version, build, and analytics-request inventory and confirms public 1.0.1 build 4, but the build-detail and diagnostic-signature GETs return security 403. Current source 2cdd438 passes twelve targeted iOS Simulator provider mapping/service tests. Exact-source hosted run 33300967788 also passed shared Simulator tests, all 18 Apple surface-state tests, and the unsigned application build. Neither the authenticated inventory nor this current-source unsigned regression identifies or closes the historical crash for current source authority 2cdd438."
+        "message": "App Store Connect reports two crashes for public iOS 1.0.1 (4), one on August 25 and one on August 29, 2026. The August 29 event maps to iPhone; the August 25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. An existing API key authenticates for app, version, build, and analytics-request inventory, but diagnostic-signature GETs return security 403. Current source 2cdd438 passes twelve targeted iOS Simulator provider mapping/service tests. Exact-source hosted run 33300967788 also passed shared Simulator tests, all 18 Apple surface-state tests, and the unsigned application build. This preventive unsigned evidence identifies neither production event and does not close the crash gate for current source authority 2cdd438."
       },
       {
         "id": "release_artifact_source_sync_missing",
         "dataset": "gates",
-        "message": "Current product/build-input commit 2cdd438 has no retained signed phone vc8, Wear 1000008, or distribution-signed Apple build-6 candidate, so 0/3 current artifacts are byte-verified. Fourteen targeted Android-host and twelve targeted iOS Simulator provider tests pass, including cache preservation after rejected required-row responses. Exact-source GitHub Actions run 33300967788 passed ordinary Android/iOS plus all 15 Compose UI tests across the API 24 phone, API 36 phone, and API 36 tablet profiles. Its retained Android/Wear bundles and test archives are unsigned regression evidence only. Exact-source debug APK and pulled installed bytes share SHA-256 prefix d66c8f0 and passed a bounded physical API 25 denied-location, Bukhara search, live, cache/recovery, populated-widget, process-health, and cleanup smoke. That debug-certificate result is not upload-signed or Play-delivered. The manual master-only protected GitHub-hosted workflow and pre-manifest verifier remain configured and statically validated. The protected environment has 4/8 required secrets: its Android keystore payload and three Apple provisioning profiles are present, while two Android passwords plus the Apple P12 and its transport password remain absent. The signed workflow has not run. The locked local login Keychain still rejects Android protected credential reads and Apple private-key use. All signed bundles and distribution artifacts still belong to predecessor revisions and remain non-transferable regression or creative provenance only. The current debug-device result does not satisfy upload signing or the complete physical matrix. CoreDevice readiness must be re-established, and App Store Connect contains no 1.1.0 version or builds 5/6. A bounded 1.1.0 version-create POST returned 403 and the final GET proved zero partial draft; no localization, asset, build association, submission, release, or other store mutation followed."
+        "message": "Current product/build-input commit 2cdd438 has no retained signed phone vc8, Wear 1000008, or distribution-signed Apple build-6 candidate, so 0/3 current artifacts are byte-verified. Fourteen targeted Android-host and twelve targeted iOS Simulator provider tests pass, including cache preservation after rejected required-row responses. Exact-source GitHub Actions run 33300967788 passed ordinary Android/iOS plus all 15 Compose UI tests across the API 24 phone, API 36 phone, and API 36 tablet profiles. Its retained Android/Wear bundles and test archives are unsigned regression evidence only. Exact-source debug APK and pulled installed bytes share SHA-256 prefix d66c8f0 and passed a bounded physical API 25 denied-location, Bukhara search, live, cache/recovery, populated-widget, process-health, and cleanup smoke. That debug-certificate result is not upload-signed or Play-delivered. The protected GitHub environment now has all 8/8 signing inputs. Candidate run 33368227872 stopped at Apple export because manual signing was incompatible with managed profiles. Run 33375162729 signed both Android bundles and exported Apple bytes, then the byte verifier rejected the app and widget because Xcode omitted their required App Group; cleanup succeeded and signed-candidate upload was skipped. The repository now contains a bounded App Group re-signing correction with exact ExportOptions, protected-profile, workflow, and verifier provenance checks, but it has not yet passed a hosted run. No signed package or schema-v3 receipt exists. The current debug-device result does not satisfy upload signing or the complete physical matrix. CoreDevice readiness must be re-established, and App Store Connect contains no 1.1.0 version or builds 5/6. A bounded 1.1.0 version-create POST returned 403 and the final GET proved zero partial draft; no localization, asset, build association, submission, release, or other store mutation followed."
       },
       {
         "id": "critical_metric_guardrails_missing",
@@ -681,23 +681,25 @@
   "sources": [
     {
       "id": "baseline_snapshot",
-      "label": "Versioned store-console baseline",
+      "label": "2026-08-31 store evidence snapshot",
       "path": "growth/dashboard/baseline_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "-- Reproducible bounded snapshot of the reported store-console baseline.\n-- Values preserve each console metric as reported; they are not recomputed\n-- across incompatible denominators.\nSELECT *\nFROM (\n  VALUES\n    ('App Store', 'Impressions', '206', 'reported_console_readout'),\n    ('App Store', 'First-time downloads', '5', 'reported_console_readout'),\n    ('App Store', 'Conversion rate', '4.05%', 'reported_console_readout'),\n    ('App Store', 'Ratings', '0', 'reported_console_readout'),\n    ('App Store', 'Crashes', '1', 'live_console_2026-08-29'),\n    ('Google Play', 'Impressions', '779', 'reported_console_readout'),\n    ('Google Play', 'Installations', '21', 'live_console_2026-08-28'),\n    ('Google Play', 'First launches', '14', 'live_console_2026-08-28'),\n    ('Google Play', 'Monthly active users', '11', 'live_console_2026-08-28'),\n    ('Google Play', 'Conversion rate', '40.82%', 'reported_console_readout'),\n    ('Google Play', 'Ratings', '1', 'reported_console_readout')\n) AS baseline(platform, metric, value, evidence_class);\n",
-        "description": "Loads the bounded, versioned baseline while preserving reported console definitions.",
-        "executed_at": "2026-08-28T13:47:00Z",
+        "sql": "-- Reproducible bounded store-evidence snapshot as of 2026-08-31.\n-- Apple overview values are current read-only observations. Google values and\n-- Apple ratings are carried forward from 2026-08-28 and explicitly marked.\nSELECT *\nFROM (\n  VALUES\n    ('App Store', 'Impressions', '300', 'live_console_2026-08-31'),\n    ('App Store', 'First-time downloads', '8', 'live_console_2026-08-31'),\n    ('App Store', 'Conversion rate', '4.86%', 'live_console_2026-08-31_reported'),\n    ('App Store', 'Ratings', '0', 'carried_forward_2026-08-28_not_revalidated'),\n    ('App Store', 'Crashes', '2', 'live_console_2026-08-31'),\n    ('Google Play', 'Impressions', '779', 'carried_forward_2026-08-28_not_revalidated'),\n    ('Google Play', 'Installations', '21', 'carried_forward_2026-08-28_not_revalidated'),\n    ('Google Play', 'First launches', '14', 'carried_forward_2026-08-28_not_revalidated'),\n    ('Google Play', 'Monthly active users', '11', 'carried_forward_2026-08-28_not_revalidated'),\n    ('Google Play', 'Conversion rate', '40.82%', 'carried_forward_2026-08-28_not_revalidated'),\n    ('Google Play', 'Ratings', '1', 'carried_forward_2026-08-28_not_revalidated')\n) AS baseline(platform, metric, value, evidence_class);\n",
+        "description": "Loads the bounded 2026-08-31 store evidence while keeping current Apple observations distinct from values carried forward without revalidation.",
+        "executed_at": "2026-08-31T14:35:11+05:00",
         "tables_used": [
-          "inline baseline values backed by growth/baseline/2026-08-28.json"
+          "inline values backed by growth/baseline/2026-08-31.json"
         ],
         "filters": [
-          "Snapshot date 2026-08-28",
+          "Snapshot date 2026-08-31",
+          "Apple overview current; Apple ratings and Google values carried forward from 2026-08-28",
           "No cross-platform denominator coercion"
         ],
         "metric_definitions": [
-          "Apple conversion is the App Store Connect reported value",
-          "Play conversion is the historical reported baseline; exact weekly all-country and UZ listing populations are reported separately",
+          "Apple conversion is the App Store Connect reported 4.86% and is not recomputed from supplied counts",
+          "Retention is insufficient and remains unknown rather than zero",
+          "Play conversion is the 2026-08-28 reported baseline and was not revalidated on 2026-08-31",
           "First launch rate is 14 / 21 and is directional only"
         ]
       }
@@ -708,9 +710,9 @@
       "path": "growth/dashboard/driver_comparison.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('Apple conversion','Baseline',0.0405),('Apple conversion','Target',0.1500),('Play conversion','Baseline',0.4082),('Play conversion','Target',0.3500),('First launch / install','Baseline',0.6667),('First launch / install','Target',0.8000)) AS drivers(metric,series,rate)",
+        "sql": "-- Baseline-versus-target percentages used in the growth control room.\n-- The Play conversion and launch-rate reads remain directional until their\n-- source populations and time windows are reconciled.\nSELECT *\nFROM (\n  VALUES\n    ('Apple conversion', 'Baseline', 0.0486),\n    ('Apple conversion', 'Target', 0.1500),\n    ('Play conversion', 'Baseline', 0.4082),\n    ('Play conversion', 'Target', 0.3500),\n    ('First launch / install', 'Baseline', 0.6667),\n    ('First launch / install', 'Target', 0.8000)\n) AS drivers(metric, series, rate);\n",
         "description": "Builds the reviewed baseline-versus-target driver comparison.",
-        "executed_at": "2026-08-28T13:47:00Z",
+        "executed_at": "2026-08-31T14:35:11+05:00",
         "tables_used": [
           "inline driver values backed by growth/kpi-framework.json"
         ],
@@ -726,18 +728,18 @@
     },
     {
       "id": "rank_snapshot",
-      "label": "2026-08-30 UZ rank snapshot",
+      "label": "2026-08-31 UZ rank snapshot",
       "path": "growth/dashboard/rank_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "-- Required goal-surface evidence from the canonical 2026-08-30 UZ capture at\n-- 2026-08-30T00:00:25+05:00. Goal evidence is complete. The separately\n-- monitored Apple search for `Toshkent ob-havo` returned only one unique app,\n-- so overall diagnostic capture is incomplete; that non-goal row is omitted.\nSELECT *\nFROM (\n  VALUES\n    ('App Store UZ search', 'all', 'weather', '87', 10, 'fixed_public_capture'),\n    ('App Store UZ Weather chart', 'official', 'category', '22', 10, 'fixed_public_capture'),\n    ('Google Play UZ Weather category', 'uz-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ Weather category', 'ru-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ Weather category', 'en-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ generic-query quorum', '2-of-3 profiles', 'five configured queries', '0 qualifying queries', 2, 'fixed_logged_out_capture')\n) AS ranks(surface, profile, query, observed_rank, target_rank, evidence_class);\n",
+        "sql": "-- Required goal-surface evidence from the canonical 2026-08-31 UZ capture at\n-- 2026-08-31T02:51:00+05:00. Goal evidence is complete. The separately\n-- monitored Apple search for `Toshkent ob-havo` returned only one unique app,\n-- so overall diagnostic capture is incomplete; that non-goal row is omitted.\nSELECT *\nFROM (\n  VALUES\n    ('App Store UZ search', 'all', 'weather', '88', 10, 'fixed_public_capture'),\n    ('App Store UZ Weather chart', 'official', 'category', '40', 10, 'fixed_public_capture'),\n    ('Google Play UZ Weather category', 'uz-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ Weather category', 'ru-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ Weather category', 'en-UZ', 'category', '>30', 10, 'fixed_logged_out_capture'),\n    ('Google Play UZ generic-query quorum', '2-of-3 profiles', 'five configured queries', '0 qualifying queries', 2, 'fixed_logged_out_capture')\n) AS ranks(surface, profile, query, observed_rank, target_rank, evidence_class);\n",
         "description": "Loads the complete required goal surfaces from the canonical public-rank capture while preserving bounded absences; one auxiliary non-goal Apple query is incomplete.",
-        "executed_at": "2026-08-29T19:00:25Z",
+        "executed_at": "2026-08-31T14:35:11+05:00",
         "tables_used": [
-          "inline rank values backed by growth/data/public-rank/2026-08-30.json"
+          "inline rank values backed by growth/data/public-rank/2026-08-31.json"
         ],
         "filters": [
-          "Snapshot date 2026-08-30",
+          "Snapshot date 2026-08-31",
           "Storefront UZ",
           "Google logged-out profiles uz-UZ, ru-UZ, en-UZ",
           "capture_complete=false because auxiliary Apple Toshkent ob-havo search returned only one unique app",
@@ -752,19 +754,19 @@
     },
     {
       "id": "evaluation_snapshot",
-      "label": "2026-08-30 growth evaluation",
-      "path": "growth/reports/evaluation-2026-08-30.json",
+      "label": "2026-08-31 growth evaluation",
+      "path": "growth/reports/evaluation-2026-08-31.json",
       "query": {
         "engine": "postgresql",
-        "sql": "SELECT * FROM (VALUES ('2026-08-30',0,7,FALSE,TRUE)) AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)",
+        "sql": "SELECT * FROM (VALUES ('2026-08-31',0,7,FALSE,TRUE)) AS evaluation(as_of,current_streak_days,required_days,goal_achieved,as_of_snapshot_present)",
         "description": "Loads the evaluated Top-10 streak state for the latest UZ rank day.",
-        "executed_at": "2026-08-30T14:30:12+05:00",
+        "executed_at": "2026-08-31T15:06:23+05:00",
         "tables_used": [
-          "inline evaluation values backed by growth/reports/evaluation-2026-08-30.json"
+          "inline evaluation values backed by growth/reports/evaluation-2026-08-31.json"
         ],
         "filters": [
           "Current comparable config fingerprint",
-          "Consecutive complete required goal days through 2026-08-30"
+          "Consecutive complete required goal days through 2026-08-31"
         ],
         "metric_definitions": [
           "Current streak counts consecutive complete days satisfying both category definitions and the Google generic-query quorum",
@@ -778,9 +780,9 @@
       "path": "growth/dashboard/gate_snapshot.sql",
       "query": {
         "engine": "postgresql",
-        "sql": "-- Scale status: hold.\n-- Public outreach and acquisition scaling remain gated on crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails. Open-Meteo written clearance passes for the exact unpaid, non-monetized organic-promotion scope.\n-- Scale gates are fail-closed. Unknown is not treated as pass.\nSELECT *\nFROM (\n  VALUES\n    ('ios_crash_gate', 'iOS crash gate', 'blocked', 'Authenticated App Store Connect confirms one iOS 1.0.1 crash on 2026-08-25, but privacy suppression exposes no device, OS, crash report, stack, or UUID. Current product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 inherits the preventive storage-failure hardening and adds tolerant optional Open-Meteo decoding. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed; its 23m59s iOS job completed shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. This current-source unsigned regression cannot identify or be attributed to the historical crash. Diagnostic access and symbolication, an exact distribution-signed physical iPhone/iPad pass, and post-rollout crash evidence remain missing.', 'Obtain any diagnostic report Apple later exposes, symbolicate if available, run exact signed physical iPhone QA, and collect post-rollout evidence'),\n    ('open_meteo_promotion_clearance', 'Open-Meteo promotion clearance', 'pass', 'The complete authenticated Gmail record was checked read-only on 2026-08-29. The 06:05:07 +05:00 request described Nimbo as free and non-monetized, with no subscriptions, advertising, paid features, affiliate links, accounts, analytics SDK, or sale of user data, and limited promotion to unpaid localized posts, one personalized contact plus at most one follow-up, genuine Apple/Google editorial submissions, and ordinary unpaid links. At 17:25 +05:00, Nicoletta Addimando via OpenMeteo GmbH replied in ticket 234272 and explicitly confirmed that under those terms Nimbo is entitled to use the non-commercial API. This pass is limited to that exact scope and the published Free API limits; monetization, paid promotion, attribution removal, limit changes, or other material facts require a new licensing decision.', 'Preserve the confirmed scope and reopen licensing review before any material monetization, promotion, attribution, endpoint, or usage-limit change'),\n    ('release_artifact_source_sync', 'Release artifact source sync', 'blocked', 'Product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It inherits the deterministic hosted UI harness, API 24 desugaring, fail-closed source-revision plumbing, bundle-specific Apple profiles, non-upload export contract, and pinned dependency graph from predecessor 704fd893e59d94d8e9a4971313a773b3fa545ab6. It additionally tolerates omitted optional forecast/AQI arrays while keeping required weather/time inputs fail-closed; 14 targeted Android-host and 12 targeted iOS Simulator tests pass. Exact-source GitHub Actions run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 completed successfully in about 24m01s: android-and-shared passed in 5m05s; the API 24 phone, API 36 phone, and API 36 tablet jobs passed all 15/15 UI tests in 2m36s, 3m48s, and 4m18s; and the iOS job passed in 23m59s with 18/18 Apple surface-state tests plus shared Simulator tests and the unsigned application build. Its six retained GitHub archive digests are test or unsigned regression evidence only: Android e499fce976974fbed15cfb5e525d738990a285215e81271954f86f5605c9cf8f, Wear 5a4b372e475c4c63ab58522397e7071e85928c6a1309d3c550c8b6f8cf8f6817, API 24 UI 0f385db95e55c31fbf1789d9e9e57cbdfc7f02e7b5ab249ab69745a62a9d7517, API 36 phone UI f934996c9addce8543df6eecfb5bbd5404c83b8b51182098437d2cf8d27a77f1, API 36 tablet UI 20d21e0a392b0e03058fe053b08912bdf6f4eb0b9470c5e4b7439f6cb432ee5c, and iOS results c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe. The protected release-signing environment contains 4/8 inputs; the two Android passwords, Apple P12, and its transport password remain absent behind the locked local Keychain, and the candidate workflow has not run. The schema-v2 manifest keeps all current artifact hashes and signing/physical evidence null; 0/3 artifacts are byte-verified and the gate remains blocked.', 'Unlock the local login Keychain, provision the four remaining protected release-signing secrets, run the master-only hosted workflow, promote its verified receipt, and bind exact physical QA to the retained bytes'),\n    ('android_physical_smoke', 'Android device smoke', 'blocked', 'Product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 exact debug APK and pulled installed bytes SHA-256 d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047 passed a clean physical General Mobile Android 7.1.1 / API 25 smoke in Russian. Denied approximate location, ordinary Bukhara search, live Open-Meteo forecast, cached cold start, explicit failed-refresh warning, network recovery, populated home-screen widget render/tap, process health, and cleanup passed; the retained post-recovery log and final PID-scoped fatal/ANR/SSL/CertPath/trust-anchor filters had zero matches. Exact-source hosted run 33300967788 also passed the ordinary Android/shared job and all 15/15 Compose UI tests across API 24 phone, API 36 phone, and API 36 tablet. The physical APK uses the debug certificate and is not upload-signed or Play-delivered. No source-current upload-signed phone or Wear artifact exists, and the byte-linked upload-signed phone/tablet/widget matrix plus paired physical Wear OS result remain missing. The gate remains blocked.', 'Sign and verify phone vc8, then run the exact signed artifact on phone and tablet plus widget and paired Wear OS paths'),\n    ('ios_physical_smoke', 'iOS physical smoke', 'blocked', 'Historical product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 retains simulator-only Apple 1.1.0 (6) app/widget/watch and localized creative evidence, but it does not transfer to current authority 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652. Twelve targeted current-source iOS Simulator provider tests pass. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed its 23m59s iOS job, including shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. There is no source-current distribution-signed archive or IPA, iOS 15 runtime pass, or physical iPhone/iPad/widget/paired-watch result. The gate remains blocked.', 'Create and verify distribution-signed build 6, re-establish CoreDevice readiness, then run the exact artifact on iPhone, iPad, widget, and paired watch paths'),\n    ('domain_activation', 'Domain activation', 'pass', 'At 2026-08-29 10:40–10:41 +05:00, authenticated GitHub Pages settings showed DNS check successful and Enforce HTTPS enabled. The Let''s Encrypt certificate has CN nimbo.uz, SANs nimbo.uz/www.nimbo.uz, and validates for both hosts. WHOIS, .uz delegation, authoritative Cloudflare records, and independent 1.1.1.1/8.8.8.8 resolution pass. HTTPS returns 200 with verification result 0 for all 12 published UZ-root/RU/EN landing, press, privacy, and support routes plus growth, robots, sitemap, and the valid metadata schema. HTTP apex redirects to HTTPS; HTTP www reaches HTTPS apex in two redirects; HTTPS www redirects directly to HTTPS apex. All 12 localized HTML routes have the expected HTTPS canonical and language. Uzbek intentionally uses ' || chr(47) || ' rather than a separate ' || chr(47) || 'uz' || chr(47) || ' route.', 'Maintain dated DNS, certificate, redirect, canonical, and localized-route verification at each release'),\n    ('store_policy_console_clearance', 'Store policy console clearance', 'pass', 'The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. At 13:59:40 +05:00, UZ Custom Store Listing 4834799756935529888 was saved only as Draft, not submitted for review or published; Publishing overview still showed the latest publication on 2026-08-27. This is point-in-time Console evidence, not a guarantee against later review. See growth/quality/store-policy-console-2026-08-28.md and growth/quality/google-play-console-2026-08-29.md.', 'Re-check both app-global store policy surfaces at the next evidence cutoff')\n) AS gates(gate_id, gate, status, evidence, next_action);\n",
+        "sql": "-- Scale status: hold.\n-- Public outreach and acquisition scaling remain gated on crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails. Open-Meteo written clearance passes for the exact unpaid, non-monetized organic-promotion scope.\n-- Scale gates are fail-closed. Unknown is not treated as pass.\nSELECT *\nFROM (\n  VALUES\n    ('ios_crash_gate', 'iOS crash gate', 'blocked', 'Authenticated App Store Connect now reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29. The 2026-08-29 event maps to iPhone; the 2026-08-25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. Current product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 inherits preventive storage-failure hardening and tolerant optional Open-Meteo decoding, while exact-source hosted run 33300967788 passed shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. That preventive unsigned regression evidence cannot identify or be attributed to either production event. Diagnostic access and symbolication, an exact distribution-signed physical iPhone/iPad pass, and post-rollout crash evidence remain missing.', 'Obtain any diagnostic report Apple later exposes, symbolicate if available, run exact signed physical iPhone QA, and collect post-rollout evidence'),\n    ('open_meteo_promotion_clearance', 'Open-Meteo promotion clearance', 'pass', 'The complete authenticated Gmail record was checked read-only on 2026-08-29. The 06:05:07 +05:00 request described Nimbo as free and non-monetized, with no subscriptions, advertising, paid features, affiliate links, accounts, analytics SDK, or sale of user data, and limited promotion to unpaid localized posts, one personalized contact plus at most one follow-up, genuine Apple/Google editorial submissions, and ordinary unpaid links. At 17:25 +05:00, Nicoletta Addimando via OpenMeteo GmbH replied in ticket 234272 and explicitly confirmed that under those terms Nimbo is entitled to use the non-commercial API. This pass is limited to that exact scope and the published Free API limits; monetization, paid promotion, attribution removal, limit changes, or other material facts require a new licensing decision.', 'Preserve the confirmed scope and reopen licensing review before any material monetization, promotion, attribution, endpoint, or usage-limit change'),\n    ('release_artifact_source_sync', 'Release artifact source sync', 'blocked', 'Product/build-input commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 resolves to Android phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). Exact-source GitHub Actions run 33300967788 passed the ordinary Android/iOS jobs, all 15 Compose UI tests across the API 24 phone, API 36 phone, and API 36 tablet profiles, and all 18 Apple surface-state tests. The protected release-signing environment now contains all 8/8 required secrets. Candidate run 33368227872 stopped at Apple export because a manual signing style was incompatible with Xcode-managed profiles. Run 33375162729 signed the Android phone and Wear bundles and completed Apple archive export, but the fail-closed byte verifier rejected the exported and retained app/widget because Xcode omitted their required App Group entitlement; cleanup succeeded and signed-candidate upload was skipped. The repository now contains an unproven hosted correction that restores only the App Group authorized by the protected profiles and requires exact ExportOptions, protected-profile UUID/name/SHA, workflow, and verifier provenance. Until a new hosted run passes, no signed package or schema-v3 receipt exists, 0/3 current artifacts are byte-verified, and the manifest remains blocked.', 'Run the hardened master-only hosted workflow, independently verify and retain its receipt and bytes, then bind exact physical QA to those retained artifacts'),\n    ('android_physical_smoke', 'Android device smoke', 'blocked', 'Product commit 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 exact debug APK and pulled installed bytes SHA-256 d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047 passed a clean physical General Mobile Android 7.1.1 / API 25 smoke in Russian. Denied approximate location, ordinary Bukhara search, live Open-Meteo forecast, cached cold start, explicit failed-refresh warning, network recovery, populated home-screen widget render/tap, process health, and cleanup passed; the retained post-recovery log and final PID-scoped fatal/ANR/SSL/CertPath/trust-anchor filters had zero matches. Exact-source hosted run 33300967788 also passed the ordinary Android/shared job and all 15/15 Compose UI tests across API 24 phone, API 36 phone, and API 36 tablet. The physical APK uses the debug certificate and is not upload-signed or Play-delivered. No source-current upload-signed phone or Wear artifact has been retained, accepted, and byte-verified, and the byte-linked upload-signed phone/tablet/widget matrix plus paired physical Wear OS result remain missing. The gate remains blocked.', 'Sign and verify phone vc8, then run the exact signed artifact on phone and tablet plus widget and paired Wear OS paths'),\n    ('ios_physical_smoke', 'iOS physical smoke', 'blocked', 'Historical product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 retains simulator-only Apple 1.1.0 (6) app/widget/watch and localized creative evidence, but it does not transfer to current authority 2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652. Twelve targeted current-source iOS Simulator provider tests pass. Exact-source hosted run 33300967788 at evidence head fb877d30b2179a489f5ce18dd06d892461436540 passed its 23m59s iOS job, including shared Simulator tests, 18/18 Apple surface-state tests, and the unsigned application build. There is no retained, accepted, byte-verified source-current distribution-signed archive or IPA, iOS 15 runtime pass, or physical iPhone/iPad/widget/paired-watch result. The gate remains blocked.', 'Create and verify distribution-signed build 6, re-establish CoreDevice readiness, then run the exact artifact on iPhone, iPad, widget, and paired watch paths'),\n    ('domain_activation', 'Domain activation', 'pass', 'At 2026-08-29 10:40–10:41 +05:00, authenticated GitHub Pages settings showed DNS check successful and Enforce HTTPS enabled. The Let''s Encrypt certificate has CN nimbo.uz, SANs nimbo.uz/www.nimbo.uz, and validates for both hosts. WHOIS, .uz delegation, authoritative Cloudflare records, and independent 1.1.1.1/8.8.8.8 resolution pass. HTTPS returns 200 with verification result 0 for all 12 published UZ-root/RU/EN landing, press, privacy, and support routes plus growth, robots, sitemap, and the valid metadata schema. HTTP apex redirects to HTTPS; HTTP www reaches HTTPS apex in two redirects; HTTPS www redirects directly to HTTPS apex. All 12 localized HTML routes have the expected HTTPS canonical and language. Uzbek intentionally uses ' || chr(47) || ' rather than a separate ' || chr(47) || 'uz' || chr(47) || ' route.', 'Maintain dated DNS, certificate, redirect, canonical, and localized-route verification at each release'),\n    ('store_policy_console_clearance', 'Store policy console clearance', 'pass', 'The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. At 13:59:40 +05:00, UZ Custom Store Listing 4834799756935529888 was saved only as Draft, not submitted for review or published; Publishing overview still showed the latest publication on 2026-08-27. This is point-in-time Console evidence, not a guarantee against later review. See growth/quality/store-policy-console-2026-08-28.md and growth/quality/google-play-console-2026-08-29.md.', 'Re-check both app-global store policy surfaces at the next evidence cutoff')\n) AS gates(gate_id, gate, status, evidence, next_action);\n",
         "description": "Loads the fail-closed scale gates and their next evidence-producing action. Scale status is hold. Public outreach and acquisition scaling remain gated on crash diagnosis, source-synced signed phone, Wear OS, and Apple artifacts, complete physical-device coverage, and critical console guardrails. Open-Meteo written clearance passes for the exact unpaid, non-monetized organic-promotion scope.",
-        "executed_at": "2026-08-30T14:30:12+05:00",
+        "executed_at": "2026-08-31T15:06:23+05:00",
         "tables_used": [
           "inline gate values backed by growth/quality/gates.json"
         ],
@@ -801,9 +803,9 @@
         "engine": "postgresql",
         "sql": "SELECT * FROM (VALUES ('ios_crash_free_sessions_pct','iOS crash-free sessions','unknown',TRUE,'>= 99.8%','block_scale','Attach the source-defined App Store crash-free-session metric for the same UZ evidence window'),('android_user_perceived_crash_rate_pct','Android user-perceived crash rate','unknown',TRUE,'< 1.09%','block_scale','Import the Play Console UZ user-perceived crash rate for the same seven complete days'),('android_user_perceived_anr_rate_pct','Android user-perceived ANR rate','unknown',TRUE,'< 0.47%','block_scale','Import the Play Console UZ user-perceived ANR rate for the same seven complete days'),('android_phone_model_crash_rate_pct','Android phone-model crash rate','unknown',TRUE,'< 8%','review_required','Import decision-eligible concrete phone-model crash evidence and review the worst observed model'),('android_phone_model_anr_rate_pct','Android phone-model ANR rate','unknown',TRUE,'< 8%','review_required','Import decision-eligible concrete phone-model ANR evidence and review the worst observed model'),('wear_model_crash_rate_pct','Wear OS model crash rate','unknown',TRUE,'< 4%','review_required','Import decision-eligible concrete Wear OS model crash evidence and review the worst observed model'),('wear_model_anr_rate_pct','Wear OS model ANR rate','unknown',TRUE,'< 5%','review_required','Import decision-eligible concrete Wear OS model ANR evidence and review the worst observed model'),('open_policy_issues','App-global store policy issues','unknown',TRUE,'= 0','block_scale','Import current app-global Apple and Google policy-issue counts with storefront ALL')) AS guardrails(guardrail_id,guardrail,status,critical,threshold,unknown_policy,next_action)",
         "description": "Loads every critical metric guardrail and keeps missing evidence explicitly unknown.",
-        "executed_at": "2026-08-29T19:01:10Z",
+        "executed_at": "2026-08-31T14:35:11+05:00",
         "tables_used": [
-          "inline guardrail values backed by growth/reports/evaluation-2026-08-30.json and growth/kpi-framework.json"
+          "inline guardrail values backed by growth/reports/evaluation-2026-08-31.json and growth/kpi-framework.json"
         ],
         "filters": [
           "Critical metric guardrails only"

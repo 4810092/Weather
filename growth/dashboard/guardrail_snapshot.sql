@@ -1,4 +1,4 @@
--- Critical metric guardrails from the 2026-08-29 growth evaluation.
+-- Critical metric guardrails from the 2026-08-31 growth evaluation.
 -- Unknown remains blocking until decision-eligible weekly console evidence exists.
 SELECT *
 FROM (

@@ -478,6 +478,16 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
             if not is_archive_target:
                 profile_entitlements["beta-reports-active"] = True
             profile = {
+                "UUID": {
+                    "app": "11111111-1111-1111-1111-111111111111",
+                    "widget": "22222222-2222-2222-2222-222222222222",
+                    "watch": "33333333-3333-3333-3333-333333333333",
+                }[role],
+                "Name": (
+                    f"Fixture Development Profile: {bundle_id}"
+                    if is_archive_target
+                    else f"iOS Team Store Provisioning Profile: {bundle_id}"
+                ),
                 "TeamIdentifier": [APPLE_TEAM_ID],
                 "ExpirationDate": expiration,
                 "DeveloperCertificates": [signing_certificate_bytes],
@@ -1356,10 +1366,35 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         self.assertFalse(results["apple"].byte_verified)
         self.assertTrue(
             any(
-                "ExportOptions.plist signingStyle 'manual' differs"
+                "ExportOptions.plist differs from the exact expected contract"
                 in failure
+                and "differing=['signingStyle']" in failure
                 for failure in failures
             )
+        )
+
+    def test_apple_export_options_reject_unexpected_key(self) -> None:
+        manifest = self.manifest("apple")
+        path = self.write_apple_candidate()
+        manifest["artifacts"]["apple"]["sha256"] = hashlib.sha256(
+            path.read_bytes()
+        ).hexdigest()
+        export_options_path = self.artifact_root / "ExportOptions.plist"
+        export_options = plistlib.loads(export_options_path.read_bytes())
+        export_options["thinning"] = "<thin-for-all-variants>"
+        export_options_path.write_bytes(plistlib.dumps(export_options))
+
+        results, failures = self.verify_apple(manifest)
+
+        self.assertFalse(results["apple"].byte_verified)
+        self.assertTrue(
+            any(
+                "ExportOptions.plist differs from the exact expected contract"
+                in failure
+                and "unexpected=['thinning']" in failure
+                for failure in failures
+            ),
+            failures,
         )
 
     def test_apple_archive_requires_exact_nimbo_app_product(self) -> None:

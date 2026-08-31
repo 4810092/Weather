@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "fb52a65a403e06cca14901bb5727e220855cb42be9e98b328dbf25fe564a3777"
+WORKFLOW_SHA256 = "fd96eb999047cc033beb211eb09761dbbe68ec341dc9f3cf5902adfadfdebc55"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -150,8 +150,8 @@ SIGN_ACTION_STEP_SHA256 = [
     "c7a5e71576651099391a847844b2b8e051a8b6fb487340b445fc845ba742b509",
 ]
 REVIEWED_VERIFIER_SHA256 = {
-    "verify_signed_candidate.py": "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa",
-    "release_artifact_verifier.py": "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7",
+    "verify_signed_candidate.py": "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
+    "release_artifact_verifier.py": "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82",
 }
 BUILD_RUN_SHA256 = {
     "Resolve exact release source and unsigned staging paths": "e7f591227861f1cb074317294a06906ff7da5e27e8c7c022f42e7a2244aef940",
@@ -163,15 +163,15 @@ BUILD_RUN_SHA256 = {
     "Remove unsigned build clone": "e76ab6f50b0eab2675461657cb4d3ce9e767cd4c481ca5206ac97222680a3ee5",
 }
 SIGN_RUN_SHA256 = {
-    "Validate and unpack inert unsigned inputs": "02ac1346491e9ecf5b25e18947e0c4807394350d63889a23226304355efa0be1",
+    "Validate and unpack inert unsigned inputs": "c2ad86caa5b6180130d60c7f31f0eb9b56cbb27a71ea87ec167ee30ddf13f4af",
     "Fetch pinned Bundletool": "8654644e5fab003fd6b3e98bd8b61d3e9f1f7f1bf76fa290458095bc9875cc79",
     "Decode protected signing material outside the checkout": "f2485c2e40ade88500f2b583a7226a970553dce44a851b4c4ba92de6b35bc9ac",
     "Upload-sign Android phone and Wear bundles": "fced7db2bc082b396bd326021a2a0adcc860932d32aa1a63c271d8141f23a9bc",
-    "Install ephemeral Apple identity and exact profiles": "5bf3e03c335a87af253341b5dbfdfc7d3f9797b222e312de5711f81c197885cb",
-    "Export and retain distribution-signed Apple build 6": "f5b3856c45e8f6cb549ce7b70d8dd99cde92122944d979f19e9c4fc3aecd7b64",
-    "Destroy signing material before byte verification": "45dd4b27dfd0b392bb498ab79fd8a4e171b145cd3a0d7d77a67e09f1b78402e7",
-    "Byte-verify the complete signed candidate": "3b4922a334f29dd8fe488ae4145a8e89ffa47f744eb1880f82fddf63232b2c34",
-    "Destroy ephemeral signing material": "ccdb26d408ad203b3dfaab235be7081bb15b073f86099e729260d50bf083309c",
+    "Install ephemeral Apple identity and exact profiles": "dab7eb35e6873dba611735a01628f12243aad5b73e34ba90d3657a6a5fd4dba4",
+    "Export and retain distribution-signed Apple build 6": "5abf1b179498c5cd6a5dacc7782298874762a2c32c4e2591f0dd4636dca168fa",
+    "Destroy signing material before byte verification": "0821e57e2755cf08959d8cd1fdb55f043a54f937baf69584b39203936b2e9c8e",
+    "Byte-verify the complete signed candidate": "d2d5c887ed1cff4f1d06b2f14a2f96407ed4136c776bcc0a8fae3a6717b1156e",
+    "Destroy ephemeral signing material": "3f3b4c37fbe6ac8e436cc9f7d207f1dcc0c9065f761b2d5a55fdb299b26186d1",
 }
 
 
@@ -534,10 +534,17 @@ def validate_signed_candidate_workflow(text: str) -> list[str]:
         "source ExportOptions.plist differs from the non-upload canonical contract",
         'effective_export_options["signingStyle"] = "automatic"',
         "effective ExportOptions.plist was not normalized for Xcode-managed profiles",
+        "NIMBO_APPLE_PROFILE_BINDINGS",
+        "com.apple.security.application-groups",
+        "--generate-entitlement-der",
         "runpy.run_path(str(script), run_name=\"__main__\")",
         "--package-output \"$NIMBO_PACKAGE_ROOT/signed-candidate-bytes.tar.gz\"",
-        "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa",
-        "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7",
+        "--workflow-run-id \"$GITHUB_RUN_ID\"",
+        "--workflow-sha256 \"$workflow_sha256\"",
+        "--apple-profile-bindings \"$NIMBO_APPLE_PROFILE_BINDINGS\"",
+        'receipt.get("schema_version") != 3',
+        "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
+        "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82",
         "Destroy signing material before byte verification",
         "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
         "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",

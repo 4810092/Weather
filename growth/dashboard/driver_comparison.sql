@@ -4,7 +4,7 @@
 SELECT *
 FROM (
   VALUES
-    ('Apple conversion', 'Baseline', 0.0405),
+    ('Apple conversion', 'Baseline', 0.0486),
     ('Apple conversion', 'Target', 0.1500),
     ('Play conversion', 'Baseline', 0.4082),
     ('Play conversion', 'Target', 0.3500),

@@ -596,6 +596,7 @@ jobs:
           artifact_root="$package_root/bytes"
           bundletool="$RUNNER_TEMP/bundletool-all-1.18.3.jar"
           verifier_root="$RUNNER_TEMP/nimbo-reviewed-verifier"
+          apple_profile_bindings="$RUNNER_TEMP/nimbo-apple-profile-bindings.json"
           git worktree add --detach "$source_root" "$source_revision"
           install -d -m 700 \
             "$unsigned_root" \
@@ -603,9 +604,9 @@ jobs:
             "$artifact_root" \
             "$verifier_root"
           [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" | awk '{print $1}')" == \
-            "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa" ]]
+            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]
           [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/release_artifact_verifier.py" | awk '{print $1}')" == \
-            "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7" ]]
+            "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82" ]]
           install -m 500 \
             "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" \
             "$verifier_root/verify_signed_candidate.py"
@@ -690,6 +691,7 @@ jobs:
             echo "NIMBO_ARTIFACT_ROOT=$artifact_root"
             echo "NIMBO_BUNDLETOOL_JAR=$bundletool"
             echo "NIMBO_VERIFIER_ROOT=$verifier_root"
+            echo "NIMBO_APPLE_PROFILE_BINDINGS=$apple_profile_bindings"
           } >> "$GITHUB_ENV"
 
       - name: Fetch pinned Bundletool
@@ -855,6 +857,13 @@ jobs:
               raise SystemExit("provisioning profile is not distribution-scoped")
           if entitlements.get("beta-reports-active") is not True:
               raise SystemExit("provisioning profile is not App Store scoped")
+          expected_groups = (
+              ["group.uz.ganikhodjaev.weather"]
+              if bundle_id != "uz.ganikhodjaev.weather.watchkitapp"
+              else []
+          )
+          if entitlements.get("com.apple.security.application-groups", []) != expected_groups:
+              raise SystemExit("provisioning profile app-group entitlement mismatch")
           uuid = profile.get("UUID")
           if not isinstance(uuid, str) or not uuid:
               raise SystemExit("provisioning profile UUID is missing")
@@ -869,6 +878,57 @@ jobs:
           $NIMBO_SIGNING_ROOT/widget.mobileprovision|iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget|uz.ganikhodjaev.weather.widget
           $NIMBO_SIGNING_ROOT/watch.mobileprovision|iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp|uz.ganikhodjaev.weather.watchkitapp
           EOF
+          python3 - "$NIMBO_APPLE_PROFILE_BINDINGS" <<'PY'
+          import hashlib
+          import json
+          import os
+          import plistlib
+          import re
+          import sys
+          from pathlib import Path
+
+          runner_temp = Path(os.environ["RUNNER_TEMP"])
+          signing_root = Path(os.environ["NIMBO_SIGNING_ROOT"])
+          output = Path(sys.argv[1])
+          specs = {
+              "app": ("uz.ganikhodjaev.weather", "app.mobileprovision"),
+              "widget": (
+                  "uz.ganikhodjaev.weather.widget",
+                  "widget.mobileprovision",
+              ),
+              "watch": (
+                  "uz.ganikhodjaev.weather.watchkitapp",
+                  "watch.mobileprovision",
+              ),
+          }
+          profiles = {}
+          for role, (bundle_id, filename) in specs.items():
+              source = signing_root / filename
+              decoded = runner_temp / f"{filename}.plist"
+              profile = plistlib.loads(decoded.read_bytes())
+              name = profile.get("Name")
+              uuid = profile.get("UUID")
+              expected_name = "iOS Team Store Provisioning Profile: " + bundle_id
+              if name != expected_name:
+                  raise SystemExit(f"{role} profile name changed after validation")
+              if not isinstance(uuid, str) or re.fullmatch(
+                  r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}",
+                  uuid,
+              ) is None:
+                  raise SystemExit(f"{role} profile UUID is not canonical")
+              profiles[role] = {
+                  "bundle_id": bundle_id,
+                  "name": name,
+                  "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                  "uuid": uuid.upper(),
+              }
+          payload = {"schema_version": 1, "profiles": profiles}
+          output.write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          output.chmod(0o600)
+          PY
           unset NIMBO_APPLE_P12_PASSWORD keychain_password
 
       - name: Export and retain distribution-signed Apple build 6
@@ -887,17 +947,80 @@ jobs:
             -exportOptionsPlist "$NIMBO_ARTIFACT_ROOT/ExportOptions.plist"
           ipa_count="$(find "$export_root" -maxdepth 1 -type f -name '*.ipa' | wc -l | tr -d ' ')"
           [[ "$ipa_count" == "1" ]]
-          find "$export_root" -maxdepth 1 -type f -name '*.ipa' \
-            -exec cp {} "$NIMBO_ARTIFACT_ROOT/$NIMBO_APPLE_FILENAME" \;
+          exported_ipa="$(find "$export_root" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          [[ -f "$exported_ipa" ]]
           exported_root="$RUNNER_TEMP/nimbo-exported-ipa"
           install -d -m 700 "$exported_root"
-          ditto -x -k \
-            "$NIMBO_ARTIFACT_ROOT/$NIMBO_APPLE_FILENAME" \
-            "$exported_root"
+          ditto -x -k "$exported_ipa" "$exported_root"
+          [[ -d "$exported_root/Payload/Nimbo.app" ]]
+          [[ -d "$exported_root/Symbols" ]]
+          [[ "$(find "$exported_root/Payload" -maxdepth 1 -type d -name '*.app' | wc -l | tr -d ' ')" == "1" ]]
+          identity_sha1="$(
+            openssl x509 \
+              -in "$RUNNER_TEMP/nimbo-apple-distribution.pem" \
+              -noout \
+              -fingerprint \
+              -sha1 \
+              | cut -d= -f2 \
+              | tr -d ':' \
+              | tr '[:lower:]' '[:upper:]'
+          )"
+          [[ "$identity_sha1" =~ ^[0-9A-F]{40}$ ]]
+          [[ "$(security find-identity -v -p codesigning "$NIMBO_EPHEMERAL_KEYCHAIN" | grep -c "$identity_sha1")" == "1" ]]
+          app="$exported_root/Payload/Nimbo.app"
+          widget="$app/PlugIns/NimboWidget.appex"
+          watch="$app/Watch/NimboWatch.app"
+          [[ -d "$widget" ]]
+          [[ -d "$watch" ]]
+          for spec in "widget|$widget|uz.ganikhodjaev.weather.widget" "app|$app|uz.ganikhodjaev.weather"; do
+            IFS='|' read -r role bundle bundle_id <<< "$spec"
+            entitlements="$RUNNER_TEMP/nimbo-$role-resign.xcent"
+            codesign -d --entitlements :- "$bundle" 2>/dev/null > "$entitlements"
+            python3 - "$entitlements" "$bundle_id" <<'PY'
+          import plistlib
+          import sys
+          from pathlib import Path
+
+          path = Path(sys.argv[1])
+          bundle_id = sys.argv[2]
+          team_id = "5SWEZ7HTYP"
+          actual = plistlib.loads(path.read_bytes())
+          expected = {
+              "application-identifier": f"{team_id}.{bundle_id}",
+              "beta-reports-active": True,
+              "com.apple.developer.team-identifier": team_id,
+              "get-task-allow": False,
+          }
+          if actual != expected:
+              raise SystemExit(
+                  f"{bundle_id} Xcode export entitlements differ before exact repair"
+              )
+          actual["com.apple.security.application-groups"] = [
+              "group.uz.ganikhodjaev.weather"
+          ]
+          path.write_bytes(plistlib.dumps(actual, sort_keys=True))
+          PY
+            codesign \
+              --force \
+              --sign "$identity_sha1" \
+              --entitlements "$entitlements" \
+              --generate-entitlement-der \
+              --timestamp \
+              "$bundle"
+          done
+          codesign --verify --strict --deep --verbose=4 "$app"
+          resigned_ipa="$RUNNER_TEMP/nimbo-resigned.ipa"
+          (
+            cd "$exported_root"
+            /usr/bin/zip -qry "$resigned_ipa" Payload Symbols
+          )
+          install -m 600 \
+            "$resigned_ipa" \
+            "$NIMBO_ARTIFACT_ROOT/$NIMBO_APPLE_FILENAME"
           archive_app="$NIMBO_ARTIFACT_ROOT/Nimbo.xcarchive/Products/Applications/Nimbo.app"
           [[ "$archive_app" == "$RUNNER_TEMP/nimbo-signed-candidate-package/bytes/Nimbo.xcarchive/Products/Applications/Nimbo.app" ]]
           rm -rf -- "$archive_app"
-          ditto "$exported_root/Payload/Nimbo.app" "$archive_app"
+          ditto "$app" "$archive_app"
           python3 - "$NIMBO_ARTIFACT_ROOT/Nimbo.xcarchive/Info.plist" <<'PY'
           import plistlib
           import sys
@@ -937,7 +1060,17 @@ jobs:
             "$RUNNER_TEMP/nimbo-installed-profiles.txt" \
             "$RUNNER_TEMP/app.mobileprovision.plist" \
             "$RUNNER_TEMP/widget.mobileprovision.plist" \
-            "$RUNNER_TEMP/watch.mobileprovision.plist"
+            "$RUNNER_TEMP/watch.mobileprovision.plist" \
+            "$RUNNER_TEMP/nimbo-app-resign.xcent" \
+            "$RUNNER_TEMP/nimbo-widget-resign.xcent" \
+            "$RUNNER_TEMP/nimbo-resigned.ipa"
+          export_temp="$RUNNER_TEMP/nimbo-app-store-export"
+          extracted_temp="$RUNNER_TEMP/nimbo-exported-ipa"
+          [[ "$(dirname "$export_temp")" == "$RUNNER_TEMP" ]]
+          [[ "$(dirname "$extracted_temp")" == "$RUNNER_TEMP" ]]
+          rm -rf -- \
+            "$export_temp" \
+            "$extracted_temp"
           [[ "${NIMBO_SIGNING_ROOT:-}" == "$RUNNER_TEMP/nimbo-signing-material" ]]
           rm -rf -- "$NIMBO_SIGNING_ROOT"
           [[ ! -e "$NIMBO_EPHEMERAL_KEYCHAIN" ]]
@@ -951,10 +1084,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          [[ "$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/verify_signed_candidate.py" | awk '{print $1}')" == \
-            "1294eec2eb8a0c0a1ff928bf2963a46dcbc600b42eaa840c53f3c5ec537956fa" ]]
-          [[ "$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/release_artifact_verifier.py" | awk '{print $1}')" == \
-            "5566150d1230165b56889f0741c7a1b557c55379217148eb2db2ef9d0caa07b7" ]]
+          verify_candidate_sha256="$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/verify_signed_candidate.py" | awk '{print $1}')"
+          artifact_verifier_sha256="$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/release_artifact_verifier.py" | awk '{print $1}')"
+          workflow_sha256="$(shasum -a 256 "$GITHUB_WORKSPACE/.github/workflows/signed-candidate.yml" | awk '{print $1}')"
+          [[ "$verify_candidate_sha256" == \
+            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]
+          [[ "$artifact_verifier_sha256" == \
+            "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82" ]]
           python3 -I -B - \
             "$NIMBO_VERIFIER_ROOT" \
             --repository-root "$GITHUB_WORKSPACE" \
@@ -963,7 +1099,16 @@ jobs:
             --artifact-root "$NIMBO_ARTIFACT_ROOT" \
             --bundletool-jar "$NIMBO_BUNDLETOOL_JAR" \
             --output "$NIMBO_PACKAGE_ROOT/signed-candidate-receipt.json" \
-            --package-output "$NIMBO_PACKAGE_ROOT/signed-candidate-bytes.tar.gz" <<'PY'
+            --package-output "$NIMBO_PACKAGE_ROOT/signed-candidate-bytes.tar.gz" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT" \
+            --workflow-head-sha "$GITHUB_SHA" \
+            --workflow-ref "$GITHUB_REF" \
+            --workflow-path ".github/workflows/signed-candidate.yml" \
+            --workflow-sha256 "$workflow_sha256" \
+            --verify-signed-candidate-sha256 "$verify_candidate_sha256" \
+            --release-artifact-verifier-sha256 "$artifact_verifier_sha256" \
+            --apple-profile-bindings "$NIMBO_APPLE_PROFILE_BINDINGS" <<'PY'
           import runpy
           import sys
           from pathlib import Path
@@ -986,8 +1131,49 @@ jobs:
           )
           if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
               raise SystemExit("signed candidate receipt did not close byte verification")
-          if receipt.get("schema_version") != 2:
+          if receipt.get("schema_version") != 3:
               raise SystemExit("signed candidate receipt schema mismatch")
+          if receipt.get("source_revision") != os.environ["NIMBO_SOURCE_REVISION"]:
+              raise SystemExit("signed candidate receipt source revision mismatch")
+          verifier_root = Path(os.environ["NIMBO_VERIFIER_ROOT"])
+          workspace = Path(os.environ["GITHUB_WORKSPACE"])
+          expected_provenance = dict([
+              ("provider", "github-actions"),
+              ("run", dict([
+                  ("id", int(os.environ["GITHUB_RUN_ID"])),
+                  ("attempt", int(os.environ["GITHUB_RUN_ATTEMPT"])),
+              ])),
+              ("source", dict([
+                  ("head_sha", os.environ["GITHUB_SHA"]),
+                  ("ref", os.environ["GITHUB_REF"]),
+              ])),
+              ("workflow", dict([
+                  ("path", ".github/workflows/signed-candidate.yml"),
+                  ("sha256", hashlib.sha256(
+                      (workspace / ".github/workflows/signed-candidate.yml").read_bytes()
+                  ).hexdigest()),
+              ])),
+              ("verifiers", dict([
+                  ("verify_signed_candidate.py", dict([
+                      ("sha256", hashlib.sha256(
+                          (verifier_root / "verify_signed_candidate.py").read_bytes()
+                      ).hexdigest()),
+                  ])),
+                  ("release_artifact_verifier.py", dict([
+                      ("sha256", hashlib.sha256(
+                          (verifier_root / "release_artifact_verifier.py").read_bytes()
+                      ).hexdigest()),
+                  ])),
+              ])),
+          ])
+          if receipt.get("provenance") != expected_provenance:
+              raise SystemExit("signed candidate receipt provenance mismatch")
+          expected_profiles = json.loads(
+              Path(os.environ["NIMBO_APPLE_PROFILE_BINDINGS"]).read_text()
+          )
+          signing_provenance = receipt.get("signing_provenance", {})
+          if signing_provenance.get("apple_profiles") != expected_profiles:
+              raise SystemExit("signed candidate receipt Apple profile binding mismatch")
           artifacts = receipt.get("artifacts")
           if not isinstance(artifacts, dict) or set(artifacts) != {
               "android_phone",
@@ -1041,10 +1227,17 @@ jobs:
             "$RUNNER_TEMP/nimbo-installed-profiles.txt" \
             "$RUNNER_TEMP/app.mobileprovision.plist" \
             "$RUNNER_TEMP/widget.mobileprovision.plist" \
-            "$RUNNER_TEMP/watch.mobileprovision.plist"
+            "$RUNNER_TEMP/watch.mobileprovision.plist" \
+            "$RUNNER_TEMP/nimbo-app-resign.xcent" \
+            "$RUNNER_TEMP/nimbo-widget-resign.xcent" \
+            "$RUNNER_TEMP/nimbo-resigned.ipa" \
+            "$RUNNER_TEMP/nimbo-apple-profile-bindings.json"
           if [[ -n "${NIMBO_SIGNING_ROOT:-}" && "$NIMBO_SIGNING_ROOT" == "$RUNNER_TEMP/nimbo-signing-material" ]]; then
             rm -rf -- "$NIMBO_SIGNING_ROOT"
           fi
+          rm -rf -- \
+            "$RUNNER_TEMP/nimbo-app-store-export" \
+            "$RUNNER_TEMP/nimbo-exported-ipa"
           if [[ -n "${NIMBO_SOURCE_ROOT:-}" && "$NIMBO_SOURCE_ROOT" == "$RUNNER_TEMP/nimbo-release-source" ]]; then
             git worktree remove --force "$NIMBO_SOURCE_ROOT"
           fi

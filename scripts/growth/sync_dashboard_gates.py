@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ARTIFACT = ROOT / "growth/dashboard/artifact.json"
 DEFAULT_GATE_SQL = ROOT / "growth/dashboard/gate_snapshot.sql"
 DEFAULT_GATES = ROOT / "growth/quality/gates.json"
-DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-08-30.json"
+DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-08-31.json"
 
 
 def _load_object(path: Path) -> dict[str, Any]:
@@ -161,14 +161,13 @@ def sync(
         new_next = old_next
         if gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · exact-source hosted proof green; 0/3 artifacts "
-                "byte-verified; signed/physical matrix missing"
+                "BLOCKED · signing inputs 8/8; latest candidate rejected "
+                "fail-closed; 0/3 artifacts byte-verified"
             )
             new_next = (
-                "Unlock the local login Keychain, provision the four remaining "
-                "protected release-signing secrets, run the master-only hosted "
-                "workflow, promote its verified receipt, and bind exact "
-                "physical QA to the retained bytes"
+                "Run the hardened master-only hosted workflow, independently "
+                "verify and retain its receipt and bytes, then bind exact "
+                "physical QA to those retained artifacts"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
@@ -245,17 +244,29 @@ def sync(
     metric_definitions = baseline_query.get("metric_definitions")
     if not isinstance(metric_definitions, list):
         raise ValueError("dashboard baseline metric definitions are malformed")
-    old_play_definition = "Play conversion is the reported Play value and remains unreconciled"
-    new_play_definition = (
+    old_play_definitions = (
+        "Play conversion is the reported Play value and remains unreconciled",
         "Play conversion is the historical reported baseline; exact weekly "
-        "all-country and UZ listing populations are reported separately"
+        "all-country and UZ listing populations are reported separately",
     )
-    if old_play_definition in metric_definitions:
+    new_play_definition = (
+        "Play conversion is the 2026-08-28 reported baseline and was not "
+        "revalidated on 2026-08-31"
+    )
+    if new_play_definition not in metric_definitions:
+        old_play_definition = next(
+            (
+                definition
+                for definition in old_play_definitions
+                if definition in metric_definitions
+            ),
+            None,
+        )
+        if old_play_definition is None:
+            raise ValueError("dashboard Play conversion metric definition is missing")
         metric_definitions[
             metric_definitions.index(old_play_definition)
         ] = new_play_definition
-    elif new_play_definition not in metric_definitions:
-        raise ValueError("dashboard Play conversion metric definition is missing")
     gate_query["sql"] = sql
     gate_query["executed_at"] = generated_at
     evaluation_query["executed_at"] = generated_at
@@ -287,27 +298,31 @@ def sync(
     current_revision_short = current_revision[:7]
 
     raw_exports_issue["message"] = (
-        "Current App Store Connect analytics exports remain unavailable. The "
-        "validated Google Play aggregate for 2026-08-18..2026-08-24 is retained "
-        "without PII: all-country listing traffic is 26 visitors and 11 unique "
-        "install clicks, while UZ is 0 visitors and 0 clicks. UZ conversion is "
-        "therefore UNKNOWN because its denominator is zero; the derived 42.31% "
-        "all-country rate is diagnostic only. Exact-scope first launch, retention, "
-        "active-use, ratings, vitals, and user-loss evidence remains unavailable."
+        "The 2026-08-31 App Store overview is available as a read-only observation "
+        "(300 impressions, 23 product-page views, 8 first downloads, 1 redownload, "
+        "3 updates, 4.86% reported conversion, and insufficient retention), but no "
+        "raw export or reporting-window metadata is attached. Google overview "
+        "values are carried forward from 2026-08-28 and were not revalidated. The "
+        "validated Google Play aggregate for 2026-08-18..2026-08-24 remains "
+        "separate: all-country listing traffic is 26 visitors and 11 unique "
+        "install clicks, while UZ is 0 visitors and 0 clicks, so UZ conversion is "
+        "UNKNOWN."
     )
     crash_issue["message"] = (
-        "App Store Connect confirms one crash on iOS 1.0.1 on August 25, 2026, "
-        "but privacy suppression exposes no report, stack, UUID, device, or OS. "
+        "App Store Connect reports two crashes for public iOS 1.0.1 (4), one on "
+        "August 25 and one on August 29, 2026. The August 29 event maps to "
+        "iPhone; the August 25 device/OS dimension is suppressed or unavailable. "
+        "Neither event exposes "
+        "a diagnostic, stack, incident/signature ID, or crashed-binary UUID. "
         "An existing API key authenticates for app, version, build, and "
-        "analytics-request inventory and confirms public 1.0.1 build 4, but "
-        "the build-detail and diagnostic-signature GETs return security 403. "
+        "analytics-request inventory, but diagnostic-signature GETs return "
+        "security 403. "
         f"Current source {current_revision_short} passes twelve targeted iOS "
         "Simulator provider mapping/service tests. Exact-source hosted run "
         "33300967788 also passed shared Simulator tests, all 18 Apple surface-"
-        "state tests, and the unsigned application build. Neither the "
-        "authenticated inventory nor this current-source unsigned regression "
-        "identifies or closes the "
-        f"historical crash for current source authority {current_revision_short}."
+        "state tests, and the unsigned application build. This preventive unsigned "
+        "evidence identifies neither production event and does not close the crash "
+        f"gate for current source authority {current_revision_short}."
     )
     source_issue["message"] = (
         f"Current product/build-input commit {current_revision_short} has no retained signed "
@@ -323,17 +338,16 @@ def sync(
         "passed a bounded physical API 25 denied-location, Bukhara search, live, "
         "cache/recovery, populated-widget, process-health, and cleanup smoke. "
         "That debug-certificate result is not upload-signed or Play-delivered. "
-        "The manual "
-        "master-only protected GitHub-hosted workflow and "
-        "pre-manifest verifier remain configured and statically validated. The "
-        "protected environment has 4/8 required secrets: its Android keystore "
-        "payload and three Apple provisioning profiles are present, while two "
-        "Android passwords plus the Apple P12 and its transport password remain "
-        "absent. The signed workflow has not run. The locked "
-        "local login Keychain still rejects "
-        "Android protected credential reads and Apple private-key use. All signed "
-        "bundles and distribution artifacts still belong to predecessor revisions "
-        "and remain non-transferable regression or creative provenance only. The "
+        "The protected GitHub environment now has all 8/8 signing inputs. "
+        "Candidate run 33368227872 stopped at Apple export because manual signing "
+        "was incompatible with managed profiles. Run 33375162729 signed both "
+        "Android bundles and exported Apple bytes, then the byte verifier rejected "
+        "the app and widget because Xcode omitted their required App Group; cleanup "
+        "succeeded and signed-candidate upload was skipped. The repository now "
+        "contains a bounded App Group re-signing correction with exact "
+        "ExportOptions, protected-profile, workflow, and verifier provenance "
+        "checks, but it has not yet passed a hosted run. No signed package or "
+        "schema-v3 receipt exists. The "
         "current debug-device result does not satisfy upload signing or the complete "
         "physical matrix. "
         "CoreDevice readiness must be re-established, and App Store Connect "
@@ -368,9 +382,14 @@ def sync(
         "passed a bounded physical API 25 phone/widget smoke, including denied "
         "location, Bukhara search, live forecast, cache/recovery, process health, "
         "and cleanup. This is debug-certificate evidence, not upload signing. The "
-        "protected master-only hosted workflow and pre-manifest verifier are "
-        "implemented but have not run because only 4/8 release-signing secrets "
-        "are provisioned. No source-current signed artifact or complete signed "
+        "protected master-only hosted workflow has all 8/8 signing inputs. Candidate "
+        "run 33368227872 failed Apple export; run 33375162729 signed both Android "
+        "bundles and exported Apple bytes, then correctly rejected the Apple app "
+        "and widget because their required App Group was missing. Cleanup succeeded "
+        "and no signed package was uploaded. A bounded entitlement re-signing and "
+        "exact provenance correction is implemented but has not yet passed hosted "
+        "execution. No retained, accepted, byte-verified source-current signed "
+        "artifact or complete signed "
         "physical-device matrix exists, so 0/3 current artifacts are byte-verified "
         "and the "
         "signed/physical gates remain blocked. "
@@ -389,6 +408,32 @@ def sync(
         current_summary,
         verdict,
         count=1,
+    )
+    verdict = verdict.replace(
+        "Public iOS 1.0.1 (4) now has two reported crashes, one on August 25 "
+        "and one on August 29. One maps to iPhone; the other device/OS "
+        "dimension is suppressed or unavailable, and neither exposes a "
+        "diagnostic, stack, incident/signature ID, or crashed-binary UUID.",
+        "Public iOS 1.0.1 (4) now has two reported crashes, one on August 25 "
+        "and one on August 29. The August 29 event maps to iPhone; the August "
+        "25 device/OS dimension is suppressed or unavailable, and neither "
+        "exposes a diagnostic, stack, incident/signature ID, or crashed-binary "
+        "UUID.",
+    )
+    verdict = verdict.replace(
+        "Android Keychain metadata and the existing mode-600 keystore are "
+        "present, but protected signing access remains unavailable.",
+        "Android Keychain metadata and the existing mode-600 keystore remain "
+        "present. The protected environment now contains all 8/8 signing "
+        "inputs, but neither candidate run yielded a retained, byte-verified "
+        "package; hosted proof of the current correction remains pending.",
+    )
+    verdict = verdict.replace(
+        "There is no exact-current signed phone/Wear artifact, distribution-"
+        "signed Apple archive, iOS 15 runtime pass, or matching physical matrix.",
+        "There is no retained, accepted, byte-verified exact-current signed "
+        "phone/Wear artifact or distribution-signed Apple archive, and no iOS "
+        "15 runtime pass or matching physical matrix.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."

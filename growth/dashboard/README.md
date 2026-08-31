@@ -10,13 +10,18 @@ Public outreach and acquisition scaling remain gated on crash diagnosis,
 source-synced signed phone, Wear OS, and Apple artifacts, complete
 physical-device coverage, and critical console guardrails. Open-Meteo written
 clearance passes for the exact unpaid, non-monetized organic-promotion scope.
-The canonical `2026-08-30T00:00:25+05:00` capture places Nimbo at `#87`
-for Apple `weather` search and `#22` in the official Apple Weather chart;
+The canonical `2026-08-31T02:51:00+05:00` capture places Nimbo at `#88`
+for Apple `weather` search and `#40` in the official Apple Weather chart;
 all three Google category profiles remain outside the first 30 and `0/5`
 generic queries qualify. The auxiliary Apple `Toshkent ob-havo` search
 returned only one unique app, below the 10-app completeness floor, but it is
 a non-goal diagnostic source error: `goal_evidence_complete=true`, all
 required goal surfaces are complete and failed, and the streak remains `0/7`.
+The current App Store Connect overview reports 300 impressions, 23 product-page
+views, 8 first downloads, 1 redownload, 3 updates, and 4.86% conversion;
+retention is insufficient. The conversion is preserved as reported because the
+supplied counts and report window do not reproduce it. Google overview values
+are carried forward from 2026-08-28 and were not revalidated on 2026-08-31.
 Current product/build-input commit
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` resolves to phone 1.1.0 (8),
 Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It inherits the fail-closed Apple
@@ -32,10 +37,14 @@ At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
 passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
 `23m59s`, including `18/18` surface tests. Its six archived outputs are
-unsigned/test evidence only. No retained signed AAB, archive, or IPA exists for
-the current authority: the protected signed workflow has not run and its
-environment still contains only `4/8` required secrets. The dashboard therefore
-reports `0/3` current artifacts byte-verified. The complete upload-signed
+unsigned/test evidence only. The protected environment now contains `8/8`
+required signing inputs. Candidate run `33368227872` stopped at Apple export;
+run `33375162729` signed both Android bundles and exported Apple bytes, but the
+fail-closed verifier rejected the Apple app/widget because Xcode omitted their
+required App Group. Cleanup passed and no signed candidate was uploaded. A
+bounded entitlement re-signing and exact provenance correction is prepared but
+not yet proven by a hosted run, so the dashboard still reports `0/3` current
+artifacts byte-verified. The complete upload-signed
 physical matrix and crash diagnosis remain blocked. Exact-source debug APK and
 pulled installed bytes SHA-256
 `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
@@ -107,23 +116,26 @@ that exact weekly scope.
 Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
 is still missing despite the bounded exact-current physical API 25 debug
 phone/widget pass plus predecessor API 24/API 36 emulator and API 25 physical
-debug evidence. Android Keychain
-metadata and the existing mode-600 keystore are present. The protected GitHub
-environment contains the keystore payload and all three Apple provisioning
-profiles, but the two Android passwords plus the Apple distribution P12 and its
-transport password remain absent; signing therefore remains unavailable. At
+debug evidence. Android Keychain metadata and the existing mode-600 keystore
+are present. The protected GitHub environment contains all eight signing
+inputs. Two candidate runs have exercised those credentials, but neither
+produced a retained, byte-verified package; the current hardened correction
+still requires hosted proof. At
 20:44 +05:00 the
 iPad was again available and paired, but lock-state and DDI queries failed
 because it had not been unlocked recently; the iPhone and watch remained
-unavailable. No exact-current signed Apple build exists, so it cannot provide
-current physical proof; iOS 15 runtime coverage is also unverified. The
-historical iOS crash still lacks a diagnostic and symbolicated report. The
+unavailable. No retained, accepted, byte-verified exact-current signed Apple
+build exists, so it cannot provide current physical proof; iOS 15 runtime
+coverage is also unverified. The
+two public iOS `1.0.1 (4)` crashes—one on August 25 and one on August 29—still
+lack diagnostics and symbolicated reports. The August 29 event maps to iPhone;
+the August 25 device/OS dimension is suppressed or unavailable. The
 authenticated inventory path closes the API-authentication discovery gap, but
-its diagnostic request is permission-blocked by `403` and cannot recover the
+its diagnostic request is permission-blocked by `403` and cannot recover either
 suppressed crash signature or log.
 Current `2cdd438` inherits the preventive crash hardening and passes twelve
 targeted iOS Simulator provider tests, but neither those tests nor predecessor
-hosted/simulator binaries can identify or be attributed to the historical
+hosted/simulator binaries can identify or be attributed to either production
 event. They do not close the crash gate. OpenMeteo GmbH
 replied at 17:25 +05:00 in ticket `234272` and
 explicitly confirmed non-commercial API entitlement under the complete terms
