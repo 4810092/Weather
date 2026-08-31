@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d5026ac1181d9ded18a6883775b3f5efa24e881a8d59ed86f6bddd264824e900 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5fc56e8b1157f622fc1c1ca699e1fcc6b78e55297532b49b08f2509ed75b280e -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -253,7 +253,7 @@ availability; each external state must be recorded separately.
 3. Trusted hosted run `33405849102` has completed the required full pinned
    verifier against the mutable draft for evidence head `b07192e`; repeat that
    protected chain before every later use. Complete the remaining delivery-
-   linked matrix: complete proven-offline and accessibility checks on the
+   linked matrix: complete proven-offline and TalkBack checks on the
    Play-delivered phone package, add physical tablet/widget and paired Wear
    coverage plus post-delivery vitals, confirm beta-group distribution for processed
    Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch

@@ -68,8 +68,8 @@ including onboarding, live forecast, share, offline cache/error, recovery, and
 process-log checks. Evidence is retained in
 `growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md`. Google Play
 then delivered vc8 to the dedicated API 25 target; bounded cold/live/share/
-process-health checks pass and the Wear tester track is active. Proven-offline,
-accessibility, physical tablet/widget/Wear coverage remain blocked, as does the
+process-health plus `font_scale=1.3` checks pass and the Wear tester track is
+active. Proven-offline, TalkBack, physical tablet/widget/Wear coverage remain blocked, as does the
 TestFlight iPhone/iPad/widget/watch matrix. The iPhone 14 Pro and iPad
 mini 5 are paired, booted, and have Developer Mode enabled. The paired Series 5
 watch has Developer Mode disabled and its developer tunnel is disconnected; no

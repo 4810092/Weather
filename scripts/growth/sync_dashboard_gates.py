@@ -393,10 +393,10 @@ def sync(
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
                 "BLOCKED · Play-delivered phone vc8 cold/live/share smoke passes; "
-                "offline/tablet/widget/Wear/accessibility matrix remains incomplete"
+                "large text passes; offline/tablet/widget/Wear/TalkBack remain incomplete"
             )
             new_next = (
-                "Complete proven-offline and accessibility checks on the Play-delivered "
+                "Complete proven-offline and TalkBack checks on the Play-delivered "
                 "phone package, physical tablet/widget and paired Wear OS QA, and "
                 "post-delivery vitals"
             )
@@ -647,7 +647,7 @@ def sync(
         "tracks and Apple build 6 completed processing as VALID and APP_STORE_ELIGIBLE. "
         "A bounded Play-delivered Android phone cold/live/share smoke now passes and "
         "the Wear Internal track is active with testers. TestFlight beta installation, "
-        "Play-delivered phone offline/accessibility, tablet/widget/Wear coverage, and "
+        "Play-delivered phone offline/TalkBack, tablet/widget/Wear coverage, and "
         "post-delivery vitals remain missing; two public iOS crashes still lack "
         "diagnostics. No production "
         "submission, review, rollout, public availability, or rank is claimed."
@@ -841,8 +841,8 @@ def sync(
         "live forecast, Best Time, share chooser, and process-health checks pass. The "
         "Wear License testers group is attached and that track is active, but no "
         "physical Wear install exists. Apple accepted the exact IPA as build 6 with "
-        "VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone offline/"
-        "accessibility, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
+        "VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone large-text "
+        "QA now passes; offline/TalkBack, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
         "install remain missing. Google review request 14 contains only the Uzbekistan Custom Store "
         "Listing en-US and ru-RU data and is under review; this is not publication or "
         "rank evidence. A fixed logged-out gl=UZ recheck on September 1 still exposed "

@@ -5,7 +5,7 @@
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d5026ac1181d9ded18a6883775b3f5efa24e881a8d59ed86f6bddd264824e900 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5fc56e8b1157f622fc1c1ca699e1fcc6b78e55297532b49b08f2509ed75b280e -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -75,7 +75,7 @@ or historical device result does not close those independent gates.
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
 | Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
-| Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share smoke, active Wear tester track, and remaining offline/tablet/widget/Wear boundaries |
+| Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share and `font_scale=1.3` smoke, active Wear tester track, fail-closed TalkBack service incompatibility, and remaining offline/tablet/widget/Wear boundaries |
 | Google Play September 1 checkpoint | [quality/google-play-console-2026-09-01.md](quality/google-play-console-2026-09-01.md) | Pending UZ Custom Store Listing review, unchanged rolling dashboard aggregates, fail-closed unavailable Android Vitals rates, and old-production technical recommendations reconciled against the accepted 1.1.0 source |
 | Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
 | Trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-08-31-hosted.md](quality/release-artifact-full-verification-2026-08-31-hosted.md) | Protected run `33405849102` revalidated the mutable draft and all exact bytes; every later use must repeat the same check |

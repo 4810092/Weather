@@ -168,7 +168,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "proven-offline and accessibility checks",
+                "proven-offline and TalkBack checks",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

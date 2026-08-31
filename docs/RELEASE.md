@@ -31,7 +31,7 @@ for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d5026ac1181d9ded18a6883775b3f5efa24e881a8d59ed86f6bddd264824e900 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5fc56e8b1157f622fc1c1ca699e1fcc6b78e55297532b49b08f2509ed75b280e -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -59,7 +59,11 @@ The phone Internal opt-in is accepted. Google Play installed exact version
 `com.android.vending`, API 25 `armeabi-v7a`/`xhdpi`/locale splits, and the
 expected Google-managed Play App Signing certificate. Cold onboarding without
 location, live Tashkent forecast, Best Time, native share dispatch, and bounded
-process-health checks pass. The physical offline attempt is not counted because
+process-health checks pass. A separate `font_scale=1.3` onboarding and live-
+forecast render also passes. The installed TalkBack service fails to initialize
+on this Android 7.1 device because it references API-26-only classes, so the
+keyboard-focus semantics check is not counted as a TalkBack pass. The physical
+offline attempt is not counted because
 a disconnected connectivity state was not proven. The existing four-account
 License testers group is attached to Wear Internal and the exact vc1000008 track
 now reports active; no physical watch install or paired handoff is claimed. See

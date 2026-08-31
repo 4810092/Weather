@@ -3,7 +3,7 @@
 Status: **PASS for the bounded Play-delivered phone scope** and **PASS for
 Wear Internal tester activation**. The combined Android physical gate remains
 **BLOCKED** because physical tablet/widget, proven-offline Play-delivered phone,
-paired Wear OS, accessibility, and post-delivery vitals evidence are incomplete.
+paired Wear OS, TalkBack, and post-delivery vitals evidence are incomplete.
 
 All times are `Asia/Tashkent` (`UTC+05:00`). Production was not changed.
 
@@ -57,6 +57,10 @@ pre-delivery smoke.
   conditions, yesterday comparison, and `Лучшее время для прогулки`.
 - The share action opened the native Android chooser. No destination was
   selected and no message was sent.
+- At Android `font_scale=1.3`, a fresh Russian onboarding render remained
+  vertically scrollable with readable city actions. Quick-city Tashkent then
+  rendered the current conditions, yesterday comparison, and Best Time card
+  without clipping the primary value or action controls.
 - Filtered process evidence contained no Nimbo fatal exception or ANR for the
   tested paths.
 
@@ -66,6 +70,21 @@ radio command did not produce a disconnected connectivity state. The cached
 screen remained visible, but without a proven network outage it is not valid
 offline evidence. The earlier exact-AAB-derived offline pass remains regression
 evidence only and does not replace a Play-delivered offline pass.
+
+## Accessibility boundary
+
+The installed Nimbo build exposes text nodes for the live forecast and explicit
+content descriptions for share, refresh, and change-location actions. Keyboard
+focus traversed those controls and reached the refresh action. This is useful
+semantics evidence, but it is not counted as a TalkBack pass.
+
+The device's installed TalkBack package could not establish a valid service on
+Android 7.1: its runtime references API-26-only
+`FingerprintGestureController.FingerprintGestureCallback` and
+`AudioManager.AudioPlaybackCallback` classes. `dumpsys accessibility` therefore
+reported no active service. The attempted screen-reader run is fail-closed and
+the TalkBack requirement remains blocked. Accessibility and font-scale settings
+were restored to their original disabled / `1.0` state after the check.
 
 ## Wear Internal result
 
@@ -84,8 +103,9 @@ result is claimed.
 The bounded phone pass proves Google Play delivery, split selection, the
 Google-managed signing identity, a clean first run, a live Tashkent forecast,
 the primary Best Time value, native share dispatch, and process health on API
-25. Still missing are the Play-delivered phone offline/recovery path, large
-text/TalkBack/background retry, physical tablet/widget coverage, paired
+25. The separate `font_scale=1.3` onboarding/live-forecast pass also succeeds.
+Still missing are the Play-delivered phone offline/recovery path,
+TalkBack/background retry, physical tablet/widget coverage, paired
 physical Wear OS coverage, and post-delivery crash/ANR rates. The connected
 Samsung API 36 device contains user data and was not modified. No production
 review, rollout, public availability, ranking improvement, or crash-gate
