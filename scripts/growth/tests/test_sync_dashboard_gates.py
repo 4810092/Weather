@@ -39,15 +39,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact-source debug API 25 phone/widget pass",
+                "exact upload-key AABs retained",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact-source hosted unsigned iOS proof green",
+                "exact App Store-profile distribution IPA retained",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "signing inputs 8/8",
+                "exact retained IPA unchanged to TestFlight",
+                rows["ios_crash_gate"]["next_action"],
+            )
+            self.assertIn(
+                "3/3 signed candidates retained",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -62,19 +66,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["ios_crash_report_missing"],
             )
             self.assertIn(
-                "0/3 current artifacts are byte-verified",
+                "3/3 candidate-verified",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Candidate run 33368227872",
+                "Protected run 33381050098",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Exact-source GitHub Actions run 33300967788",
+                "ordinary GitHub Actions run 33300967788",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "SHA-256 prefix d66c8f0",
+                "all three candidates passed an independent verifier run",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -82,7 +86,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Run the hardened master-only hosted workflow",
+                "Materialize the retained content-addressed package",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertNotIn(
@@ -98,11 +102,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "exact provenance correction is implemented",
+                "protected master-only hosted run 33381050098 passed",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "has all 8/8 signing inputs",
+                "all 8/8 signing inputs",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -110,15 +114,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "hosted proof of the current correction remains pending",
+                "public CI cannot yet materialize the private package",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "No retained, accepted, byte-verified source-current signed artifact",
+                "retained, independently byte-verified phone, Wear, and Apple candidates",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "There is no retained, accepted, byte-verified exact-current signed",
+                "Exact-current signed phone/Wear and Apple candidates are retained",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -127,6 +131,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "bounded physical API 25 phone/widget smoke",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertNotIn(
+                "neither candidate run yielded a retained",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 

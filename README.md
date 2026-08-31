@@ -195,41 +195,29 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
 ## Platforms and release state
 
 - Android phone/tablet `1.0.2` (`versionCode 6`) was rechecked as active in Google Play Production in 177 countries on August 28, 2026.
-- iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. One iOS 1.0.1 crash remains unsymbolicated, so acquisition scaling is blocked.
+- iOS/iPadOS `1.0.1` build 4 was rechecked as `Ready for Distribution` in App Store Connect on August 28; its binary includes WidgetKit and Apple Watch. App Store Connect later reported two unsymbolicated iOS 1.0.1 crashes, on August 25 and August 29, so acquisition scaling is blocked.
 - Wear OS `1.0.2` (`versionCode 1000007`) was rechecked as active in Google Play Production in 177 countries on August 28. Physical paired-device smoke is still pending.
-- The coordinated `1.1.0` source identities are Android phone 8, Wear 1000008,
-  and Apple build 6; nothing is uploaded or public. No retained signed artifact
-  is source-current: signed phone vc7, signed Wear vc1000008, and Apple build 5
-  all embed or represent historical source. The predecessor `9c2dce4` phone and
-  Wear outputs are unsigned, while its Apple build 6 is simulator-only; current
-  source `2cdd438` has no retained signed candidate bytes. Historical QA
-  does not establish signing or physical coverage for the current candidates.
-  Current product/build source `2cdd438` inherits the Apple source-revision,
-  deterministic per-target profiles, pinned dependency graph, API 24
-  desugaring, and hosted Compose UI matrix. It adds tolerant decoding for
-  omitted optional Open-Meteo forecast/AQI arrays while keeping required
-  weather/time rows fail-closed. Fourteen targeted Android-host and twelve iOS
-  Simulator tests pass, including cache/timezone preservation after rejected
-  required rows. At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
-  [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
-  (`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
-  passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`,
-  API 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
-  `23m59s`, including `18/18` surface tests. Its six archived outputs are
-  unsigned/test evidence only. A clean exact-`2cdd438` debug APK and its pulled
-  installed bytes share SHA-256
-  `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
-  and passed a bounded physical API 25 denied-location/search/live/cache/
-  recovery/widget/process-health smoke. This is debug-certificate evidence,
-  not upload signing or Play delivery. Prior signed/device evidence remains
-  non-transferable, the protected signed workflow has not run with its partial
-  `4/8` secret inventory, no current artifact is byte-verified in the upload
-  manifest (`0/3`), and the complete signed physical matrix plus crash gate
-  remain blocked.
-  See the [growth
-  implementation checkpoint](docs/GROWTH_RELEASE.md), the
-  [source-sync gate](growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md),
-  and the historical [release candidate record](docs/RELEASE_CANDIDATE.md).
+- The coordinated `1.1.0` identities are Android phone 8, Wear 1000008, and
+  Apple build 6; nothing is uploaded or public. Product/build source
+  `2cdd438` passed exact-source ordinary hosted CI
+  [run #117](https://github.com/4810092/Weather/actions/runs/33300967788),
+  including all API 24/API 36 phone/tablet Compose tests and Apple surface
+  tests. Protected signing
+  [run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
+  then passed with all 8/8 signing inputs and produced retained,
+  independently verified candidate bytes for all three manifest surfaces:
+  phone AAB `d4a90676…`, Wear AAB `e76d685b…`, and Apple IPA `7466afb1…`.
+  This closes hosted signing and pre-manifest byte verification, not release
+  readiness. The upload manifest intentionally remains `draft-blocked` and
+  `0/3 verified-current` until public macOS CI can materialize the durable
+  external package and re-run the complete byte verifier; a receipt-only pass
+  is not accepted. The exact-source debug Android phone/widget smoke remains
+  valid regression evidence, but the upload-derived phone/tablet/widget/Wear
+  matrix, TestFlight iPhone/iPad/widget/watch matrix, iOS crash diagnosis, and
+  post-rollout evidence are still blocked. See the [growth implementation
+  checkpoint](docs/GROWTH_RELEASE.md), the current [source-sync
+  record](growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md),
+  and the [signed-candidate evidence](growth/quality/signed-candidate-run-33381050098.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

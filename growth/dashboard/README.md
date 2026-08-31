@@ -6,156 +6,61 @@ artifact. `report.html` is generated from that artifact with the packaged Data
 Analytics portable-artifact renderer; it must not be edited by hand.
 
 The dashboard is intentionally `blocked`, with scale status `hold`.
-Public outreach and acquisition scaling remain gated on crash diagnosis,
-source-synced signed phone, Wear OS, and Apple artifacts, complete
-physical-device coverage, and critical console guardrails. Open-Meteo written
-clearance passes for the exact unpaid, non-monetized organic-promotion scope.
 The canonical `2026-08-31T02:51:00+05:00` capture places Nimbo at `#88`
-for Apple `weather` search and `#40` in the official Apple Weather chart;
-all three Google category profiles remain outside the first 30 and `0/5`
-generic queries qualify. The auxiliary Apple `Toshkent ob-havo` search
-returned only one unique app, below the 10-app completeness floor, but it is
-a non-goal diagnostic source error: `goal_evidence_complete=true`, all
-required goal surfaces are complete and failed, and the streak remains `0/7`.
+for Apple `weather` and `#40` in the official Apple UZ Weather chart.
+All three fixed Google category profiles remain outside the first 30 and
+`0/5` generic Google queries qualify. The incomplete auxiliary Apple
+`Toshkent ob-havo` result is not a required goal surface; required evidence
+is decisive and failed, so the verified Top-10 streak remains `0/7`.
+
 The current App Store Connect overview reports 300 impressions, 23 product-page
-views, 8 first downloads, 1 redownload, 3 updates, and 4.86% conversion;
-retention is insufficient. The conversion is preserved as reported because the
-supplied counts and report window do not reproduce it. Google overview values
-are carried forward from 2026-08-28 and were not revalidated on 2026-08-31.
-Current product/build-input commit
-`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` resolves to phone 1.1.0 (8),
-Wear OS 1.1.0 (1000008), and Apple 1.1.0 (6). It inherits the fail-closed Apple
-`NimboSourceRevision` plumbing, deterministic per-target App Store profiles,
-pinned dependency graph, and locale-aware Android UI harness from predecessor
-`704fd89`. It adds tolerant decoding for omitted optional Open-Meteo forecast
-and AQI arrays while keeping required weather/time rows fail-closed. Fourteen
-targeted Android-host and twelve targeted iOS Simulator provider tests pass,
-including cache/timezone preservation after rejected required-row responses.
-At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
-[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788)
-(`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
-passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
-36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
-`23m59s`, including `18/18` surface tests. Its six archived outputs are
-unsigned/test evidence only. The protected environment now contains `8/8`
-required signing inputs. Candidate run `33368227872` stopped at Apple export;
-run `33375162729` signed both Android bundles and exported Apple bytes, but the
-fail-closed verifier rejected the Apple app/widget because Xcode omitted their
-required App Group. Cleanup passed and no signed candidate was uploaded. A
-bounded entitlement re-signing and exact provenance correction is prepared but
-not yet proven by a hosted run, so the dashboard still reports `0/3` current
-artifacts byte-verified. The complete upload-signed
-physical matrix and crash diagnosis remain blocked. Exact-source debug APK and
-pulled installed bytes SHA-256
-`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
-passed a bounded clean physical General Mobile API 25 run covering denied
-location, Bukhara search, live forecast, cache/recovery, populated widget
-render/tap, process health, and cleanup. This is debug-certificate regression
-evidence, not upload signing, Play delivery, physical-tablet, or Wear proof.
-Signed artifacts and the remaining device evidence below belong to predecessor
-revisions and remain non-transferable.
+views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported
+conversion, with insufficient retention. That conversion is preserved as
+reported because the available counts/window do not reproduce it. Google
+overview values are carried forward from 2026-08-28. The validated
+2026-08-18..2026-08-24 Play export has 26 all-country visitors and 11 unique
+install clicks, while UZ has 0 visitors and 0 clicks; UZ conversion is
+`UNKNOWN`, not zero.
 
-Predecessor debug APK and installed bytes
-`52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
-passed a clean physical General Mobile API 25 smoke in Russian: Tashkent
-without location permission, live forecast, truthful late-day Best Time,
-durable-tip persistence, offline cache, recovery, process health, and cleanup
-passed, with zero product-scoped fatal/ANR/SSL/CertPath/trust-anchor matches.
-The predecessor API 24 emulator APK
-`168bb6acdb95453a8dfd141947edbcb9292b756fd3429fffa56fc4baf125dbec`
-retains its fresh live/cache/recovery pass. The byte-identical predecessor
-debug APK and installed bytes
-`52146b883a04e4c2d272ea4e3ecc9b1277a8c78c117b547a121de3a7d90c3730`
-also passed a fresh no-snapshot API 36 Pixel Tablet emulator smoke in Uzbek:
-landscape onboarding, live forecast, Best Time, durable-tip persistence,
-home-screen widget render/tap, font scale `1.3`, rotation, process health, and
-cleanup passed. These are debug regression results; the API 36 result is
-emulator evidence, not physical-tablet or upload-signed release proof. Prior
-API 37 round-Wear evidence remains historical. Google Play Custom Store Listing
-`4834799756935529888` persists as an Uzbekistan-only `Draft` with Uzbek fallback
-and separate Russian copy and creatives. It was not submitted for review or
-published, and public production remains `1.0.2 (6)`.
-At 22:56 +05:00, authenticated App Store Connect API inventory reads confirmed
-that Apple exposes public iOS `1.0.1` with valid build `4`, and contains no
-`1.1.0` version or builds `5`/`6`. Build-detail and diagnostic-signature GETs
-for build `4` returned security `403`. A single bounded POST attempting to
-create only a manual-release `1.1.0` version also returned `403`; a final
-authenticated GET again returned zero `1.1.0` versions, proving that no partial
-version or localization draft was created. No build, localization, screenshot,
-Custom Product Page, submission, or release mutation followed. The Apple copy
-and creative payload therefore remains repository-prepared, not an App Store
-Connect draft or deployed store state.
-The same authenticated preflight found zero existing analytics report requests.
-Exactly one bounded POST then attempted to create an `ONGOING` analytics report
-request for app `6799886897`; App Store Connect returned security `403` without
-a resource ID. The request was not retried, and no duplicate, report instance,
-segment, user-level data, or PII was created or downloaded. Automated weekly
-Apple analytics therefore remains permission-blocked for the current key and
-the dashboard's missing-console-data state remains explicit.
-An authenticated Play Console refresh at `2026-08-29 23:37–23:46 +05:00`
-confirmed the global default rating remains `1.000` from one user, with zero
-written reviews across the all-time range. The lone star-only rating has no
-reply surface and is not attributed to Uzbekistan, a device, version, or
-storefront. Account-level email notifications were enabled and saved for new
-one- through five-star reviews and edited reviews; no email address, reviewer
-data, or other PII is stored in the dashboard. The existing daily heartbeat
-now checks the Nimbo review inbox once per day after `09:15` Asia/Tashkent.
+Product/build source
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` passed exact-source ordinary
+GitHub Actions run
+[`33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788).
+Protected run
+[`33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
+then passed both jobs with all 8/8 signing inputs and produced retained,
+independently byte-verified phone AAB `d4a90676…`, Wear AAB `e76d685b…`,
+and Apple IPA `7466afb1…`. The schema-v3 receipt, hosted package, exact
+profiles, independent verifier result, GitHub metadata, extracted bytes, and
+complete checksums are retained privately outside Git; the non-secret receipt
+and evidence are committed. There is not yet a durable, CI-readable hosted
+materialization of that private package.
 
-The same refresh showed a rolling `Last 28 days` acquisition snapshot of `778`
-device impressions, `21` installs, `14` first opens, `11` monthly active
-devices, unavailable D7 retention, and the unchanged `40.82%` summary
-conversion. The dated historical baseline remains `779` impressions and is not
-rewritten by a moving-window refresh. For the latest complete weekly period
-`2026-08-18..2026-08-24`, the validated Google Play export reports `26`
-all-country store-listing visitors and `11` unique install clicks, a derived
-`42.31%` diagnostic conversion outside the UZ goal scope. The UZ slice reports
-`0` visitors and `0` install clicks, so UZ conversion remains `UNKNOWN`: a zero
-denominator is never rendered as `0%` or used as target evidence. First launch,
-retention, active-use, rating, vitals, and user-loss metrics remain missing for
-that exact weekly scope.
-Exact-current signed-release phone, tablet, widget, and paired Wear OS coverage
-is still missing despite the bounded exact-current physical API 25 debug
-phone/widget pass plus predecessor API 24/API 36 emulator and API 25 physical
-debug evidence. Android Keychain metadata and the existing mode-600 keystore
-are present. The protected GitHub environment contains all eight signing
-inputs. Two candidate runs have exercised those credentials, but neither
-produced a retained, byte-verified package; the current hardened correction
-still requires hosted proof. At
-20:44 +05:00 the
-iPad was again available and paired, but lock-state and DDI queries failed
-because it had not been unlocked recently; the iPhone and watch remained
-unavailable. No retained, accepted, byte-verified exact-current signed Apple
-build exists, so it cannot provide current physical proof; iOS 15 runtime
-coverage is also unverified. The
-two public iOS `1.0.1 (4)` crashes—one on August 25 and one on August 29—still
-lack diagnostics and symbolicated reports. The August 29 event maps to iPhone;
-the August 25 device/OS dimension is suppressed or unavailable. The
-authenticated inventory path closes the API-authentication discovery gap, but
-its diagnostic request is permission-blocked by `403` and cannot recover either
-suppressed crash signature or log.
-Current `2cdd438` inherits the preventive crash hardening and passes twelve
-targeted iOS Simulator provider tests, but neither those tests nor predecessor
-hosted/simulator binaries can identify or be attributed to either production
-event. They do not close the crash gate. OpenMeteo GmbH
-replied at 17:25 +05:00 in ticket `234272` and
-explicitly confirmed non-commercial API entitlement under the complete terms
-sent at 06:05:07 +05:00. The pass is limited to the described free,
-non-monetized app and unpaid organic promotion; a material monetization,
-promotion, attribution, or usage-limit change reopens the licensing decision.
-At 10:40–10:41 +05:00, GitHub Pages showed a successful DNS check with
-`Enforce HTTPS` enabled. The Let's Encrypt certificate validates for both
-`nimbo.uz` and `www.nimbo.uz`; WHOIS, `.uz` delegation, Cloudflare records,
-independent public DNS, HTTPS, redirects, canonicals, language declarations,
-all 12 localized routes, growth, robots, sitemap, and metadata schema passed.
-The domain gate is now `pass`; Uzbek intentionally uses the site root rather
-than a separate Uzbek-prefixed route.
-Missing evidence elsewhere remains explicit rather than silently becoming a
-zero or pass.
-The dashboard also exposes every critical metric guardrail; all eight are
-currently `unknown`, independently blocking scale. The app-global point-in-time
-`open_policy_issues` metric requires both `storefront=ALL` records and remains
-intentionally distinct from the operational `store_policy_console_clearance`
-gate.
+This is `3/3 candidate-verified`, not manifest promotion. The committed
+upload manifest remains `draft-blocked` and `0/3 verified-current` because
+public macOS CI cannot yet materialize the private retained package for the
+full byte verifier. Receipt-only success is prohibited. The exact-source API 25
+debug phone/widget smoke remains regression evidence; upload-derived Android
+phone/tablet/widget/Wear and TestFlight iPhone/iPad/widget/watch physical
+coverage are still missing. The iPad mini 5 is ready at CoreDevice level, the
+iPhone 14 Pro is paired but locked/DDI-blocked, the paired Series 5 watch is
+visible but offline for runtime queries, and no iOS 15 runtime is available.
+
+Two public iOS `1.0.1 (4)` crashes—August 25 and August 29—still lack
+diagnostics and symbolication. The August 29 event maps to iPhone; the earlier
+device/OS dimension is suppressed. Google UZ Custom Store Listing
+`4834799756935529888` remains an unpublished draft, public Play production
+remains `1.0.2 (6)`, and the last authenticated Apple inventory contained no
+`1.1.0` version or builds 5/6. Signed run `33381050098` performed no store
+upload, processing, build association, internal distribution, review, release,
+or publication.
+
+OpenMeteo GmbH's written clearance passes only for the exact free,
+non-monetized app and unpaid organic-promotion scope. The `nimbo.uz` DNS,
+TLS, redirects, localized routes, and metadata checks pass. All eight critical
+metric guardrails remain `unknown`, independently blocking scale; the
+point-in-time app-global policy gate remains separate from numeric vitals and
+retention evidence.
 
 Refresh order:
 

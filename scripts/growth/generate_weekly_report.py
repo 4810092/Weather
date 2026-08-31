@@ -91,8 +91,10 @@ GUARDRAIL_LABELS = {
 GATE_ACTIONS = {
     "ios_crash_gate": (
         "Engineering",
-        "Obtain and symbolicate the current iOS crash evidence, reproduce it, and "
-        "verify the fix before acquisition resumes.",
+        "Obtain and symbolicate any diagnostic Apple exposes, upload the exact "
+        "retained IPA unchanged to TestFlight, complete the iPhone, iPad, widget, "
+        "and watch matrix, and collect post-rollout crash evidence before "
+        "acquisition resumes.",
     ),
     "open_meteo_promotion_clearance": (
         "Product / legal",
@@ -101,19 +103,19 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Produce source-current signed Android phone, Wear OS, and Apple artifacts, "
-        "record their identities and hashes, and keep upload blocked until matching "
-        "QA passes.",
+        "Materialize the retained content-addressed package in hosted macOS CI, run "
+        "the full verifier, promote all three manifest entries atomically, and keep "
+        "store upload blocked until matching QA passes.",
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Complete the required physical Android matrix on the source-current signed "
-        "artifact and record bounded evidence.",
+        "Derive or deliver an upload-key-signed universal APK from the retained phone "
+        "AAB, then complete phone, tablet, widget, and paired Wear OS physical QA.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Complete the required iPhone, iPad, widget, and watch smoke on the "
-        "source-current signed artifact.",
+        "Upload the exact retained IPA unchanged to TestFlight, restore iPhone and "
+        "watch readiness, then complete iPhone, iPad, widget, and watch QA.",
     ),
     "domain_activation": (
         "Web operations",

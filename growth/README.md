@@ -5,62 +5,43 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
 
-Current verdict (2026-08-30): **HOLD ACQUISITION**. The canonical 00:00 +05:00
-public snapshot places Nimbo at `#22` in Apple's official UZ Weather chart and
-`#87` for Apple `weather`; all three fixed Google UZ category profiles remain
-outside the first 30 and `0/5` generic queries qualify. One auxiliary Apple
-`Toshkent ob-havo` search returned only one unique app, but every goal surface
-is decisive and fails, so the verified Top-10 streak remains `0/7`. Current
-phone vc8, Wear vc1000008, and Apple build 6 have no source-synced signed
-artifact or matching release-certificate physical QA. Current product/build
-source `2cdd438` inherits fail-closed source-revision plumbing, deterministic
-locale/UI coverage, API 24 desugaring, bundle-specific Apple profiles, and the
-pinned dependency graph. It additionally tolerates omitted optional Open-Meteo
-forecast/AQI arrays while keeping required weather/time inputs fail-closed.
-Fourteen targeted Android-host and twelve targeted iOS Simulator tests pass,
-including preservation of cached weather and timezone after rejected required
-rows. At evidence head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
-[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788)
-(`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
-passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API
-36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
-`23m59s`, including `18/18` surface tests. Its six archived outputs are
-unsigned/test evidence only. A protected, manual GitHub-hosted workflow
-implements exact-source signing and pre-manifest byte verification. Its
-branch-restricted `release-signing` environment now contains
-4/8 required secrets: the Android keystore payload plus the app, widget, and
-watch provisioning profiles. The two Android passwords, Apple distribution
-P12, and its transport password remain absent; the signed workflow has not run
-and no signed candidate was produced. Local Keychain authorization still
-rejects Android password reads and Apple private-key use, so the authoritative
-result remains `0/3` byte-verified. Exact product source `2cdd438` now also has
-a bounded clean physical General Mobile API 25 debug pass: denied approximate
-location, Bukhara search, live forecast, cached offline warning and recovery,
-populated home widget render/tap, process health, and cleanup passed with local
-and pulled installed APK SHA-256
-`d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
-This is debug-certificate regression evidence, not upload-signed or
-Play-delivered proof, so it does not change the gate or manifest. The prior
-predecessor-only Apple/Wear simulator gap is now narrowed by exact `2cdd438`
-unsigned/debug evidence: the iPhone Simulator passed EN/RU/UZ live-provider
-capture plus `40/40` cold launches; watchOS build 6 rendered an explicitly
-stale retained preview-like `UserDefaults` fixture in EN/RU/UZ and passed
-`30/30` cold launches; and the Wear OS API 37 debug emulator rendered the
-stale cached Mountain View Data Layer item in EN/RU/UZ and passed the additional
-`10/10` restored-English cold loop. Neither watch result proves a fresh paired
-transfer. The prior `9c2dce4` Android API 24/API 25/API 36 results remain
-historical. None of this closes signing, physical-device, TestFlight/Play,
-store-state, or the release matrix.
-Signed phone vc7 and Apple build 5 are historical evidence only. OpenMeteo GmbH
-has confirmed
-the exact unpaid, non-monetized organic-promotion scope for the non-commercial
-API. The iOS crash diagnostic, complete physical-device matrix, and reconciled
-console exports are still missing. A build, a Pages
-deployment, or historical device evidence does not close those gates.
+The machine field `byte_verified=false` refers to the upload-manifest entry.
+Protected-run candidate bytes are verified; durable CI re-verification and
+`verified-current` promotion are still blocked.
+
+Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
+snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
+for Apple `weather`; all three fixed Google UZ category profiles remain outside
+the first 30 and `0/5` generic queries qualify. One auxiliary Apple
+`Toshkent ob-havo` result is incomplete, but all required goal surfaces are
+decisive and fail, so the verified Top-10 streak remains `0/7`.
+
+Product/build source `2cdd438` passed exact-source ordinary hosted CI
+[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788).
+Protected signing
+[run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
+then passed both jobs with all 8/8 signing inputs and produced retained,
+independently verified candidates for phone `1.1.0 (8)`, Wear
+`1.1.0 (1000008)`, and Apple `1.1.0 (6)`. This is `3/3
+candidate-verified`, not `verified-current`: the committed upload manifest
+remains fail-closed at `0/3` because public CI has no durable materialization
+route to the private retained package. A receipt-only promotion is prohibited.
+The exact-source API 25 debug phone/widget pass remains valid regression
+evidence, but upload-derived Android phone/tablet/widget/Wear and TestFlight
+iPhone/iPad/widget/watch coverage are missing. The iPhone is currently locked,
+the paired watch is offline for runtime queries, and no iOS 15 runtime is
+available. No store upload, processing, internal distribution, review, release,
+or availability is claimed.
+
+OpenMeteo GmbH has confirmed the exact unpaid, non-monetized organic-promotion
+scope for the non-commercial API. Two public iOS `1.0.1 (4)` crashes remain
+without diagnostic or symbolication, exact weekly retention and vitals remain
+insufficient, and acquisition stays held. A signed candidate, Pages deployment,
+or historical device result does not close those independent gates.
 
 ## Evidence model
 
@@ -72,10 +53,11 @@ deployment, or historical device evidence does not close those gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Real-byte, signing, identity, source-drift, schema, and evidence checks; current result remains 0/3 verified |
-| GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Two isolated manual master-only hosted jobs, no-secret exact-source build, protected signing, closed-tree receipt/tar verification, partial 4/8-secret/Keychain blocker, and explicit no-store-upload boundary |
-| GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Authenticated branch restriction and exact 4/8-secret inventory, with no values exposed and an explicit no-run/no-signing boundary |
-| Current release source authority | [quality/release-artifact-source-sync-2026-08-30-2cdd438.md](quality/release-artifact-source-sync-2026-08-30-2cdd438.md) | Exact `2cdd438` provider-hardening identity, successful exact-source hosted CI #117, partial signing setup, and explicit non-transferability of earlier artifacts/device results |
+| Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Full action-time verifier contract; manifest remains 0/3 verified-current until hosted CI can reopen the retained bytes |
+| Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
+| GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
+| GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
+| Current release source authority | [quality/release-artifact-source-sync-2026-08-31-2cdd438.md](quality/release-artifact-source-sync-2026-08-31-2cdd438.md) | Exact `2cdd438` identity, successful ordinary and protected hosted runs, 3/3 candidate-verified versus 0/3 manifest-verified boundary, and remaining physical/store gates |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |

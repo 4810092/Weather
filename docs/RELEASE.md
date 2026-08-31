@@ -4,21 +4,26 @@ This is a chronological release journal. Statements inside a dated paragraph des
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
-Wear 1000008, and Apple build 6. No exact-current signed artifact exists for
-those three surfaces. Signed phone 7, signed Wear 1000008 with historical VCS
-revision, and Apple build 5 are preserved as historical candidates; their
-hashes, signing, and QA do not transfer to the exact current source. Nothing in
-1.1.0 has been uploaded or published. Store consoles remain the authority for
-live status.
+Wear 1000008, and Apple build 6. Protected hosted run `33381050098` produced
+and retained exact-current, independently byte-verified candidate artifacts for
+all three surfaces. They are pre-manifest evidence: the upload manifest remains
+`draft-blocked` and `0/3 verified-current` until public macOS CI can obtain the
+durable external package and repeat the full byte verifier. No 1.1.0 artifact
+has been uploaded to a store, processed, installed through an internal track,
+submitted, or published. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
+
+Here `byte_verified=false` is the upload-manifest state. The protected candidate
+receipt verifies all three external artifacts, but CI has not yet reopened and
+promoted those private bytes to `verified-current`.
 
 ## Version identity
 
@@ -28,7 +33,45 @@ live status.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
 
-## Nimbo 1.1.0 provider decoding authority — 2026-08-30
+## Nimbo 1.1.0 hosted signed-candidate checkpoint — 2026-08-31
+
+Product/build-input authority
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` remains unchanged. Protected
+GitHub Actions
+[run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098),
+attempt 1 at evidence head
+`dd6e275e840947ec6b22b9485ebeb63d5eaa320c`, passed both hosted macOS jobs
+with all 8/8 protected signing inputs. It produced schema-v3 receipt-bound
+candidates for phone `1.1.0 (8)`, Wear `1.1.0 (1000008)`, and Apple app/widget/
+watch `1.1.0 (6)`.
+
+The exact signed hashes are phone AAB
+`d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62`,
+Wear AAB
+`e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf`,
+and Apple IPA
+`7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0`.
+The package SHA-256 is
+`60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9`
+and closed-tree SHA-256 is
+`c91ea40ae12fd59aacfee77f03ba75240951b5797c16b23487ce334eb85502fa`.
+The GitHub ZIP matched its API digest, the archive inventory was safely
+extracted, and all three candidates passed an independent second verifier run.
+The exact hosted files and metadata are retained outside Git under a complete
+checksum manifest; the non-secret receipt is committed.
+
+This closes protected signing and pre-manifest candidate verification only.
+The schema-v2 upload manifest remains fail-closed because hosted CI has no
+durable materialization route to the private retained bytes; receipt-only
+promotion is not accepted. The Android candidate still needs an upload-derived
+physical phone/tablet/widget/Wear matrix. The App Store-profile IPA must be
+uploaded unchanged and exercised through TestFlight; it is not directly
+installable. Crash diagnosis, store processing, review, rollout, and public
+availability are not claimed. See the [signed-candidate
+record](../growth/quality/signed-candidate-run-33381050098.md) and [current
+source-sync record](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md).
+
+## Historical Nimbo 1.1.0 provider decoding checkpoint — 2026-08-30 (superseded)
 
 The authoritative product/build-input revision is
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`. It keeps phone `1.1.0 (8)`,
@@ -46,9 +89,12 @@ Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`, API 36
 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in `23m59s`,
 including `18/18` surface tests. The six archived outputs are unsigned/test
 evidence only. No predecessor AAB/archive hash, signed artifact, physical QA,
-crash diagnosis, or store state transfers. The protected signed workflow has
-not run, the signing environment remains at `4/8` required secrets, and the
-manifest remains `0/3` byte-verified.
+crash diagnosis, or store state transfers. At this dated checkpoint the
+protected signed workflow had not run, the environment had `4/8` required
+secrets, and the manifest was `0/3` byte-verified. That signing state is
+superseded by the August 31 checkpoint above: protected run `33381050098`
+passed with `8/8` inputs and verified `3/3` candidate bytes, while the manifest
+correctly remains `0/3 verified-current`.
 An isolated exact-`2cdd438` debug APK and its pulled installed bytes share
 SHA-256
 `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
@@ -194,8 +240,10 @@ publish metadata, or promote `store/upload-manifest-1.1.0.json`. Its receipt is
 pre-manifest byte evidence only. The resulting hashes and a separate committed
 signing record must promote the manifest before the ordinary artifact verifier
 can return `verified-current`; exact-byte physical QA remains a separate gate.
-Current readiness and the partial-provisioning boundary are recorded in
-[the hosted signing evidence](../growth/quality/github-hosted-signed-candidate-readiness-2026-08-30.md).
+The historical readiness/provisioning boundary is recorded in
+[the hosted signing readiness evidence](../growth/quality/github-hosted-signed-candidate-readiness-2026-08-30.md);
+the successful execution and retained-byte boundary are in the
+[run evidence](../growth/quality/signed-candidate-run-33381050098.md).
 
 ## Nimbo 1.1.0 Apple source-binding checkpoint — 2026-08-30
 

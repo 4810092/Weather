@@ -167,21 +167,19 @@ SHA-256 `c406decbf5eed88c830f4139532d6ebc7a69fa761355e8a07a3fb2555c450ffe`.
 The other five run archives likewise remain unsigned build/test-result proof.
 This current hosted execution does not supply either suppressed crash
 diagnostic, symbolication, distribution-signed bytes, or physical reproduction.
-The protected release-signing environment now contains all 8/8 required
-secrets, and candidate runs
-[`33368227872`](https://github.com/4810092/Weather/actions/runs/33368227872)
-and
-[`33375162729`](https://github.com/4810092/Weather/actions/runs/33375162729)
-executed. The first stopped at Apple export because a manual signing style was
-incompatible with Xcode-managed profiles. The second signed the Android phone
-and Wear bundles and completed Apple archive export, but the fail-closed byte
-verifier rejected both the exported and retained app/widget because Xcode had
-omitted their required App Group entitlement. Cleanup succeeded and the signed
-candidate package was not uploaded. The repository now contains a bounded
-re-signing correction plus exact ExportOptions, protected-profile, workflow,
-and verifier provenance checks, but that correction has not yet passed a new
-hosted run. No signed receipt exists and 0/3 current artifacts remain
-byte-verified. The crash gate remains blocked.
+The protected release-signing environment contains all 8/8 required secrets.
+After two fail-closed predecessor attempts, protected
+[run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
+passed both jobs and produced a retained, independently byte-verified Apple
+`1.1.0 (6)` IPA/archive with matching app/widget/watch profiles, entitlements,
+signatures, and dSYM UUIDs. Its IPA SHA-256 is
+`7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0`;
+the full pre-manifest evidence is in
+[`signed-candidate-run-33381050098.md`](signed-candidate-run-33381050098.md).
+That preventive candidate is not the crashed public build, has not been
+uploaded or exercised through TestFlight, and supplies neither production
+diagnostic nor symbolication. The committed upload manifest and crash gate
+therefore remain blocked.
 
 The separate 40-cycle cold-launch/terminate record remains historical to source
 `df5f82401348a2cca7405feec36c03621af43ea7`; its app and widget hashes are

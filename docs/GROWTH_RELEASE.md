@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: August 30, 2026
+Status date: August 31, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
@@ -9,9 +9,13 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e541789f1f0c2978f64bc5a3efc0dc3f3b7ed47bdd1953115d4a1b004dec4bef -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3f13a5b2f0ca3e6c202d74fdd8207a406b21c3cee3521d4f25cd091b373c571f -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
+
+In the machine-validated block, `byte_verified=false` is the upload-manifest
+state: the external candidate bytes have been verified, but those private bytes
+have not yet been reopened by CI and promoted to `verified-current`.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -23,22 +27,23 @@ authorizes an external action.
 ## Live store checkpoint
 
 The following values were rechecked read-only in App Store Connect and Play
-Console on August 28. They are console observations, not attached raw exports,
-and their overview populations are not claimed to be UZ-only.
+Console on the dates stated in each row. They are console observations, not
+attached raw exports, and their overview populations are not claimed to be
+UZ-only.
 
 | Surface | Verified state |
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The overview shows 206 impressions, 5 product-page views, 5 first downloads, 1 redownload, 3 updates, and 4.05% reported conversion. |
-| iOS quality | One crash is shown on August 25 under version 1.0.1. Device detail is suppressed as insufficient data and no crash report or stack trace is exposed, so the crash gate remains blocked. |
+| iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
-state live under [`growth/`](../growth/README.md). The August 30 canonical
-public capture places Nimbo at position 22 in the official Apple UZ Weather
-chart and position 87 for Apple query `weather`, outside the first 30 Google
+state live under [`growth/`](../growth/README.md). The August 31 canonical
+public capture places Nimbo at position 40 in the official Apple UZ Weather
+chart and position 88 for Apple query `weather`, outside the first 30 Google
 Weather category results on all three fixed profiles, and at Top-10 for none of
 the five generic Google queries. One auxiliary Apple `Toshkent ob-havo` search
 returned only one unique result, but every goal surface was decisive. The
@@ -82,30 +87,28 @@ the captured slice”; it is never converted to a synthetic rank.
   Current product/build source is `2cdd438`; it inherits fail-closed
   `NimboSourceRevision` plumbing, distinct Apple profiles, the pinned dependency
   graph, deterministic Compose UI tests, API 24 desugaring, and standard hosted
-  API 24/API 36 phone/tablet jobs. It adds tolerant decoding for omitted optional
-  Open-Meteo forecast/AQI arrays while keeping required weather/time inputs
-  fail-closed. Fourteen targeted Android-host and twelve targeted iOS Simulator
-  provider tests pass, including cache/timezone preservation after rejected
-  required rows. It has no retained signed candidate. At evidence
-  head `fb877d30b2179a489f5ce18dd06d892461436540`, hosted CI
+  API 24/API 36 phone/tablet jobs. It adds tolerant optional Open-Meteo decoding
+  while keeping required weather/time inputs fail-closed. Exact-source ordinary
+  hosted CI
   [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
-  (`33300967788`) succeeded for exact source authority `2cdd438`. All five jobs
-  passed: Android/shared in `5m05s`; Compose UI API 24 phone `5/5` in `2m36s`,
-  API 36 phone `5/5` in `3m48s`, and API 36 tablet `5/5` in `4m18s`; and iOS in
-  `23m59s`, including `18/18` surface tests. Its six archived outputs are
-  unsigned/test evidence only. The protected signed workflow has not run, only
-  `4/8` signing secrets are provisioned, the manifest remains `0/3`
-  byte-verified, and the complete upload-signed physical matrix plus crash
-  diagnosis remain blocked. Exact source `2cdd438` now has a bounded clean
-  physical General Mobile API 25 debug pass: denied approximate location,
-  Bukhara search, live forecast, cached offline warning, recovery, populated
-  widget render/tap, process health, and cleanup passed. Local and pulled
-  installed APK bytes share SHA-256
+  passed all five jobs. Protected signing
+  [run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
+  then passed with all 8/8 signing inputs and produced retained,
+  independently byte-verified phone, Wear, and Apple candidates. The exact
+  hashes and schema-v3 receipt are recorded in the
+  [signed-candidate evidence](../growth/quality/signed-candidate-run-33381050098.md).
+  The manifest remains `0/3 verified-current`, not because signing failed, but
+  because public CI cannot yet materialize the private retained package for the
+  complete macOS byte verifier; receipt-only promotion is prohibited. Exact
+  source `2cdd438` also has a bounded clean physical General Mobile API 25 debug
+  pass covering denied location, Bukhara search, live/cache/recovery, widget,
+  process health, and cleanup, with local and pulled installed APK SHA-256
   `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
-  This is debug-certificate evidence, not an upload-signed candidate, Play
-  delivery, physical tablet, or paired Wear result; it does not change the
-  `blocked` gate or the `0/3` manifest. See the
-  [exact-current physical record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md).
+  That result is debug-certificate regression evidence, not the upload-derived
+  phone/tablet/widget/Wear matrix. TestFlight Apple runtime coverage and the iOS
+  crash diagnosis also remain blocked. See the [exact-current physical
+  record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md)
+  and [current source-sync record](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md).
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful
@@ -115,9 +118,10 @@ the captured slice”; it is never converted to a synthetic rank.
   behavior, plus a byte-identical API 36 tablet emulator pass for Uzbek layout,
   live forecast, Best Time, durable-tip persistence, home-screen widget
   render/tap, large text, rotation, and process health. The physical APK uses
-  the debug certificate, and the tablet/widget pass is emulator-only: there is
-  still no upload-signed current phone artifact or matching release-certificate
-  physical matrix. Exact source `2cdd438` now has bounded simulator evidence on
+  the debug certificate, and the tablet/widget pass is emulator-only. A current
+  upload-key-signed phone AAB is retained and candidate-verified, but there is
+  still no upload-derived, release-certificate physical matrix. Exact source
+  `2cdd438` now has bounded simulator evidence on
   all three remaining watch/phone surfaces: the unsigned iPhone Release
   Simulator passed live-provider EN/RU/UZ capture and `40/40` cold launches;
   unsigned watchOS build 6 rendered an explicitly stale retained preview-like
@@ -143,9 +147,10 @@ the captured slice”; it is never converted to a synthetic rank.
   records the boundary.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
-  remains scoped to build 5. Current Apple build 6 has no distribution-signed
-  archive or physical runtime result. The new exact `2cdd438` unsigned Simulator
-  evidence is current regression proof only. The checked-in
+  remains scoped to build 5. Current Apple build 6 now has a retained,
+  candidate-verified distribution archive and IPA, but no TestFlight or physical
+  runtime result. The exact `2cdd438` unsigned Simulator evidence is current
+  regression proof only. The checked-in
   [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
   remains predecessor `9c2dce4` creative evidence; neither record implies App
   Store Connect or TestFlight upload.
@@ -218,43 +223,30 @@ recorded only after direct store evidence.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Produce source-synced signed phone vc8, Wear vc1000008, and Apple build-6
-   artifacts, then complete the remaining physical matrix. Historical phone
-   vc7 passes General
-   Mobile clean/live/cold-start, denied-location/manual-search, share,
-   large-text, TalkBack, cached-network recovery, and review-prompt paths and was
-   removed after QA. A naturally scheduled background refresh passed on the
-   earlier debug candidate. Historical Apple `1.1.0 (5)` installed on the iPad
-   but could not launch while the device was locked and was removed; the older
-   bounded `1.0.1 (4)` iPad runtime pass remains separately scoped. Full
-   signed-artifact physical QA for current phone `1.1.0 (8)` and Apple
-   `1.1.0 (6)`, plus Android
-   tablet/Wear/widget and the unavailable iPhone/watch matrix remains. At the
-   latest read-only check the iPad was discoverable and paired in both CoreDevice
-   and `xcdevice`, but it was locked; lock-state and no-auto-mount DDI queries
-   failed before current DDI readiness could be read. The iPad is therefore not
-   action-ready, and no exact-current distribution-signed Apple build exists to
-   install. The predecessor phone debug APK separately passed the bounded API
-   25 onboarding/live/Best Time/tip/offline/recovery/process-health scope, but
-   its debug certificate cannot satisfy this signed-artifact matrix. Its
-   byte-identical API 36 tablet/widget emulator pass likewise does not replace
-   physical-tablet or signed-candidate QA. The exact-current iPhone/watchOS
-   Simulator and Wear OS emulator report likewise remains unsigned/debug and
-   non-physical; the watch states are stale retained/cached data rather than
-   fresh paired transfers, so it cannot satisfy any signed-artifact or physical
-   gate.
+3. Materialize the retained source-current signed package in hosted macOS CI,
+   re-run the full byte verifier, and promote all three manifest entries
+   atomically. Then complete the delivery-linked physical matrix: derive or
+   deliver an upload-key-signed universal APK from the exact phone AAB for the
+   clean API 25 device, add physical tablet/widget and paired Wear coverage,
+   and upload the exact App Store-profile IPA unchanged to TestFlight for
+   iPhone/iPad/widget/watch QA. The iPad mini 5 is currently paired, unlocked,
+   DDI-ready, and has no Nimbo install. The iPhone 14 Pro is paired but locked
+   and DDI-blocked; the paired Series 5 watch is visible but offline for
+   detail/app queries. No iOS 15 runtime is available. Earlier debug/simulator
+   results remain regression evidence and cannot satisfy these delivery-linked
+   physical gates.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-No retained signed artifact is source-current: signed phone vc7, signed Wear
-vc1000008, and Apple build 5 all embed or represent historical source. Current
-phone vc8, Wear vc1000008, and Apple build 6 are blocked before exact-current
-signing and physical QA. The current host's App Store
-Connect upload account is unavailable, and its Google credential lacks
-the Android Publisher scope; [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
-records that neither internal track was changed. Play Internal and TestFlight
-remain bounded QA channels once an authenticated upload path is available.
+Current phone vc8, Wear vc1000008, and Apple build 6 are retained and
+independently candidate-verified from source `2cdd438`; historical phone vc7,
+historical Wear, and Apple build 5 remain non-transferable. The current manifest
+is blocked before durable hosted materialization/promotion and physical QA.
+Earlier [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
+records that neither internal track was changed; write-capable upload paths
+must be rechecked at action time. Play Internal and TestFlight remain bounded
+QA channels for the exact retained candidates.
 Production rollout and public acquisition remain fail-closed until the crash,
 provider, physical-device, and console guardrails pass.
 

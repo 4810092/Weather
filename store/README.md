@@ -15,8 +15,11 @@ to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its exact locale,
 metadata, creative, and artifact source-sync state. It intentionally remains
 `draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
-upload-candidate hashes, signing, and physical-QA evidence until exact-source
-signed artifacts and their matching QA exist. Its full `source_revision` is
+manifest hashes, signing, and physical-QA evidence. Protected run `33381050098`
+has produced and durably retained 3/3 independently byte-verified candidate
+artifacts, but public macOS CI cannot yet materialize that private package for
+the ordinary full verifier. The receipt therefore stays pre-manifest evidence;
+promotion from a receipt alone is prohibited. Its full `source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
 drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
@@ -38,6 +41,7 @@ directory with this layout (the AAB/IPA names come from the manifest):
 ```text
 <artifact-root>/
 ├── nimbo-phone-1.1.0-vc8.aab
+├── nimbo-phone-1.1.0-vc8-mapping.txt
 ├── nimbo-wear-1.1.0-vc1000008.aab
 ├── Nimbo.ipa
 ├── Nimbo.xcarchive/
@@ -57,11 +61,14 @@ Android checks) and make CI/Pages depend on that result. Until that delivery
 path exists, a READY commit is expected to fail closed; no self-hosted Mac
 runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
-the tree was clean when they were built. The protected job must therefore
-build, sign, and verify from the same clean checkout and retain workflow
-provenance/attestation before the first `verified-current` promotion. The
-implemented gate and its remaining trust boundary are recorded in
-[`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md).
+the tree was clean when they were built. Protected run `33381050098` has now
+supplied that same-clean-checkout build/sign/verify provenance and a retained
+closed package. The remaining pre-promotion task is a durable,
+content-addressed hosted materialization path that reopens those exact bytes on
+macOS. The gate and successful run boundary are recorded in
+[`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md)
+and
+[`growth/quality/signed-candidate-run-33381050098.md`](../growth/quality/signed-candidate-run-33381050098.md).
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

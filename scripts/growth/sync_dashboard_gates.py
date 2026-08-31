@@ -159,25 +159,41 @@ def sync(
         old_reason = row.get("evidence")
         old_next = row.get("next_action")
         new_next = old_next
-        if gate_id == "release_artifact_source_sync":
+        if gate_id == "ios_crash_gate":
+            new_next = (
+                "Obtain and symbolicate any diagnostic Apple exposes, upload "
+                "the exact retained IPA unchanged to TestFlight, complete the "
+                "iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
+            )
+        elif gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · signing inputs 8/8; latest candidate rejected "
-                "fail-closed; 0/3 artifacts byte-verified"
+                "BLOCKED · 3/3 signed candidates retained and byte-verified; "
+                "manifest remains 0/3 verified-current"
             )
             new_next = (
-                "Run the hardened master-only hosted workflow, independently "
-                "verify and retain its receipt and bytes, then bind exact "
-                "physical QA to those retained artifacts"
+                "Materialize the retained content-addressed package in hosted "
+                "macOS CI, re-run the full byte verifier, promote all three "
+                "manifest entries atomically, then bind exact physical QA"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact-source debug API 25 phone/widget pass; "
-                "upload-signed phone/tablet/widget/Wear matrix missing"
+                "BLOCKED · exact upload-key AABs retained; upload-derived "
+                "phone/tablet/widget/Wear physical matrix missing"
+            )
+            new_next = (
+                "Derive or deliver an upload-key-signed universal APK from the "
+                "retained phone AAB, then run phone/tablet/widget and paired "
+                "Wear OS physical QA without overwriting existing user data"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact-source hosted unsigned iOS proof green; current "
-                "distribution-signed build 6 and physical matrix missing"
+                "BLOCKED · exact App Store-profile distribution IPA retained; TestFlight "
+                "iPhone/iPad/widget/watch matrix missing"
+            )
+            new_next = (
+                "Upload the exact retained IPA unchanged to TestFlight, unlock "
+                "the iPhone and restore watch readiness, then run the complete "
+                "iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -267,6 +283,22 @@ def sync(
         metric_definitions[
             metric_definitions.index(old_play_definition)
         ] = new_play_definition
+    scale_reason = gates_payload.get("scale_status_reason")
+    scale_status = gates_payload.get("scale_status")
+    if not isinstance(scale_reason, str) or not isinstance(scale_status, str):
+        raise ValueError("dashboard scale status/reason is malformed")
+    sql, scale_comment_count = re.subn(
+        r"(?m)^-- Public outreach and acquisition scaling remain gated .*$",
+        f"-- {scale_reason}",
+        sql,
+        count=1,
+    )
+    if scale_comment_count != 1:
+        raise ValueError("dashboard gate SQL scale-status comment is missing")
+    gate_query["description"] = (
+        "Loads the fail-closed scale gates and their next evidence-producing "
+        f"action. Scale status is {scale_status}. {scale_reason}"
+    )
     gate_query["sql"] = sql
     gate_query["executed_at"] = generated_at
     evaluation_query["executed_at"] = generated_at
@@ -320,41 +352,29 @@ def sync(
         f"Current source {current_revision_short} passes twelve targeted iOS "
         "Simulator provider mapping/service tests. Exact-source hosted run "
         "33300967788 also passed shared Simulator tests, all 18 Apple surface-"
-        "state tests, and the unsigned application build. This preventive unsigned "
-        "evidence identifies neither production event and does not close the crash "
-        f"gate for current source authority {current_revision_short}."
+        "state tests, and the unsigned application build. Protected run "
+        "33381050098 additionally produced a retained, independently verified "
+        "distribution-signed 1.1.0 (6) IPA/archive. That candidate is not the "
+        "crashed public build, has not been exercised through TestFlight, identifies "
+        "neither production event, and does not close the crash gate for current "
+        f"source authority {current_revision_short}."
     )
     source_issue["message"] = (
-        f"Current product/build-input commit {current_revision_short} has no retained signed "
-        "phone vc8, Wear 1000008, or distribution-signed Apple build-6 "
-        "candidate, so 0/3 current artifacts are byte-verified. Fourteen "
-        "targeted Android-host and twelve targeted iOS Simulator provider "
-        "tests pass, including cache preservation after rejected required-row "
-        "responses. Exact-source GitHub Actions run 33300967788 passed ordinary "
-        "Android/iOS plus all 15 Compose UI tests across the API 24 phone, API 36 "
-        "phone, and API 36 tablet profiles. Its retained Android/Wear bundles "
-        "and test archives are unsigned regression evidence only. Exact-source "
-        "debug APK and pulled installed bytes share SHA-256 prefix d66c8f0 and "
-        "passed a bounded physical API 25 denied-location, Bukhara search, live, "
-        "cache/recovery, populated-widget, process-health, and cleanup smoke. "
-        "That debug-certificate result is not upload-signed or Play-delivered. "
-        "The protected GitHub environment now has all 8/8 signing inputs. "
-        "Candidate run 33368227872 stopped at Apple export because manual signing "
-        "was incompatible with managed profiles. Run 33375162729 signed both "
-        "Android bundles and exported Apple bytes, then the byte verifier rejected "
-        "the app and widget because Xcode omitted their required App Group; cleanup "
-        "succeeded and signed-candidate upload was skipped. The repository now "
-        "contains a bounded App Group re-signing correction with exact "
-        "ExportOptions, protected-profile, workflow, and verifier provenance "
-        "checks, but it has not yet passed a hosted run. No signed package or "
-        "schema-v3 receipt exists. The "
-        "current debug-device result does not satisfy upload signing or the complete "
-        "physical matrix. "
-        "CoreDevice readiness must be re-established, and App Store Connect "
-        "contains no 1.1.0 version or builds 5/6. A bounded 1.1.0 version-create "
-        "POST returned 403 and the final GET proved zero partial draft; no "
-        "localization, asset, build association, submission, release, or other "
-        "store mutation followed."
+        f"Current product/build-input commit {current_revision_short} passed exact-source "
+        "ordinary GitHub Actions run 33300967788, including all 15 API 24/API 36 "
+        "Compose UI tests and all 18 Apple surface-state tests. Protected run "
+        "33381050098 then passed both macOS jobs with all 8/8 signing inputs and "
+        "produced a schema-v3 receipt for phone d4a90676…, Wear e76d685b…, and "
+        "Apple 7466afb1…. The GitHub ZIP matched its API digest; the safe-extracted "
+        "closed tree and all three candidates passed an independent verifier run "
+        "and are retained outside Git under a complete checksum manifest. This is "
+        "3/3 candidate-verified, but the committed upload manifest remains 0/3 "
+        "verified-current because public CI cannot yet materialize the private "
+        "retained package for the full macOS byte verifier. Receipt-only promotion "
+        "is prohibited. The upload-derived Android physical matrix and TestFlight "
+        "Apple matrix remain missing; two public iOS crashes still lack diagnostics. "
+        "No store upload, processing, submission, release, or availability is "
+        "claimed."
     )
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
@@ -382,17 +402,13 @@ def sync(
         "passed a bounded physical API 25 phone/widget smoke, including denied "
         "location, Bukhara search, live forecast, cache/recovery, process health, "
         "and cleanup. This is debug-certificate evidence, not upload signing. The "
-        "protected master-only hosted workflow has all 8/8 signing inputs. Candidate "
-        "run 33368227872 failed Apple export; run 33375162729 signed both Android "
-        "bundles and exported Apple bytes, then correctly rejected the Apple app "
-        "and widget because their required App Group was missing. Cleanup succeeded "
-        "and no signed package was uploaded. A bounded entitlement re-signing and "
-        "exact provenance correction is implemented but has not yet passed hosted "
-        "execution. No retained, accepted, byte-verified source-current signed "
-        "artifact or complete signed "
-        "physical-device matrix exists, so 0/3 current artifacts are byte-verified "
-        "and the "
-        "signed/physical gates remain blocked. "
+        "protected master-only hosted run 33381050098 passed both jobs with all "
+        "8/8 signing inputs and produced retained, independently byte-verified "
+        "phone, Wear, and Apple candidates. The schema-v3 receipt proves 3/3 "
+        "candidate bytes, while the committed manifest stays 0/3 verified-current "
+        "because public CI cannot yet materialize the private package for the full "
+        "macOS verifier. The upload-derived Android and TestFlight Apple physical "
+        "matrices remain missing, so manifest/physical gates remain blocked. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -424,16 +440,52 @@ def sync(
         "Android Keychain metadata and the existing mode-600 keystore are "
         "present, but protected signing access remains unavailable.",
         "Android Keychain metadata and the existing mode-600 keystore remain "
-        "present. The protected environment now contains all 8/8 signing "
-        "inputs, but neither candidate run yielded a retained, byte-verified "
-        "package; hosted proof of the current correction remains pending.",
+        "present. Protected run 33381050098 used all 8/8 signing inputs and "
+        "yielded a retained, independently byte-verified package; manifest "
+        "promotion and physical delivery remain separate.",
     )
     verdict = verdict.replace(
         "There is no exact-current signed phone/Wear artifact, distribution-"
         "signed Apple archive, iOS 15 runtime pass, or matching physical matrix.",
+        "Exact-current signed phone/Wear and Apple candidates are retained and "
+        "byte-verified, but they are not manifest-promoted or store-delivered; "
+        "there is no iOS 15 runtime pass or matching physical matrix.",
+    )
+    verdict = verdict.replace(
         "There is no retained, accepted, byte-verified exact-current signed "
         "phone/Wear artifact or distribution-signed Apple archive, and no iOS "
         "15 runtime pass or matching physical matrix.",
+        "Exact-current signed phone/Wear and Apple candidates are retained and "
+        "byte-verified, but they are not manifest-promoted or store-delivered; "
+        "there is no iOS 15 runtime pass or matching physical matrix.",
+    )
+    verdict = verdict.replace(
+        "Android Keychain metadata and the existing mode-600 keystore remain "
+        "present. The protected environment now contains all 8/8 signing "
+        "inputs, but neither candidate run yielded a retained, byte-verified "
+        "package; hosted proof of the current correction remains pending.",
+        "Android Keychain metadata and the existing mode-600 keystore remain "
+        "present. Protected run 33381050098 used all 8/8 signing inputs and "
+        "yielded a retained, independently byte-verified package; manifest "
+        "promotion and physical delivery remain separate.",
+    )
+    verdict = verdict.replace(
+        "At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone "
+        "and watch remained unavailable.",
+        "At the August 31 read-only device check, the iPad mini 5 was paired, "
+        "unlocked, and DDI-ready with Nimbo absent; the iPhone 14 Pro was paired "
+        "but locked/DDI-blocked, and the paired Series 5 watch was visible but "
+        "offline for detail/app queries.",
+    )
+    verdict = verdict.replace(
+        "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, source-synced signed phone, Wear OS, "
+        "and Apple artifacts, complete physical-device coverage, and critical "
+        "console guardrails.",
+        "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, durable manifest promotion of the "
+        "retained candidates, complete physical-device coverage, and critical "
+        "console guardrails.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."
