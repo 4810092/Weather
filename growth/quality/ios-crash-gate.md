@@ -1,4 +1,4 @@
-# iOS crash gate — 2026-08-28, refreshed 2026-08-31
+# iOS crash gate — 2026-08-28, refreshed 2026-09-01
 
 Status: **BLOCKED**. Do not scale public acquisition or send outreach while this gate is blocked.
 
@@ -106,6 +106,28 @@ found no production diagnostic payload:
   and [diagnostic-log endpoint](https://developer.apple.com/documentation/appstoreconnectapi/get-v1-diagnosticsignatures-_id_-logs),
   plus the bounded local record in
   `growth/quality/app-store-connect-api-2026-08-29.md`.
+
+At `2026-09-01 02:30 +05:00`, a fresh read-only local revalidation confirmed
+that the symbolication inputs remain available and internally consistent, but
+did not recover either production diagnostic:
+
+- Xcode's Nimbo product cache still contains only `1.0` builds `1`–`3` and has
+  no `Crashes/` directory. The ordinary Xcode Archives directory contains only
+  the development-signed `1.0 (3)` Nimbo archive; no Nimbo `.ips`, `.crash`, or
+  `.xccrashpoint` payload is present in the reviewed Xcode or user diagnostic
+  locations.
+- The separately retained production archive still identifies
+  `uz.ganikhodjaev.weather` `1.0.1 (4)`. `dwarfdump --verify` passes for the
+  app, widget, and watch dSYMs, and every dSYM UUID still matches its shipped
+  executable UUID.
+- The retained DWARF SHA-256 values are
+  `1da966f02c154745d98277a7f839510c86d96b55377495ce2fa817ff6e6040cd`
+  for the app,
+  `f2956193b5124a844f44da7b8431ddb9ec61abac82bd5d411603c83661440f92`
+  for the widget, and
+  `7ac65a64298f064458288343e670fbe43ad1b91ee4e53332e767dbea51bbac02`
+  for the watch binary. These hashes revalidate local symbol availability;
+  they do not identify which process crashed or close the gate.
 
 The absence of local reports and Apple's low-volume suppression do not mean the
 crashes are fixed or harmless. The authoritative aggregates pin both events to
