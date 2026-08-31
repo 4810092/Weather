@@ -17,12 +17,18 @@ try:
     from scripts.hosted_rank_workflow_security import (
         validate_hosted_rank_workflow,
     )
+    from scripts.release_materialization_workflow_security import (
+        validate_release_materialization_workflow,
+    )
     from scripts.signed_candidate_workflow_security import (
         validate_signed_candidate_workflow,
     )
 except ModuleNotFoundError:
     from hosted_rank_workflow_security import (  # type: ignore[no-redef]
         validate_hosted_rank_workflow,
+    )
+    from release_materialization_workflow_security import (  # type: ignore[no-redef]
+        validate_release_materialization_workflow,
     )
     from signed_candidate_workflow_security import (  # type: ignore[no-redef]
         validate_signed_candidate_workflow,
@@ -41,6 +47,7 @@ REQUIRED = (
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/release-materialization.yml",
     ".github/workflows/signed-candidate.yml",
     ".github/workflows/uz-rank-monitor.yml",
     "docs/ARCHITECTURE.md",
@@ -55,6 +62,7 @@ REQUIRED = (
     "growth/reviews/review-inbox.csv",
     "scripts/growth/hosted_rank_state.py",
     "scripts/hosted_rank_workflow_security.py",
+    "scripts/release_materialization_workflow_security.py",
     "scripts/signed_candidate_workflow_security.py",
     "scripts/verify_signed_candidate.py",
     "gradle/verification-metadata.xml",
@@ -227,6 +235,14 @@ signed_candidate_workflow = (
 ).read_text(encoding="utf-8")
 for workflow_failure in validate_signed_candidate_workflow(signed_candidate_workflow):
     fail(f"signed-candidate workflow: {workflow_failure}")
+
+release_materialization_workflow = (
+    ROOT / ".github/workflows/release-materialization.yml"
+).read_text(encoding="utf-8")
+for workflow_failure in validate_release_materialization_workflow(
+    release_materialization_workflow
+):
+    fail(f"release-materialization workflow: {workflow_failure}")
 
 hosted_rank_workflow = (
     ROOT / ".github/workflows/uz-rank-monitor.yml"

@@ -43,6 +43,7 @@ jobs:
       - name: Compile and test growth tooling
         run: |
           python3 -m compileall -q scripts
+          python3 scripts/release_materialization_workflow_security.py
           python3 -m unittest discover -s scripts/growth/tests -p 'test_*.py'
       - name: Repository and localization checks
         run: |
