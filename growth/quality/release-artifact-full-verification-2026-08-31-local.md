@@ -3,6 +3,9 @@
 Status: **PASS for a fresh local macOS pre-promotion verification; the
 committed upload manifest remained BLOCKED at 0/3 during this check**.
 
+The product/build-input source verified by all three artifacts is
+`2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`.
+
 At `2026-08-31T13:12:27Z`, repository HEAD
 `681f54d16a09d48358f36fa7af770fbe2971b67d` was checked on macOS `26.5.2`
 (`25F84`) with Xcode `26.6` (`17F113`), Python `3.11.9`, OpenJDK `17.0.13`,
