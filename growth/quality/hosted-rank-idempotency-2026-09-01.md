@@ -1,7 +1,7 @@
 # Hosted rank idempotency — 2026-09-01
 
-Status: **canonical evidence preserved; workflow no-op fix pending hosted
-verification**.
+Status: **PASS — canonical evidence preserved and repeated hosted capture is a
+verified no-op**.
 
 Scheduled run `33449407626` started at `2026-09-01 04:08 +05:00` after the
 canonical `2026-09-01` observation had already been captured. The read-only
@@ -24,6 +24,12 @@ or differs byte-for-byte, history preparation still fails before any write.
 
 Repository unit and static-security tests cover the allowed no-op, the default
 strict rejection, the divergent-history rejection, the required step guards,
-and the persist-job guard. A manual hosted dispatch against the already
-canonical September 1 day is still required to prove the workflow behavior
-after the fix reaches `master`.
+and the persist-job guard.
+
+Manual workflow-dispatch run `33450138115` executed the published fix at exact
+source revision `8a2364f77bcbd798d320706ab671725edd7333df`. The capture job
+passed history preparation, then skipped the public capture, evaluation/bundle,
+and artifact-upload steps. The `persist` job was skipped. The workflow
+conclusion is `success`, and the remote `growth-observations` parent remained
+exactly `3bcd599dd867572ebf37c6e06f0785585b396730` before and after the run.
+This is hosted proof of an idempotent no-write path, not a new rank observation.
