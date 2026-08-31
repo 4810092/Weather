@@ -132,9 +132,27 @@ def sync(
     if not isinstance(gates, dict) or not isinstance(rows, list):
         raise ValueError("gate registry or dashboard gate_snapshot is malformed")
 
-    google_metrics = baseline.get("platforms", {}).get("google", {}).get("metrics")
+    platforms = baseline.get("platforms", {})
+    apple_metrics = platforms.get("apple", {}).get("metrics")
+    google_metrics = platforms.get("google", {}).get("metrics")
+    if not isinstance(apple_metrics, dict):
+        raise ValueError("baseline Apple metrics are malformed")
     if not isinstance(google_metrics, dict):
         raise ValueError("baseline Google metrics are malformed")
+    apple_ratings = apple_metrics.get("ratings_count")
+    apple_rating_evidence = apple_metrics.get("ratings_count_evidence")
+    apple_average_rating = apple_metrics.get("average_rating")
+    if (
+        not isinstance(apple_ratings, int)
+        or isinstance(apple_ratings, bool)
+        or apple_ratings < 0
+        or not isinstance(apple_rating_evidence, str)
+        or not apple_rating_evidence
+        or not isinstance(apple_average_rating, (int, float))
+        or isinstance(apple_average_rating, bool)
+        or not 0 <= apple_average_rating <= 5
+    ):
+        raise ValueError("baseline Apple rating observation is malformed")
     installations = google_metrics.get("installations")
     first_launches = google_metrics.get("first_launches")
     monthly_active_devices = google_metrics.get("monthly_active_users")
@@ -166,10 +184,16 @@ def sync(
             "live_global_last_28_days_2026-08-31",
         ),
     }
+    apple_rating_seen = False
     seen_google: set[str] = set()
     for row in platform_rows:
         if not isinstance(row, dict):
             raise ValueError("dashboard platform_baseline contains a non-object row")
+        if row.get("platform") == "App Store" and row.get("metric") == "Ratings":
+            row["value"] = str(apple_ratings)
+            row["evidence_class"] = apple_rating_evidence
+            apple_rating_seen = True
+            continue
         if row.get("platform") != "Google Play":
             continue
         metric = row.get("metric")
@@ -184,6 +208,8 @@ def sync(
         seen_google.add(metric)
     if seen_google != set(current_google):
         raise ValueError("dashboard current Google baseline rows are incomplete")
+    if not apple_rating_seen:
+        raise ValueError("dashboard current Apple rating row is missing")
     headline_rows[0]["first_launch_rate"] = first_launch_rate
     launch_driver = [
         row
@@ -335,13 +361,13 @@ def sync(
         raise ValueError("dashboard gate/evaluation source queries are malformed")
     baseline_query["sql"] = baseline_sql_path.read_text(encoding="utf-8")
     baseline_query["description"] = (
-        "Loads the bounded 2026-08-31 store evidence while keeping current "
-        "Apple observations and current global Play dashboard counts distinct "
-        "from stale listing metrics."
+        "Loads the bounded 2026-08-31 store-console evidence plus the September 1 "
+        "public Apple UZ rating/version lookup while keeping current global Play "
+        "dashboard counts distinct from stale listing metrics."
     )
     baseline_query["filters"] = [
-        "Snapshot date 2026-08-31",
-        "Apple overview current; Apple ratings carried forward from 2026-08-28",
+        "Console snapshot date 2026-08-31; public Apple UZ lookup rechecked 2026-09-01",
+        f"Apple public UZ rating {apple_average_rating:.1f} from {apple_ratings} rating; no review text exposed",
         "Google installs, first launches, and monthly active devices are current global last-28-days counts",
         "Google impressions, listing conversion, and ratings are carried forward from 2026-08-28",
         "No cross-platform or cross-window denominator coercion",
@@ -406,7 +432,10 @@ def sync(
         "The 2026-08-31 App Store overview is available as a read-only observation "
         "(300 impressions, 23 product-page views, 8 first downloads, 1 redownload, "
         "3 updates, 4.86% reported conversion, and insufficient retention), but no "
-        "raw export or reporting-window metadata is attached. The authenticated "
+        "raw export or reporting-window metadata is attached. A separate public "
+        f"Apple UZ lookup on September 1 reports {apple_ratings} rating at "
+        f"{apple_average_rating:.1f}; it exposes no review text or reply surface. "
+        "The authenticated "
         f"Play dashboard currently reports {installations} installs, {first_launches} "
         f"device first launches, and {monthly_active_devices} monthly active devices "
         "for its global last-28-days scope. Play impressions, listing conversion, "
@@ -497,7 +526,8 @@ def sync(
         raise ValueError("dashboard baseline table is missing")
     baseline_table["subtitle"] = (
         "Apple overview values and selected global Play last-28-days counts are "
-        "current to August 31; stale listing metrics are marked explicitly."
+        "current to August 31; the Apple UZ rating was publicly rechecked on "
+        "September 1 and stale listing metrics are marked explicitly."
     )
     blocks = manifest.get("blocks")
     if not isinstance(blocks, list) or not blocks or not isinstance(blocks[0], dict):

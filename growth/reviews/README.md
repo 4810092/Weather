@@ -17,9 +17,12 @@ prove notification delivery.
   ratings and edited reviews. The configured destination is described only as
   the **developer account email**; its address must never be stored here.
 - Current App Store review/rating state is unavailable through the present App
-  Store Connect API permission. The prior [reported baseline](../baseline/2026-08-28.md)
-  recorded zero App Store ratings on August 28, but that historical observation
-  is not current review-inbox evidence and must not be promoted as such.
+  Store Connect API permission. A separate logged-out public UZ lookup reported
+  one rating with an average of `5.0` at `2026-09-01 00:55 +05:00`; its bounded
+  response identity is recorded in
+  [apple-public-store-2026-09-01.md](../quality/apple-public-store-2026-09-01.md).
+  That aggregate exposes no review text or reply surface and is not current
+  review-inbox evidence.
 - The existing `nimbo-uz-rank-monitor` heartbeat is configured to check the
   review inbox once per day after `09:15` Asia/Tashkent and respond within 48
   hours only when a substantive text review exists. The repository log does not

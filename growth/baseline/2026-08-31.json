@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "snapshot_date": "2026-08-31",
-  "recorded_at": "2026-08-31T23:23:18+05:00",
+  "recorded_at": "2026-09-01T00:55:34+05:00",
   "timezone": "Asia/Tashkent",
   "evidence_class": "reported_store_console_values_with_mixed_documented_windows",
   "provenance": {
-    "source": "Authoritative read-only App Store Connect values plus an authenticated Google Play Console dashboard, Publishing overview, review history, and Internal-track recheck on 2026-08-31",
+    "source": "Authoritative read-only App Store Connect values plus an authenticated Google Play Console dashboard, Publishing overview, review history, and Internal-track recheck on 2026-08-31, supplemented by the public Apple UZ lookup on 2026-09-01",
     "raw_exports_attached": false,
     "live_console_rechecked_in_this_snapshot": true,
     "storefront_scope": "not_provided_for_overview_values",
@@ -24,8 +24,10 @@
         "redownloads": 1,
         "updates": 3,
         "reported_conversion_rate_pct": 4.86,
-        "ratings_count": 0,
-        "ratings_count_evidence": "carried_forward_from_2026-08-28_not_revalidated",
+        "ratings_count": 1,
+        "ratings_count_evidence": "public_itunes_lookup_uz_2026-09-01",
+        "average_rating": 5.0,
+        "average_rating_evidence": "public_itunes_lookup_uz_2026-09-01",
         "reported_crashes": 2,
         "retention_status": "insufficient_data"
       },
@@ -56,7 +58,8 @@
         "version": "1.0.1",
         "build": "4",
         "status": "public",
-        "verified_on": "2026-08-31"
+        "verified_on": "2026-09-01",
+        "evidence": "growth/quality/apple-public-store-2026-09-01.md"
       },
       "search_observations": [
         {
@@ -175,7 +178,7 @@
     "No raw App Store Connect export or reporting-window metadata is attached; the Apple overview is a read-only console observation.",
     "Country and acquisition-source cuts are absent; device and OS are suppressed or unavailable for one crash.",
     "The reported App Store conversion rate cannot be reproduced from the supplied counts and must remain the console-reported 4.86%.",
-    "Retention is explicitly insufficient; D7 retention, DAU/MAU denominator, ratings average, iOS sessions, and user-loss rate remain unknown.",
+    "Retention is explicitly insufficient; D7 retention, DAU/MAU denominator, iOS sessions, and user-loss rate remain unknown. The public UZ rating is a point-in-time aggregate of one rating, not review-inbox evidence.",
     "Two public iOS 1.0.1 (4) crashes are reported, one on 2026-08-25 and one on 2026-08-29. No diagnostic, stack, incident/signature ID, or crashed-binary UUID is available.",
     "Google Play impressions, listing conversion, ratings, production-country count, and production phone details remain carried forward from 2026-08-28; the August 31 recheck covered only the global dashboard counts, Publishing state, review history, and both Internal tracks.",
     "The Play dashboard's 25 installs, 18 device first launches, and 13 monthly active devices are global last-28-days values, not Uzbekistan-only evidence and not a weekly cohort.",

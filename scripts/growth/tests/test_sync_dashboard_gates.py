@@ -39,6 +39,16 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["platform_baseline"]
                 if row["platform"] == "Google Play"
             }
+            apple_rows = {
+                row["metric"]: row
+                for row in artifact["snapshot"]["datasets"]["platform_baseline"]
+                if row["platform"] == "App Store"
+            }
+            self.assertEqual(apple_rows["Ratings"]["value"], "1")
+            self.assertEqual(
+                apple_rows["Ratings"]["evidence_class"],
+                "public_itunes_lookup_uz_2026-09-01",
+            )
             self.assertEqual(baseline_rows["Installations"]["value"], "25")
             self.assertEqual(baseline_rows["First launches"]["value"], "18")
             self.assertEqual(
@@ -68,6 +78,14 @@ class SyncDashboardGatesTest(unittest.TestCase):
                     block["body"]
                     for block in artifact["manifest"]["blocks"]
                     if block["id"] == "play_console_context"
+                ),
+            )
+            self.assertIn(
+                "public Apple UZ lookup on September 1 reports 1 rating at 5.0",
+                next(
+                    issue["message"]
+                    for issue in artifact["snapshot"]["accessIssues"]
+                    if issue["id"] == "raw_store_exports_missing"
                 ),
             )
             self.assertIn(
