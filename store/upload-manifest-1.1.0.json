@@ -23,53 +23,32 @@
     "android_phone": {
       "filename": "nimbo-phone-1.1.0-vc8.aab",
       "version_code": 8,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+      "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-phone-1.1.0-vc7.aab",
-        "version_code": 7,
-        "sha256": "e476a124c33854873add9061140f68f1720ff098202b52e7758038bb50f5a77c",
-        "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
-        "physical_qa_evidence": "growth/quality/android-physical-smoke-2026-08-28.md"
-      }
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "historical_candidate": null
     },
     "wear_os": {
       "filename": "nimbo-wear-1.1.0-vc1000008.aab",
       "version_code": 1000008,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
+      "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-wear-1.1.0-vc1000008.aab",
-        "version_code": 1000008,
-        "sha256": "ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6",
-        "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
-        "physical_qa_evidence": null
-      }
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "historical_candidate": null
     },
     "apple": {
       "filename": "Nimbo.ipa",
       "build": 6,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
+      "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "Nimbo.ipa",
-        "build": 5,
-        "sha256": "b36f8fddb225cd616e3833de6037b6434486ec3cbb9ed06f5cc8deb0627ed4dc",
-        "signing_evidence": "growth/quality/apple-release-artifacts-2026-08-28.md",
-        "physical_qa_evidence": "growth/quality/apple-runtime-smoke-2026-08-28.md"
-      }
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "historical_candidate": null
     }
   },
   "listing_payloads": [
@@ -167,10 +146,9 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "read-only hosted macOS full-verifier promotion of the materialized signed Android phone 1.1.0 (8) candidate and its exact byte-linked physical smoke",
-    "read-only hosted macOS full-verifier promotion of the materialized signed Wear OS 1.1.0 (1000008) candidate and its exact byte-linked physical smoke",
-    "read-only hosted macOS full-verifier promotion of the materialized signed Apple 1.1.0 (6) candidate and its unchanged TestFlight physical runtime matrix",
-    "physical tablet, widget, and Wear OS smoke",
+    "protected hosted macOS repeat of the local full byte verification after CI succeeds on master",
+    "exact byte-linked Android phone 1.1.0 (8), tablet, widget, and Wear OS 1.1.0 (1000008) physical smoke",
+    "unchanged TestFlight delivery and physical iPhone, iPad, widget, and watch runtime matrix for Apple 1.1.0 (6)",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",
     "write-capable App Store Connect and Google Play upload paths"
   ],

@@ -17,8 +17,7 @@
   "blocking_gates": [
     "android_physical_smoke",
     "ios_crash_gate",
-    "ios_physical_smoke",
-    "release_artifact_source_sync"
+    "ios_physical_smoke"
   ],
   "clips": [
     {

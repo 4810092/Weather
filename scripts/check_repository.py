@@ -23,6 +23,10 @@ try:
     from scripts.signed_candidate_workflow_security import (
         validate_signed_candidate_workflow,
     )
+    from scripts.trusted_release_workflow_security import (
+        validate_pages_workflow,
+        validate_trusted_release_workflow,
+    )
 except ModuleNotFoundError:
     from hosted_rank_workflow_security import (  # type: ignore[no-redef]
         validate_hosted_rank_workflow,
@@ -32,6 +36,10 @@ except ModuleNotFoundError:
     )
     from signed_candidate_workflow_security import (  # type: ignore[no-redef]
         validate_signed_candidate_workflow,
+    )
+    from trusted_release_workflow_security import (  # type: ignore[no-redef]
+        validate_pages_workflow,
+        validate_trusted_release_workflow,
     )
 
 
@@ -47,8 +55,10 @@ REQUIRED = (
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/pages.yml",
     ".github/workflows/release-materialization.yml",
     ".github/workflows/signed-candidate.yml",
+    ".github/workflows/trusted-release-verification.yml",
     ".github/workflows/uz-rank-monitor.yml",
     "docs/ARCHITECTURE.md",
     "docs/DEVELOPMENT.md",
@@ -61,9 +71,11 @@ REQUIRED = (
     "growth/reviews/README.md",
     "growth/reviews/review-inbox.csv",
     "scripts/growth/hosted_rank_state.py",
+    "scripts/growth/tests/test_trusted_release_workflow_security.py",
     "scripts/hosted_rank_workflow_security.py",
     "scripts/release_materialization_workflow_security.py",
     "scripts/signed_candidate_workflow_security.py",
+    "scripts/trusted_release_workflow_security.py",
     "scripts/verify_signed_candidate.py",
     "gradle/verification-metadata.xml",
 )
@@ -243,6 +255,16 @@ for workflow_failure in validate_release_materialization_workflow(
     release_materialization_workflow
 ):
     fail(f"release-materialization workflow: {workflow_failure}")
+
+trusted_release_workflow = (
+    ROOT / ".github/workflows/trusted-release-verification.yml"
+).read_text(encoding="utf-8")
+for workflow_failure in validate_trusted_release_workflow(trusted_release_workflow):
+    fail(f"trusted-release workflow: {workflow_failure}")
+
+pages_workflow = (ROOT / ".github/workflows/pages.yml").read_text(encoding="utf-8")
+for workflow_failure in validate_pages_workflow(pages_workflow):
+    fail(f"Pages workflow: {workflow_failure}")
 
 hosted_rank_workflow = (
     ROOT / ".github/workflows/uz-rank-monitor.yml"

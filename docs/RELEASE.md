@@ -7,26 +7,29 @@ OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
 Wear 1000008, and Apple build 6. Protected hosted run `33381050098` produced
 and retained exact-current, independently byte-verified candidate artifacts for
 all three surfaces. Hosted materialization run `33392732428` then stored the
-hash-bound package and receipt in unpublished draft release `379745439`. They
-remain pre-manifest evidence: the upload manifest is `draft-blocked` and `0/3
-verified-current` until a separate read-only hosted macOS job repeats the full
-pinned verifier against those exact assets. No 1.1.0 artifact
+hash-bound package and receipt in unpublished draft release `379745439`. A
+fresh local macOS run reopened those exact assets and returned
+`byte_verified=true` for phone, Wear, and Apple, so the manifest now promotes
+the set atomically to `3/3 verified-current` while remaining `draft-blocked`.
+The protected read-only hosted macOS repeat is pending until its workflow
+executes on `master`; it is not claimed as passed. No 1.1.0 artifact
 has been uploaded to a store, processed, installed through an internal track,
 submitted, or published. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
 
-Here `byte_verified=false` is the upload-manifest state. The protected candidate
-receipt verifies all three external artifacts and the draft now materializes
-the exact package, but CI has not rerun the complete verifier in the trusted
-read-only macOS split or promoted the entries to `verified-current`.
+Here `byte_verified=true` is the exact upload-manifest byte state after the
+fresh local full verifier reopened all three signed artifacts. The top-level
+manifest remains `draft-blocked` because physical QA and store delivery are
+still absent. The protected hosted macOS repeat remains pending until its
+workflow executes; no hosted repeat pass is claimed.
 
 ## Version identity
 
@@ -35,6 +38,25 @@ read-only macOS split or promoted the entries to `verified-current`.
 - iOS bundle ID: `uz.ganikhodjaev.weather`.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
+
+## Nimbo 1.1.0 local full-byte promotion checkpoint — 2026-08-31
+
+A fresh local macOS run downloaded unpublished draft release `379745439`,
+required its exact draft/prerelease state and two-asset inventory, safely
+extracted the 104-file closed tree, and verified pinned Bundletool `1.18.3`.
+The full verifier returned `byte_verified=true` for phone AAB
+`d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62`,
+Wear AAB
+`e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf`,
+and Apple IPA
+`7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0`.
+
+The manifest promotes the complete set atomically to `verified-current`; all
+physical-QA evidence remains null and top-level status remains
+`draft-blocked`. A protected read-only hosted macOS repeat after successful CI
+on `master` is pending until its workflow executes. This is not store upload,
+internal delivery, physical QA, crash diagnosis, publication, or ranking
+evidence. See the [full-verification record](../growth/quality/release-artifact-full-verification-2026-08-31-local.md).
 
 ## Nimbo 1.1.0 hosted draft-materialization checkpoint — 2026-08-31
 
@@ -57,10 +79,11 @@ The workflow re-read the release and asset APIs and required `draft=true`,
 
 This is a durable draft-materialization PASS relative to the expiring Actions
 artifact, not release readiness. GitHub reports the draft as mutable rather
-than immutable, and the single Ubuntu job did not run the complete verifier in
-a separate read-only hosted macOS permission split. The upload manifest stays
-`draft-blocked` and `0/3 verified-current`; physical QA, store delivery, crash
-diagnosis, review, release, and availability remain independent. See the
+than immutable, and the single Ubuntu job did not run the complete verifier.
+The later local checkpoint above supplies the atomic `3/3 verified-current`
+promotion; the protected hosted repeat is still pending and physical QA, store
+delivery, crash diagnosis, review, release, and availability remain
+independent. See the
 [materialization record](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
 
 ## Nimbo 1.1.0 hosted signed-candidate checkpoint — 2026-08-31
@@ -93,9 +116,9 @@ checksum manifest; the non-secret receipt is committed.
 This closes protected signing and pre-manifest candidate verification only.
 At this checkpoint the schema-v2 upload manifest remained fail-closed because
 there was no hosted materialization route to the private retained bytes. The
-later draft-materialization checkpoint above closes that storage gap, but not
-the still-pending separate read-only macOS full-verifier split or manifest
-promotion. The Android candidate still needs an upload-derived
+later draft-materialization and local full-byte checkpoints above close that
+storage and manifest-promotion gap. The protected hosted verifier repeat is
+still pending until its workflow executes. The Android candidate still needs an upload-derived
 physical phone/tablet/widget/Wear matrix. The App Store-profile IPA must be
 uploaded unchanged and exercised through TestFlight; it is not directly
 installable. Crash diagnosis, store processing, review, rollout, and public

@@ -775,19 +775,22 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
             results = {artifact_id: result}
         return results, failures
 
-    def test_repository_manifest_passes_only_as_fail_closed_blocked(self) -> None:
+    def test_repository_manifest_passes_static_promoted_contract(self) -> None:
         manifest = json.loads(
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
         )
         failures: list[str] = []
 
-        results = verify_manifest_artifacts(ROOT, manifest, failures)
+        results = validate_manifest_artifact_contract(ROOT, manifest, failures)
 
         self.assertEqual(failures, [])
         self.assertEqual(set(results), {"android_phone", "wear_os", "apple"})
-        self.assertTrue(all(not result.byte_verified for result in results.values()))
         self.assertTrue(
-            all(result.source_sync == "blocked" for result in results.values())
+            all(result.source_sync == "verified-current" for result in results.values())
+        )
+        self.assertTrue(all(result.contract_valid for result in results.values()))
+        self.assertTrue(
+            all(not hasattr(result, "byte_verified") for result in results.values())
         )
 
     def test_static_contract_has_no_byte_verification_surface(self) -> None:

@@ -6,16 +6,19 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
 
-In the machine-validated block, `byte_verified=false` is the upload-manifest
-state: the external candidate bytes have been verified, but those private bytes
-have not yet been reopened by CI and promoted to `verified-current`.
+In the machine-validated block, `byte_verified=true` records the exact
+freshly reopened artifact bytes behind the atomic `3/3 verified-current`
+manifest promotion. The release surface remains **BLOCKED** because all
+physical evidence fields are still empty and the crash, internal-delivery, and
+device gates remain open. A protected hosted macOS repeat is pending until its
+workflow executes; it is not claimed here as already passed.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -100,11 +103,14 @@ the captured slice”; it is never converted to a synthetic rank.
   Hosted materialization run
   [`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
   then stored the exact package and receipt as hash-bound assets in unpublished
-  draft release `379745439` and rechecked their API sizes and digests. Durable
-  draft materialization now passes relative to the expiring Actions artifact,
-  but the draft is mutable and the full trusted verifier has not rerun in a
-  separate read-only hosted macOS job. The manifest therefore remains `0/3
-  verified-current`; atomic promotion is still prohibited. Exact
+  draft release `379745439` and rechecked their API sizes and digests. A fresh
+  local macOS full-verifier run then downloaded those exact assets, safely
+  extracted the closed tree, checked pinned Bundletool 1.18.3, and returned
+  `byte_verified=true` for the exact phone, Wear, and Apple outputs. The
+  manifest now promotes the set atomically to `3/3 verified-current` while its
+  top-level status remains `draft-blocked`. Because the draft is mutable, the
+  protected read-only hosted macOS repeat remains pending until its workflow
+  executes on `master`; no hosted repeat pass is claimed yet. Exact
   source `2cdd438` also has a bounded clean physical General Mobile API 25 debug
   pass covering denied location, Bukhara search, live/cache/recovery, widget,
   process health, and cleanup, with local and pulled installed APK SHA-256
@@ -124,7 +130,7 @@ the captured slice”; it is never converted to a synthetic rank.
   live forecast, Best Time, durable-tip persistence, home-screen widget
   render/tap, large text, rotation, and process health. The physical APK uses
   the debug certificate, and the tablet/widget pass is emulator-only. A current
-  upload-key-signed phone AAB is retained and candidate-verified, but there is
+  upload-key-signed phone AAB is retained and `verified-current`, but there is
   still no upload-derived, release-certificate physical matrix. Exact source
   `2cdd438` now has bounded simulator evidence on
   all three remaining watch/phone surfaces: the unsigned iPhone Release
@@ -153,7 +159,7 @@ the captured slice”; it is never converted to a synthetic rank.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
   remains scoped to build 5. Current Apple build 6 now has a retained,
-  candidate-verified distribution archive and IPA, but no TestFlight or physical
+  `verified-current` distribution archive and IPA, but no TestFlight or physical
   runtime result. The exact `2cdd438` unsigned Simulator evidence is current
   regression proof only. The checked-in
   [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
@@ -228,9 +234,9 @@ recorded only after direct store evidence.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Download the exact draft-release assets in a separate read-only hosted macOS
-   job, re-run the full pinned byte verifier, and promote all three manifest
-   entries atomically. Then complete the delivery-linked physical matrix: derive or
+3. Let the protected read-only hosted macOS workflow repeat the full pinned
+   verifier against the exact promoted draft assets after CI succeeds on
+   `master`. Then complete the delivery-linked physical matrix: derive or
    deliver an upload-key-signed universal APK from the exact phone AAB for the
    clean API 25 device, add physical tablet/widget and paired Wear coverage,
    and upload the exact App Store-profile IPA unchanged to TestFlight for
@@ -244,11 +250,11 @@ recorded only after direct store evidence.
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Current phone vc8, Wear vc1000008, and Apple build 6 are retained and
-independently candidate-verified from source `2cdd438`; historical phone vc7,
-historical Wear, and Apple build 5 remain non-transferable. The current manifest
-is blocked after durable draft materialization but before the separate trusted
-macOS verifier/promotion and physical QA.
+Current phone vc8, Wear vc1000008, and Apple build 6 are retained and atomically
+`verified-current` from source `2cdd438`; historical phone vc7, historical Wear,
+and Apple build 5 remain non-transferable. The current manifest remains
+`draft-blocked` after the local full-byte promotion because the protected hosted
+repeat and exact-artifact physical QA are still pending.
 Earlier [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
 records that neither internal track was changed; write-capable upload paths
 must be rechecked at action time. Play Internal and TestFlight remain bounded

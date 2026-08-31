@@ -14,24 +14,27 @@ repository, not the currently public store versions; the validator requires it
 to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its exact locale,
 metadata, creative, and artifact source-sync state. It intentionally remains
-`draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
-manifest hashes, signing, and physical-QA evidence. Protected run `33381050098`
-has produced and durably retained 3/3 independently byte-verified candidate
-artifacts. Hosted materialization run `33392732428` additionally stored the
+`draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 are now
+atomically `verified-current` with exact hashes and signing/source-sync
+evidence, while all three physical-QA fields remain null. Protected run
+`33381050098` produced and retained the signed set. Hosted materialization run
+`33392732428` additionally stored the
 exact package and receipt as hash-bound assets in unpublished draft release
-`379745439` and rechecked their API sizes and digests. This closes durable draft
-materialization relative to the expiring Actions artifact, but the mutable
-draft has not been downloaded and passed through the complete verifier in a
-separate read-only hosted macOS job. Promotion therefore remains prohibited.
+`379745439` and rechecked their API sizes and digests. A fresh local macOS run
+then downloaded the exact draft assets, safely extracted the closed tree,
+verified pinned Bundletool 1.18.3, and returned `byte_verified=true` for the
+exact phone, Wear, and Apple bytes. The draft remains mutable; a protected
+read-only hosted macOS repeat is pending until its workflow executes on
+`master`, and no hosted repeat pass is claimed yet.
 Its full `source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
 drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
 bytes remain historical candidates because their source predates the current
 revision. This is a preflight inventory, not evidence of a console upload.
-The pinned verification policy is executable rather than documentary:
-`scripts/verify_release_artifacts.py` permits the current blocked state without
-private files, but any `verified-current` claim must reopen the exact external
+The pinned verification policy is executable rather than documentary. Static
+contract mode can validate the committed manifest without private files, but
+full verification of any `verified-current` claim must reopen the exact external
 filenames under `NIMBO_RELEASE_ARTIFACT_ROOT`, recompute their hashes, and pass
 platform signature, signer, identity, and embedded-source checks in the same
 invocation. Android additionally requires the exact Bundletool 1.18.3 JAR under
@@ -56,21 +59,21 @@ Then run `python3 scripts/verify_release_artifacts.py --artifact-root
 <artifact-root> --bundletool-jar <bundletool-all-1.18.3.jar>`. The verifier
 copies each store artifact into a read-only temporary staging file, verifies
 that copy, and re-hashes both the staged and source bytes before returning.
-The current public GitHub-hosted CI and Pages jobs intentionally have no signed
-artifact inputs and therefore pass only while all three artifacts remain
-`blocked`. In the same change that first promotes an artifact to
-`verified-current`, the release workflow must stage immutable outputs for a
-protected GitHub-hosted macOS verification job (including Bundletool for the
-Android checks) and make CI/Pages depend on that result. Until that delivery
-path exists, a READY commit is expected to fail closed; no self-hosted Mac
-runner is required. The byte verifier proves that the checked-out source is
+Public pull-request CI performs the static manifest contract without private
+signed inputs. Full byte authority remains a protected GitHub-hosted macOS
+verification responsibility, including pinned Bundletool for Android. The
+local full pass authorized the atomic `3/3 verified-current` promotion, while
+the protected hosted repeat remains pending until the workflow executes after
+successful CI on `master`; the top-level manifest and physical gates therefore
+remain blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
 the tree was clean when they were built. Protected run `33381050098` has now
 supplied that same-clean-checkout build/sign/verify provenance and a retained
-closed package. The remaining pre-promotion task is a separate read-only hosted
-macOS path that downloads the exact draft assets and reopens those bytes through
-the complete pinned verifier. The gate and successful run boundary are recorded in
-[`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md)
+closed package. The pending protected hosted repeat must download the exact
+mutable draft assets and reopen those bytes through the complete pinned
+verifier before later use. The local full pass and exact promoted hashes are
+recorded in
+[`growth/quality/release-artifact-full-verification-2026-08-31-local.md`](../growth/quality/release-artifact-full-verification-2026-08-31-local.md)
 and
 [`growth/quality/signed-candidate-run-33381050098.md`](../growth/quality/signed-candidate-run-33381050098.md).
 The durable draft locator and its mutable-draft boundary are recorded in

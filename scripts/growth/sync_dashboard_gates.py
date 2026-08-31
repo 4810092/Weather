@@ -167,13 +167,13 @@ def sync(
             )
         elif gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · durable draft materialization passed; full trusted "
-                "macOS verifier pending; manifest remains 0/3 verified-current"
+                "PASS · fresh local full-byte verification passed; manifest is "
+                "atomically 3/3 verified-current; hosted repeat pending"
             )
             new_next = (
-                "Download the exact draft-release assets in a separate read-only "
-                "hosted macOS job, run the full pinned verifier, promote all three "
-                "manifest entries atomically, then bind exact physical QA"
+                "Let the protected read-only hosted macOS workflow repeat the full "
+                "pinned verifier after CI succeeds on master, then bind exact "
+                "physical QA without changing the promoted artifact bytes"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
@@ -371,11 +371,12 @@ def sync(
         "materialization run 33392732428 then passed at evidence head 30a67edf: it "
         "validated the exact source artifact/package/receipt bindings and stored the "
         "package and receipt as hash-bound assets 537966386 and 537966414 in "
-        "unpublished draft release 379745439. Durable draft materialization is now "
-        "PASS relative to the expiring Actions artifact, but the draft is mutable and "
-        "the full trusted verifier has not rerun in a separate read-only hosted macOS "
-        "job. This is 3/3 candidate-verified with durable hosted bytes, while the "
-        "committed upload manifest remains fail-closed at 0/3 verified-current. The "
+        "unpublished draft release 379745439. A fresh local macOS run downloaded and "
+        "rechecked those exact assets, safely extracted the closed tree, verified "
+        "pinned Bundletool 1.18.3, and returned byte_verified=true for phone, Wear, "
+        "and Apple. The committed upload manifest is atomically 3/3 verified-current "
+        "and remains draft-blocked. The draft is mutable and the protected hosted "
+        "macOS repeat is pending until its workflow executes on master. The "
         "upload-derived Android physical matrix and TestFlight Apple matrix remain "
         "missing; two public iOS crashes still lack diagnostics. No store upload, "
         "processing, submission, release, or availability is claimed."
@@ -411,13 +412,12 @@ def sync(
         "phone, Wear, and Apple candidates. The schema-v3 receipt proves 3/3 "
         "candidate bytes. Hosted materialization run 33392732428 then validated the "
         "exact source artifact/package/receipt bindings and retained the package and "
-        "receipt as hash-bound assets in unpublished draft release 379745439. Durable "
-        "draft materialization is PASS relative to the expiring Actions artifact, but "
-        "the draft is mutable and the full trusted verifier has not rerun in a "
-        "separate read-only hosted macOS job. The committed manifest therefore stays "
-        "fail-closed at 0/3 verified-current. The upload-derived Android and "
-        "TestFlight Apple physical matrices remain missing, so manifest/physical "
-        "gates remain blocked. "
+        "receipt as hash-bound assets in unpublished draft release 379745439. A fresh "
+        "local macOS run then reopened those exact assets, verified pinned Bundletool, "
+        "and returned byte_verified=true for all three outputs. The committed manifest "
+        "is atomically 3/3 verified-current and remains draft-blocked because the "
+        "upload-derived Android and TestFlight Apple physical matrices are missing. "
+        "The protected hosted repeat is pending until its workflow executes. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -450,22 +450,22 @@ def sync(
         "present, but protected signing access remains unavailable.",
         "Android Keychain metadata and the existing mode-600 keystore remain "
         "present. Protected run 33381050098 used all 8/8 signing inputs and "
-        "yielded a retained, independently byte-verified package; manifest "
-        "promotion and physical delivery remain separate.",
+        "yielded a retained, independently byte-verified package; physical "
+        "delivery remains separate.",
     )
     verdict = verdict.replace(
         "There is no exact-current signed phone/Wear artifact, distribution-"
         "signed Apple archive, iOS 15 runtime pass, or matching physical matrix.",
-        "Exact-current signed phone/Wear and Apple candidates are retained and "
-        "byte-verified, but they are not manifest-promoted or store-delivered; "
+        "Exact-current signed phone/Wear and Apple artifacts are retained, "
+        "byte-verified, and manifest-promoted, but not store-delivered; "
         "there is no iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
         "There is no retained, accepted, byte-verified exact-current signed "
         "phone/Wear artifact or distribution-signed Apple archive, and no iOS "
         "15 runtime pass or matching physical matrix.",
-        "Exact-current signed phone/Wear and Apple candidates are retained and "
-        "byte-verified, but they are not manifest-promoted or store-delivered; "
+        "Exact-current signed phone/Wear and Apple artifacts are retained, "
+        "byte-verified, and manifest-promoted, but not store-delivered; "
         "there is no iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
@@ -475,8 +475,8 @@ def sync(
         "package; hosted proof of the current correction remains pending.",
         "Android Keychain metadata and the existing mode-600 keystore remain "
         "present. Protected run 33381050098 used all 8/8 signing inputs and "
-        "yielded a retained, independently byte-verified package; manifest "
-        "promotion and physical delivery remain separate.",
+        "yielded a retained, independently byte-verified package; physical "
+        "delivery remains separate.",
     )
     verdict = verdict.replace(
         "At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone "
@@ -492,9 +492,9 @@ def sync(
         "and Apple artifacts, complete physical-device coverage, and critical "
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
-        "remain gated on crash diagnosis, full trusted macOS verification and "
-        "atomic manifest promotion of the materialized candidates, complete "
-        "physical-device coverage, and critical console guardrails.",
+        "remain gated on crash diagnosis, complete physical-device and internal-"
+        "delivery coverage, the pending protected hosted repeat before later "
+        "artifact use, and critical console guardrails.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -502,9 +502,9 @@ def sync(
         "retained candidates, complete physical-device coverage, and critical "
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
-        "remain gated on crash diagnosis, full trusted macOS verification and "
-        "atomic manifest promotion of the materialized candidates, complete "
-        "physical-device coverage, and critical console guardrails.",
+        "remain gated on crash diagnosis, complete physical-device and internal-"
+        "delivery coverage, the pending protected hosted repeat before later "
+        "artifact use, and critical console guardrails.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."

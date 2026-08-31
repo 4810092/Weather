@@ -85,6 +85,45 @@ class ValidationScriptsTest(unittest.TestCase):
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
         )
 
+    def blocked_upload_manifest(self) -> dict:
+        manifest = copy.deepcopy(self.upload_manifest())
+        historical = {
+            "android_phone": {
+                "status": "historical-superseded",
+                "filename": "nimbo-phone-1.1.0-vc7.aab",
+                "version_code": 7,
+                "sha256": "e476a124c33854873add9061140f68f1720ff098202b52e7758038bb50f5a77c",
+                "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+                "physical_qa_evidence": "growth/quality/android-physical-smoke-2026-08-28.md",
+            },
+            "wear_os": {
+                "status": "historical-superseded",
+                "filename": "nimbo-wear-1.1.0-vc1000008.aab",
+                "version_code": 1000008,
+                "sha256": "ac19a0eab1a60554db309166f135e754c97205b79c4f5182164a8b21594e7dc6",
+                "signing_evidence": "growth/quality/android-release-artifacts-2026-08-28.md",
+                "physical_qa_evidence": None,
+            },
+            "apple": {
+                "status": "historical-superseded",
+                "filename": "Nimbo.ipa",
+                "build": 5,
+                "sha256": "b36f8fddb225cd616e3833de6037b6434486ec3cbb9ed06f5cc8deb0627ed4dc",
+                "signing_evidence": "growth/quality/apple-release-artifacts-2026-08-28.md",
+                "physical_qa_evidence": "growth/quality/apple-runtime-smoke-2026-08-28.md",
+            },
+        }
+        for artifact_id, artifact in manifest["artifacts"].items():
+            artifact["source_sync"] = "blocked"
+            artifact["sha256"] = None
+            artifact["signing_evidence"] = None
+            artifact["physical_qa_evidence"] = None
+            artifact["source_sync_evidence"] = (
+                "growth/quality/release-materialization-2026-08-31-run-33392732428.md"
+            )
+            artifact["historical_candidate"] = historical[artifact_id]
+        return manifest
+
     def test_app_store_default_has_query_first_russian_override(self) -> None:
         listing = next(
             listing
@@ -504,7 +543,7 @@ class ValidationScriptsTest(unittest.TestCase):
         }
         for field, value in invalid_values.items():
             with self.subTest(field=field):
-                manifest = copy.deepcopy(self.upload_manifest())
+                manifest = self.blocked_upload_manifest()
                 manifest["artifacts"]["android_phone"][field] = value
                 failures: list[str] = []
                 validate_upload_artifacts(manifest, "1.1.0", failures)
@@ -524,7 +563,7 @@ class ValidationScriptsTest(unittest.TestCase):
         )
 
     def test_historical_hashes_cannot_be_relabelled_as_current_bytes(self) -> None:
-        manifest = copy.deepcopy(self.upload_manifest())
+        manifest = self.blocked_upload_manifest()
         for artifact in manifest["artifacts"].values():
             historical = artifact["historical_candidate"]
             artifact["source_sync"] = "verified-current"
@@ -549,7 +588,7 @@ class ValidationScriptsTest(unittest.TestCase):
             )
 
     def test_blocked_artifact_can_preserve_same_version_historical_bytes(self) -> None:
-        manifest = copy.deepcopy(self.upload_manifest())
+        manifest = self.blocked_upload_manifest()
         wear = manifest["artifacts"]["wear_os"]
         self.assertEqual(wear["source_sync"], "blocked")
         self.assertEqual(
@@ -1181,6 +1220,12 @@ class ValidationScriptsTest(unittest.TestCase):
         ci = (ROOT / ".github/workflows/ci.yml").read_text()
         self.assertIn("python3 -m compileall -q scripts", ci)
         self.assertIn("python3 -m unittest discover -s scripts/growth/tests", ci)
+        self.assertIn("python3 scripts/trusted_release_workflow_security.py", ci)
+        self.assertIn("python3 scripts/verify_release_artifacts.py --contract-only", ci)
+        self.assertIn("python3 scripts/check_release_qa_matrix.py --contract-only", ci)
+        self.assertIn("permissions: {}", ci)
+        self.assertNotIn("actions/checkout@", ci)
+        self.assertEqual(ci.count("Checkout exact public source without credentials"), 3)
         self.assertIn("python3 scripts/check_dashboard_report.py", ci)
         self.assertIn("Pillow==12.2.0", ci)
         self.assertIn("command -v ffprobe", ci)
@@ -1211,13 +1256,14 @@ class ValidationScriptsTest(unittest.TestCase):
         ):
             self.assertIn(action, pages)
         self.assertNotRegex(pages, r"(?m)^\s*uses:\s+[^@\s]+@v\d+\s*$")
-        for trigger_path in (
-            '"growth/baseline/**"',
-            '"growth/data/public-rank/**"',
-            '"growth/kpi-framework.json"',
-            '"growth/reports/**"',
-        ):
-            self.assertIn(trigger_path, pages)
+        self.assertIn("workflow_run:", pages)
+        self.assertIn("- Trusted release verification", pages)
+        self.assertIn("workflow_run.conclusion == 'success'", pages)
+        self.assertIn("workflow_run.head_branch == 'master'", pages)
+        self.assertIn("python3 scripts/verify_release_artifacts.py --contract-only", pages)
+        self.assertIn("python3 scripts/check_release_qa_matrix.py --contract-only", pages)
+        self.assertNotRegex(pages, r"(?m)^\s{2}push:\s*$")
+        self.assertNotIn("workflow_dispatch", pages)
 
 
 if __name__ == "__main__":

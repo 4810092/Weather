@@ -6,8 +6,7 @@ on:
     branches:
       - master
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -18,10 +17,25 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
+      - name: Checkout exact public source without credentials
+        shell: bash
+        env:
+          NIMBO_CHECKOUT_REF: ${{ github.ref }}
+          NIMBO_CHECKOUT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
+             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+            echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
+            exit 1
+          fi
+          git init .
+          git remote add origin https://github.com/4810092/Weather.git
+          git -c protocol.version=2 fetch --no-tags origin "$NIMBO_CHECKOUT_REF"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NIMBO_CHECKOUT_SHA"
+          test -z "$(git config --get-regexp 'http\..*\.extraheader' || true)"
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
@@ -44,12 +58,13 @@ jobs:
         run: |
           python3 -m compileall -q scripts
           python3 scripts/release_materialization_workflow_security.py
+          python3 scripts/trusted_release_workflow_security.py
           python3 -m unittest discover -s scripts/growth/tests -p 'test_*.py'
       - name: Repository and localization checks
         run: |
           python3 scripts/check_repository.py
-          python3 scripts/verify_release_artifacts.py
-          python3 scripts/check_release_qa_matrix.py
+          python3 scripts/verify_release_artifacts.py --contract-only
+          python3 scripts/check_release_qa_matrix.py --contract-only
           python3 scripts/check_localizations.py
           python3 scripts/check_store_metadata.py
           python3 scripts/check_store_assets.py
@@ -101,10 +116,25 @@ jobs:
             system_image_api_level: 36
             profile: pixel_tablet
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
+      - name: Checkout exact public source without credentials
+        shell: bash
+        env:
+          NIMBO_CHECKOUT_REF: ${{ github.ref }}
+          NIMBO_CHECKOUT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
+             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+            echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
+            exit 1
+          fi
+          git init .
+          git remote add origin https://github.com/4810092/Weather.git
+          git -c protocol.version=2 fetch --no-tags origin "$NIMBO_CHECKOUT_REF"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NIMBO_CHECKOUT_SHA"
+          test -z "$(git config --get-regexp 'http\..*\.extraheader' || true)"
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
@@ -164,10 +194,25 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
+      - name: Checkout exact public source without credentials
+        shell: bash
+        env:
+          NIMBO_CHECKOUT_REF: ${{ github.ref }}
+          NIMBO_CHECKOUT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
+             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+            echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
+            exit 1
+          fi
+          git init .
+          git remote add origin https://github.com/4810092/Weather.git
+          git -c protocol.version=2 fetch --no-tags origin "$NIMBO_CHECKOUT_REF"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NIMBO_CHECKOUT_SHA"
+          test -z "$(git config --get-regexp 'http\..*\.extraheader' || true)"
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin

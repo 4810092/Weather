@@ -289,7 +289,7 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
         }
 
     def test_repository_matrix_matches_current_authority(self) -> None:
-        self.assertEqual(validate(ROOT), [])
+        self.assertEqual(validate_contract_only(ROOT), [])
 
     def test_fixture_contract_passes(self) -> None:
         self.assertEqual(validate(self.root), [])

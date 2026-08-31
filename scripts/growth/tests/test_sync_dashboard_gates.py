@@ -51,7 +51,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "durable draft materialization passed",
+                "fresh local full-byte verification passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -66,7 +66,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["ios_crash_report_missing"],
             )
             self.assertIn(
-                "Durable draft materialization is now PASS",
+                "fresh local macOS run downloaded",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -86,7 +86,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "separate read-only hosted macOS job",
+                "protected read-only hosted macOS workflow",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertNotIn(

@@ -1,35 +1,11 @@
 name: GitHub Pages
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - ".github/workflows/pages.yml"
-      - "branding/store/nimbo-app-icon-1024.png"
-      - "growth/baseline/**"
-      - "growth/content/**"
-      - "growth/dashboard/**"
-      - "growth/data/public-rank/**"
-      - "growth/kpi-framework.json"
-      - "growth/quality/gates.json"
-      - "growth/reports/**"
-      - "scripts/build_site.py"
-      - "scripts/check_dashboard_report.py"
-      - "scripts/check_release_qa_matrix.py"
-      - "scripts/check_store_assets.py"
-      - "scripts/check_store_metadata.py"
-      - "scripts/release_artifact_verifier.py"
-      - "scripts/verify_release_artifacts.py"
-      - "scripts/growth/tests/test_site_articles.py"
-      - "site/**"
-      - "store/assets/google-play/**"
-      - "store/creative-sets/growth-2026-08.json"
-      - "store/metadata.json"
-      - "store/metadata.schema.json"
-      - "store/screenshots/**"
-      - "store/upload-manifest-1.1.0.json"
-  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Trusted release verification
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -40,10 +16,85 @@ concurrency:
 
 jobs:
   build:
+    if: >-
+      github.repository == '4810092/Weather' &&
+      github.repository_id == '1329018769' &&
+      github.event.workflow_run.name == 'Trusted release verification' &&
+      github.event.workflow_run.path == '.github/workflows/trusted-release-verification.yml' &&
+      github.event.workflow_run.status == 'completed' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'workflow_run' &&
+      github.event.workflow_run.head_branch == 'master' &&
+      github.event.workflow_run.repository.id == 1329018769 &&
+      github.event.workflow_run.repository.full_name == '4810092/Weather' &&
+      github.event.workflow_run.head_repository.id == 1329018769 &&
+      github.event.workflow_run.head_repository.full_name == '4810092/Weather'
     runs-on: ubuntu-24.04
     steps:
+      - name: Validate trusted source is current master
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_TRUSTED_RUN_ID: ${{ github.event.workflow_run.id }}
+          NIMBO_TRUSTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          metadata_root="$RUNNER_TEMP/nimbo-pages-preflight"
+          install -d -m 700 "$metadata_root"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "repos/4810092/Weather/actions/runs/$NIMBO_TRUSTED_RUN_ID" \
+            > "$metadata_root/trusted-run.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$metadata_root/master.json"
+          python3 -I - "$metadata_root" "$NIMBO_TRUSTED_RUN_ID" "$NIMBO_TRUSTED_SHA" <<'PY'
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          expected_run_id = int(sys.argv[2])
+          expected_sha = sys.argv[3]
+          if re.fullmatch(r"[0-9a-f]{40}", expected_sha) is None:
+              raise SystemExit("trusted SHA is not one full lowercase commit identity")
+          trusted = json.loads((root / "trusted-run.json").read_text())
+          expected = {
+              "id": expected_run_id,
+              "name": "Trusted release verification",
+              "path": ".github/workflows/trusted-release-verification.yml",
+              "event": "workflow_run",
+              "status": "completed",
+              "conclusion": "success",
+              "head_branch": "master",
+              "head_sha": expected_sha,
+          }
+          for key, value in expected.items():
+              if trusted.get(key) != value:
+                  raise SystemExit(f"trusted verifier run {key} mismatch")
+          for label in ("repository", "head_repository"):
+              value = trusted.get(label)
+              if not isinstance(value, dict):
+                  raise SystemExit(f"trusted verifier {label} binding is missing")
+              if value.get("id") != 1329018769 or value.get("full_name") != "4810092/Weather":
+                  raise SystemExit(f"trusted verifier {label} mismatch")
+          master = json.loads((root / "master.json").read_text())
+          master_object = master.get("object")
+          if (
+              master.get("ref") != "refs/heads/master"
+              or not isinstance(master_object, dict)
+              or master_object.get("type") != "commit"
+              or master_object.get("sha") != expected_sha
+          ):
+              raise SystemExit("trusted verifier commit is stale relative to live master")
+          PY
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -54,13 +105,43 @@ jobs:
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
       - name: Build and validate localized site
         run: |
+          test "$(git rev-parse HEAD)" = '${{ github.event.workflow_run.head_sha }}'
           python3 -m unittest discover -s scripts/growth/tests -p 'test_site_articles.py'
-          python3 scripts/verify_release_artifacts.py
-          python3 scripts/check_release_qa_matrix.py
+          python3 scripts/trusted_release_workflow_security.py
+          python3 scripts/verify_release_artifacts.py --contract-only
+          python3 scripts/check_release_qa_matrix.py --contract-only
           python3 scripts/check_store_metadata.py
           python3 scripts/check_store_assets.py
           python3 scripts/check_dashboard_report.py
           python3 scripts/build_site.py
+      - name: Revalidate current master before publication
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_TRUSTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          master_json="$RUNNER_TEMP/nimbo-pages-master-after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$master_json"
+          python3 -I - "$master_json" "$NIMBO_TRUSTED_SHA" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          master = json.loads(Path(sys.argv[1]).read_text())
+          master_object = master.get("object")
+          if (
+              master.get("ref") != "refs/heads/master"
+              or not isinstance(master_object, dict)
+              or master_object.get("type") != "commit"
+              or master_object.get("sha") != sys.argv[2]
+          ):
+              raise SystemExit("live master changed during Pages build")
+          PY
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
         with:
           path: build/pages
@@ -70,11 +151,40 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     permissions:
+      contents: read
       pages: write
       id-token: write
     runs-on: ubuntu-24.04
     needs: build
     steps:
+      - name: Validate current master before deployment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_TRUSTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          master_json="$RUNNER_TEMP/nimbo-pages-master-deploy.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$master_json"
+          python3 -I - "$master_json" "$NIMBO_TRUSTED_SHA" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          master = json.loads(Path(sys.argv[1]).read_text())
+          master_object = master.get("object")
+          if (
+              master.get("ref") != "refs/heads/master"
+              or not isinstance(master_object, dict)
+              or master_object.get("type") != "commit"
+              or master_object.get("sha") != sys.argv[2]
+          ):
+              raise SystemExit("live master changed before Pages deployment")
+          PY
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128

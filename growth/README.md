@@ -2,16 +2,19 @@
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
 
-The machine field `byte_verified=false` refers to the upload-manifest entry.
-Protected-run candidate bytes are verified; durable CI re-verification and
-`verified-current` promotion are still blocked.
+The machine field `byte_verified=true` records the fresh full verification of
+the exact promoted bytes. All three manifest entries are atomically
+`verified-current`, while the top-level manifest remains `draft-blocked`
+because physical QA and internal delivery are still missing. The protected
+hosted macOS repeat is pending until its workflow executes; no hosted repeat
+pass is claimed yet.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -26,14 +29,15 @@ Protected signing
 [run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
 then passed both jobs with all 8/8 signing inputs and produced retained,
 independently verified candidates for phone `1.1.0 (8)`, Wear
-`1.1.0 (1000008)`, and Apple `1.1.0 (6)`. This is `3/3
-candidate-verified`, not `verified-current`: the committed upload manifest
-remains fail-closed at `0/3`. Hosted materialization run `33392732428` passed
+`1.1.0 (1000008)`, and Apple `1.1.0 (6)`. Hosted materialization run `33392732428` passed
 and stored the exact package and receipt as hash-bound assets in unpublished
 draft release `379745439`; this closes durable draft materialization relative
-to the expiring Actions artifact. The draft remains mutable, and the full
-trusted verifier has not rerun in a separate read-only hosted macOS job, so
-atomic manifest promotion is still prohibited.
+to the expiring Actions artifact. A fresh local macOS run then downloaded those
+exact assets, safely extracted the closed tree, checked pinned Bundletool
+1.18.3, and returned `byte_verified=true` for the exact phone, Wear, and Apple
+artifacts. The committed manifest now holds `3/3 verified-current` atomically
+and remains `draft-blocked`. The draft remains mutable, and the protected
+hosted macOS repeat is pending until its workflow executes on `master`.
 The exact-source API 25 debug phone/widget pass remains valid regression
 evidence, but upload-derived Android phone/tablet/widget/Wear and TestFlight
 iPhone/iPad/widget/watch coverage are missing. The iPhone is currently locked,
@@ -57,12 +61,12 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Full action-time verifier contract; manifest remains 0/3 verified-current until a separate read-only hosted macOS job verifies the materialized bytes |
+| Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected hosted repeat pending before later artifact use |
 | Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
-| Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and pending read-only macOS verifier split |
+| Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
-| Current release source authority | [quality/release-artifact-source-sync-2026-08-31-2cdd438.md](quality/release-artifact-source-sync-2026-08-31-2cdd438.md) | Exact `2cdd438` identity, successful ordinary and protected hosted runs, 3/3 candidate-verified versus 0/3 manifest-verified boundary, and remaining physical/store gates |
+| Current release source authority | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Exact `2cdd438` identity, fresh full-byte verification, atomic 3/3 verified-current manifest state, and remaining physical/store gates |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |

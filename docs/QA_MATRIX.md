@@ -4,18 +4,19 @@ Status date: August 31, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
 <!-- release-authority-current:end -->
 
-In the machine-validated block, `byte_verified=false` describes the upload-
-manifest entry, not the protected-run receipt: candidate bytes are verified,
-and the exact package is materialized in a hosted unpublished draft, while the
-separate read-only macOS full-verifier run and `verified-current` promotion
-remain incomplete.
+In the machine-validated block, `byte_verified=true` records the fresh local
+full-verifier pass and atomic `3/3 verified-current` promotion. The fail-closed
+surface status remains **BLOCKED** because the physical gates and every
+artifact physical-evidence field remain blocked/null. The protected hosted
+macOS repeat is pending until its workflow executes; no hosted repeat pass is
+claimed.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -34,9 +35,9 @@ remain exact.
 <!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required physical QA | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (8)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Wear OS | `1.1.0 (1000008)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Apple app/widget/watch | `1.1.0 (6)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `ios_physical_smoke: blocked` | **BLOCKED** |
+| Android phone/tablet | `1.1.0 (8)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Wear OS | `1.1.0 (1000008)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Apple app/widget/watch | `1.1.0 (6)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `ios_physical_smoke: blocked` | **BLOCKED** |
 <!-- release-qa-current:end -->
 
 `READY` is permitted only when the corresponding artifact is
@@ -52,11 +53,11 @@ JSON/Markdown receipt, or an older artifact cannot establish readiness. Apple
 also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
 and the exact App Store Connect `ExportOptions.plist`; build 6 now has a
-retained, candidate-verified distribution archive and IPA, but the manifest is
-not promoted because materialization run `33392732428` did not execute the same
-full verifier from a separate read-only hosted macOS job. The single staged
-directory layout and action-time
-command are documented in [`store/README.md`](../store/README.md). The verifier
+retained, `verified-current` distribution archive and IPA. A fresh local macOS
+run reopened the exact materialized assets and completed the atomic promotion;
+the protected hosted repeat remains pending until its workflow executes. The
+single staged directory layout and action-time command are documented in
+[`store/README.md`](../store/README.md). The verifier
 and its explicit external-build provenance boundary are recorded in
 [`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md).
 
@@ -74,11 +75,13 @@ and its explicit external-build provenance boundary are recorded in
   [run `33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
   then validated the exact source artifact/package/receipt bindings and stored
   the package and receipt as hash-bound assets in unpublished draft release
-  `379745439`. This is a durable draft materialization PASS relative to the
-  expiring Actions artifact, but the draft is mutable and no separate read-only
-  hosted macOS job has run the full pinned verifier. The manifest therefore
-  correctly remains `0/3 verified-current`. Hosted signing/materialization is not
-  physical accessibility, Play/TestFlight delivery, or crash-gate closure. A
+  `379745439`. A fresh local macOS run then downloaded those exact assets,
+  safely extracted the closed tree, verified pinned Bundletool 1.18.3, and
+  returned `byte_verified=true` for all three outputs. The manifest is now
+  atomically `3/3 verified-current` and remains `draft-blocked`; the draft is
+  mutable and the protected hosted repeat is pending. Hosted
+  signing/materialization is not physical accessibility, Play/TestFlight
+  delivery, or crash-gate closure. A
   clean isolated exact-source debug
   APK and its pulled installed bytes share SHA-256
   `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`
@@ -145,7 +148,7 @@ and its explicit external-build provenance boundary are recorded in
 | Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact-product API 24 emulator and physical API 25 debug evidence exists, but current signed physical phone coverage does not |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact-current API 37 debug emulator localized stale-cache render and cold loop pass; no fresh refresh, upload-signed physical watch, or paired handoff result |
-| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes, but manifest promotion, unchanged TestFlight delivery, widget placement, older-runtime rendering, and physical evidence are absent |
+| Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and the signed artifact is verified-current, but unchanged TestFlight delivery, widget placement, older-runtime rendering, and physical evidence are absent |
 | Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — exact-current unsigned simulator localization and 30-loop evidence uses a stale preview-like retained fixture; no fresh paired transfer or physical-watch result |
 
 ## Historical evidence — non-transferable

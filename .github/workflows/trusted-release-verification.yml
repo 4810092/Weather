@@ -1,0 +1,667 @@
+name: Trusted release verification
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trusted-release-verification-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  verify:
+    if: >-
+      github.repository == '4810092/Weather' &&
+      github.repository_id == '1329018769' &&
+      github.event.workflow_run.workflow_id == 330787648 &&
+      github.event.workflow_run.path == '.github/workflows/ci.yml' &&
+      github.event.workflow_run.status == 'completed' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'master' &&
+      github.event.workflow_run.repository.id == 1329018769 &&
+      github.event.workflow_run.repository.full_name == '4810092/Weather' &&
+      github.event.workflow_run.head_repository.id == 1329018769 &&
+      github.event.workflow_run.head_repository.full_name == '4810092/Weather'
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - name: Validate trusted invocation and current master
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          NIMBO_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          metadata_root="$RUNNER_TEMP/nimbo-trusted-preflight"
+          install -d -m 700 "$metadata_root"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "repos/4810092/Weather/actions/runs/$NIMBO_SOURCE_RUN_ID" \
+            > "$metadata_root/source-run.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$metadata_root/master.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-2cdd438-run-33381050098 \
+            > "$metadata_root/tag.before.json"
+          python3 -I - "$metadata_root" "$NIMBO_SOURCE_RUN_ID" "$NIMBO_SOURCE_SHA" <<'PY'
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          expected_run_id = int(sys.argv[2])
+          expected_sha = sys.argv[3]
+          if re.fullmatch(r"[0-9a-f]{40}", expected_sha) is None:
+              raise SystemExit("source SHA is not one full lowercase commit identity")
+
+          source_run = json.loads((root / "source-run.json").read_text())
+          expected_run = {
+              "id": expected_run_id,
+              "workflow_id": 330787648,
+              "path": ".github/workflows/ci.yml",
+              "event": "push",
+              "status": "completed",
+              "conclusion": "success",
+              "head_branch": "master",
+              "head_sha": expected_sha,
+          }
+          for key, value in expected_run.items():
+              if source_run.get(key) != value:
+                  raise SystemExit(f"source CI run {key} mismatch")
+          repository = source_run.get("repository")
+          head_repository = source_run.get("head_repository")
+          for label, value in (
+              ("repository", repository),
+              ("head_repository", head_repository),
+          ):
+              if not isinstance(value, dict):
+                  raise SystemExit(f"source CI {label} binding is missing")
+              if value.get("id") != 1329018769 or value.get("full_name") != "4810092/Weather":
+                  raise SystemExit(f"source CI {label} mismatch")
+
+          master = json.loads((root / "master.json").read_text())
+          if master.get("ref") != "refs/heads/master":
+              raise SystemExit("live master ref mismatch")
+          master_object = master.get("object")
+          if not isinstance(master_object, dict) or master_object.get("type") != "commit":
+              raise SystemExit("live master object is not a commit")
+          if master_object.get("sha") != expected_sha:
+              raise SystemExit("source CI commit is stale relative to live master")
+          tag_refs = json.loads((root / "tag.before.json").read_text())
+          if tag_refs != []:
+              raise SystemExit("draft storage tag unexpectedly resolves before verification")
+          PY
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.13"
+
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Validate checked-out verifier authority
+        shell: bash
+        env:
+          NIMBO_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NIMBO_SOURCE_SHA"
+          test "$(git symbolic-ref --quiet --short HEAD || true)" = ""
+          python3 scripts/trusted_release_workflow_security.py
+
+      - name: Download exact unpublished candidate assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +x
+          set -euo pipefail
+          trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
+          metadata_root="$trusted_root/metadata"
+          download_root="$trusted_root/downloads"
+          install -d -m 700 "$trusted_root" "$metadata_root" "$download_root"
+
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/379745439 \
+            > "$metadata_root/release.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$metadata_root/package.before.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$metadata_root/receipt.before.json"
+
+          python3 -I - "$metadata_root" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          release = json.loads((root / "release.before.json").read_text())
+          package = json.loads((root / "package.before.json").read_text())
+          receipt = json.loads((root / "receipt.before.json").read_text())
+          expected_release = {
+              "id": 379745439,
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 2cdd438",
+              "tag_name": "nimbo-candidate-v1.1.0-2cdd438-run-33381050098",
+              "target_commitish": "30a67edf2968878e22bd05497bcd20c64cba7fc7",
+              "draft": True,
+              "prerelease": True,
+              "published_at": None,
+              "immutable": False,
+          }
+          for key, value in expected_release.items():
+              if release.get(key) != value:
+                  raise SystemExit(f"draft release {key} mismatch")
+
+          expected_assets = {
+              537966386: {
+                  "name": "signed-candidate-bytes.tar.gz",
+                  "size": 58073521,
+                  "digest": "sha256:60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+                  "content_type": "application/octet-stream",
+              },
+              537966414: {
+                  "name": "signed-candidate-receipt.json",
+                  "size": 11711,
+                  "digest": "sha256:c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+                  "content_type": "application/octet-stream",
+              },
+          }
+          release_assets = release.get("assets")
+          if not isinstance(release_assets, list):
+              raise SystemExit("draft release assets are missing")
+          if {asset.get("id") for asset in release_assets if isinstance(asset, dict)} != set(expected_assets):
+              raise SystemExit("draft release asset ID set mismatch")
+          if len(release_assets) != 2:
+              raise SystemExit("draft release asset count mismatch")
+          release_by_id = {asset["id"]: asset for asset in release_assets}
+          for asset_id, specification in expected_assets.items():
+              for label, asset in (
+                  ("release", release_by_id[asset_id]),
+                  ("asset endpoint", package if asset_id == 537966386 else receipt),
+              ):
+                  if asset.get("id") != asset_id:
+                      raise SystemExit(f"{label} asset ID mismatch")
+                  for key, value in specification.items():
+                      if asset.get(key) != value:
+                          raise SystemExit(f"{label} asset {asset_id} {key} mismatch")
+                  if asset.get("state") != "uploaded":
+                      raise SystemExit(f"{label} asset {asset_id} is not uploaded")
+                  if asset.get("url") != f"https://api.github.com/repos/4810092/Weather/releases/assets/{asset_id}":
+                      raise SystemExit(f"{label} asset {asset_id} API URL mismatch")
+          PY
+
+          gh api \
+            -H "Accept: application/octet-stream" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$download_root/signed-candidate-bytes.tar.gz"
+          gh api \
+            -H "Accept: application/octet-stream" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$download_root/signed-candidate-receipt.json"
+          python3 -I - "$download_root" <<'PY'
+          import hashlib
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          expected = {
+              "signed-candidate-bytes.tar.gz": (
+                  58073521,
+                  "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+              ),
+              "signed-candidate-receipt.json": (
+                  11711,
+                  "c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+              ),
+          }
+          inventory = sorted(path.name for path in root.iterdir())
+          if inventory != sorted(expected):
+              raise SystemExit("downloaded draft asset inventory mismatch")
+          for name, (size, digest) in expected.items():
+              path = root / name
+              if path.is_symlink() or not path.is_file():
+                  raise SystemExit(f"downloaded asset is not one regular file: {name}")
+              if path.stat().st_size != size:
+                  raise SystemExit(f"downloaded asset size mismatch: {name}")
+              if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+                  raise SystemExit(f"downloaded asset digest mismatch: {name}")
+
+          receipt = json.loads((root / "signed-candidate-receipt.json").read_text())
+          if receipt.get("schema_version") != 3:
+              raise SystemExit("candidate receipt schema mismatch")
+          if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
+              raise SystemExit("candidate receipt state mismatch")
+          if receipt.get("source_revision") != "2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652":
+              raise SystemExit("candidate receipt source revision mismatch")
+          package = receipt.get("package")
+          if package != {
+              "candidate_tree_sha256": "c91ea40ae12fd59aacfee77f03ba75240951b5797c16b23487ce334eb85502fa",
+              "filename": "signed-candidate-bytes.tar.gz",
+              "format": "tar.gz",
+              "sha256": "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+          }:
+              raise SystemExit("candidate receipt package binding mismatch")
+          expected_artifacts = {
+              "android_phone": "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+              "wear_os": "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
+              "apple": "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
+          }
+          artifacts = receipt.get("artifacts")
+          if not isinstance(artifacts, dict) or set(artifacts) != set(expected_artifacts):
+              raise SystemExit("candidate receipt artifact inventory mismatch")
+          for artifact_id, digest in expected_artifacts.items():
+              artifact = artifacts[artifact_id]
+              if (
+                  artifact.get("source_sync") != "candidate-verified"
+                  or artifact.get("byte_verified") is not True
+                  or artifact.get("sha256") != digest
+              ):
+                  raise SystemExit(f"candidate receipt artifact mismatch: {artifact_id}")
+          PY
+
+      - name: Safely extract exact candidate package
+        shell: bash
+        run: |
+          set -euo pipefail
+          trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
+          python3 -I - \
+            "$trusted_root/downloads/signed-candidate-bytes.tar.gz" \
+            "$trusted_root" \
+            "$GITHUB_WORKSPACE" <<'PY'
+          import hashlib
+          import os
+          import stat
+          import sys
+          import tarfile
+          from pathlib import Path, PurePosixPath
+
+          package_path = Path(sys.argv[1])
+          extraction_root = Path(sys.argv[2]) / "extracted"
+          repository_root = Path(sys.argv[3])
+          extraction_root.mkdir(mode=0o700)
+          allowed_modes = {0o600, 0o644, 0o700, 0o755}
+          expected_files = {
+              "bytes/ExportOptions.plist": (988, None),
+              "bytes/Nimbo.ipa": (
+                  22745803,
+                  "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
+              ),
+              "bytes/nimbo-phone-1.1.0-vc8-mapping.txt": (42366661, None),
+              "bytes/nimbo-phone-1.1.0-vc8.aab": (
+                  5466171,
+                  "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+              ),
+              "bytes/nimbo-wear-1.1.0-vc1000008.aab": (
+                  2595789,
+                  "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
+              ),
+          }
+          with tarfile.open(package_path, "r:gz") as archive:
+              members = archive.getmembers()
+              names = [member.name for member in members]
+              if len(members) != 192 or len(set(names)) != 192:
+                  raise SystemExit("candidate package member inventory mismatch")
+              if sum(member.isfile() for member in members) != 104:
+                  raise SystemExit("candidate package regular-file count mismatch")
+              if sum(member.isdir() for member in members) != 88:
+                  raise SystemExit("candidate package directory count mismatch")
+              if sum(member.size for member in members if member.isfile()) != 152161477:
+                  raise SystemExit("candidate package expanded size mismatch")
+
+              for member in members:
+                  relative = PurePosixPath(member.name)
+                  raw_parts = member.name.split("/")
+                  if (
+                      relative.is_absolute()
+                      or not relative.parts
+                      or relative.parts[0] != "bytes"
+                      or any(part in {"", ".", ".."} for part in raw_parts)
+                      or member.name.endswith("/")
+                  ):
+                      raise SystemExit(f"unsafe candidate package path: {member.name}")
+                  if not (member.isfile() or member.isdir()):
+                      raise SystemExit(f"candidate package links/special entries are forbidden: {member.name}")
+                  if member.mode not in allowed_modes:
+                      raise SystemExit(f"unsafe candidate package mode: {member.name}")
+                  if (
+                      member.uid != 501
+                      or member.gid != 20
+                      or member.uname != "runner"
+                      or member.gname != "staff"
+                  ):
+                      raise SystemExit(f"candidate package ownership metadata mismatch: {member.name}")
+                  if member.isfile() and (member.size < 0 or member.size > 60000000):
+                      raise SystemExit(f"unsafe candidate package file size: {member.name}")
+                  destination = extraction_root.joinpath(*relative.parts)
+                  try:
+                      destination.resolve(strict=False).relative_to(extraction_root.resolve())
+                  except ValueError as error:
+                      raise SystemExit(f"candidate path escapes extraction root: {member.name}") from error
+                  if member.isdir():
+                      destination.mkdir(mode=member.mode, parents=False, exist_ok=False)
+                      os.chmod(destination, member.mode)
+                      continue
+                  destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                  source = archive.extractfile(member)
+                  if source is None:
+                      raise SystemExit(f"candidate file payload is missing: {member.name}")
+                  digest = hashlib.sha256()
+                  size = 0
+                  with source, destination.open("xb") as output:
+                      while chunk := source.read(1024 * 1024):
+                          size += len(chunk)
+                          if size > member.size:
+                              raise SystemExit(f"candidate file expanded beyond header: {member.name}")
+                          digest.update(chunk)
+                          output.write(chunk)
+                  if size != member.size:
+                      raise SystemExit(f"candidate file size mismatch: {member.name}")
+                  os.chmod(destination, member.mode)
+                  specification = expected_files.get(member.name)
+                  if specification is not None:
+                      expected_size, expected_digest = specification
+                      if size != expected_size:
+                          raise SystemExit(f"required candidate file size mismatch: {member.name}")
+                      if expected_digest is not None and digest.hexdigest() != expected_digest:
+                          raise SystemExit(f"required candidate file digest mismatch: {member.name}")
+              if not set(expected_files).issubset(names):
+                  raise SystemExit("candidate package required-file inventory mismatch")
+
+          sys.path.insert(0, str(repository_root))
+          from scripts.release_artifact_verifier import _snapshot_candidate_tree
+
+          snapshot_failures = []
+          snapshot = _snapshot_candidate_tree(
+              extraction_root / "bytes",
+              snapshot_failures,
+              "trusted extracted candidate",
+              expected_top_level={
+                  "ExportOptions.plist",
+                  "Nimbo.ipa",
+                  "Nimbo.xcarchive",
+                  "nimbo-phone-1.1.0-vc8-mapping.txt",
+                  "nimbo-phone-1.1.0-vc8.aab",
+                  "nimbo-wear-1.1.0-vc1000008.aab",
+              },
+          )
+          if snapshot_failures:
+              raise SystemExit("; ".join(snapshot_failures))
+          if snapshot is None:
+              raise SystemExit("trusted extracted candidate snapshot is missing")
+          if snapshot.tree_sha256 != "c91ea40ae12fd59aacfee77f03ba75240951b5797c16b23487ce334eb85502fa":
+              raise SystemExit("trusted extracted candidate tree digest mismatch")
+          if snapshot.file_count != 104 or snapshot.directory_count != 88:
+              raise SystemExit("trusted extracted candidate tree count mismatch")
+          if snapshot.total_bytes != 152161477:
+              raise SystemExit("trusted extracted candidate tree size mismatch")
+          PY
+
+      - name: Fetch pinned bundletool
+        shell: bash
+        run: |
+          set -euo pipefail
+          trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
+          bundletool_path="$trusted_root/bundletool-all-1.18.3.jar"
+          curl \
+            --proto '=https' \
+            --tlsv1.2 \
+            --fail \
+            --location \
+            --silent \
+            --show-error \
+            --output "$bundletool_path" \
+            https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar
+          test "$(shasum -a 256 "$bundletool_path" | awk '{print $1}')" = \
+            "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29"
+          test "$(java -jar "$bundletool_path" version)" = "1.18.3"
+
+      - name: Run full signed-byte verification
+        shell: bash
+        env:
+          NIMBO_RELEASE_ARTIFACT_ROOT: ${{ runner.temp }}/nimbo-trusted-release/extracted/bytes
+          NIMBO_BUNDLETOOL_JAR: ${{ runner.temp }}/nimbo-trusted-release/bundletool-all-1.18.3.jar
+        run: |
+          set -euo pipefail
+          receipt_root="$RUNNER_TEMP/nimbo-trusted-receipt"
+          install -d -m 700 "$receipt_root"
+          python3 scripts/verify_release_artifacts.py --json > "$receipt_root/verification.json"
+          python3 -I - "$receipt_root/verification.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          verification = json.loads(Path(sys.argv[1]).read_text())
+          if verification.get("schema_version") != 1:
+              raise SystemExit("full verifier summary schema mismatch")
+          expected = {
+              "android_phone": "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+              "wear_os": "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
+              "apple": "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
+          }
+          artifacts = verification.get("artifacts")
+          if not isinstance(artifacts, dict) or set(artifacts) != set(expected):
+              raise SystemExit("full verifier must return exactly three candidate artifacts")
+          for artifact_id, digest in expected.items():
+              artifact = artifacts[artifact_id]
+              if set(artifact) != {"source_sync", "byte_verified", "sha256", "details"}:
+                  raise SystemExit(f"full verifier fields mismatch: {artifact_id}")
+              if artifact.get("source_sync") != "verified-current":
+                  raise SystemExit(f"full verifier source state mismatch: {artifact_id}")
+              if artifact.get("byte_verified") is not True:
+                  raise SystemExit(f"full verifier did not inspect exact bytes: {artifact_id}")
+              if artifact.get("sha256") != digest:
+                  raise SystemExit(f"full verifier digest mismatch: {artifact_id}")
+              details = artifact.get("details")
+              if not isinstance(details, dict) or not details:
+                  raise SystemExit(f"full verifier details are missing: {artifact_id}")
+          PY
+          python3 scripts/check_release_qa_matrix.py
+          python3 scripts/check_store_metadata.py
+
+      - name: Create non-secret verification receipt
+        shell: bash
+        env:
+          NIMBO_SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          NIMBO_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          receipt_root="$RUNNER_TEMP/nimbo-trusted-receipt"
+          python3 -I - \
+            "$receipt_root/verification.json" \
+            "$receipt_root/trusted-release-verification.json" \
+            "$NIMBO_SOURCE_RUN_ID" \
+            "$NIMBO_SOURCE_SHA" \
+            "$GITHUB_RUN_ID" \
+            "$GITHUB_RUN_ATTEMPT" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          verification = json.loads(Path(sys.argv[1]).read_text())
+          receipt = {
+              "schema_version": 1,
+              "state": "trusted-hosted-byte-verification-passed",
+              "repository": {"id": 1329018769, "full_name": "4810092/Weather"},
+              "source_ci": {
+                  "workflow_id": 330787648,
+                  "run_id": int(sys.argv[3]),
+                  "head_sha": sys.argv[4],
+              },
+              "trusted_run": {
+                  "run_id": int(sys.argv[5]),
+                  "attempt": int(sys.argv[6]),
+              },
+              "draft_release": {
+                  "id": 379745439,
+                  "package_asset_id": 537966386,
+                  "package_sha256": "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+                  "receipt_asset_id": 537966414,
+                  "receipt_sha256": "c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+              },
+              "verification": verification,
+              "boundary": "This receipt contains identities only; no signed candidate bytes are included.",
+          }
+          Path(sys.argv[2]).write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Revalidate unpublished release and current master
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NIMBO_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set +x
+          set -euo pipefail
+          trusted_root="$RUNNER_TEMP/nimbo-trusted-release"
+          metadata_root="$trusted_root/metadata"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/379745439 \
+            > "$metadata_root/release.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966386 \
+            > "$metadata_root/package.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/releases/assets/537966414 \
+            > "$metadata_root/receipt.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/ref/heads/master \
+            > "$metadata_root/master.after.json"
+          gh api \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-2cdd438-run-33381050098 \
+            > "$metadata_root/tag.after.json"
+          python3 -I - \
+            "$metadata_root" \
+            "$NIMBO_SOURCE_SHA" \
+            "$trusted_root/downloads" <<'PY'
+          import hashlib
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          expected_sha = sys.argv[2]
+          release = json.loads((root / "release.after.json").read_text())
+          expected_release = {
+              "id": 379745439,
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 2cdd438",
+              "tag_name": "nimbo-candidate-v1.1.0-2cdd438-run-33381050098",
+              "target_commitish": "30a67edf2968878e22bd05497bcd20c64cba7fc7",
+              "draft": True,
+              "prerelease": True,
+              "published_at": None,
+              "immutable": False,
+          }
+          for key, value in expected_release.items():
+              if release.get(key) != value:
+                  raise SystemExit(f"post-verification draft release {key} mismatch")
+          expected_assets = {
+              537966386: (
+                  "signed-candidate-bytes.tar.gz",
+                  58073521,
+                  "sha256:60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+              ),
+              537966414: (
+                  "signed-candidate-receipt.json",
+                  11711,
+                  "sha256:c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+              ),
+          }
+          assets = release.get("assets")
+          if not isinstance(assets, list) or len(assets) != 2:
+              raise SystemExit("post-verification draft release asset count mismatch")
+          by_id = {asset.get("id"): asset for asset in assets if isinstance(asset, dict)}
+          if set(by_id) != set(expected_assets):
+              raise SystemExit("post-verification draft release asset ID set mismatch")
+          for asset_id, (name, size, digest) in expected_assets.items():
+              release_asset = by_id[asset_id]
+              endpoint_name = "package.after.json" if asset_id == 537966386 else "receipt.after.json"
+              endpoint_asset = json.loads((root / endpoint_name).read_text())
+              for label, asset in (("release", release_asset), ("endpoint", endpoint_asset)):
+                  if (
+                      asset.get("id") != asset_id
+                      or asset.get("name") != name
+                      or asset.get("size") != size
+                      or asset.get("digest") != digest
+                      or asset.get("state") != "uploaded"
+                  ):
+                      raise SystemExit(f"post-verification {label} asset mismatch: {asset_id}")
+          master = json.loads((root / "master.after.json").read_text())
+          master_object = master.get("object")
+          if (
+              master.get("ref") != "refs/heads/master"
+              or not isinstance(master_object, dict)
+              or master_object.get("type") != "commit"
+              or master_object.get("sha") != expected_sha
+          ):
+              raise SystemExit("live master changed during trusted verification")
+          tag_refs = json.loads((root / "tag.after.json").read_text())
+          if tag_refs != []:
+              raise SystemExit("draft storage tag unexpectedly resolves after verification")
+          downloads = Path(sys.argv[3])
+          expected_downloads = {
+              "signed-candidate-bytes.tar.gz": (
+                  58073521,
+                  "60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9",
+              ),
+              "signed-candidate-receipt.json": (
+                  11711,
+                  "c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c",
+              ),
+          }
+          if sorted(path.name for path in downloads.iterdir()) != sorted(expected_downloads):
+              raise SystemExit("post-verification downloaded asset inventory mismatch")
+          for name, (size, digest) in expected_downloads.items():
+              path = downloads / name
+              if path.is_symlink() or not path.is_file() or path.stat().st_size != size:
+                  raise SystemExit(f"post-verification downloaded asset mismatch: {name}")
+              if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+                  raise SystemExit(f"post-verification downloaded asset digest mismatch: {name}")
+          PY
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: trusted-release-verification-${{ github.event.workflow_run.head_sha }}
+          path: ${{ runner.temp }}/nimbo-trusted-receipt/trusted-release-verification.json
+          if-no-files-found: error
+          retention-days: 30

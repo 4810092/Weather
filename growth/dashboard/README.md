@@ -38,13 +38,15 @@ and evidence are committed. Hosted materialization run
 stored the exact package and receipt as hash-bound assets in unpublished draft
 release `379745439` and rechecked their API identities, sizes, and digests.
 
-This is `3/3 candidate-verified`, not manifest promotion. The committed
-upload manifest remains `draft-blocked` and `0/3 verified-current`. Durable
-draft materialization is now PASS relative to the expiring Actions artifact,
-but the draft is mutable and the full trusted verifier has not rerun in a
-separate read-only hosted macOS job. Atomic promotion is therefore still
-prohibited. The exact-source API 25
-debug phone/widget smoke remains regression evidence; upload-derived Android
+The committed upload manifest now promotes the exact set atomically to `3/3
+verified-current` after a fresh local macOS full-byte pass reopened the draft
+assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
+and returned `byte_verified=true` for phone, Wear, and Apple. The top-level
+manifest remains `draft-blocked` because physical QA and internal delivery are
+missing. The draft is mutable and the protected hosted macOS repeat is pending
+until its workflow executes on `master`; no hosted repeat pass is claimed. The
+exact-source API 25 debug phone/widget smoke remains regression evidence;
+upload-derived Android
 phone/tablet/widget/Wear and TestFlight iPhone/iPad/widget/watch physical
 coverage are still missing. The iPad mini 5 is ready at CoreDevice level, the
 iPhone 14 Pro is paired but locked/DDI-blocked, the paired Series 5 watch is

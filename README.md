@@ -212,16 +212,20 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   [run `33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
   subsequently stored the hash-bound package and receipt as the only two assets
   in unpublished draft release `379745439` and rechecked their API sizes and
-  SHA-256 digests. Durable draft materialization now passes relative to the
-  expiring Actions artifact, but the draft is mutable and the complete verifier
-  has not rerun in a separate read-only hosted macOS job. The upload manifest
-  therefore intentionally remains `draft-blocked` and `0/3 verified-current`.
+  SHA-256 digests. A fresh local macOS run then downloaded those exact draft
+  assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
+  and returned `byte_verified=true` for all three exact signed artifacts. The
+  upload manifest now promotes the set atomically to `3/3 verified-current`
+  while remaining `draft-blocked`. The draft is mutable, and the protected
+  read-only hosted macOS repeat is pending until its workflow executes on
+  `master`; every later use must recheck the exact release and asset identity.
   The exact-source debug Android phone/widget smoke remains
   valid regression evidence, but the upload-derived phone/tablet/widget/Wear
   matrix, TestFlight iPhone/iPad/widget/watch matrix, iOS crash diagnosis, and
   post-rollout evidence are still blocked. See the [growth implementation
   checkpoint](docs/GROWTH_RELEASE.md), the current [source-sync
   record](growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md),
+  [full byte-verification evidence](growth/quality/release-artifact-full-verification-2026-08-31-local.md),
   [materialization evidence](growth/quality/release-materialization-2026-08-31-run-33392732428.md),
   and [signed-candidate evidence](growth/quality/signed-candidate-run-33381050098.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
