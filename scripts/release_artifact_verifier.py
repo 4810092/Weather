@@ -153,6 +153,21 @@ class VerificationResult:
 
 
 @dataclass(frozen=True)
+class StaticArtifactContractResult:
+    """Public, byte-agnostic state for one manifest artifact.
+
+    This result intentionally has no ``byte_verified`` field.  Static callers
+    can validate the committed schema, source revision, evidence bindings, and
+    atomic promotion state, but only ``verify_manifest_artifacts`` may attest
+    to reopening and checking the private release bytes.
+    """
+
+    artifact_id: str
+    source_sync: str
+    contract_valid: bool
+
+
+@dataclass(frozen=True)
 class CandidateTreeSnapshot:
     tree_sha256: str
     observation_sha256: str
@@ -2235,6 +2250,8 @@ def _validate_artifact_contract(
     manifest: dict[str, Any],
     artifacts: dict[str, Any],
     failures: list[str],
+    *,
+    enforce_atomic_promotion: bool = True,
 ) -> bool:
     """Validate the complete current/historical artifact contract."""
 
@@ -2256,6 +2273,31 @@ def _validate_artifact_contract(
         "source_sync_evidence",
         "historical_candidate",
     }
+
+    if enforce_atomic_promotion:
+        states = {
+            artifact_id: (
+                artifacts[artifact_id].get("source_sync")
+                if isinstance(artifacts.get(artifact_id), dict)
+                else None
+            )
+            for artifact_id in ("android_phone", "wear_os", "apple")
+        }
+        current = sorted(
+            artifact_id
+            for artifact_id, state in states.items()
+            if state == "verified-current"
+        )
+        blocked = sorted(
+            artifact_id
+            for artifact_id, state in states.items()
+            if state == "blocked"
+        )
+        if current and blocked:
+            failures.append(
+                "upload manifest: release artifact promotion must be atomic; "
+                f"verified-current={current}, blocked={blocked}"
+            )
 
     for artifact_id in ("android_phone", "wear_os", "apple"):
         artifact = artifacts.get(artifact_id)
@@ -2435,17 +2477,20 @@ def _validate_artifact_contract(
     return len(failures) == failure_count
 
 
-def verify_manifest_artifacts(
+def validate_manifest_artifact_contract(
     repository_root: Path,
     manifest: dict[str, Any],
     failures: list[str],
-    *,
-    artifact_root: Path | None = None,
-    bundletool_jar: Path | None = None,
-    runner: CommandRunner = _run_command,
-) -> dict[str, VerificationResult]:
-    """Validate artifact state and verify bytes for every current claim."""
+) -> dict[str, StaticArtifactContractResult]:
+    """Validate only public, committed release-artifact contract state.
 
+    No artifact directory or platform tooling is accepted here.  In
+    particular, this function cannot return or imply a byte-verification
+    result; callers needing that authority must use
+    :func:`verify_manifest_artifacts` with the real private bytes.
+    """
+
+    failure_count = len(failures)
     policy_valid = validate_verification_policy(manifest, failures)
     artifacts = manifest.get("artifacts")
     expected_artifacts = {"android_phone", "wear_os", "apple"}
@@ -2466,6 +2511,154 @@ def verify_manifest_artifacts(
         manifest,
         artifacts,
         failures,
+    )
+    valid = (
+        policy_valid
+        and source_valid
+        and contract_valid
+        and len(failures) == failure_count
+    )
+    return {
+        artifact_id: StaticArtifactContractResult(
+            artifact_id=artifact_id,
+            source_sync=str(artifacts[artifact_id].get("source_sync")),
+            contract_valid=valid,
+        )
+        for artifact_id in ("android_phone", "wear_os", "apple")
+        if isinstance(artifacts.get(artifact_id), dict)
+    }
+
+
+def _verify_current_artifact_bytes(
+    artifact_id: str,
+    artifact: dict[str, Any],
+    manifest: dict[str, Any],
+    artifact_root: Path | None,
+    bundletool_jar: Path | None,
+    failures: list[str],
+    runner: CommandRunner,
+) -> VerificationResult:
+    """Verify one already contract-validated current artifact's private bytes."""
+
+    owner = f"upload manifest artifact {artifact_id}"
+    if artifact_root is None:
+        failures.append(
+            f"{owner}: verified-current requires real artifact bytes through "
+            f"{ARTIFACT_ROOT_ENV}"
+        )
+        return VerificationResult(
+            artifact_id=artifact_id,
+            source_sync="verified-current",
+            byte_verified=False,
+        )
+    path = _safe_external_file(
+        artifact_root,
+        artifact.get("filename"),
+        owner,
+        failures,
+    )
+    if path is None:
+        return VerificationResult(
+            artifact_id=artifact_id,
+            source_sync="verified-current",
+            byte_verified=False,
+        )
+    digest = _sha256_file(path)
+    declared_digest = artifact.get("sha256")
+    if not isinstance(declared_digest, str) or not SHA256_PATTERN.fullmatch(
+        declared_digest
+    ):
+        failures.append(f"{owner}: verified-current SHA-256 is invalid")
+    elif digest != declared_digest:
+        failures.append(
+            f"{owner}: artifact SHA-256 {digest} differs from manifest "
+            f"{declared_digest}"
+        )
+
+    failure_count = len(failures)
+    with tempfile.TemporaryDirectory(prefix="nimbo-artifact-stage-") as directory:
+        staging_directory = Path(directory)
+        staged_path = staging_directory / path.name
+        shutil.copyfile(path, staged_path)
+        staged_path.chmod(0o400)
+        staged_digest = _sha256_file(staged_path)
+        if staged_digest != digest:
+            failures.append(
+                f"{owner}: staged artifact SHA-256 {staged_digest} differs "
+                f"from source bytes {digest}"
+            )
+        if artifact_id in {"android_phone", "wear_os"}:
+            details = _verify_android(
+                artifact_id,
+                staged_path,
+                artifact,
+                manifest,
+                bundletool_jar,
+                failures,
+                runner,
+            )
+        else:
+            details = _verify_apple(
+                staged_path,
+                artifact,
+                manifest,
+                artifact_root,
+                failures,
+                runner,
+            )
+        final_staged_digest = _sha256_file(staged_path)
+        if final_staged_digest != staged_digest:
+            failures.append(
+                f"{owner}: staged artifact changed during verification: "
+                f"{staged_digest} -> {final_staged_digest}"
+            )
+    final_digest = _sha256_file(path)
+    if final_digest != digest:
+        failures.append(
+            f"{owner}: artifact changed during verification: "
+            f"{digest} -> {final_digest}"
+        )
+    byte_verified = (
+        digest == declared_digest
+        and staged_digest == digest
+        and final_staged_digest == staged_digest
+        and final_digest == digest
+        and details is not None
+        and len(failures) == failure_count
+    )
+    return VerificationResult(
+        artifact_id=artifact_id,
+        source_sync="verified-current",
+        byte_verified=byte_verified,
+        sha256=digest,
+        details=details or {},
+    )
+
+
+def verify_manifest_artifacts(
+    repository_root: Path,
+    manifest: dict[str, Any],
+    failures: list[str],
+    *,
+    artifact_root: Path | None = None,
+    bundletool_jar: Path | None = None,
+    runner: CommandRunner = _run_command,
+) -> dict[str, VerificationResult]:
+    """Validate artifact state and verify bytes for every current claim."""
+
+    contract_failure_count = len(failures)
+    static_results = validate_manifest_artifact_contract(
+        repository_root,
+        manifest,
+        failures,
+    )
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return {}
+    contract_valid = (
+        len(failures) == contract_failure_count
+        and len(static_results) == 3
+        and all(result.contract_valid for result in static_results.values())
     )
 
     resolved_artifact_root = artifact_root
@@ -2502,106 +2695,21 @@ def verify_manifest_artifacts(
                 byte_verified=False,
             )
             continue
-        if not (policy_valid and source_valid and contract_valid):
+        if not contract_valid:
             results[artifact_id] = VerificationResult(
                 artifact_id=artifact_id,
                 source_sync="verified-current",
                 byte_verified=False,
             )
             continue
-        if resolved_artifact_root is None:
-            failures.append(
-                f"{owner}: verified-current requires real artifact bytes through "
-                f"{ARTIFACT_ROOT_ENV}"
-            )
-            results[artifact_id] = VerificationResult(
-                artifact_id=artifact_id,
-                source_sync="verified-current",
-                byte_verified=False,
-            )
-            continue
-        path = _safe_external_file(
+        results[artifact_id] = _verify_current_artifact_bytes(
+            artifact_id,
+            artifact,
+            manifest,
             resolved_artifact_root,
-            artifact.get("filename"),
-            owner,
+            resolved_bundletool,
             failures,
-        )
-        if path is None:
-            results[artifact_id] = VerificationResult(
-                artifact_id=artifact_id,
-                source_sync="verified-current",
-                byte_verified=False,
-            )
-            continue
-        digest = _sha256_file(path)
-        declared_digest = artifact.get("sha256")
-        if not isinstance(declared_digest, str) or not SHA256_PATTERN.fullmatch(
-            declared_digest
-        ):
-            failures.append(f"{owner}: verified-current SHA-256 is invalid")
-        elif digest != declared_digest:
-            failures.append(
-                f"{owner}: artifact SHA-256 {digest} differs from manifest "
-                f"{declared_digest}"
-            )
-
-        failure_count = len(failures)
-        with tempfile.TemporaryDirectory(prefix="nimbo-artifact-stage-") as directory:
-            staging_directory = Path(directory)
-            staged_path = staging_directory / path.name
-            shutil.copyfile(path, staged_path)
-            staged_path.chmod(0o400)
-            staged_digest = _sha256_file(staged_path)
-            if staged_digest != digest:
-                failures.append(
-                    f"{owner}: staged artifact SHA-256 {staged_digest} differs "
-                    f"from source bytes {digest}"
-                )
-            if artifact_id in {"android_phone", "wear_os"}:
-                details = _verify_android(
-                    artifact_id,
-                    staged_path,
-                    artifact,
-                    manifest,
-                    resolved_bundletool,
-                    failures,
-                    runner,
-                )
-            else:
-                details = _verify_apple(
-                    staged_path,
-                    artifact,
-                    manifest,
-                    resolved_artifact_root,
-                    failures,
-                    runner,
-                )
-            final_staged_digest = _sha256_file(staged_path)
-            if final_staged_digest != staged_digest:
-                failures.append(
-                    f"{owner}: staged artifact changed during verification: "
-                    f"{staged_digest} -> {final_staged_digest}"
-                )
-        final_digest = _sha256_file(path)
-        if final_digest != digest:
-            failures.append(
-                f"{owner}: artifact changed during verification: "
-                f"{digest} -> {final_digest}"
-            )
-        byte_verified = (
-            digest == declared_digest
-            and staged_digest == digest
-            and final_staged_digest == staged_digest
-            and final_digest == digest
-            and details is not None
-            and len(failures) == failure_count
-        )
-        results[artifact_id] = VerificationResult(
-            artifact_id=artifact_id,
-            source_sync="verified-current",
-            byte_verified=byte_verified,
-            sha256=digest,
-            details=details or {},
+            runner,
         )
     return results
 

@@ -17,9 +17,13 @@ metadata, creative, and artifact source-sync state. It intentionally remains
 `draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 have null
 manifest hashes, signing, and physical-QA evidence. Protected run `33381050098`
 has produced and durably retained 3/3 independently byte-verified candidate
-artifacts, but public macOS CI cannot yet materialize that private package for
-the ordinary full verifier. The receipt therefore stays pre-manifest evidence;
-promotion from a receipt alone is prohibited. Its full `source_revision` is
+artifacts. Hosted materialization run `33392732428` additionally stored the
+exact package and receipt as hash-bound assets in unpublished draft release
+`379745439` and rechecked their API sizes and digests. This closes durable draft
+materialization relative to the expiring Actions artifact, but the mutable
+draft has not been downloaded and passed through the complete verifier in a
+separate read-only hosted macOS job. Promotion therefore remains prohibited.
+Its full `source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
 drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
@@ -63,12 +67,14 @@ runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
 the tree was clean when they were built. Protected run `33381050098` has now
 supplied that same-clean-checkout build/sign/verify provenance and a retained
-closed package. The remaining pre-promotion task is a durable,
-content-addressed hosted materialization path that reopens those exact bytes on
-macOS. The gate and successful run boundary are recorded in
+closed package. The remaining pre-promotion task is a separate read-only hosted
+macOS path that downloads the exact draft assets and reopens those bytes through
+the complete pinned verifier. The gate and successful run boundary are recorded in
 [`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md)
 and
 [`growth/quality/signed-candidate-run-33381050098.md`](../growth/quality/signed-candidate-run-33381050098.md).
+The durable draft locator and its mutable-draft boundary are recorded in
+[`growth/quality/release-materialization-2026-08-31-run-33392732428.md`](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

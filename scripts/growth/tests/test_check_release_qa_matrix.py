@@ -17,6 +17,7 @@ from scripts.check_release_qa_matrix import (
     expected_authority_block,
     expected_current_block,
     validate,
+    validate_contract_only,
 )
 from scripts.release_artifact_verifier import EXPECTED_POLICY, VerificationResult
 
@@ -292,6 +293,65 @@ class ReleaseQaMatrixCheckTest(unittest.TestCase):
 
     def test_fixture_contract_passes(self) -> None:
         self.assertEqual(validate(self.root), [])
+
+    def test_contract_only_never_invokes_private_byte_verifier(self) -> None:
+        self._set_ready_authority()
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            self._write_document()
+
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            side_effect=AssertionError("private byte verifier must not run"),
+        ):
+            failures = validate_contract_only(self.root)
+
+        self.assertEqual(failures, [])
+
+    def test_contract_only_preserves_but_does_not_confirm_byte_markers(self) -> None:
+        self._set_ready_authority()
+        with mock.patch(
+            "scripts.check_release_qa_matrix.verify_manifest_artifacts",
+            return_value=self._successful_verifications(),
+        ):
+            self._write_document()
+        for relative in AUTHORITY_DOCUMENTS:
+            path = self.root / relative
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    "byte_verified=true",
+                    "byte_verified=false",
+                ),
+                encoding="utf-8",
+            )
+
+        failures = validate_contract_only(self.root)
+
+        self.assertEqual(failures, [])
+
+    def test_contract_only_rejects_partial_manifest_promotion(self) -> None:
+        manifest = self._read_json("store/upload-manifest-1.1.0.json")
+        artifact = manifest["artifacts"]["android_phone"]
+        artifact["source_sync"] = "verified-current"
+        artifact["sha256"] = "d" * 64
+        artifact["signing_evidence"] = "growth/quality/android-current.md"
+        artifact["historical_candidate"] = None
+        self._write_text(
+            "growth/quality/android-current.md",
+            f"verified current SHA-256: {'d' * 64}\n",
+        )
+        self._write_json("store/upload-manifest-1.1.0.json", manifest)
+
+        failures = validate_contract_only(self.root)
+
+        self.assertTrue(
+            any(
+                "release artifact promotion must be atomic" in failure
+                for failure in failures
+            )
+        )
 
     def test_narrative_source_revision_drift_fails_closed(self) -> None:
         path = self.root / "growth/README.md"

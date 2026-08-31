@@ -33,13 +33,17 @@ independently byte-verified phone AAB `d4a90676…`, Wear AAB `e76d685b…`,
 and Apple IPA `7466afb1…`. The schema-v3 receipt, hosted package, exact
 profiles, independent verifier result, GitHub metadata, extracted bytes, and
 complete checksums are retained privately outside Git; the non-secret receipt
-and evidence are committed. There is not yet a durable, CI-readable hosted
-materialization of that private package.
+and evidence are committed. Hosted materialization run
+[`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+stored the exact package and receipt as hash-bound assets in unpublished draft
+release `379745439` and rechecked their API identities, sizes, and digests.
 
 This is `3/3 candidate-verified`, not manifest promotion. The committed
-upload manifest remains `draft-blocked` and `0/3 verified-current` because
-public macOS CI cannot yet materialize the private retained package for the
-full byte verifier. Receipt-only success is prohibited. The exact-source API 25
+upload manifest remains `draft-blocked` and `0/3 verified-current`. Durable
+draft materialization is now PASS relative to the expiring Actions artifact,
+but the draft is mutable and the full trusted verifier has not rerun in a
+separate read-only hosted macOS job. Atomic promotion is therefore still
+prohibited. The exact-source API 25
 debug phone/widget smoke remains regression evidence; upload-derived Android
 phone/tablet/widget/Wear and TestFlight iPhone/iPad/widget/watch physical
 coverage are still missing. The iPad mini 5 is ready at CoreDevice level, the

@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-08-31 signed candidate checkpoint
 
-Status: **3/3 source-current candidate artifacts signed and byte-verified;
-committed upload manifest remains BLOCKED**.
+Status: **3/3 source-current candidate artifacts signed, byte-verified, and
+durably draft-materialized; committed upload manifest remains BLOCKED**.
 
 The product/build-input authority remains
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652`, resolving to Android phone
@@ -35,22 +35,31 @@ The exact package and receipt were downloaded against GitHub artifact digest
 independently re-verified, and retained in a private checksum-verified release
 namespace outside the repository.
 
+Subsequent hosted materialization
+[`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+validated the exact source artifact/package/receipt bindings and stored those
+two files as assets `537966386` and `537966414` in unpublished draft release
+`379745439`. The exact locator, sizes, hashes, mutable-draft boundary, and
+remaining verifier split are recorded in
+[`release-materialization-2026-08-31-run-33392732428.md`](release-materialization-2026-08-31-run-33392732428.md).
+
 ## Why the manifest is still blocked
 
 `candidate-verified` is intentionally a pre-manifest state. A
 `verified-current` manifest entry causes the ordinary verifier to require the
 real external artifact bytes and pinned Bundletool; Apple verification also
-requires macOS signing tools. The public CI jobs currently receive neither the
-private retained package nor a durable content-addressed hosted locator. A
-receipt-only promotion or a skip when bytes are absent would weaken the
-fail-closed contract, so it is not used.
+requires macOS signing tools. The durable draft locator now exists, but the
+materialization ran in a single write-capable Ubuntu job. A separate read-only
+hosted macOS job has not downloaded the draft assets and rerun the complete
+pinned verifier. Promotion or a skip before that trusted split passes would
+weaken the fail-closed contract, so neither is used.
 
 The schema-v2 upload manifest therefore remains `draft-blocked`; all three
 current SHA-256, signing-evidence, and physical-QA fields remain null, as its
-blocked schema requires. Promotion requires a durable hosted materialization
-path that checks locator, size, package SHA, archive safety, exact inventory,
-receipt bindings, and then runs the full macOS byte verifier. Only after that
-path passes may all three entries move atomically to `verified-current`.
+blocked schema requires. The materializer checked locator, size, package SHA,
+archive safety, exact inventory, and receipt bindings. Promotion now requires
+the remaining read-only macOS full-verifier stage. Only after that stage passes
+may all three entries move atomically to `verified-current`.
 
 ## Remaining release boundaries
 

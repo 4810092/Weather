@@ -6,9 +6,11 @@ public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
 Wear 1000008, and Apple build 6. Protected hosted run `33381050098` produced
 and retained exact-current, independently byte-verified candidate artifacts for
-all three surfaces. They are pre-manifest evidence: the upload manifest remains
-`draft-blocked` and `0/3 verified-current` until public macOS CI can obtain the
-durable external package and repeat the full byte verifier. No 1.1.0 artifact
+all three surfaces. Hosted materialization run `33392732428` then stored the
+hash-bound package and receipt in unpublished draft release `379745439`. They
+remain pre-manifest evidence: the upload manifest is `draft-blocked` and `0/3
+verified-current` until a separate read-only hosted macOS job repeats the full
+pinned verifier against those exact assets. No 1.1.0 artifact
 has been uploaded to a store, processed, installed through an internal track,
 submitted, or published. Store consoles remain the authority for live status.
 
@@ -22,8 +24,9 @@ submitted, or published. Store consoles remain the authority for live status.
 <!-- release-authority-current:end -->
 
 Here `byte_verified=false` is the upload-manifest state. The protected candidate
-receipt verifies all three external artifacts, but CI has not yet reopened and
-promoted those private bytes to `verified-current`.
+receipt verifies all three external artifacts and the draft now materializes
+the exact package, but CI has not rerun the complete verifier in the trusted
+read-only macOS split or promoted the entries to `verified-current`.
 
 ## Version identity
 
@@ -32,6 +35,33 @@ promoted those private bytes to `verified-current`.
 - iOS bundle ID: `uz.ganikhodjaev.weather`.
 - Every Android upload must exceed the highest store-accepted code; at this checkpoint phone must be greater than 6 and Wear OS greater than 1000007.
 - iOS marketing version starts at 1.0; build numbers are monotonically increasing.
+
+## Nimbo 1.1.0 hosted draft-materialization checkpoint — 2026-08-31
+
+Manual GitHub-hosted
+[run `33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+passed from `master` at evidence head
+`30a67edf2968878e22bd05497bcd20c64cba7fc7`. It bound the exact successful
+signing run/artifact/workflow, verified source artifact ZIP SHA-256
+`f1754ff767d908cd6be5ce5652e05e6f3dc8721ffa1b0db303d72a5d27cf5478`,
+safely admitted the expected package/receipt inventory and bindings, and stored
+only those two files in unpublished draft release `379745439`.
+
+Package asset `537966386` is 58,073,521 bytes with SHA-256
+`60c827ef9f5d2cdc51add5344bd33ab780ab1be3154a3f3da8c22074ddb518d9`;
+receipt asset `537966414` is 11,711 bytes with SHA-256
+`c852c61e07289d2a7a8f211efc91d7f30fab2c3475465ba000625780a21de19c`.
+The workflow re-read the release and asset APIs and required `draft=true`,
+`prerelease=true`, `published_at=null`, target
+`30a67edf2968878e22bd05497bcd20c64cba7fc7`, and no Git tag.
+
+This is a durable draft-materialization PASS relative to the expiring Actions
+artifact, not release readiness. GitHub reports the draft as mutable rather
+than immutable, and the single Ubuntu job did not run the complete verifier in
+a separate read-only hosted macOS permission split. The upload manifest stays
+`draft-blocked` and `0/3 verified-current`; physical QA, store delivery, crash
+diagnosis, review, release, and availability remain independent. See the
+[materialization record](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
 
 ## Nimbo 1.1.0 hosted signed-candidate checkpoint — 2026-08-31
 
@@ -61,9 +91,11 @@ The exact hosted files and metadata are retained outside Git under a complete
 checksum manifest; the non-secret receipt is committed.
 
 This closes protected signing and pre-manifest candidate verification only.
-The schema-v2 upload manifest remains fail-closed because hosted CI has no
-durable materialization route to the private retained bytes; receipt-only
-promotion is not accepted. The Android candidate still needs an upload-derived
+At this checkpoint the schema-v2 upload manifest remained fail-closed because
+there was no hosted materialization route to the private retained bytes. The
+later draft-materialization checkpoint above closes that storage gap, but not
+the still-pending separate read-only macOS full-verifier split or manifest
+promotion. The Android candidate still needs an upload-derived
 physical phone/tablet/widget/Wear matrix. The App Store-profile IPA must be
 uploaded unchanged and exercised through TestFlight; it is not directly
 installable. Crash diagnosis, store processing, review, rollout, and public

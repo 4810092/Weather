@@ -27,7 +27,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md",
+      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-phone-1.1.0-vc7.aab",
@@ -44,7 +44,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md",
+      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-wear-1.1.0-vc1000008.aab",
@@ -61,7 +61,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md",
+      "source_sync_evidence": "growth/quality/release-materialization-2026-08-31-run-33392732428.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "Nimbo.ipa",
@@ -167,9 +167,9 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "durable hosted promotion of the retained signed Android phone 1.1.0 (8) candidate and its exact byte-linked physical smoke",
-    "durable hosted promotion of the retained signed Wear OS 1.1.0 (1000008) candidate and its exact byte-linked physical smoke",
-    "durable hosted promotion of the retained signed Apple 1.1.0 (6) candidate and its unchanged TestFlight physical runtime matrix",
+    "read-only hosted macOS full-verifier promotion of the materialized signed Android phone 1.1.0 (8) candidate and its exact byte-linked physical smoke",
+    "read-only hosted macOS full-verifier promotion of the materialized signed Wear OS 1.1.0 (1000008) candidate and its exact byte-linked physical smoke",
+    "read-only hosted macOS full-verifier promotion of the materialized signed Apple 1.1.0 (6) candidate and its unchanged TestFlight physical runtime matrix",
     "physical tablet, widget, and Wear OS smoke",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",
     "write-capable App Store Connect and Google Play upload paths"

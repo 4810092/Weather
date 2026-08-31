@@ -11,12 +11,14 @@ from pathlib import Path
 try:
     from scripts.release_artifact_verifier import (
         load_manifest,
+        validate_manifest_artifact_contract,
         verification_summary,
         verify_manifest_artifacts,
     )
 except ModuleNotFoundError:
     from release_artifact_verifier import (  # type: ignore[no-redef]
         load_manifest,
+        validate_manifest_artifact_contract,
         verification_summary,
         verify_manifest_artifacts,
     )
@@ -56,11 +58,19 @@ def parse_args() -> argparse.Namespace:
         help="Print a machine-readable verification summary",
     )
     parser.add_argument(
+        "--contract-only",
+        action="store_true",
+        help=(
+            "Validate only public schema, source, evidence, and atomic manifest "
+            "state; never inspect or attest to private artifact bytes"
+        ),
+    )
+    parser.add_argument(
         "--print-source-revision",
         action="store_true",
         help=(
-            "Print only the fully validated manifest source revision for a "
-            "subsequent build invocation"
+            "Print only the statically validated manifest source revision for "
+            "a subsequent build invocation"
         ),
     )
     return parser.parse_args()
@@ -70,6 +80,39 @@ def main() -> int:
     arguments = parse_args()
     failures: list[str] = []
     manifest = load_manifest(arguments.manifest, failures)
+    if arguments.contract_only or arguments.print_source_revision:
+        results = validate_manifest_artifact_contract(ROOT, manifest, failures)
+        if arguments.json:
+            print(
+                json.dumps(
+                    {
+                        artifact_id: {
+                            "contract_valid": result.contract_valid,
+                            "source_sync": result.source_sync,
+                        }
+                        for artifact_id, result in results.items()
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+        if failures:
+            for failure in failures:
+                print(
+                    f"release artifact contract validation failed: {failure}",
+                    file=sys.stderr,
+                )
+            return 1
+        if arguments.print_source_revision:
+            print(manifest["source_revision"])
+            return 0
+        if not arguments.json:
+            print(
+                "Release artifact contract validation passed: static state only; "
+                "artifact bytes were not inspected."
+            )
+        return 0
+
     results = verify_manifest_artifacts(
         ROOT,
         manifest,
@@ -83,9 +126,6 @@ def main() -> int:
         for failure in failures:
             print(f"release artifact verification failed: {failure}", file=sys.stderr)
         return 1
-    if arguments.print_source_revision:
-        print(manifest["source_revision"])
-        return 0
     verified = sum(result.byte_verified for result in results.values())
     blocked = sum(result.source_sync == "blocked" for result in results.values())
     if not arguments.json:

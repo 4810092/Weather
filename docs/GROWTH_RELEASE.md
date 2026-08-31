@@ -97,9 +97,14 @@ the captured slice”; it is never converted to a synthetic rank.
   independently byte-verified phone, Wear, and Apple candidates. The exact
   hashes and schema-v3 receipt are recorded in the
   [signed-candidate evidence](../growth/quality/signed-candidate-run-33381050098.md).
-  The manifest remains `0/3 verified-current`, not because signing failed, but
-  because public CI cannot yet materialize the private retained package for the
-  complete macOS byte verifier; receipt-only promotion is prohibited. Exact
+  Hosted materialization run
+  [`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+  then stored the exact package and receipt as hash-bound assets in unpublished
+  draft release `379745439` and rechecked their API sizes and digests. Durable
+  draft materialization now passes relative to the expiring Actions artifact,
+  but the draft is mutable and the full trusted verifier has not rerun in a
+  separate read-only hosted macOS job. The manifest therefore remains `0/3
+  verified-current`; atomic promotion is still prohibited. Exact
   source `2cdd438` also has a bounded clean physical General Mobile API 25 debug
   pass covering denied location, Bukhara search, live/cache/recovery, widget,
   process health, and cleanup, with local and pulled installed APK SHA-256
@@ -223,9 +228,9 @@ recorded only after direct store evidence.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Materialize the retained source-current signed package in hosted macOS CI,
-   re-run the full byte verifier, and promote all three manifest entries
-   atomically. Then complete the delivery-linked physical matrix: derive or
+3. Download the exact draft-release assets in a separate read-only hosted macOS
+   job, re-run the full pinned byte verifier, and promote all three manifest
+   entries atomically. Then complete the delivery-linked physical matrix: derive or
    deliver an upload-key-signed universal APK from the exact phone AAB for the
    clean API 25 device, add physical tablet/widget and paired Wear coverage,
    and upload the exact App Store-profile IPA unchanged to TestFlight for
@@ -242,7 +247,8 @@ recorded only after direct store evidence.
 Current phone vc8, Wear vc1000008, and Apple build 6 are retained and
 independently candidate-verified from source `2cdd438`; historical phone vc7,
 historical Wear, and Apple build 5 remain non-transferable. The current manifest
-is blocked before durable hosted materialization/promotion and physical QA.
+is blocked after durable draft materialization but before the separate trusted
+macOS verifier/promotion and physical QA.
 Earlier [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
 records that neither internal track was changed; write-capable upload paths
 must be rechecked at action time. Play Internal and TestFlight remain bounded

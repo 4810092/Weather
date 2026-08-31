@@ -167,12 +167,12 @@ def sync(
             )
         elif gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "BLOCKED · 3/3 signed candidates retained and byte-verified; "
-                "manifest remains 0/3 verified-current"
+                "BLOCKED · durable draft materialization passed; full trusted "
+                "macOS verifier pending; manifest remains 0/3 verified-current"
             )
             new_next = (
-                "Materialize the retained content-addressed package in hosted "
-                "macOS CI, re-run the full byte verifier, promote all three "
+                "Download the exact draft-release assets in a separate read-only "
+                "hosted macOS job, run the full pinned verifier, promote all three "
                 "manifest entries atomically, then bind exact physical QA"
             )
         elif gate_id == "android_physical_smoke":
@@ -367,14 +367,18 @@ def sync(
         "produced a schema-v3 receipt for phone d4a90676…, Wear e76d685b…, and "
         "Apple 7466afb1…. The GitHub ZIP matched its API digest; the safe-extracted "
         "closed tree and all three candidates passed an independent verifier run "
-        "and are retained outside Git under a complete checksum manifest. This is "
-        "3/3 candidate-verified, but the committed upload manifest remains 0/3 "
-        "verified-current because public CI cannot yet materialize the private "
-        "retained package for the full macOS byte verifier. Receipt-only promotion "
-        "is prohibited. The upload-derived Android physical matrix and TestFlight "
-        "Apple matrix remain missing; two public iOS crashes still lack diagnostics. "
-        "No store upload, processing, submission, release, or availability is "
-        "claimed."
+        "and are retained outside Git under a complete checksum manifest. Hosted "
+        "materialization run 33392732428 then passed at evidence head 30a67edf: it "
+        "validated the exact source artifact/package/receipt bindings and stored the "
+        "package and receipt as hash-bound assets 537966386 and 537966414 in "
+        "unpublished draft release 379745439. Durable draft materialization is now "
+        "PASS relative to the expiring Actions artifact, but the draft is mutable and "
+        "the full trusted verifier has not rerun in a separate read-only hosted macOS "
+        "job. This is 3/3 candidate-verified with durable hosted bytes, while the "
+        "committed upload manifest remains fail-closed at 0/3 verified-current. The "
+        "upload-derived Android physical matrix and TestFlight Apple matrix remain "
+        "missing; two public iOS crashes still lack diagnostics. No store upload, "
+        "processing, submission, release, or availability is claimed."
     )
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
@@ -405,10 +409,15 @@ def sync(
         "protected master-only hosted run 33381050098 passed both jobs with all "
         "8/8 signing inputs and produced retained, independently byte-verified "
         "phone, Wear, and Apple candidates. The schema-v3 receipt proves 3/3 "
-        "candidate bytes, while the committed manifest stays 0/3 verified-current "
-        "because public CI cannot yet materialize the private package for the full "
-        "macOS verifier. The upload-derived Android and TestFlight Apple physical "
-        "matrices remain missing, so manifest/physical gates remain blocked. "
+        "candidate bytes. Hosted materialization run 33392732428 then validated the "
+        "exact source artifact/package/receipt bindings and retained the package and "
+        "receipt as hash-bound assets in unpublished draft release 379745439. Durable "
+        "draft materialization is PASS relative to the expiring Actions artifact, but "
+        "the draft is mutable and the full trusted verifier has not rerun in a "
+        "separate read-only hosted macOS job. The committed manifest therefore stays "
+        "fail-closed at 0/3 verified-current. The upload-derived Android and "
+        "TestFlight Apple physical matrices remain missing, so manifest/physical "
+        "gates remain blocked. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -483,9 +492,19 @@ def sync(
         "and Apple artifacts, complete physical-device coverage, and critical "
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, full trusted macOS verification and "
+        "atomic manifest promotion of the materialized candidates, complete "
+        "physical-device coverage, and critical console guardrails.",
+    )
+    verdict = verdict.replace(
+        "Scale status remains hold; public outreach and acquisition scaling "
         "remain gated on crash diagnosis, durable manifest promotion of the "
         "retained candidates, complete physical-device coverage, and critical "
         "console guardrails.",
+        "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, full trusted macOS verification and "
+        "atomic manifest promotion of the materialized candidates, complete "
+        "physical-device coverage, and critical console guardrails.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."

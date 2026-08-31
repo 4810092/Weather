@@ -13,7 +13,9 @@ Status date: August 31, 2026.
 
 In the machine-validated block, `byte_verified=false` describes the upload-
 manifest entry, not the protected-run receipt: candidate bytes are verified,
-while CI re-verification and `verified-current` promotion remain incomplete.
+and the exact package is materialized in a hosted unpublished draft, while the
+separate read-only macOS full-verifier run and `verified-current` promotion
+remain incomplete.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -51,8 +53,9 @@ also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
 and the exact App Store Connect `ExportOptions.plist`; build 6 now has a
 retained, candidate-verified distribution archive and IPA, but the manifest is
-not promoted because public CI cannot yet materialize those private bytes for
-the same full verifier. The single staged directory layout and action-time
+not promoted because materialization run `33392732428` did not execute the same
+full verifier from a separate read-only hosted macOS job. The single staged
+directory layout and action-time
 command are documented in [`store/README.md`](../store/README.md). The verifier
 and its explicit external-build provenance boundary are recorded in
 [`growth/quality/release-artifact-byte-verifier-2026-08-30.md`](../growth/quality/release-artifact-byte-verifier-2026-08-30.md).
@@ -67,9 +70,14 @@ and its explicit external-build provenance boundary are recorded in
   byte-verified phone AAB, Wear AAB, IPA, xcarchive, dSYMs, mapping, and exact
   ExportOptions. The schema-v3 receipt and hashes are recorded in
   [`signed-candidate-run-33381050098.md`](../growth/quality/signed-candidate-run-33381050098.md).
-  This is `3/3 candidate-verified`, while the manifest correctly remains `0/3
-  verified-current`: its public CI path cannot yet obtain the private retained
-  bytes, and receipt-only promotion is forbidden. Hosted signing is not
+  Hosted materialization
+  [run `33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+  then validated the exact source artifact/package/receipt bindings and stored
+  the package and receipt as hash-bound assets in unpublished draft release
+  `379745439`. This is a durable draft materialization PASS relative to the
+  expiring Actions artifact, but the draft is mutable and no separate read-only
+  hosted macOS job has run the full pinned verifier. The manifest therefore
+  correctly remains `0/3 verified-current`. Hosted signing/materialization is not
   physical accessibility, Play/TestFlight delivery, or crash-gate closure. A
   clean isolated exact-source debug
   APK and its pulled installed bytes share SHA-256
@@ -115,7 +123,9 @@ and its explicit external-build provenance boundary are recorded in
   install-over-production, TestFlight/Play delivery, physical-device, review,
   rollout, or end-user-availability proof.
 - The current gate decisions remain in
-  [`growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md`](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md).
+  [`growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md`](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md),
+  with the current blocked manifest source-sync locator in
+  [`growth/quality/release-materialization-2026-08-31-run-33392732428.md`](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
   The bounded exact-current iPhone/watchOS Simulator and Wear OS emulator
   evidence is recorded in
   [`growth/quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md`](../growth/quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md).

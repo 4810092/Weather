@@ -103,9 +103,9 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Materialize the retained content-addressed package in hosted macOS CI, run "
-        "the full verifier, promote all three manifest entries atomically, and keep "
-        "store upload blocked until matching QA passes.",
+        "Download the exact draft-release assets in a separate read-only hosted "
+        "macOS job, run the full pinned verifier, promote all three manifest entries "
+        "atomically, and keep store upload blocked until matching QA passes.",
     ),
     "android_physical_smoke": (
         "Android engineering",

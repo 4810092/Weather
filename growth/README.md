@@ -28,8 +28,12 @@ then passed both jobs with all 8/8 signing inputs and produced retained,
 independently verified candidates for phone `1.1.0 (8)`, Wear
 `1.1.0 (1000008)`, and Apple `1.1.0 (6)`. This is `3/3
 candidate-verified`, not `verified-current`: the committed upload manifest
-remains fail-closed at `0/3` because public CI has no durable materialization
-route to the private retained package. A receipt-only promotion is prohibited.
+remains fail-closed at `0/3`. Hosted materialization run `33392732428` passed
+and stored the exact package and receipt as hash-bound assets in unpublished
+draft release `379745439`; this closes durable draft materialization relative
+to the expiring Actions artifact. The draft remains mutable, and the full
+trusted verifier has not rerun in a separate read-only hosted macOS job, so
+atomic manifest promotion is still prohibited.
 The exact-source API 25 debug phone/widget pass remains valid regression
 evidence, but upload-derived Android phone/tablet/widget/Wear and TestFlight
 iPhone/iPad/widget/watch coverage are missing. The iPhone is currently locked,
@@ -53,8 +57,9 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Full action-time verifier contract; manifest remains 0/3 verified-current until hosted CI can reopen the retained bytes |
+| Signed artifact byte gate | [quality/release-artifact-byte-verifier-2026-08-30.md](quality/release-artifact-byte-verifier-2026-08-30.md) | Full action-time verifier contract; manifest remains 0/3 verified-current until a separate read-only hosted macOS job verifies the materialized bytes |
 | Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
+| Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and pending read-only macOS verifier split |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
 | Current release source authority | [quality/release-artifact-source-sync-2026-08-31-2cdd438.md](quality/release-artifact-source-sync-2026-08-31-2cdd438.md) | Exact `2cdd438` identity, successful ordinary and protected hosted runs, 3/3 candidate-verified versus 0/3 manifest-verified boundary, and remaining physical/store gates |

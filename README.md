@@ -208,16 +208,22 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   independently verified candidate bytes for all three manifest surfaces:
   phone AAB `d4a90676…`, Wear AAB `e76d685b…`, and Apple IPA `7466afb1…`.
   This closes hosted signing and pre-manifest byte verification, not release
-  readiness. The upload manifest intentionally remains `draft-blocked` and
-  `0/3 verified-current` until public macOS CI can materialize the durable
-  external package and re-run the complete byte verifier; a receipt-only pass
-  is not accepted. The exact-source debug Android phone/widget smoke remains
+  readiness. Hosted materialization
+  [run `33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
+  subsequently stored the hash-bound package and receipt as the only two assets
+  in unpublished draft release `379745439` and rechecked their API sizes and
+  SHA-256 digests. Durable draft materialization now passes relative to the
+  expiring Actions artifact, but the draft is mutable and the complete verifier
+  has not rerun in a separate read-only hosted macOS job. The upload manifest
+  therefore intentionally remains `draft-blocked` and `0/3 verified-current`.
+  The exact-source debug Android phone/widget smoke remains
   valid regression evidence, but the upload-derived phone/tablet/widget/Wear
   matrix, TestFlight iPhone/iPad/widget/watch matrix, iOS crash diagnosis, and
   post-rollout evidence are still blocked. See the [growth implementation
   checkpoint](docs/GROWTH_RELEASE.md), the current [source-sync
   record](growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md),
-  and the [signed-candidate evidence](growth/quality/signed-candidate-run-33381050098.md).
+  [materialization evidence](growth/quality/release-materialization-2026-08-31-run-33392732428.md),
+  and [signed-candidate evidence](growth/quality/signed-candidate-run-33381050098.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.
 
 Store consoles remain the authority for live availability. The repository records the evidence known at each checkpoint rather than silently rewriting historical status.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import io
 import json
 import os
 import plistlib
@@ -19,6 +20,13 @@ from scripts.release_artifact_verifier import (
     APPLE_DISTRIBUTION_CERTIFICATE_SHA256,
     APPLE_TEAM_ID,
     EXPECTED_POLICY,
+    StaticArtifactContractResult,
+    VerificationResult,
+    _validate_artifact_contract,
+    _verify_current_artifact_bytes,
+    validate_manifest_artifact_contract,
+    validate_repository_source,
+    validate_verification_policy,
     verify_manifest_artifacts,
     verify_signed_candidate_artifacts,
 )
@@ -214,6 +222,16 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
                     cwd=self.root,
                     check=True,
                 )
+
+    def promote_all(self, manifest: dict, digest: str = "d" * 64) -> None:
+        for artifact_id, artifact in manifest["artifacts"].items():
+            artifact["source_sync"] = "verified-current"
+            artifact["historical_candidate"] = None
+            artifact["sha256"] = digest
+            artifact["signing_evidence"] = (
+                f"growth/quality/current-{artifact_id}.md"
+            )
+        self.write_current_evidence(manifest)
 
     def write_android_bundle(
         self,
@@ -630,6 +648,11 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
     ) -> tuple[dict, list[str]]:
         failures: list[str] = []
         self.write_current_evidence(manifest)
+        artifact_id = next(
+            artifact_id
+            for artifact_id, artifact in manifest["artifacts"].items()
+            if artifact["source_sync"] == "verified-current"
+        )
 
         def runner(command: list[str], **kwargs: object) -> subprocess.CompletedProcess:
             return self.runner(
@@ -652,14 +675,38 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
                 self.android_certificate_sha256,
             ),
         ):
-            results = verify_manifest_artifacts(
+            policy_valid = validate_verification_policy(manifest, failures)
+            source_valid = validate_repository_source(
+                self.root,
+                manifest.get("source_revision"),
+                failures,
+            )
+            contract_valid = _validate_artifact_contract(
                 self.root,
                 manifest,
+                manifest["artifacts"],
                 failures,
-                artifact_root=self.artifact_root,
-                bundletool_jar=self.bundletool,
-                runner=runner,
+                enforce_atomic_promotion=False,
             )
+            valid = policy_valid and source_valid and contract_valid
+            result = (
+                _verify_current_artifact_bytes(
+                    artifact_id,
+                    manifest["artifacts"][artifact_id],
+                    manifest,
+                    self.artifact_root,
+                    self.bundletool,
+                    failures,
+                    runner,
+                )
+                if valid
+                else VerificationResult(
+                    artifact_id=artifact_id,
+                    source_sync="verified-current",
+                    byte_verified=False,
+                )
+            )
+            results = {artifact_id: result}
         return results, failures
 
     def verify_apple(
@@ -671,6 +718,7 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
     ) -> tuple[dict, list[str]]:
         failures: list[str] = []
         self.write_current_evidence(manifest)
+        artifact_id = "apple"
         certificate_bytes = b"fixture-apple-certificate"
 
         def runner(command: list[str], **kwargs: object) -> subprocess.CompletedProcess:
@@ -693,13 +741,38 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
                 side_effect=lambda path, owner, failures: str(path),
             ),
         ):
-            results = verify_manifest_artifacts(
+            policy_valid = validate_verification_policy(manifest, failures)
+            source_valid = validate_repository_source(
+                self.root,
+                manifest.get("source_revision"),
+                failures,
+            )
+            contract_valid = _validate_artifact_contract(
                 self.root,
                 manifest,
+                manifest["artifacts"],
                 failures,
-                artifact_root=self.artifact_root,
-                runner=runner,
+                enforce_atomic_promotion=False,
             )
+            valid = policy_valid and source_valid and contract_valid
+            result = (
+                _verify_current_artifact_bytes(
+                    artifact_id,
+                    manifest["artifacts"][artifact_id],
+                    manifest,
+                    self.artifact_root,
+                    None,
+                    failures,
+                    runner,
+                )
+                if valid
+                else VerificationResult(
+                    artifact_id=artifact_id,
+                    source_sync="verified-current",
+                    byte_verified=False,
+                )
+            )
+            results = {artifact_id: result}
         return results, failures
 
     def test_repository_manifest_passes_only_as_fail_closed_blocked(self) -> None:
@@ -716,6 +789,100 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         self.assertTrue(
             all(result.source_sync == "blocked" for result in results.values())
         )
+
+    def test_static_contract_has_no_byte_verification_surface(self) -> None:
+        manifest = self.manifest()
+        failures: list[str] = []
+
+        results = validate_manifest_artifact_contract(
+            self.root,
+            manifest,
+            failures,
+        )
+
+        self.assertEqual(failures, [])
+        self.assertTrue(all(result.contract_valid for result in results.values()))
+        self.assertTrue(
+            all(not hasattr(result, "byte_verified") for result in results.values())
+        )
+
+    def test_print_source_revision_uses_static_contract_only(self) -> None:
+        from scripts import verify_release_artifacts as cli
+
+        manifest = self.manifest()
+        static_results = {
+            artifact_id: StaticArtifactContractResult(
+                artifact_id=artifact_id,
+                source_sync="blocked",
+                contract_valid=True,
+            )
+            for artifact_id in ("android_phone", "wear_os", "apple")
+        }
+        output = io.StringIO()
+        with (
+            mock.patch.object(cli, "load_manifest", return_value=manifest),
+            mock.patch.object(
+                cli,
+                "validate_manifest_artifact_contract",
+                return_value=static_results,
+            ) as static_validator,
+            mock.patch.object(
+                cli,
+                "verify_manifest_artifacts",
+                side_effect=AssertionError("full byte verifier must not run"),
+            ),
+            mock.patch("sys.argv", ["verify_release_artifacts.py", "--print-source-revision"]),
+            mock.patch("sys.stdout", output),
+        ):
+            exit_code = cli.main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output.getvalue(), f"{self.source_revision}\n")
+        static_validator.assert_called_once()
+
+    def test_static_contract_accepts_only_atomic_current_promotion(self) -> None:
+        for promoted in (1, 2):
+            with self.subTest(promoted=promoted):
+                manifest = self.manifest()
+                for artifact_id in tuple(manifest["artifacts"])[:promoted]:
+                    artifact = manifest["artifacts"][artifact_id]
+                    artifact["source_sync"] = "verified-current"
+                    artifact["historical_candidate"] = None
+                    artifact["sha256"] = "d" * 64
+                    artifact["signing_evidence"] = (
+                        f"growth/quality/current-{artifact_id}.md"
+                    )
+                self.write_current_evidence(manifest)
+                failures: list[str] = []
+
+                results = validate_manifest_artifact_contract(
+                    self.root,
+                    manifest,
+                    failures,
+                )
+
+                self.assertTrue(
+                    any(
+                        "release artifact promotion must be atomic" in failure
+                        for failure in failures
+                    )
+                )
+                self.assertTrue(
+                    all(not result.contract_valid for result in results.values())
+                )
+
+        manifest = self.manifest()
+        self.promote_all(manifest)
+        failures = []
+
+        results = validate_manifest_artifact_contract(
+            self.root,
+            manifest,
+            failures,
+        )
+
+        self.assertEqual(failures, [])
+        self.assertTrue(all(result.contract_valid for result in results.values()))
 
     def test_complete_blocked_manifest_can_verify_staged_signed_candidate(
         self,
@@ -1170,19 +1337,19 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         )
 
     def test_fake_digest_without_artifact_bytes_fails_closed(self) -> None:
-        manifest = self.manifest("android_phone")
-        manifest["artifacts"]["android_phone"]["sha256"] = "a" * 64
-        self.write_current_evidence(manifest)
+        manifest = self.manifest()
+        self.promote_all(manifest, "a" * 64)
         failures: list[str] = []
 
         results = verify_manifest_artifacts(self.root, manifest, failures)
 
-        self.assertFalse(results["android_phone"].byte_verified)
-        self.assertIn(
-            "upload manifest artifact android_phone: verified-current requires "
-            "real artifact bytes through NIMBO_RELEASE_ARTIFACT_ROOT",
-            failures,
-        )
+        self.assertTrue(all(not result.byte_verified for result in results.values()))
+        for artifact_id in ("android_phone", "wear_os", "apple"):
+            self.assertIn(
+                f"upload manifest artifact {artifact_id}: verified-current requires "
+                "real artifact bytes through NIMBO_RELEASE_ARTIFACT_ROOT",
+                failures,
+            )
 
     def test_verified_current_cannot_self_certify_all_evidence_with_manifest(
         self,

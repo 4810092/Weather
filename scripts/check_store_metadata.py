@@ -11,9 +11,11 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 try:
-    from scripts.release_artifact_verifier import verify_manifest_artifacts
+    from scripts.release_artifact_verifier import validate_manifest_artifact_contract
 except ModuleNotFoundError:
-    from release_artifact_verifier import verify_manifest_artifacts  # type: ignore[no-redef]
+    from release_artifact_verifier import (  # type: ignore[no-redef]
+        validate_manifest_artifact_contract,
+    )
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_LOCALES = {
@@ -715,7 +717,7 @@ def validate_upload_artifacts(
     if not isinstance(upload_manifest, dict):
         failures.append("upload manifest must be an object")
         return
-    verify_manifest_artifacts(ROOT, upload_manifest, failures)
+    validate_manifest_artifact_contract(ROOT, upload_manifest, failures)
     artifacts = upload_manifest.get("artifacts")
     if not isinstance(artifacts, dict) or set(artifacts) != ARTIFACT_NAMES:
         failures.append(

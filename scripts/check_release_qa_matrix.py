@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -15,12 +16,14 @@ try:
     from scripts.release_artifact_verifier import (
         VerificationResult,
         evidence_contains_digest,
+        validate_manifest_artifact_contract,
         verify_manifest_artifacts,
     )
 except ModuleNotFoundError:
     from release_artifact_verifier import (  # type: ignore[no-redef]
         VerificationResult,
         evidence_contains_digest,
+        validate_manifest_artifact_contract,
         verify_manifest_artifacts,
     )
 
@@ -621,6 +624,151 @@ def expected_authority_block(
     return authority_block, failures
 
 
+def _extract_document_block(
+    document: str,
+    start_marker: str,
+    end_marker: str,
+    label: str,
+    failures: list[str],
+) -> str | None:
+    if document.count(start_marker) != 1 or document.count(end_marker) != 1:
+        failures.append(f"{label}: block markers must each appear once")
+        return None
+    start = document.index(start_marker)
+    end = document.index(end_marker, start) + len(end_marker)
+    return document[start:end]
+
+
+def validate_contract_only(root: Path = ROOT) -> list[str]:
+    """Validate public contract state without inspecting or claiming bytes.
+
+    The byte-verification values already committed by the protected full
+    verifier are treated as opaque text.  This path only preserves that block
+    while checking its public source, manifest, evidence, and gate bindings.
+    It can neither produce a new byte claim nor declare a surface READY.
+    """
+
+    failures: list[str] = []
+    manifest = _load_json_object(root / UPLOAD_MANIFEST, "upload manifest", failures)
+    gate_payload = _load_json_object(root / QUALITY_GATES, "quality gates", failures)
+    gates = gate_payload.get("gates")
+    if not isinstance(gates, dict):
+        failures.append("quality gates: gates must be an object")
+        gates = {}
+
+    validate_manifest_artifact_contract(root, manifest, failures)
+    _validate_source_revision(root, manifest, gates, failures)
+    physical_gate_statuses = {
+        gate_id: _gate_status(gates, gate_id, failures)
+        for gate_id in ("android_physical_smoke", "ios_physical_smoke")
+    }
+    _gate_status(gates, RELEASE_GATE, failures)
+
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, dict):
+        artifacts = {}
+    revision = manifest.get("source_revision")
+
+    documents: dict[Path, str] = {}
+    authority_blocks: dict[Path, str] = {}
+    for relative in AUTHORITY_DOCUMENTS:
+        try:
+            document = (root / relative).read_text(encoding="utf-8")
+        except OSError as error:
+            failures.append(f"{relative}: cannot read: {error}")
+            continue
+        documents[relative] = document
+        block = _extract_document_block(
+            document,
+            AUTHORITY_BLOCK_START,
+            AUTHORITY_BLOCK_END,
+            f"{relative}: current authority",
+            failures,
+        )
+        if block is not None:
+            authority_blocks[relative] = block
+
+    unique_blocks = set(authority_blocks.values())
+    if len(unique_blocks) > 1:
+        failures.append(
+            "release authority: committed authority block differs across documents"
+        )
+    canonical = next(iter(unique_blocks), None)
+    if canonical is not None and isinstance(revision, str):
+        lines = canonical.splitlines()
+        byte_markers: dict[str, str] = {}
+        marker_pattern = re.compile(
+            r"<!-- artifact:(android_phone|wear_os|apple);"
+            r"source_sync=(blocked|verified-current);"
+            r"byte_verified=(true|false);"
+            r"physical_qa_evidence=([^;<>]+) -->\Z"
+        )
+        for line in lines:
+            match = marker_pattern.fullmatch(line)
+            if match is not None:
+                byte_markers[match.group(1)] = match.group(3)
+        if set(byte_markers) != {"android_phone", "wear_os", "apple"}:
+            failures.append(
+                "release authority: committed block must preserve exactly one "
+                "opaque byte marker per artifact"
+            )
+        else:
+            expected_lines = [
+                AUTHORITY_BLOCK_START,
+                f"<!-- source_revision:{revision} -->",
+            ]
+            for artifact_id in ("android_phone", "wear_os", "apple"):
+                artifact = artifacts.get(artifact_id)
+                if not isinstance(artifact, dict):
+                    continue
+                physical = _current_physical_evidence_boundary(
+                    root,
+                    artifact_id,
+                    artifact,
+                    failures,
+                )
+                expected_lines.append(
+                    f"<!-- artifact:{artifact_id};"
+                    f"source_sync={artifact.get('source_sync')};"
+                    f"byte_verified={byte_markers[artifact_id]};"
+                    f"physical_qa_evidence={physical} -->"
+                )
+            for gate_id in ("android_physical_smoke", "ios_physical_smoke"):
+                gate = gates.get(gate_id)
+                reason = gate.get("reason") if isinstance(gate, dict) else None
+                reason_digest = (
+                    hashlib.sha256(reason.encode("utf-8")).hexdigest()
+                    if isinstance(reason, str) and reason.strip()
+                    else ""
+                )
+                expected_lines.append(
+                    f"<!-- physical_gate:{gate_id}="
+                    f"{physical_gate_statuses.get(gate_id)};"
+                    f"reason_sha256={reason_digest} -->"
+                )
+            expected_lines.append(AUTHORITY_BLOCK_END)
+            if canonical != "\n".join(expected_lines):
+                failures.append(
+                    "release authority: committed block public fields differ "
+                    "from manifest/gates"
+                )
+
+    qa_document = documents.get(DOCUMENT)
+    if qa_document is not None:
+        _extract_document_block(
+            qa_document,
+            CURRENT_BLOCK_START,
+            CURRENT_BLOCK_END,
+            f"{DOCUMENT}: exact-current",
+            failures,
+        )
+        if qa_document.count(HISTORICAL_HEADING) != 1:
+            failures.append(
+                f"{DOCUMENT}: historical non-transferable heading must appear once"
+            )
+    return failures
+
+
 def validate(root: Path = ROOT) -> list[str]:
     expected, authority_block, failures, historical_identities = _expected_blocks(root)
     if expected is None or authority_block is None:
@@ -681,12 +829,31 @@ def validate(root: Path = ROOT) -> list[str]:
 
 
 def main() -> int:
-    failures = validate()
+    parser = argparse.ArgumentParser(
+        description="Validate the Nimbo release QA authority matrix."
+    )
+    parser.add_argument(
+        "--contract-only",
+        action="store_true",
+        help=(
+            "Validate only public manifest/evidence bindings and preserve the "
+            "existing committed byte authority block"
+        ),
+    )
+    arguments = parser.parse_args()
+    failures = validate_contract_only() if arguments.contract_only else validate()
     if failures:
         for failure in failures:
-            print(f"release QA matrix check failed: {failure}", file=sys.stderr)
+            label = "contract check" if arguments.contract_only else "check"
+            print(f"release QA matrix {label} failed: {failure}", file=sys.stderr)
         return 1
-    print("Release QA matrix check passed.")
+    if arguments.contract_only:
+        print(
+            "Release QA matrix contract check passed: existing byte authority "
+            "was preserved but not reverified."
+        )
+    else:
+        print("Release QA matrix check passed.")
     return 0
 
 

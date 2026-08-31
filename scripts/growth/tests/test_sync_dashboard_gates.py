@@ -51,7 +51,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "3/3 signed candidates retained",
+                "durable draft materialization passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -66,7 +66,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["ios_crash_report_missing"],
             )
             self.assertIn(
-                "3/3 candidate-verified",
+                "Durable draft materialization is now PASS",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -86,7 +86,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Materialize the retained content-addressed package",
+                "separate read-only hosted macOS job",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertNotIn(
@@ -114,7 +114,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "public CI cannot yet materialize the private package",
+                "Hosted materialization run 33392732428",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

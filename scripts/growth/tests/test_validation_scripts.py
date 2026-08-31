@@ -55,6 +55,7 @@ from scripts.check_store_metadata import (
     validate_upload_artifacts,
     validate_uz_store_targeting,
 )
+from scripts.release_artifact_verifier import verify_manifest_artifacts
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -538,7 +539,7 @@ class ValidationScriptsTest(unittest.TestCase):
             {"NIMBO_RELEASE_ARTIFACT_ROOT": ""},
             clear=False,
         ):
-            validate_upload_artifacts(manifest, "1.1.0", failures)
+            verify_manifest_artifacts(ROOT, manifest, failures)
 
         for artifact_id in ("android_phone", "wear_os", "apple"):
             self.assertIn(
