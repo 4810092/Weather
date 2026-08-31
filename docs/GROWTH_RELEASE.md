@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5fc56e8b1157f622fc1c1ca699e1fcc6b78e55297532b49b08f2509ed75b280e -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=be085d777920931fc72e31ec2c3f4b09572e7d43ca917f42bf09ba0e770a6a1d -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -124,8 +124,9 @@ the captured slice”; it is never converted to a synthetic rank.
   proven-offline cache/fallback, online recovery, and PID-scoped health checks.
   The exact phone and Wear AABs are now accepted on their separate Play
   Internal tracks. Google Play delivered phone vc8 to the dedicated API 25
-  target and the bounded cold/live/share/process-health pass succeeds. The Wear
-  License testers group is attached and that track is active, but physical
+  target and the bounded cold/live/share/process-health, large-text, and
+  system-UI-proven offline/cache/recovery paths succeed. The Wear License
+  testers group is attached and that track is active, but physical
   tablet/widget and paired Wear results remain absent. Exact Apple build 6 also completed App Store Connect
   processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group and
   runtime coverage remain unverified. The iOS crash diagnosis remains blocked.
@@ -253,9 +254,9 @@ availability; each external state must be recorded separately.
 3. Trusted hosted run `33405849102` has completed the required full pinned
    verifier against the mutable draft for evidence head `b07192e`; repeat that
    protected chain before every later use. Complete the remaining delivery-
-   linked matrix: complete proven-offline and TalkBack checks on the
-   Play-delivered phone package, add physical tablet/widget and paired Wear
-   coverage plus post-delivery vitals, confirm beta-group distribution for processed
+   linked matrix: complete TalkBack and background checks on the Play-delivered
+   phone package, add physical tablet/widget and paired Wear coverage plus
+   post-delivery vitals, confirm beta-group distribution for processed
    Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch
    QA. The iPad mini 5 and iPhone 14 Pro are
    paired, booted, and Developer Mode enabled. The iPad has no Nimbo install;

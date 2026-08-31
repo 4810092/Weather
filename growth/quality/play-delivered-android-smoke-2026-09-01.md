@@ -2,8 +2,8 @@
 
 Status: **PASS for the bounded Play-delivered phone scope** and **PASS for
 Wear Internal tester activation**. The combined Android physical gate remains
-**BLOCKED** because physical tablet/widget, proven-offline Play-delivered phone,
-paired Wear OS, TalkBack, and post-delivery vitals evidence are incomplete.
+**BLOCKED** because physical tablet/widget, paired Wear OS, TalkBack,
+background-retry, and post-delivery vitals evidence are incomplete.
 
 All times are `Asia/Tashkent` (`UTC+05:00`). Production was not changed.
 
@@ -61,15 +61,30 @@ pre-delivery smoke.
   vertically scrollable with readable city actions. Quick-city Tashkent then
   rendered the current conditions, yesterday comparison, and Best Time card
   without clipping the primary value or action controls.
+- At `04:41–04:43`, the system Wi-Fi control was switched off and independently
+  confirmed by `wifi_on=0` plus a direct `1.1.1.1` ping failing with
+  `Network is unreachable`. A forced cold start of the Play-installed package
+  retained the saved Tashkent forecast and Best Time card. Manual refresh kept
+  those values and rendered the localized message `Не удалось обновить.
+  Показана сохранённая погода.`
+- Wi-Fi was then restored through the system UI. `wifi_on=1` and a direct
+  `1.1.1.1` ping both passed before refresh. The next manual refresh removed the
+  saved-weather failure message while retaining the live forecast surface.
+  Airplane mode remained off throughout the counted path.
 - Filtered process evidence contained no Nimbo fatal exception or ANR for the
   tested paths.
 
-Two attempts to create a physical offline condition were deliberately not
-counted. Android 7.1 denied the airplane-mode broadcast, and the subsequent
-radio command did not produce a disconnected connectivity state. The cached
-screen remained visible, but without a proven network outage it is not valid
-offline evidence. The earlier exact-AAB-derived offline pass remains regression
-evidence only and does not replace a Play-delivered offline pass.
+Two earlier attempts to create a physical offline condition were deliberately
+not counted. Android 7.1 denied the airplane-mode broadcast, and the subsequent
+radio command did not produce a disconnected connectivity state. The final
+system-UI Wi-Fi transition above is the counted Play-delivered offline/recovery
+result because both the radio state and direct-IP reachability were checked on
+each side of the app behavior. The three local captures have SHA-256 values
+`7f16c8ed42b753e82fece5a58a86c7a869193f5f60d682ca5907150cddf9d40a`,
+`45d37780829f7147a9f14502e062caac31ed9260ac606471e18719c7bfae8e30`,
+and `9611b761238cb1ce41570f083ffd31685a5bf502e7ae11779d494cd9eea6a976`.
+The raw device captures stay outside Git under the repository's aggregate-only
+evidence policy.
 
 ## Accessibility boundary
 
@@ -103,10 +118,10 @@ result is claimed.
 The bounded phone pass proves Google Play delivery, split selection, the
 Google-managed signing identity, a clean first run, a live Tashkent forecast,
 the primary Best Time value, native share dispatch, and process health on API
-25. The separate `font_scale=1.3` onboarding/live-forecast pass also succeeds.
-Still missing are the Play-delivered phone offline/recovery path,
-TalkBack/background retry, physical tablet/widget coverage, paired
-physical Wear OS coverage, and post-delivery crash/ANR rates. The connected
-Samsung API 36 device contains user data and was not modified. No production
-review, rollout, public availability, ranking improvement, or crash-gate
-closure follows from this internal-test result.
+25. The separate `font_scale=1.3` onboarding/live-forecast pass and the
+system-UI-proven offline/cache/recovery path also succeed. Still missing are
+TalkBack/background retry, physical tablet/widget coverage, paired physical
+Wear OS coverage, and post-delivery crash/ANR rates. The connected Samsung API
+36 device contains user data and was not modified. No production review,
+rollout, public availability, ranking improvement, or crash-gate closure
+follows from this internal-test result.

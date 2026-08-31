@@ -109,8 +109,8 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Complete proven-offline and TalkBack checks on the Play-delivered "
-        "phone package, physical tablet and widget coverage, a Play-delivered paired "
+        "Complete TalkBack and background checks on the Play-delivered phone "
+        "package, physical tablet and widget coverage, a Play-delivered paired "
         "Wear OS install/handoff, and post-delivery vitals.",
     ),
     "ios_physical_smoke": (

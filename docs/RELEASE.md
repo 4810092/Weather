@@ -31,7 +31,7 @@ for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5fc56e8b1157f622fc1c1ca699e1fcc6b78e55297532b49b08f2509ed75b280e -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=be085d777920931fc72e31ec2c3f4b09572e7d43ca917f42bf09ba0e770a6a1d -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
 <!-- release-authority-current:end -->
 
@@ -63,11 +63,13 @@ process-health checks pass. A separate `font_scale=1.3` onboarding and live-
 forecast render also passes. The installed TalkBack service fails to initialize
 on this Android 7.1 device because it references API-26-only classes, so the
 keyboard-focus semantics check is not counted as a TalkBack pass. The physical
-offline attempt is not counted because
-a disconnected connectivity state was not proven. The existing four-account
-License testers group is attached to Wear Internal and the exact vc1000008 track
-now reports active; no physical watch install or paired handoff is claimed. See
-the [Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
+offline/cache/recovery path also passes: the counted system-UI transition proved
+`wifi_on=0` and failed direct-IP reachability before cold start and the localized
+saved-weather warning, then `wifi_on=1` and successful direct-IP reachability
+before recovery refresh. The existing four-account License testers group is
+attached to Wear Internal and the exact vc1000008 track now reports active; no
+physical watch install or paired handoff is claimed. See the
+[Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
 
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level

@@ -117,7 +117,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "Play-delivered phone vc8 cold/live/share smoke passes",
+                "Play-delivered phone vc8 cold/live/share and offline/cache/recovery smoke passes",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -168,7 +168,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "proven-offline and TalkBack checks",
+                "TalkBack and background checks",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
