@@ -39,6 +39,11 @@ shown on this surface and remain carried forward where explicitly marked.
 This proves submission for review, not approval, publication, propagation, or
 rank impact.
 
+A subsequent fixed logged-out `gl=UZ` recheck at `2026-09-01 00:27–00:29`
+still exposed the pre-review public title `Nimbo` in both Uzbek and Russian
+product pages. See
+[google-play-public-propagation-2026-09-01.md](google-play-public-propagation-2026-09-01.md).
+
 ## Phone Internal
 
 - Track `4700083514281298386` is `Активно`.

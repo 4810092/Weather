@@ -523,12 +523,16 @@ def sync(
         "visitors and zero clicks.\n\n"
         "Review request 14 contains only the Uzbekistan Custom Store Listing's en-US "
         "and ru-RU store data and is under review. Managed publishing is off; approval, "
-        "publication, propagation, and rank impact are not verified. Phone Internal "
+        "publication, and rank impact are not verified. A fixed logged-out gl=UZ "
+        "recheck at 00:27–00:29 on September 1 still exposed the pre-review public "
+        "title Nimbo in both Uzbek and Russian product pages, so propagation is "
+        "explicitly not verified. Phone Internal "
         "track 4700083514281298386 is active with the selected four-account License "
         "testers group. Wear Internal track 4699242452771231163 remains inactive with "
         "zero selected groups. No Play-delivered install is claimed. Evidence: "
         "growth/quality/google-play-console-2026-08-31.md and "
-        "growth/quality/internal-store-delivery-2026-08-31.md."
+        "growth/quality/internal-store-delivery-2026-08-31.md, with public response "
+        "hashes in growth/quality/google-play-public-propagation-2026-09-01.md."
     )
     verdict = blocks[0].get("body")
     if not isinstance(verdict, str):
@@ -571,7 +575,9 @@ def sync(
         "tablet/widget/Wear runtime QA and TestFlight beta distribution/install remain "
         "missing. Google review request 14 contains only the Uzbekistan Custom Store "
         "Listing en-US and ru-RU data and is under review; this is not publication or "
-        "rank evidence. "
+        "rank evidence. A fixed logged-out gl=UZ recheck on September 1 still exposed "
+        "the pre-review public title Nimbo for both Uzbek and Russian product pages; "
+        "propagation is therefore not verified. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -757,7 +763,9 @@ def sync(
         "Uzbekistan-only draft.",
         "Google Play Custom Store Listing 4834799756935529888 is under review in "
         "request 14 with en-US and ru-RU store data; approval, publication, and "
-        "propagation are not verified.",
+        "propagation are not verified. A fixed logged-out gl=UZ recheck at "
+        "2026-09-01 00:27–00:29 still exposed the pre-review public title Nimbo in "
+        "both Uzbek and Russian product pages.",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at

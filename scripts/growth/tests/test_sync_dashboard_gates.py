@@ -62,6 +62,22 @@ class SyncDashboardGatesTest(unittest.TestCase):
                     if block["id"] == "play_console_context"
                 ),
             )
+            self.assertIn(
+                "still exposed the pre-review public title Nimbo",
+                next(
+                    block["body"]
+                    for block in artifact["manifest"]["blocks"]
+                    if block["id"] == "play_console_context"
+                ),
+            )
+            self.assertIn(
+                "google-play-public-propagation-2026-09-01.md",
+                next(
+                    block["body"]
+                    for block in artifact["manifest"]["blocks"]
+                    if block["id"] == "play_console_context"
+                ),
+            )
             rows = {
                 row["gate_id"]: row
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
@@ -171,6 +187,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "bounded physical API 25 phone/widget smoke",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "fixed logged-out gl=UZ recheck on September 1",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(
