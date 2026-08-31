@@ -221,14 +221,19 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   Ubuntu job with no repository checkout stages only the two exact assets,
   then a separate read-only macOS job reopens and verifies every byte. Pages is
   downstream of that verifier, and every later artifact use must recheck the
-  exact release and asset identity.
-  The exact-source debug Android phone/widget smoke remains
-  valid regression evidence, but the upload-derived phone/tablet/widget/Wear
+  exact release and asset identity. Trusted run
+  [`33405849102`](https://github.com/4810092/Weather/actions/runs/33405849102)
+  completed that chain for evidence head `b07192e`. The exact phone AAB was
+  then converted with pinned Bundletool to an upload-key-signed universal APK;
+  identical installed bytes passed a clean physical API 25 smoke. Play
+  Internal and Play-app-signing delivery, the physical tablet/widget/Wear
   matrix, TestFlight iPhone/iPad/widget/watch matrix, iOS crash diagnosis, and
   post-rollout evidence are still blocked. See the [growth implementation
   checkpoint](docs/GROWTH_RELEASE.md), the current [source-sync
   record](growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md),
   [full byte-verification evidence](growth/quality/release-artifact-full-verification-2026-08-31-local.md),
+  [trusted hosted recheck](growth/quality/release-artifact-full-verification-2026-08-31-hosted.md),
+  [exact phone physical evidence](growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md),
   [materialization evidence](growth/quality/release-materialization-2026-08-31-run-33392732428.md),
   and [signed-candidate evidence](growth/quality/signed-candidate-run-33381050098.md).
 - GitHub tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are prerelease checkpoints. They are not presented as production releases.

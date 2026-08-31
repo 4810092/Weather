@@ -167,23 +167,23 @@ def sync(
             )
         elif gate_id == "release_artifact_source_sync":
             row["decision"] = (
-                "PASS · fresh local full-byte verification passed; manifest is "
-                "atomically 3/3 verified-current; hosted repeat pending"
+                "PASS · local and protected hosted full-byte verification passed; "
+                "manifest is atomically 3/3 verified-current"
             )
             new_next = (
-                "Let the protected read-only hosted macOS workflow repeat the full "
-                "pinned verifier after CI succeeds on master, then bind exact "
-                "physical QA without changing the promoted artifact bytes"
+                "Require the protected hosted chain to recheck the mutable draft before "
+                "every later use, then bind store-delivered physical QA without changing "
+                "the promoted artifact bytes"
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact upload-key AABs retained; upload-derived "
-                "phone/tablet/widget/Wear physical matrix missing"
+                "BLOCKED · exact AAB-derived upload-key phone/API 25 passed; "
+                "Play-delivered phone/tablet/widget/Wear matrix missing"
             )
             new_next = (
-                "Derive or deliver an upload-key-signed universal APK from the "
-                "retained phone AAB, then run phone/tablet/widget and paired "
-                "Wear OS physical QA without overwriting existing user data"
+                "Deliver the exact phone and Wear AABs through Play Internal, rerun "
+                "the phone scope against the Play-delivered package, and complete "
+                "physical tablet/widget and paired Wear OS QA"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
@@ -191,9 +191,9 @@ def sync(
                 "iPhone/iPad/widget/watch matrix missing"
             )
             new_next = (
-                "Upload the exact retained IPA unchanged to TestFlight, unlock "
-                "the iPhone and restore watch readiness, then run the complete "
-                "iPhone/iPad/widget/watch matrix"
+                "Upload the exact retained IPA unchanged to TestFlight, install it "
+                "on the ready iPhone and iPad, restore watch readiness, then run "
+                "the complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -374,10 +374,13 @@ def sync(
         "unpublished draft release 379745439. A fresh local macOS run downloaded and "
         "rechecked those exact assets, safely extracted the closed tree, verified "
         "pinned Bundletool 1.18.3, and returned byte_verified=true for phone, Wear, "
-        "and Apple. The committed upload manifest is atomically 3/3 verified-current "
-        "and remains draft-blocked. The draft is mutable and the protected hosted "
-        "macOS repeat is pending until its workflow executes on master. The "
-        "upload-derived Android physical matrix and TestFlight Apple matrix remain "
+        "and Apple. Protected workflow_run 33405849102 then completed isolated "
+        "no-checkout staging and the separate read-only hosted macOS verifier at "
+        "b07192e, revalidating the live draft and returning byte_verified=true for "
+        "all three artifacts. The committed upload manifest is atomically 3/3 "
+        "verified-current and remains draft-blocked. The draft is mutable and the "
+        "protected chain must recheck it before every later use. The Play-delivered "
+        "Android physical matrix and TestFlight Apple matrix remain "
         "missing; two public iOS crashes still lack diagnostics. No store upload, "
         "processing, submission, release, or availability is claimed."
     )
@@ -414,10 +417,15 @@ def sync(
         "exact source artifact/package/receipt bindings and retained the package and "
         "receipt as hash-bound assets in unpublished draft release 379745439. A fresh "
         "local macOS run then reopened those exact assets, verified pinned Bundletool, "
-        "and returned byte_verified=true for all three outputs. The committed manifest "
-        "is atomically 3/3 verified-current and remains draft-blocked because the "
-        "upload-derived Android and TestFlight Apple physical matrices are missing. "
-        "The protected hosted repeat is pending until its workflow executes. "
+        "and returned byte_verified=true for all three outputs. Protected workflow_run "
+        "33405849102 repeated the complete verifier successfully at b07192e. The "
+        "committed manifest is atomically 3/3 verified-current and remains "
+        "draft-blocked. The exact phone AAB was then converted without rebuilding into "
+        "an upload-key-signed universal APK; installed and pulled bytes matched at "
+        "e970352d…, and the clean physical API 25 onboarding/live/share/offline/"
+        "recovery smoke passed. This is not Play app-signing-key delivery, so the "
+        "Play-delivered phone/tablet/widget/Wear and TestFlight Apple matrices remain "
+        "missing. "
         "Predecessor commit "
         "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
         "storage-failure exception escapes and adds four throwing-repository "
@@ -481,10 +489,11 @@ def sync(
     verdict = verdict.replace(
         "At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone "
         "and watch remained unavailable.",
-        "At the August 31 read-only device check, the iPad mini 5 was paired, "
-        "unlocked, and DDI-ready with Nimbo absent; the iPhone 14 Pro was paired "
-        "but locked/DDI-blocked, and the paired Series 5 watch was visible but "
-        "offline for detail/app queries.",
+        "At the August 31 read-only device check, the iPhone 14 Pro and iPad mini 5 "
+        "were paired, booted, and Developer Mode enabled; the iPhone can take a "
+        "TestFlight update and the iPad a fresh install after processing. The paired "
+        "Series 5 watch was compatible, but Developer Mode was disabled and its "
+        "developer tunnel disconnected.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -493,8 +502,9 @@ def sync(
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
         "remain gated on crash diagnosis, complete physical-device and internal-"
-        "delivery coverage, the pending protected hosted repeat before later "
-        "artifact use, and critical console guardrails.",
+        "delivery coverage, and critical console guardrails. The hosted full-byte "
+        "repeat passes; its chain must still recheck the mutable draft before every "
+        "later use.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -503,8 +513,20 @@ def sync(
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
         "remain gated on crash diagnosis, complete physical-device and internal-"
-        "delivery coverage, the pending protected hosted repeat before later "
-        "artifact use, and critical console guardrails.",
+        "delivery coverage, and critical console guardrails. The hosted full-byte "
+        "repeat passes; its chain must still recheck the mutable draft before every "
+        "later use.",
+    )
+    verdict = verdict.replace(
+        "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, full trusted macOS verification and "
+        "atomic manifest promotion of the materialized candidates, complete "
+        "physical-device coverage, and critical console guardrails.",
+        "Scale status remains hold; public outreach and acquisition scaling "
+        "remain gated on crash diagnosis, complete physical-device and internal-"
+        "delivery coverage, and critical console guardrails. The hosted full-byte "
+        "repeat passes; its chain must still recheck the mutable draft before every "
+        "later use.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."
@@ -534,6 +556,12 @@ def sync(
         "the Play conversion denominator is still unreconciled.",
         "the latest validated weekly Play slice has zero UZ visitors, so UZ "
         "conversion remains unknown; its 42.31% all-country rate is diagnostic only.",
+    )
+    verdict = verdict.replace(
+        "Exact-current signed phone/Wear and Apple candidates are retained and "
+        "byte-verified, but they are not manifest-promoted or store-delivered;",
+        "Exact-current signed phone/Wear and Apple candidates are retained, "
+        "byte-verified, and manifest-promoted, but not store-delivered;",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at

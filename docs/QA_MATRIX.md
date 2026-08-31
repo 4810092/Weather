@@ -4,19 +4,20 @@ Status date: August 31, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
 <!-- release-authority-current:end -->
 
-In the machine-validated block, `byte_verified=true` records the fresh local
-full-verifier pass and atomic `3/3 verified-current` promotion. The fail-closed
-surface status remains **BLOCKED** because the physical gates and every
-artifact physical-evidence field remain blocked/null. Every successful
-current-`master` CI run must pass the protected no-checkout staging job and
-separate read-only hosted macOS verifier before Pages or later artifact use.
+In the machine-validated block, `byte_verified=true` records the full-verifier
+pass and atomic `3/3 verified-current` promotion. The fail-closed surface status
+remains **BLOCKED** because both physical gates remain blocked. The phone entry
+now binds the exact AAB-derived physical API 25 pass; Wear and Apple physical-
+evidence fields remain null. Every successful current-`master` CI run must pass
+the protected no-checkout staging job and separate read-only hosted macOS
+verifier before Pages or later artifact use.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -145,7 +146,7 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact-product API 24 emulator and physical API 25 debug evidence exists, but current signed physical phone coverage does not |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — the exact AAB-derived upload-key-signed APK passed clean physical API 25 onboarding/live/share/offline/recovery/health with identical installed bytes, but Play Internal and Play-app-signing delivery plus the remaining accessibility/update scope are absent |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact-current API 37 debug emulator localized stale-cache render and cold loop pass; no fresh refresh, upload-signed physical watch, or paired handoff result |
 | Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and the signed artifact is verified-current, but unchanged TestFlight delivery, widget placement, older-runtime rendering, and physical evidence are absent |

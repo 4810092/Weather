@@ -2,8 +2,12 @@
 
 `artifact.json` is the canonical, source-backed dashboard definition. The SQL
 files contain the bounded reproducible snapshot queries embedded by the
-artifact. `report.html` is generated from that artifact with the packaged Data
-Analytics portable-artifact renderer; it must not be edited by hand.
+artifact. `report.html` was generated with the legacy packaged Data Analytics
+portable-artifact renderer; it must not be edited by hand. Because the
+currently installed plugin no longer ships that renderer, the repo-owned
+payload synchronizer refreshes only the canonical gzip-base64 artifact consumed
+by the JavaScript reader. The static no-JavaScript fallback remains a legacy
+renderer snapshot until the report is migrated to the current renderer.
 
 The dashboard is intentionally `blocked`, with scale status `hold`.
 The canonical `2026-08-31T02:51:00+05:00` capture places Nimbo at `#88`
@@ -36,7 +40,11 @@ complete checksums are retained privately outside Git; the non-secret receipt
 and evidence are committed. Hosted materialization run
 [`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
 stored the exact package and receipt as hash-bound assets in unpublished draft
-release `379745439` and rechecked their API identities, sizes, and digests.
+release `379745439` and rechecked their API identities, sizes, and digests. The
+latest protected current-`master` chain
+[`33405849102`](https://github.com/4810092/Weather/actions/runs/33405849102)
+completed both staging and read-only verification, reopening the mutable draft
+and producing a fresh trusted receipt; no hosted repeat is pending.
 
 The committed upload manifest now promotes the exact set atomically to `3/3
 verified-current` after a fresh local macOS full-byte pass reopened the draft
@@ -45,13 +53,17 @@ and returned `byte_verified=true` for phone, Wear, and Apple. The top-level
 manifest remains `draft-blocked` because physical QA and internal delivery are
 missing. The draft is mutable, so every successful current-`master` CI run must
 pass protected no-checkout staging and the separate read-only hosted macOS
-verifier before Pages or later artifact use. The
-exact-source API 25 debug phone/widget smoke remains regression evidence;
-upload-derived Android
-phone/tablet/widget/Wear and TestFlight iPhone/iPad/widget/watch physical
-coverage are still missing. The iPad mini 5 is ready at CoreDevice level, the
-iPhone 14 Pro is paired but locked/DDI-blocked, the paired Series 5 watch is
-visible but offline for runtime queries, and no iOS 15 runtime is available.
+verifier before Pages or later artifact use. The exact upload-key-signed phone
+AAB was converted to an APK set without rebuilding; its universal APK matched
+the installed package byte-for-byte and passed clean API 25 phone smoke,
+including onboarding, live forecast, share, offline cache/error, recovery, and
+process-log checks. Evidence is retained in
+`growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md`. Play-delivered
+phone validation and physical tablet/widget/Wear coverage remain blocked, as
+does the TestFlight iPhone/iPad/widget/watch matrix. The iPhone 14 Pro and iPad
+mini 5 are paired, booted, and have Developer Mode enabled. The paired Series 5
+watch has Developer Mode disabled and its developer tunnel is disconnected; no
+iOS 15 runtime is available.
 
 Two public iOS `1.0.1 (4)` crashes—August 25 and August 29—still lack
 diagnostics and symbolication. The August 29 event maps to iPhone; the earlier
@@ -74,16 +86,17 @@ Refresh order:
 1. Run the public rank monitor and import the latest store exports.
 2. Reconcile every numerator, denominator, window, country, device, and version.
 3. Update the bounded SQL and artifact snapshot.
-4. Rebuild `report.html` with the installed Data Analytics portable-artifact
-   renderer:
+4. Refresh the canonical embedded payload used by the JavaScript reader:
 
    ```sh
-   NIMBO_DATA_ANALYTICS_PLUGIN_ROOT=/absolute/path/to/data-analytics-plugin
-   node "$NIMBO_DATA_ANALYTICS_PLUGIN_ROOT/skills/build-report/scripts/deliver_portable_artifact.mjs" \
-     --input growth/dashboard/artifact.json \
-     --output growth/dashboard/report.html
+   python3 scripts/growth/sync_dashboard_report_payload.py
    ```
 
+   This fail-closed operation requires exactly one valid `gzip-base64` artifact
+   template, replaces only its text content with deterministic gzip output
+   (`mtime=0`, platform-neutral OS header), and leaves the runtime and static
+   legacy fallback untouched.
 5. Run `python3 scripts/check_dashboard_report.py` to prove every cited SQL/JSON
-   input, the canonical artifact, and the embedded report payload agree.
+   input, the canonical artifact, and the embedded reader payload agree. This
+   does not certify the legacy no-JavaScript fallback as current.
 6. Run the repository checks again before a dashboard is published.

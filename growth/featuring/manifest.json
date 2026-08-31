@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-08-29",
+  "as_of": "2026-08-31",
   "status": "draft-blocked",
   "campaign": {
     "market": "UZ",
@@ -117,9 +117,10 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) are current source identities but have no current upload/distribution-signed artifact or matching release-certificate physical-QA evidence. Phone vc8 has only a bounded API 25 debug/source smoke. Signed phone 1.1.0 (7) and Apple 1.1.0 (5) are historical candidates only, and none is uploaded or public.",
+      "claim": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) have exact source-synced signed artifacts. The exact phone AAB-derived upload-key-signed APK passed bounded physical API 25 QA, but neither candidate has store-delivery proof and Apple has no matching physical result. Signed phone 1.1.0 (7) and Apple 1.1.0 (5) remain historical; no 1.1.0 candidate is uploaded or public.",
       "evidence": [
-        "growth/quality/release-artifact-source-sync-2026-08-29.md",
+        "growth/quality/release-artifact-full-verification-2026-08-31-hosted.md",
+        "growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md",
         "store/upload-manifest-1.1.0.json",
         "growth/quality/internal-track-upload-2026-08-28.md"
       ]

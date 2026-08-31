@@ -2,19 +2,22 @@
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
 <!-- release-authority-current:end -->
 
 The machine field `byte_verified=true` records the fresh full verification of
 the exact promoted bytes. All three manifest entries are atomically
 `verified-current`, while the top-level manifest remains `draft-blocked`
-because physical QA and internal delivery are still missing. Every successful
-current-`master` CI run must pass the protected no-checkout staging job and
-separate read-only hosted macOS verifier before Pages or later artifact use.
+because the remaining Android/Wear and Apple physical matrices and internal
+delivery are still missing. The phone entry now binds the exact AAB-derived
+physical API 25 evidence; it does not satisfy the shared Android/Wear gate.
+Every successful current-`master` CI run must pass the protected no-checkout
+staging job and separate read-only hosted macOS verifier before Pages or later
+artifact use.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -38,12 +41,15 @@ exact assets, safely extracted the closed tree, checked pinned Bundletool
 artifacts. The committed manifest now holds `3/3 verified-current` atomically
 and remains `draft-blocked`. The draft remains mutable, so the protected staged
 hosted chain is mandatory for each current master before later artifact use.
-The exact-source API 25 debug phone/widget pass remains valid regression
-evidence, but upload-derived Android phone/tablet/widget/Wear and TestFlight
-iPhone/iPad/widget/watch coverage are missing. The iPhone is currently locked,
-the paired watch is offline for runtime queries, and no iOS 15 runtime is
-available. No store upload, processing, internal distribution, review, release,
-or availability is claimed.
+Trusted run `33405849102` completed that chain for evidence head `b07192e`.
+The exact phone AAB was then converted with pinned Bundletool to an upload-key-
+signed universal APK and passed a clean physical API 25 smoke with identical
+installed bytes. Play Internal and Play-app-signing delivery, a physical
+tablet/widget, paired Wear, and TestFlight iPhone/iPad/widget/watch coverage
+remain missing. The iPhone and iPad are paired, booted, and Developer Mode
+enabled; the paired watch has Developer Mode disabled and no developer tunnel.
+No store upload, processing, internal distribution, review, release, or
+availability is claimed.
 
 OpenMeteo GmbH has confirmed the exact unpaid, non-monetized organic-promotion
 scope for the non-commercial API. Two public iOS `1.0.1 (4)` crashes remain
@@ -62,6 +68,8 @@ or historical device result does not close those independent gates.
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
 | Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
+| Trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-08-31-hosted.md](quality/release-artifact-full-verification-2026-08-31-hosted.md) | Protected run `33405849102` revalidated the mutable draft and all exact bytes; every later use must repeat the same check |
+| Exact Android phone physical smoke | [quality/android-phone-vc8-physical-smoke-2026-08-31.md](quality/android-phone-vc8-physical-smoke-2026-08-31.md) | Exact AAB-derived upload-key-signed APK passed clean API 25 install/live/cache/share/recovery; it is not Play delivery or the full Android/Wear matrix |
 | Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |

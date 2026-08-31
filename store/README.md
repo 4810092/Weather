@@ -16,7 +16,9 @@ to match the Android, Wear OS, and Apple source versions.
 metadata, creative, and artifact source-sync state. It intentionally remains
 `draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 are now
 atomically `verified-current` with exact hashes and signing/source-sync
-evidence, while all three physical-QA fields remain null. Protected run
+evidence. The phone entry now binds a bounded exact-AAB-derived physical API 25
+smoke; Wear and Apple physical-QA fields remain null, and the shared Android/
+Wear gate stays blocked. Protected run
 `33381050098` produced and retained the signed set. Hosted materialization run
 `33392732428` additionally stored the
 exact package and receipt as hash-bound assets in unpublished draft release
@@ -27,6 +29,8 @@ exact phone, Wear, and Apple bytes. The draft remains mutable. Every successful
 current-`master` CI run must pass the protected hosted chain: a no-checkout
 Ubuntu job stages only the two exact assets, then a separate read-only macOS
 job reopens and verifies every byte before Pages can run.
+Trusted run `33405849102` completed that protected check for evidence head
+`b07192e`; the mutable draft must still be rechecked before every later use.
 Its full `source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority

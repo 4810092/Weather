@@ -19,18 +19,29 @@ submitted, or published. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
 <!-- release-authority-current:end -->
 
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level
-manifest remains `draft-blocked` because physical QA and store delivery are
-still absent. The protected staged hosted chain remains mandatory for every
-current master.
+manifest remains `draft-blocked` because store delivery and the remaining
+Android/Wear and Apple physical matrices are absent. The phone entry now binds
+the exact AAB-derived physical API 25 pass. The protected staged hosted chain
+remains mandatory for every current master.
+
+## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
+
+Pinned Bundletool produced an upload-key-signed universal APK directly from the
+retained phone AAB; its installed bytes matched SHA-256 `e970352d…`. A clean
+physical API 25 run passed localized onboarding, Tashkent live forecast, share,
+proven-offline cache/fallback, online recovery, and PID-scoped health checks.
+This bounded PASS is not Play Internal or Play-app-signing delivery and does
+not cover the physical tablet/widget or paired Wear matrix, so the shared
+Android/Wear gate remains blocked. See the [exact phone record](../growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md).
 
 ## Version identity
 
@@ -52,9 +63,10 @@ Wear AAB
 and Apple IPA
 `7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0`.
 
-The manifest promotes the complete set atomically to `verified-current`; all
-physical-QA evidence remains null and top-level status remains
-`draft-blocked`. Successful CI on current `master` must be followed by the
+At this local-verifier checkpoint, the manifest promoted the complete set
+atomically to `verified-current`; all physical-QA evidence was still null and
+top-level status remained `draft-blocked`. Successful CI on current `master`
+must be followed by the
 protected no-checkout staging job and separate read-only macOS verifier. This is not store upload,
 internal delivery, physical QA, crash diagnosis, publication, or ranking
 evidence. See the [full-verification record](../growth/quality/release-artifact-full-verification-2026-08-31-local.md).

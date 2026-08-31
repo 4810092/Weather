@@ -39,7 +39,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "exact upload-key AABs retained",
+                "exact AAB-derived upload-key phone/API 25 passed",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -51,7 +51,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "fresh local full-byte verification passed",
+                "local and protected hosted full-byte verification passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -86,8 +86,12 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "protected read-only hosted macOS workflow",
+                "protected hosted chain to recheck the mutable draft",
                 rows["release_artifact_source_sync"]["next_action"],
+            )
+            self.assertIn(
+                "Play Internal",
+                rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
                 "exact-current 9c2dce4",
@@ -115,6 +119,14 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "Hosted materialization run 33392732428",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "Protected workflow_run 33405849102 repeated the complete verifier",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "installed and pulled bytes matched at e970352d",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

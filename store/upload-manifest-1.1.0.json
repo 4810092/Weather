@@ -26,8 +26,8 @@
       "source_sync": "verified-current",
       "sha256": "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
       "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
-      "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "physical_qa_evidence": "growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md",
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-hosted.md",
       "historical_candidate": null
     },
     "wear_os": {
@@ -37,7 +37,7 @@
       "sha256": "e76d685b20e86f8878be7c9a1a59ac6edb5781ec8e61d5ecd36feb52ddc1cccf",
       "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-hosted.md",
       "historical_candidate": null
     },
     "apple": {
@@ -47,7 +47,7 @@
       "sha256": "7466afb1a06f3000ad5d095734082d57cf58e992bdd7a8bed326e90d26ba39d0",
       "signing_evidence": "growth/quality/signed-candidate-run-33381050098.md",
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-local.md",
+      "source_sync_evidence": "growth/quality/release-artifact-full-verification-2026-08-31-hosted.md",
       "historical_candidate": null
     }
   },
@@ -146,8 +146,7 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "protected hosted macOS repeat of the local full byte verification after CI succeeds on master",
-    "exact byte-linked Android phone 1.1.0 (8), tablet, widget, and Wear OS 1.1.0 (1000008) physical smoke",
+    "Play Internal delivery plus byte-linked physical phone, tablet, widget, and Wear OS 1.1.0 (1000008) runtime matrix",
     "unchanged TestFlight delivery and physical iPhone, iPad, widget, and watch runtime matrix for Apple 1.1.0 (6)",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment",
     "write-capable App Store Connect and Google Play upload paths"

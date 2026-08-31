@@ -6,20 +6,22 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=22d9bb52c84463b30bd48f7d1200d2ad699b7db52d0b21fd85d7e8aaf95e6de6 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3a05412a933038f96a51086a59f7ddd789b6d6fa534d75445c79fc3c8d3cceb2 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=3a2dd17c7ad077914a76e4ae5fad101a7f78b6a5316374d86bc69ae6489d19d6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3c9be5bc33db6be34d299c62ee753ae88144b2aa2e0426254df946af3cd1b85c -->
 <!-- release-authority-current:end -->
 
 In the machine-validated block, `byte_verified=true` records the exact
 freshly reopened artifact bytes behind the atomic `3/3 verified-current`
 manifest promotion. The release surface remains **BLOCKED** because all
-physical evidence fields are still empty and the crash, internal-delivery, and
-device gates remain open. Every successful current-`master` CI run must pass
-the protected no-checkout staging job and separate read-only hosted macOS
-verifier before Pages or later artifact use.
+the remaining Android/Wear and Apple physical matrices, crash,
+internal-delivery, and device gates remain open. The phone artifact now binds
+the exact AAB-derived physical API 25 pass, but that bounded result does not
+satisfy the shared Android/Wear gate. Every successful current-`master` CI run
+must pass the protected no-checkout staging job and separate read-only hosted
+macOS verifier before Pages or later artifact use.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -113,14 +115,16 @@ the captured slice”; it is never converted to a synthetic rank.
   successful current-`master` CI run must pass the protected no-checkout
   staging job and separate read-only hosted macOS verifier before Pages or
   later artifact use. Exact
-  source `2cdd438` also has a bounded clean physical General Mobile API 25 debug
-  pass covering denied location, Bukhara search, live/cache/recovery, widget,
-  process health, and cleanup, with local and pulled installed APK SHA-256
-  `d66c8f0f9b05232cf484bd95223328a44f2a0bddf1d2f76817ef9504f87fe047`.
-  That result is debug-certificate regression evidence, not the upload-derived
-  phone/tablet/widget/Wear matrix. TestFlight Apple runtime coverage and the iOS
-  crash diagnosis also remain blocked. See the [exact-current physical
-  record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md)
+  source `2cdd438` now also has a bounded exact-AAB-derived physical phone pass.
+  Pinned Bundletool produced an upload-key-signed universal APK directly from
+  phone AAB `d4a90676…`; its installed bytes matched SHA-256 `e970352d…` and
+  passed clean API 25 onboarding, Tashkent live forecast, share chooser,
+  proven-offline cache/fallback, online recovery, and PID-scoped health checks.
+  This is not Play Internal or Play-app-signing delivery and does not cover the
+  physical tablet/widget or paired Wear matrix. TestFlight Apple runtime
+  coverage and the iOS crash diagnosis also remain blocked. See the
+  [exact phone physical record](../growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md),
+  the earlier [debug regression record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md),
   and [current source-sync record](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md).
   Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
@@ -236,18 +240,18 @@ recorded only after direct store evidence.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Let the protected read-only hosted macOS workflow repeat the full pinned
-   verifier against the exact promoted draft assets after CI succeeds on
-   `master`. Then complete the delivery-linked physical matrix: derive or
-   deliver an upload-key-signed universal APK from the exact phone AAB for the
-   clean API 25 device, add physical tablet/widget and paired Wear coverage,
-   and upload the exact App Store-profile IPA unchanged to TestFlight for
-   iPhone/iPad/widget/watch QA. The iPad mini 5 is currently paired, unlocked,
-   DDI-ready, and has no Nimbo install. The iPhone 14 Pro is paired but locked
-   and DDI-blocked; the paired Series 5 watch is visible but offline for
-   detail/app queries. No iOS 15 runtime is available. Earlier debug/simulator
-   results remain regression evidence and cannot satisfy these delivery-linked
-   physical gates.
+3. Trusted hosted run `33405849102` has completed the required full pinned
+   verifier against the mutable draft for evidence head `b07192e`; repeat that
+   protected chain before every later use. Complete the remaining delivery-
+   linked matrix: upload the exact phone AAB to Play Internal, verify the
+   Play-delivered phone package, add physical tablet/widget and paired Wear
+   coverage, and upload the exact App Store-profile IPA unchanged to TestFlight
+   for iPhone/iPad/widget/watch QA. The iPad mini 5 and iPhone 14 Pro are
+   paired, booted, and Developer Mode enabled. The iPad has no Nimbo install;
+   the iPhone retains public `1.0.1 (4)`. The paired Series 5 watch has
+   Developer Mode disabled and its developer tunnel is disconnected. No iOS 15
+   runtime is available. Earlier debug/simulator results remain regression
+   evidence and cannot satisfy these delivery-linked physical gates.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
@@ -255,8 +259,9 @@ recorded only after direct store evidence.
 Current phone vc8, Wear vc1000008, and Apple build 6 are retained and atomically
 `verified-current` from source `2cdd438`; historical phone vc7, historical Wear,
 and Apple build 5 remain non-transferable. The current manifest remains
-`draft-blocked` after the local full-byte promotion because the protected hosted
-repeat and exact-artifact physical QA are still pending.
+`draft-blocked` after the protected hosted pass and exact-AAB-derived phone
+smoke because store delivery and the remaining exact-artifact physical matrix
+are still pending.
 Earlier [upload readiness evidence](../growth/quality/internal-track-upload-2026-08-28.md)
 records that neither internal track was changed; write-capable upload paths
 must be rechecked at action time. Play Internal and TestFlight remain bounded

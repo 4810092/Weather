@@ -103,19 +103,21 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Let the protected read-only hosted macOS workflow repeat the full pinned "
-        "verifier after CI succeeds on master, then keep store upload blocked until "
-        "matching physical QA passes.",
+        "Require the protected hosted chain to recheck the mutable draft before every "
+        "later artifact use, then keep store upload blocked until matching physical QA "
+        "passes.",
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Derive or deliver an upload-key-signed universal APK from the retained phone "
-        "AAB, then complete phone, tablet, widget, and paired Wear OS physical QA.",
+        "Deliver the exact phone and Wear AABs through Play Internal, rerun the phone "
+        "scope against the Play-delivered package, and complete physical tablet, "
+        "widget, and paired Wear OS QA.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Upload the exact retained IPA unchanged to TestFlight, restore iPhone and "
-        "watch readiness, then complete iPhone, iPad, widget, and watch QA.",
+        "Upload the exact retained IPA unchanged to TestFlight, install it on the "
+        "ready iPhone and iPad, restore watch readiness, then complete iPhone, iPad, "
+        "widget, and watch QA.",
     ),
     "domain_activation": (
         "Web operations",
