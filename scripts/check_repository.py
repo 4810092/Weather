@@ -72,6 +72,7 @@ REQUIRED = (
     "growth/reviews/review-inbox.csv",
     "scripts/growth/hosted_rank_state.py",
     "scripts/growth/tests/test_trusted_release_workflow_security.py",
+    "scripts/GenerateAndroidLegacyIcons.java",
     "scripts/hosted_rank_workflow_security.py",
     "scripts/release_materialization_workflow_security.py",
     "scripts/signed_candidate_workflow_security.py",
@@ -754,5 +755,28 @@ except (OSError, subprocess.TimeoutExpired) as error:
 if public_claims_check.returncode != 0:
     detail = public_claims_check.stderr.strip() or public_claims_check.stdout.strip()
     fail(f"Google Play public-claims validation failed: {detail or 'unknown error'}")
+
+legacy_icon_webp = sorted(
+    ROOT.glob("app/src/main/res/mipmap-*/ic_launcher*.webp")
+)
+if legacy_icon_webp:
+    fail(
+        "legacy launcher template WebP resources must be removed: "
+        + ", ".join(path.relative_to(ROOT).as_posix() for path in legacy_icon_webp)
+    )
+try:
+    legacy_icon_check = subprocess.run(
+        ["java", str(ROOT / "scripts/GenerateAndroidLegacyIcons.java"), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+        text=True,
+        timeout=30,
+    )
+except (OSError, subprocess.TimeoutExpired) as error:
+    fail(f"cannot validate Android legacy launcher resources: {error}")
+if legacy_icon_check.returncode != 0:
+    detail = legacy_icon_check.stderr.strip() or legacy_icon_check.stdout.strip()
+    fail(f"Android legacy launcher resource validation failed: {detail or 'unknown error'}")
 
 print(f"Repository checks passed for {len(repository_paths)} source paths.")

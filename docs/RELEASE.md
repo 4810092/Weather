@@ -3,17 +3,12 @@
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
-OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 8,
-Wear 1000008, and Apple build 6. Protected hosted run `33381050098` produced
-and retained exact-current, independently byte-verified candidate artifacts for
-all three surfaces. Hosted materialization run `33392732428` then stored the
-hash-bound package and receipt in unpublished draft release `379745439`. A
-fresh local macOS run reopened those exact assets and returned
-`byte_verified=true` for phone, Wear, and Apple, so the manifest now promotes
-the set atomically to `3/3 verified-current` while remaining `draft-blocked`.
-Every successful current-`master` CI run must pass the protected no-checkout
-staging job and separate read-only hosted macOS verifier before Pages or later
-artifact use. On August 31, the exact Apple `1.1.0 (6)` IPA completed
+OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 9,
+Wear 1000009, and Apple build 7. It fixes the legacy Android launcher asset, but
+all three replacement artifacts are fail-closed pending protected signing and
+independent byte verification. The previously verified phone 8, Wear 1000008,
+and Apple build 6 set remains historical evidence tied to the predecessor
+source. On August 31, that exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
 and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
 `1.1.0 (1000008)` AABs were published to their separate Google Play Internal
@@ -21,18 +16,18 @@ tracks. On September 1 the phone opt-in was accepted and Google Play installed
 the Play-signed split set on the dedicated API 25 target; bounded
 cold/onboarding/live Tashkent/Best Time/share/process-health checks pass. The
 four-account `License testers` group is also attached to Wear Internal and that
-track is active, but no physical Wear install exists. No production submission,
-rollout, review, public availability, or complete delivery-linked physical
-matrix is claimed. Store consoles remain the authority
-for live status.
+track is active, but no physical Wear install exists. These results do not
+transfer to the replacement identities. No production submission, rollout,
+review, public availability, or complete delivery-linked physical matrix is
+claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
+<!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
@@ -83,14 +78,12 @@ icon instead of the Nimbo brand mark, so vc8 must not be promoted to production;
 a replacement phone version code is required. See the
 [Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
 
-Here `byte_verified=true` is the exact upload-manifest byte state after the
-fresh local full verifier reopened all three signed artifacts. The top-level
-manifest remains `draft-blocked`. The September 1 follow-up closes the bounded
-phone tester/delivery subset, but TestFlight beta distribution and the remaining
-Android/Wear and Apple physical matrices are absent. The phone entry binds the
-exact AAB-derived physical API 25 pass while the legacy-icon failure blocks
-promotion of that artifact. The protected staged hosted chain remains mandatory
-for every current master.
+At that historical checkpoint, `byte_verified=true` recorded the exact
+vc8/vc1000008/build-6 bytes reopened by the full verifier. The later replacement
+source supersedes their current authority: the manifest is now blocked with
+`byte_verified=false` for vc9/vc1000009/build 7. The September 1 phone evidence
+remains useful regression evidence, but cannot satisfy replacement signing,
+delivery, launcher, or physical gates.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 

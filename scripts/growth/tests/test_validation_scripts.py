@@ -122,7 +122,7 @@ class ValidationScriptsTest(unittest.TestCase):
             artifact["signing_evidence"] = None
             artifact["physical_qa_evidence"] = None
             artifact["source_sync_evidence"] = (
-                "growth/quality/release-materialization-2026-08-31-run-33392732428.md"
+                "growth/quality/release-artifact-source-sync-2026-09-01-ba824be.md"
             )
             artifact["historical_candidate"] = historical[artifact_id]
         return manifest
@@ -562,17 +562,21 @@ class ValidationScriptsTest(unittest.TestCase):
         failures: list[str] = []
         validate_upload_artifacts(manifest, "1.1.0", failures)
         self.assertTrue(
-            any("declared build 5 differs from source 6" in item for item in failures)
+            any("declared build 5 differs from source 7" in item for item in failures)
         )
 
     def test_historical_hashes_cannot_be_relabelled_as_current_bytes(self) -> None:
         manifest = self.blocked_upload_manifest()
-        for artifact in manifest["artifacts"].values():
+        canonical = self.upload_manifest()["artifacts"]
+        for artifact_id, artifact in manifest["artifacts"].items():
             historical = artifact["historical_candidate"]
             artifact["source_sync"] = "verified-current"
             artifact["sha256"] = historical["sha256"]
             artifact["signing_evidence"] = historical["signing_evidence"]
             artifact["physical_qa_evidence"] = None
+            artifact["source_sync_evidence"] = canonical[artifact_id][
+                "source_sync_evidence"
+            ]
             artifact["historical_candidate"] = None
         failures: list[str] = []
 
@@ -594,6 +598,7 @@ class ValidationScriptsTest(unittest.TestCase):
         manifest = self.blocked_upload_manifest()
         wear = manifest["artifacts"]["wear_os"]
         self.assertEqual(wear["source_sync"], "blocked")
+        wear["historical_candidate"]["version_code"] = wear["version_code"]
         self.assertEqual(
             wear["historical_candidate"]["version_code"], wear["version_code"]
         )

@@ -376,39 +376,45 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, confirm "
-                "TestFlight beta-group distribution for processed build 6, complete "
+                "Obtain and symbolicate any diagnostic Apple exposes, sign and "
+                "independently verify build 7, complete "
                 "the iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
             )
         elif gate_id == "release_artifact_source_sync":
-            row["decision"] = (
-                "PASS · local and protected hosted full-byte verification passed; "
-                "manifest is atomically 3/3 verified-current"
-            )
-            new_next = (
-                "Require the protected hosted chain to recheck the mutable draft before "
-                "every later use, then bind store-delivered physical QA without changing "
-                "the promoted artifact bytes"
-            )
+            if status == "pass":
+                row["decision"] = (
+                    "PASS · local and protected hosted full-byte verification passed; "
+                    "manifest is atomically 3/3 verified-current"
+                )
+                new_next = (
+                    "Require the protected hosted chain to recheck the mutable draft "
+                    "before every later use, then bind store-delivered physical QA"
+                )
+            else:
+                row["decision"] = (
+                    "BLOCKED · replacement vc9/vc1000009/build-7 set has no protected "
+                    "signed or independently byte-verified artifacts"
+                )
+                new_next = (
+                    "Pass exact-source hosted CI, protected signing, independent full-byte "
+                    "verification, and Internal/TestFlight delivery for the replacement set"
+                )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · Play-delivered phone vc8 runtime passes; large text and "
-                "active system TalkBack pass; background/widget pass; legacy "
-                "launcher icon fails; tablet/Wear remain incomplete"
+                "BLOCKED · vc9 source and API-24 emulator launcher pass; signed/Play "
+                "delivery plus physical API-24/25, tablet, and Wear remain incomplete"
             )
             new_next = (
-                "Prepare and internally deliver a new phone version code with "
-                "branded legacy launcher icons, then complete physical tablet and "
-                "paired Wear OS QA plus post-delivery vitals"
+                "Sign and independently verify vc9, deliver it through Play Internal, "
+                "then repeat physical API-24/25 launcher and remaining tablet/Wear QA"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · exact build 6 is VALID and App Store eligible; TestFlight "
-                "beta distribution and iPhone/iPad/widget/watch matrix missing"
+                "BLOCKED · replacement build 7 is unsigned; historical build 6 cannot "
+                "satisfy TestFlight or the iPhone/iPad/widget/watch matrix"
             )
             new_next = (
-                "Confirm TestFlight beta-group distribution for processed build 6, "
-                "restore an available unlocked iPhone or iPad and watch readiness, "
+                "Sign and independently verify build 7, distribute it through TestFlight, "
                 "then install and run the complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
@@ -603,57 +609,8 @@ def sync(
         "install clicks, while UZ is 0 visitors and 0 clicks, so UZ conversion is "
         "UNKNOWN."
     )
-    crash_issue["message"] = (
-        "App Store Connect reports two crashes for public iOS 1.0.1 (4), one on "
-        "August 25 and one on August 29, 2026. The August 29 event maps to "
-        "iPhone; the August 25 device/OS dimension is suppressed or unavailable. "
-        "Neither event exposes "
-        "a diagnostic, stack, incident/signature ID, or crashed-binary UUID. "
-        "An existing API key authenticates for app, version, build, and "
-        "analytics-request inventory, but diagnostic-signature GETs return "
-        "security 403. "
-        f"Current source {current_revision_short} passes twelve targeted iOS "
-        "Simulator provider mapping/service tests. Exact-source hosted run "
-        "33300967788 also passed shared Simulator tests, all 18 Apple surface-"
-        "state tests, and the unsigned application build. Protected run "
-        "33381050098 additionally produced a retained, independently verified "
-        "distribution-signed 1.1.0 (6) IPA/archive. The same exact build is now "
-        "VALID and APP_STORE_ELIGIBLE in App Store Connect, but is not the crashed "
-        "public build, has not been installed through TestFlight, identifies "
-        "neither production event, and does not close the crash gate for current "
-        f"source authority {current_revision_short}."
-    )
-    source_issue["message"] = (
-        f"Current product/build-input commit {current_revision_short} passed exact-source "
-        "ordinary GitHub Actions run 33300967788, including all 15 API 24/API 36 "
-        "Compose UI tests and all 18 Apple surface-state tests. Protected run "
-        "33381050098 then passed both macOS jobs with all 8/8 signing inputs and "
-        "produced a schema-v3 receipt for phone d4a90676…, Wear e76d685b…, and "
-        "Apple 7466afb1…. The GitHub ZIP matched its API digest; the safe-extracted "
-        "closed tree and all three candidates passed an independent verifier run "
-        "and are retained outside Git under a complete checksum manifest. Hosted "
-        "materialization run 33392732428 then passed at evidence head 30a67edf: it "
-        "validated the exact source artifact/package/receipt bindings and stored the "
-        "package and receipt as hash-bound assets 537966386 and 537966414 in "
-        "unpublished draft release 379745439. A fresh local macOS run downloaded and "
-        "rechecked those exact assets, safely extracted the closed tree, verified "
-        "pinned Bundletool 1.18.3, and returned byte_verified=true for phone, Wear, "
-        "and Apple. Protected workflow_run 33405849102 then completed isolated "
-        "no-checkout staging and the separate read-only hosted macOS verifier at "
-        "b07192e, revalidating the live draft and returning byte_verified=true for "
-        "all three artifacts. The committed upload manifest is atomically 3/3 "
-        "verified-current and remains draft-blocked. The draft is mutable and the "
-        "protected chain must recheck it before every later use. Those exact bytes "
-        "were subsequently accepted into separate phone and Wear Play Internal "
-        "tracks and Apple build 6 completed processing as VALID and APP_STORE_ELIGIBLE. "
-        "A bounded Play-delivered Android phone cold/live/share/offline/cache/recovery "
-        "smoke plus active system-TalkBack traversal now pass, and the Wear Internal "
-        "track is active with testers. TestFlight beta installation, Play-delivered "
-        "phone background, tablet/widget/Wear coverage, and "
-        "post-delivery vitals remain missing; two public iOS crashes still lack "
-        "diagnostics. No production "
-        "submission, review, rollout, public availability, or rank is claimed."
-    )
+    crash_issue["message"] = gates["ios_crash_gate"]["reason"]
+    source_issue["message"] = gates["release_artifact_source_sync"]["reason"]
     manifest = artifact.get("manifest")
     if not isinstance(manifest, dict):
         raise ValueError("dashboard manifest is malformed")
@@ -813,55 +770,18 @@ def sync(
     current_summary = (
         "Current product/build-input commit "
         + current_revision
-        + " keeps phone 1.1.0 (8), Wear OS 1.1.0 (1000008), and Apple "
-        "1.1.0 (6), with fail-closed Apple source-revision plumbing and "
-        "deterministic per-target release profiles. It tolerates omitted "
-        "optional Open-Meteo forecast/AQI arrays while keeping required "
-        "weather/time rows fail-closed. Fourteen targeted Android-host and "
-        "twelve targeted iOS Simulator tests pass. Exact-source GitHub Actions "
-        "run 33300967788 passed ordinary Android/iOS, all 15 API 24/API 36 "
-        "phone/tablet Compose UI tests, and all 18 Apple surface-state tests. "
-        "Its retained archives are unsigned/test regression evidence only. "
-        "Exact-source debug APK and pulled installed bytes share SHA-256 prefix "
-        "d66c8f0 and "
-        "passed a bounded physical API 25 phone/widget smoke, including denied "
-        "location, Bukhara search, live forecast, cache/recovery, process health, "
-        "and cleanup. This is debug-certificate evidence, not upload signing. The "
-        "protected master-only hosted run 33381050098 passed both jobs with all "
-        "8/8 signing inputs and produced retained, independently byte-verified "
-        "phone, Wear, and Apple candidates. The schema-v3 receipt proves 3/3 "
-        "candidate bytes. Hosted materialization run 33392732428 then validated the "
-        "exact source artifact/package/receipt bindings and retained the package and "
-        "receipt as hash-bound assets in unpublished draft release 379745439. A fresh "
-        "local macOS run then reopened those exact assets, verified pinned Bundletool, "
-        "and returned byte_verified=true for all three outputs. Protected workflow_run "
-        "33405849102 repeated the complete verifier successfully at b07192e. The "
-        "committed manifest is atomically 3/3 verified-current and remains "
-        "draft-blocked. The exact phone AAB was then converted without rebuilding into "
-        "an upload-key-signed universal APK; installed and pulled bytes matched at "
-        "e970352d…, and the clean physical API 25 onboarding/live/share/offline/"
-        "recovery smoke passed. The exact phone and Wear AABs are now accepted on "
-        "their separate Play Internal tracks. The phone opt-in is accepted and Google "
-        "Play delivered vc8 to the General Mobile API 25 target; cold start, Tashkent "
-        "live forecast, Best Time, share chooser, system-UI-proven offline/cache/recovery, "
-        "large text, active system-TalkBack traversal, and process-health checks pass. The "
-        "Wear License testers group is attached and that track is active, but no "
-        "physical Wear install exists. Apple accepted the exact IPA as build 6 with "
-        "VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone large-text "
-        "and TalkBack QA now pass; background, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
-        "install remain missing. Google review request 14 contains only the Uzbekistan Custom Store "
-        "Listing en-US and ru-RU data and is under review; this is not publication or "
-        "rank evidence. A fixed logged-out gl=UZ recheck on September 1 still exposed "
-        "the pre-review public title Nimbo for both Uzbek and Russian product pages; "
-        "propagation is therefore not verified. "
-        "Predecessor commit "
-        "9c2dce4200dbba5487c8c458ade4616005fde6e6 closes three deterministic "
-        "storage-failure exception escapes and adds four throwing-repository "
-        "regressions, but all of its binaries, screenshots, and device results "
-        "are historical and non-transferable."
+        + " resolves to phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple "
+        "1.1.0 (7). Phone vc9 replaces every pre-Android-8 template launcher "
+        "resource with deterministic square and round Nimbo artwork and renders "
+        "the Nimbo mark on an API-24 emulator. All three manifest entries remain "
+        "blocked with byte_verified=false until protected signing and independent "
+        "full-byte verification pass. The former Play-delivered vc8, active Wear "
+        "vc1000008 Internal candidate, and Transporter-delivered Apple build 6 "
+        "remain useful predecessor evidence, but all of their binaries, screenshots, "
+        "and device results are historical and non-transferable."
     )
     current_pattern = re.compile(
-        r"Current product/build-input commit [0-9a-f]{40} keeps .*?"
+        r"Current product/build-input commit [0-9a-f]{40} (?:keeps|resolves to) .*?"
         r"are historical and non-transferable\.",
         re.DOTALL,
     )
@@ -885,24 +805,23 @@ def sync(
         "Android Keychain metadata and the existing mode-600 keystore are "
         "present, but protected signing access remains unavailable.",
         "Android Keychain metadata and the existing mode-600 keystore remain "
-        "present. Protected run 33381050098 used all 8/8 signing inputs and "
-        "yielded a retained, independently byte-verified package; physical "
-        "delivery remains separate.",
+        "present. Historical protected run 33381050098 used all 8/8 signing "
+        "inputs, but replacement vc9/vc1000009/build-7 signing is pending.",
     )
     verdict = verdict.replace(
         "There is no exact-current signed phone/Wear artifact, distribution-"
         "signed Apple archive, iOS 15 runtime pass, or matching physical matrix.",
-        "Exact-current signed phone/Wear and Apple artifacts are retained, "
-        "byte-verified, manifest-promoted, and accepted into their internal store "
-        "channels; there is no iOS 15 runtime pass or matching physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are not signed or byte "
+        "verified; predecessor store artifacts are historical, and there is no "
+        "iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
         "There is no retained, accepted, byte-verified exact-current signed "
         "phone/Wear artifact or distribution-signed Apple archive, and no iOS "
         "15 runtime pass or matching physical matrix.",
-        "Exact-current signed phone/Wear and Apple artifacts are retained, "
-        "byte-verified, manifest-promoted, and accepted into their internal store "
-        "channels; there is no iOS 15 runtime pass or matching physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are not signed or byte "
+        "verified; predecessor store artifacts are historical, and there is no "
+        "iOS 15 runtime pass or matching physical matrix.",
     )
     verdict = verdict.replace(
         "Android Keychain metadata and the existing mode-600 keystore remain "
@@ -910,9 +829,8 @@ def sync(
         "inputs, but neither candidate run yielded a retained, byte-verified "
         "package; hosted proof of the current correction remains pending.",
         "Android Keychain metadata and the existing mode-600 keystore remain "
-        "present. Protected run 33381050098 used all 8/8 signing inputs and "
-        "yielded a retained, independently byte-verified package; physical "
-        "delivery remains separate.",
+        "present. Historical protected run 33381050098 used all 8/8 signing "
+        "inputs, but replacement vc9/vc1000009/build-7 signing is pending.",
     )
     verdict = verdict.replace(
         "At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone "
@@ -928,10 +846,9 @@ def sync(
         "and Apple artifacts, complete physical-device coverage, and critical "
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
-        "remain gated on crash diagnosis, complete physical-device and internal-"
-        "delivery coverage, and critical console guardrails. The hosted full-byte "
-        "repeat passes; its chain must still recheck the mutable draft before every "
-        "later use.",
+        "remain gated on crash diagnosis, protected signing and independent "
+        "verification of the replacement set, complete physical-device and store-"
+        "delivery coverage, and critical console guardrails.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -939,10 +856,9 @@ def sync(
         "retained candidates, complete physical-device coverage, and critical "
         "console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
-        "remain gated on crash diagnosis, complete physical-device and internal-"
-        "delivery coverage, and critical console guardrails. The hosted full-byte "
-        "repeat passes; its chain must still recheck the mutable draft before every "
-        "later use.",
+        "remain gated on crash diagnosis, protected signing and independent "
+        "verification of the replacement set, complete physical-device and store-"
+        "delivery coverage, and critical console guardrails.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -950,10 +866,49 @@ def sync(
         "atomic manifest promotion of the materialized candidates, complete "
         "physical-device coverage, and critical console guardrails.",
         "Scale status remains hold; public outreach and acquisition scaling "
-        "remain gated on crash diagnosis, complete physical-device and internal-"
-        "delivery coverage, and critical console guardrails. The hosted full-byte "
-        "repeat passes; its chain must still recheck the mutable draft before every "
-        "later use.",
+        "remain gated on crash diagnosis, protected signing and independent "
+        "verification of the replacement set, complete physical-device and store-"
+        "delivery coverage, and critical console guardrails.",
+    )
+    verdict = verdict.replace(
+        "Exact-current signed phone/Wear and Apple candidates are retained, "
+        "byte-verified, manifest-promoted, and accepted into their internal store "
+        "channels; there is no iOS 15 runtime pass or matching physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are not signed or byte "
+        "verified; predecessor store artifacts are historical, and there is no "
+        "iOS 15 runtime pass or matching physical matrix.",
+    )
+    verdict = verdict.replace(
+        "Android Keychain metadata and the existing mode-600 keystore remain "
+        "present. Protected run 33381050098 used all 8/8 signing inputs and "
+        "yielded a retained, independently byte-verified package; manifest "
+        "promotion and physical delivery remain separate.",
+        "Android Keychain metadata and the existing mode-600 keystore remain "
+        "present. Historical protected run 33381050098 used all 8/8 signing "
+        "inputs, but replacement vc9/vc1000009/build-7 signing is pending.",
+    )
+    verdict = verdict.replace(
+        "Authenticated App Store Connect relationship inventory now exposes exact "
+        "build 6 as VALID and APP_STORE_ELIGIBLE, uploaded at 2026-08-31 21:47:14 "
+        "Asia/Tashkent. Direct prerelease/TestFlight-detail GETs remain permission-"
+        "blocked with security 403. The earlier bounded POST attempting to create "
+        "only a manual-release 1.1.0 version also returned 403, and no version or "
+        "localization draft was created. No localization, screenshot, Custom Product "
+        "Page, production submission, or release mutation followed.",
+        "Authenticated App Store Connect relationship inventory exposes historical "
+        "build 6 as VALID and APP_STORE_ELIGIBLE; replacement build 7 is not signed "
+        "or delivered. Direct prerelease/TestFlight-detail GETs remain permission-"
+        "blocked with security 403. No production submission or release followed.",
+    )
+    verdict = verdict.replace(
+        "Scale status remains hold; public outreach and acquisition scaling remain "
+        "gated on crash diagnosis, complete physical-device and internal-delivery "
+        "coverage, and critical console guardrails. The hosted full-byte repeat "
+        "passes; its chain must still recheck the mutable draft before every later use.",
+        "Scale status remains hold; public outreach and acquisition scaling remain "
+        "gated on crash diagnosis, protected signing and independent verification "
+        "of the replacement set, complete physical-device and store-delivery "
+        "coverage, and critical console guardrails.",
     )
     prior_start = "Product commit 9c2dce4200dbba5487c8c458ade4616005fde6e6 closes"
     prior_end = "historical event."
@@ -987,16 +942,14 @@ def sync(
     verdict = verdict.replace(
         "Exact-current signed phone/Wear and Apple candidates are retained and "
         "byte-verified, but they are not manifest-promoted or store-delivered;",
-        "Exact-current signed phone/Wear and Apple candidates are retained, "
-        "byte-verified, manifest-promoted, and accepted into their internal store "
-        "channels;",
+        "Replacement vc9/vc1000009/build-7 candidates are not signed or byte "
+        "verified; predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "Exact-current signed phone/Wear and Apple candidates are retained, "
         "byte-verified, and manifest-promoted, but not store-delivered;",
-        "Exact-current signed phone/Wear and Apple candidates are retained, "
-        "byte-verified, manifest-promoted, and accepted into their internal store "
-        "channels;",
+        "Replacement vc9/vc1000009/build-7 candidates are not signed or byte "
+        "verified; predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "At the August 31 read-only device check, the iPad mini 5 was paired, "
@@ -1027,13 +980,12 @@ def sync(
         "versions, proving that no partial version or localization draft was "
         "created. No build, localization, screenshot, Custom Product Page, "
         "submission, or release mutation followed.",
-        "Authenticated App Store Connect relationship inventory now exposes exact "
+        "Authenticated App Store Connect relationship inventory exposes historical "
         "build 6 as VALID and APP_STORE_ELIGIBLE, uploaded at 2026-08-31 21:47:14 "
-        "Asia/Tashkent. Direct prerelease/TestFlight-detail GETs remain permission-"
-        "blocked with security 403. The earlier bounded POST attempting to create "
-        "only a manual-release 1.1.0 version also returned 403, and no version or "
-        "localization draft was created. No localization, screenshot, Custom Product "
-        "Page, production submission, or release mutation followed.",
+        "Asia/Tashkent; replacement build 7 is not signed or delivered. Direct "
+        "prerelease/TestFlight-detail GETs remain permission-blocked with security "
+        "403. No localization, screenshot, Custom Product Page, production "
+        "submission, or release mutation followed.",
     )
     verdict = verdict.replace(
         "Google overview values are carried forward from August 28 and were not "

@@ -117,19 +117,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "large text and active system TalkBack pass",
+                "vc9 source and API-24 emulator launcher pass",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact build 6 is VALID and App Store eligible",
+                "replacement build 7 is unsigned",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "TestFlight beta-group distribution for processed build 6",
+                "sign and independently verify build 7",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "local and protected hosted full-byte verification passed",
+                "replacement vc9/vc1000009/build-7 set",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -140,35 +140,27 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
             )["gates"]["release_artifact_source_sync"]["source_revision"]
             self.assertIn(
-                f"current source authority {current_revision[:7]}",
+                f"Replacement source {current_revision}",
                 issues["ios_crash_report_missing"],
             )
             self.assertIn(
-                "fresh local macOS run downloaded",
+                current_revision,
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Protected run 33381050098",
+                "protected signing",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "ordinary GitHub Actions run 33300967788",
+                "full-byte verification",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "all three candidates passed an independent verifier run",
-                issues["release_artifact_source_sync_missing"],
-            )
-            self.assertIn(
-                "all 8/8 signing inputs",
-                issues["release_artifact_source_sync_missing"],
-            )
-            self.assertIn(
-                "protected hosted chain to recheck the mutable draft",
+                "Pass exact-source hosted CI",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "branded legacy launcher icons",
+                "deliver it through Play Internal",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
@@ -188,15 +180,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "deterministic per-target release profiles",
+                "Phone vc9 replaces every pre-Android-8 template launcher resource",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "protected master-only hosted run 33381050098 passed",
+                "blocked with byte_verified=false",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "all 8/8 signing inputs",
+                "Historical protected run 33381050098 used all 8/8 signing inputs",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -204,39 +196,27 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Hosted materialization run 33392732428",
+                "Replacement vc9/vc1000009/build-7 artifacts are not signed",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Protected workflow_run 33405849102 repeated the complete verifier",
+                "predecessor store artifacts are historical",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "installed and pulled bytes matched at e970352d",
+                "replacement build 7 is not signed or delivered",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "active system-TalkBack traversal",
+                "protected signing and independent verification of the replacement set",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "retained, independently byte-verified phone, Wear, and Apple candidates",
+                "Transporter-delivered Apple build 6 remain useful predecessor evidence",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Exact-current signed phone/Wear and Apple candidates are retained",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "Exact-source GitHub Actions run 33300967788 passed",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "bounded physical API 25 phone/widget smoke",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "fixed logged-out gl=UZ recheck on September 1",
+                "approval, publication, and propagation are not verified",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

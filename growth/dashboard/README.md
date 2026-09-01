@@ -32,7 +32,16 @@ and ratings remain carried forward from 2026-08-28. The validated
 install clicks, while UZ has 0 visitors and 0 clicks; UZ conversion is
 `UNKNOWN`, not zero.
 
-Product/build source
+Current replacement source
+`ba824beae5e72653e42af2b8b78286f61415e3ab` resolves to phone `1.1.0 (9)`,
+Wear OS `1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Phone vc9 replaces the
+legacy Android Studio icons and passes an API-24 emulator launcher check. All
+three manifest entries are blocked with `byte_verified=false`; protected
+signing, independent verification, store delivery, and physical QA must run
+again. The vc8/vc1000008/build-6 observations below are historical predecessor
+evidence only.
+
+Historical predecessor source
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` passed exact-source ordinary
 GitHub Actions run
 [`33300967788`](https://github.com/4810092/Weather/actions/runs/33300967788).
@@ -47,21 +56,15 @@ and evidence are committed. Hosted materialization run
 [`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
 stored the exact package and receipt as hash-bound assets in unpublished draft
 release `379745439` and rechecked their API identities, sizes, and digests. The
-latest protected current-`master` chain
+historical protected chain
 [`33405849102`](https://github.com/4810092/Weather/actions/runs/33405849102)
-completed both staging and read-only verification, reopening the mutable draft
-and producing a fresh trusted receipt; no hosted repeat is pending.
+completed both staging and read-only verification for the predecessor draft.
 
-The committed upload manifest now promotes the exact set atomically to `3/3
-verified-current` after a fresh local macOS full-byte pass reopened the draft
+At that predecessor checkpoint, the upload manifest promoted the exact set
+atomically to `3/3 verified-current` after a fresh local macOS full-byte pass reopened the draft
 assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
-and returned `byte_verified=true` for phone, Wear, and Apple. The top-level
-manifest remains `draft-blocked`; the bounded phone tester/delivery subset now
-passes, while TestFlight beta distribution and the remaining delivery-linked
-physical matrix are missing. The draft is
-mutable, so every successful current-`master` CI run must
-pass protected no-checkout staging and the separate read-only hosted macOS
-verifier before Pages or later artifact use. The exact upload-key-signed phone
+and returned `byte_verified=true` for phone, Wear, and Apple. The replacement
+manifest is now blocked and does not inherit that authority. The historical upload-key-signed phone
 AAB was converted to an APK set without rebuilding; its universal APK matched
 the installed package byte-for-byte and passed clean API 25 phone smoke,
 including onboarding, live forecast, share, offline cache/error, recovery, and
@@ -70,10 +73,10 @@ process-log checks. Evidence is retained in
 then delivered vc8 to the dedicated API 25 target; bounded cold/live/share/
 process-health plus `font_scale=1.3` checks pass and the Wear tester track is
 active. Proven-offline, TalkBack, physical tablet/widget/Wear coverage remain blocked, as does the
-TestFlight iPhone/iPad/widget/watch matrix. The iPhone 14 Pro and iPad
-mini 5 are paired, booted, and have Developer Mode enabled. The paired Series 5
-watch has Developer Mode disabled and its developer tunnel is disconnected; no
-iOS 15 runtime is available.
+TestFlight iPhone/iPad/widget/watch matrix. At the latest check the iPhone 14 Pro
+was unavailable and iPad app inventory was CoreDevice-blocked. The paired Series
+5 watch has Developer Mode disabled and its developer tunnel is disconnected;
+no iOS 15 runtime is available.
 
 Two public iOS `1.0.1 (4)` crashes—August 25 and August 29—still lack
 diagnostics and symbolication. The August 29 event maps to iPhone; the earlier
@@ -87,8 +90,8 @@ testers group is attached and its track is active, but no physical Wear install
 exists. The vc8 phone passes the bounded natural background-network and physical
 widget render/update/open path, but its API-25 legacy launcher icon is the
 Android template and blocks production promotion. Authenticated App Store
-Connect inventory now
-reports exact Apple build `1.1.0 (6)` as `VALID` and `APP_STORE_ELIGIBLE`;
+Connect inventory reports historical Apple build `1.1.0 (6)` as `VALID` and
+`APP_STORE_ELIGIBLE`; replacement build 7 is not signed or delivered.
 TestFlight beta distribution/install remains unverified. No production review,
 rollout, public availability, or rank follows from these internal states.
 

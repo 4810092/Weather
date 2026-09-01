@@ -5,23 +5,20 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
+<!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
 <!-- release-authority-current:end -->
 
-In the machine-validated block, `byte_verified=true` records the exact
-freshly reopened artifact bytes behind the atomic `3/3 verified-current`
-manifest promotion. The release surface remains **BLOCKED** because all
-the remaining Android/Wear and Apple physical matrices, crash,
-internal-delivery, and device gates remain open. The phone artifact now binds
-the exact AAB-derived physical API 25 pass, but that bounded result does not
-satisfy the shared Android/Wear gate. Every successful current-`master` CI run
-must pass the protected no-checkout staging job and separate read-only hosted
-macOS verifier before Pages or later artifact use.
+The machine-validated block is fail-closed for replacement source
+`ba824beae5e72653e42af2b8b78286f61415e3ab`: phone vc9, Wear vc1000009, and
+Apple build 7 are not signed or byte verified yet. The former vc8/vc1000008/
+build-6 set remains historical store/device evidence only and cannot authorize
+the replacement release. Protected exact-source CI, signing, independent byte
+verification, Internal/TestFlight delivery, and physical QA must run again.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
