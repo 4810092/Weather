@@ -174,9 +174,21 @@ def apple_probe(online: bool, apple_bundle_id: str = APPLE_BUNDLE_ID) -> tuple[s
         status, payload = request_json("GET", f"{APPLE_ROOT}/v1/apps?{query}", headers={"Authorization": f"Bearer {token}"}, apple_bundle_id=apple_bundle_id)
     except ProbeError as exc:
         return "fail", str(exc)
-    if status == 200 and isinstance(payload, dict) and isinstance(payload.get("data"), list) and len(payload["data"]) == 1:
+    records = payload.get("data") if isinstance(payload, dict) else None
+    exact_matches = (
+        [
+            record
+            for record in records
+            if isinstance(record, dict)
+            and isinstance(record.get("attributes"), dict)
+            and record["attributes"].get("bundleId") == apple_bundle_id
+        ]
+        if isinstance(records, list)
+        else []
+    )
+    if status == 200 and len(exact_matches) == 1:
         return "ok", "authenticated; configured bundle is visible"
-    return "fail", "authenticated but app is not visible" if status == 200 else f"read-only app query failed with HTTP {status}"
+    return "fail", "authenticated but exact app is not uniquely visible" if status == 200 else f"read-only app query failed with HTTP {status}"
 
 
 def google_probe(online: bool) -> tuple[str, str]:
