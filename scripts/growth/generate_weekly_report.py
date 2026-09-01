@@ -103,8 +103,8 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Materialize the exact signed package in an unpublished draft, pass trusted "
-        "macOS verification, then deliver it to Internal/TestFlight.",
+        "Pass trusted macOS verification against the exact unpublished draft, then "
+        "deliver it to Internal/TestFlight.",
     ),
     "android_physical_smoke": (
         "Android engineering",

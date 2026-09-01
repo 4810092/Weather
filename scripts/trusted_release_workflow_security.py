@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "981c25b927a8daebd184d4e938f7c7ae18e925e731971c189889c9fbce741917"
+TRUSTED_SHA256 = "3c0972007fc7907535a6f06bdef82a3ae6b3a3a59491025dfd9f4c1f64c56427"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -50,9 +50,9 @@ TRUSTED_REQUIRED = (
     "source CI commit is stale relative to live master",
     "live master changed during trusted verification",
     "draft storage tag unexpectedly resolves before verification",
-    "repos/4810092/Weather/releases/380257470",
-    "repos/4810092/Weather/releases/assets/539108193",
-    "repos/4810092/Weather/releases/assets/539108272",
+    "repos/4810092/Weather/releases/380406897",
+    "repos/4810092/Weather/releases/assets/539393445",
+    "repos/4810092/Weather/releases/assets/539393546",
     '"draft": True',
     '"prerelease": True',
     '"published_at": None',
@@ -232,17 +232,17 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
             failures.append("verification job must download one same-run staged artifact")
         if verify.count("actions/upload-artifact@") != 1:
             failures.append("verification job must upload one non-secret receipt")
-    if text.count("repos/4810092/Weather/releases/380257470") != 2:
+    if text.count("repos/4810092/Weather/releases/380406897") != 2:
         failures.append("staging job must check draft release exactly before and after")
-    if text.count("repos/4810092/Weather/releases/assets/539108193") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/539393445") != 3:
         failures.append("package asset must use only three fixed API calls")
-    if text.count("repos/4810092/Weather/releases/assets/539108272") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/539393546") != 3:
         failures.append("receipt asset must use only three fixed API calls")
     if text.count("repos/4810092/Weather/git/ref/heads/master") != 4:
         failures.append("stage and verify must each check live master before and after")
     if text.count(
         "repos/4810092/Weather/git/matching-refs/tags/"
-        "nimbo-candidate-v1.1.0-ba824be-run-33473684554"
+        "nimbo-candidate-v1.1.0-8fc43b4-run-33493356066"
     ) != 3:
         failures.append("draft storage Git tag absence must be checked twice in stage and once in verify")
     if text.count("actions/upload-artifact@") != 2:
@@ -285,7 +285,7 @@ def validate_pages_workflow(text: str) -> list[str]:
         "actions/upload-artifact@",
         "NIMBO_RELEASE_ARTIFACT_ROOT",
         "NIMBO_BUNDLETOOL_JAR",
-        "releases/380257470",
+        "releases/380406897",
         "releases/assets/",
         "signed-candidate-bytes",
         "signed-candidate-receipt",

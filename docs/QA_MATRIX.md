@@ -7,8 +7,8 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=05b5e305e51240f5adb302bf896888085643e5bf149e0b477525827183514d8c -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=f00db588179bc82f0bbc5c57112b29536af3e955bc543496067f50667d037bce -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
@@ -132,11 +132,11 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc10 is protected-signed but lacks durable trusted verification, Play delivery, and physical QA. Historical Play-delivered vc9 phone evidence cannot transfer |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc10 is protected-signed and durably materialized but lacks the separate trusted recheck, Play delivery, and physical QA. Historical Play-delivered vc9 phone evidence cannot transfer |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc10 store-delivered physical phone/tablet/widget result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000010 is protected-signed but lacks durable trusted verification and Play delivery; historical vc1000009 has no physical paired-watch pass |
-| Apple app and widget | Distribution-signed build 8 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 8 is protected-signed but lacks durable trusted verification and TestFlight delivery. Historical build 7 is Testing and has a bounded iPhone pass, but its share payload is defective and cannot transfer |
-| Apple Watch | Build-8 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 8 companion is protected-signed but has no trusted materialization or physical-watch result |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000010 is protected-signed and durably materialized but lacks the separate trusted recheck and Play delivery; historical vc1000009 has no physical paired-watch pass |
+| Apple app and widget | Distribution-signed build 8 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 8 is protected-signed and durably materialized but lacks the separate trusted recheck and TestFlight delivery. Historical build 7 is Testing and has a bounded iPhone pass, but its share payload is defective and cannot transfer |
+| Apple Watch | Build-8 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 8 companion is protected-signed and durably materialized but has no separate trusted recheck or physical-watch result |
 
 ## Historical evidence — non-transferable
 

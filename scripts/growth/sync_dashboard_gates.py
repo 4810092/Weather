@@ -392,12 +392,12 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · protected signing passed, but the source-current set "
-                    "has not completed durable materialization and trusted macOS verification"
+                    "BLOCKED · protected signing and durable materialization passed, "
+                    "but the source-current set has not completed trusted macOS verification"
                 )
                 new_next = (
-                    "Materialize the exact signed package in an unpublished draft, pass "
-                    "trusted macOS verification, then deliver it to Internal/TestFlight"
+                    "Pass trusted macOS verification against the exact unpublished draft, "
+                    "then deliver it to Internal/TestFlight"
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (

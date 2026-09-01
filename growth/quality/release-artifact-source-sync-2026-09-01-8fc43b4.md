@@ -1,7 +1,8 @@
 # Release artifact/source sync — 2026-09-01 — 8fc43b4
 
-Status: **BLOCKED. Source identity and protected signed candidates are current;
-durable trusted verification and manifest promotion are still 0/3**.
+Status: **BLOCKED. Source identity, protected signed candidates, and durable
+draft materialization are current; trusted verification and manifest promotion
+are still 0/3**.
 
 The authoritative product/build-input revision is
 `8fc43b48b65d17b3339663549cd86208f62f6bb7`. It resolves to Android phone
@@ -29,12 +30,18 @@ three artifact identities were independently hash/structure checked locally and
 are recorded in
 [`signed-candidate-run-33493356066.md`](signed-candidate-run-33493356066.md).
 
-The signed package still resides only in expiring Actions storage. It has not
-yet passed the repository's durable unpublished-draft materialization plus the
-separate read-only trusted macOS verifier. The upload manifest therefore keeps
-every current SHA-256, signing evidence, and physical QA field null with
-`source_sync=blocked`; the exact vc9/vc1000009/build-7 artifacts remain
-historical evidence and cannot be relabeled current.
+Materialization run
+[`33498085260`](https://github.com/4810092/Weather/actions/runs/33498085260)
+copied the exact package and receipt into unpublished draft release `380406897`
+as assets `539393445` and `539393546`, then redownloaded and hash-checked both.
+The draft remains mutable, has no Git tag, and is recorded in
+[`release-materialization-2026-09-01-run-33498085260.md`](release-materialization-2026-09-01-run-33498085260.md).
+
+The package has not yet passed the separate read-only trusted macOS verifier.
+The upload manifest therefore keeps every current SHA-256, signing evidence,
+and physical QA field null with `source_sync=blocked`; the exact
+vc9/vc1000009/build-7 artifacts remain historical evidence and cannot be
+relabeled current.
 
 Production remains unchanged. No upload, review, rollout, public availability,
 crash-gate closure, or rank effect is claimed.
