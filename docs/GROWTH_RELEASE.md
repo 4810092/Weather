@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: August 31, 2026
+Status date: September 1, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
@@ -9,16 +9,18 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for source
 `8fc43b48b65d17b3339663549cd86208f62f6bb7`: phone vc10, Wear vc1000010, and
-Apple build 8 are `0/3 verified-current` and have no signed bytes yet. This
-source fixes the duplicate-percent share payload found during physical
-TestFlight QA of build 7. The vc9/vc1000009/build-7 set remains historical
-internal-store and device evidence only; it cannot authorize the successor.
+Apple build 8 are `0/3 verified-current`. Protected CI has signed and
+byte-verified all three successors, but the exact package has not yet completed
+durable materialization and separate trusted macOS verification. This source
+fixes the duplicate-percent share payload found during physical TestFlight QA
+of build 7. The vc9/vc1000009/build-7 set remains historical internal-store and
+device evidence only; it cannot authorize the successor.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -38,10 +40,10 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
-| Apple internal delivery | Historical `1.1.0 (7)` completed Transporter processing, entered the internal TestFlight group as `Testing`, and was installed from TestFlight on an iPhone 14 Pro. Its copied share payload contained `0%%`, so build 7 is blocked. Successor build 8 is not yet signed or delivered. |
+| Apple internal delivery | Historical `1.1.0 (7)` completed Transporter processing, entered the internal TestFlight group as `Testing`, and was installed from TestFlight on an iPhone 14 Pro. Its copied share payload contained `0%%`, so build 7 is blocked. Successor build 8 is protected-signed and byte-verified but not yet trusted-materialized or delivered. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Historical phone `1.1.0 (9)` and Wear `1.1.0 (1000009)` are active on separate Internal tracks. Play-delivered vc9 passed a bounded API-25 phone/widget smoke; Wear has no paired-device pass. Successor vc10/vc1000010 are not yet signed or delivered. Production was not changed. |
+| Google Play Internal | Historical phone `1.1.0 (9)` and Wear `1.1.0 (1000009)` are active on separate Internal tracks. Play-delivered vc9 passed a bounded API-25 phone/widget smoke; Wear has no paired-device pass. Successor vc10/vc1000010 are protected-signed and byte-verified but not yet trusted-materialized or delivered. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
@@ -260,12 +262,13 @@ availability; each external state must be recorded separately.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Pass exact-source hosted CI for `8fc43b4`, protected signing, independent
-   full-byte verification, and Internal/TestFlight delivery for vc10,
-   vc1000010, and build 8. Then repeat the physical phone/tablet/widget/Wear and
-   iPhone/iPad/widget/watch matrices, including the exact copied share payload,
-   iOS 15 coverage where available, and post-delivery vitals. Historical
-   build-7 and vc9 results remain regression evidence only.
+3. Materialize the exact protected-signed package for `8fc43b4` in the
+   unpublished draft, pass the separate trusted macOS verifier, and only then
+   deliver vc10, vc1000010, and build 8 to Internal/TestFlight. Repeat the
+   physical phone/tablet/widget/Wear and iPhone/iPad/widget/watch matrices,
+   including the exact copied share payload, iOS 15 coverage where available,
+   and post-delivery vitals. Historical build-7 and vc9 results remain
+   regression evidence only.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
@@ -273,7 +276,7 @@ availability; each external state must be recorded separately.
 Current vc10, vc1000010, and build 8 remain `0/3 verified-current` and
 `draft-blocked`. The [historical build-7 delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
 and its physical evidence document what happened, but cannot close successor
-signing, delivery, or runtime gates. Play Internal and TestFlight remain bounded
+trusted verification, delivery, or runtime gates. Play Internal and TestFlight remain bounded
 QA channels for exact source-current candidates.
 Production rollout and public acquisition remain fail-closed until the crash,
 provider, physical-device, and console guardrails pass.

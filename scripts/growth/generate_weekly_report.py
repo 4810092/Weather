@@ -103,8 +103,8 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Pass exact-source hosted CI, protected signing, independent full-byte "
-        "verification, and Internal/TestFlight delivery for the source-current set.",
+        "Materialize the exact signed package in an unpublished draft, pass trusted "
+        "macOS verification, then deliver it to Internal/TestFlight.",
     ),
     "android_physical_smoke": (
         "Android engineering",

@@ -7,8 +7,8 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
@@ -51,8 +51,9 @@ tools, or an unrecognized state fail closed. A successful build, an editable
 JSON/Markdown receipt, or an older artifact cannot establish readiness. Apple
 also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
-and the exact App Store Connect `ExportOptions.plist`; current build 8 has no
-retained distribution archive or IPA. The protected staged hosted chain is
+and the exact App Store Connect `ExportOptions.plist`; current build 8 has a
+protected byte-verified distribution archive and IPA only inside the
+not-yet-durable candidate package. The protected staged hosted chain is
 mandatory before any current artifact promotion. The
 single staged directory layout and action-time command are documented in
 [`store/README.md`](../store/README.md). The verifier
@@ -64,8 +65,10 @@ and its explicit external-build provenance boundary are recorded in
 - Current product/build source `8fc43b4` fixes the duplicate percent found in
   the build-7 TestFlight share payload and advances phone, Wear, and Apple
   identities to vc10, vc1000010, and build 8. The targeted common regression
-  test passes, but no exact-source hosted CI, protected signing receipt,
-  current artifact bytes, store delivery, or physical result exists yet. The
+  test and exact-source hosted CI pass. Protected signing run `33493356066`
+  produced and byte-verified all current artifact bytes after destroying the
+  ephemeral signing material. Durable materialization, separate trusted macOS
+  verification, store delivery, and physical results remain absent. The
   manifest is `0/3 verified-current` and fail-closed.
 - Historical source `ba824be` passed hosted CI, protected signing, independent
   byte verification, and internal delivery for vc9, vc1000009, and build 7.
@@ -129,11 +132,11 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc10 has no signed artifact or Play delivery. Historical Play-delivered vc9 phone evidence cannot transfer |
-| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc10 signed physical phone/tablet/widget result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000010 has no signed artifact or Play delivery; historical vc1000009 has no physical paired-watch pass |
-| Apple app and widget | Distribution-signed build 8 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 8 has no signed/TestFlight artifact. Historical build 7 is Testing and has a bounded iPhone pass, but its share payload is defective and cannot transfer |
-| Apple Watch | Build-8 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 8 has no signed companion or physical-watch result |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc10 is protected-signed but lacks durable trusted verification, Play delivery, and physical QA. Historical Play-delivered vc9 phone evidence cannot transfer |
+| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc10 store-delivered physical phone/tablet/widget result exists |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000010 is protected-signed but lacks durable trusted verification and Play delivery; historical vc1000009 has no physical paired-watch pass |
+| Apple app and widget | Distribution-signed build 8 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 8 is protected-signed but lacks durable trusted verification and TestFlight delivery. Historical build 7 is Testing and has a bounded iPhone pass, but its share payload is defective and cannot transfer |
+| Apple Watch | Build-8 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 8 companion is protected-signed but has no trusted materialization or physical-watch result |
 
 ## Historical evidence — non-transferable
 
