@@ -9,12 +9,11 @@
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
 <!-- release-authority-current:end -->
 
-The replacement vc9/vc1000009/build-7 set is atomically
-`3/3 verified-current` with `byte_verified=true` after protected signing and
-independent full-byte verification. Historical vc8/vc1000008/build-6 store and
-physical evidence does not transfer. The source-level legacy icon defect is
-fixed and passes an API-24 emulator launcher check; Play Internal/TestFlight
-delivery and the applicable physical matrix remain blocked.
+Current source `8fc43b4` resolves to vc10/vc1000010/build 8 and is fail-closed
+at `0/3 verified-current`. It fixes the duplicate-percent share payload found
+during physical TestFlight QA of historical build 7. Historical
+vc9/vc1000009/build-7 signing, internal delivery, and device observations do not
+transfer to the successor.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -23,30 +22,15 @@ the first 30 and `0/5` generic queries qualify. One auxiliary Apple
 `Toshkent ob-havo` result is incomplete, but all required goal surfaces are
 decisive and fail, so the verified Top-10 streak remains `0/7`.
 
-Product/build source `ba824be` passed exact-source hosted CI
-[`33472603346`](https://github.com/4810092/Weather/actions/runs/33472603346).
-Protected signing run
-[`33473684554`](https://github.com/4810092/Weather/actions/runs/33473684554)
-then produced independently byte-verified phone `1.1.0 (9)`, Wear
-`1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Hosted materialization run
-[`33477785531`](https://github.com/4810092/Weather/actions/runs/33477785531)
-stored the exact package and receipt in unpublished draft release `380257470`.
-The committed manifest now holds `3/3 verified-current` atomically and remains
-`draft-blocked`. The draft is mutable, so the protected staged hosted chain is
-mandatory for each current master before later artifact use.
-The exact phone AAB was then converted with pinned Bundletool to an upload-key-
-signed universal APK and passed a clean physical API 25 smoke with identical
-installed bytes. Exact phone and Wear AABs are now accepted on their separate
-Play Internal tracks. The phone opt-in is accepted and Google Play delivered
-version `1.1.0 (8)` to the dedicated API 25 target for a bounded
-cold/live/share/process-health pass. The Wear License testers group is attached
-and the exact Wear track is active, but no physical Wear install exists. Exact Apple
-build 6 completed App Store Connect processing as `VALID` and
-`APP_STORE_ELIGIBLE`, but TestFlight beta distribution and the physical
-iPhone/iPad/widget/watch matrix remain missing. The iPhone and iPad are paired,
-booted, and Developer Mode enabled; the paired watch has Developer Mode disabled
-and no developer tunnel. No production submission, review, rollout, public
-availability, or rank is claimed.
+Historical source `ba824be` passed exact-source hosted CI, protected signing,
+independent verification, and internal delivery for phone `1.1.0 (9)`, Wear
+`1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Google Play delivered vc9 to the
+dedicated API-25 phone for a bounded branded-launcher/live/share/refresh/widget
+pass. TestFlight delivered build 7 to the iPhone 14 Pro; cold/live/refresh and
+the share sheet ran, but the copied share text contained `0%%`. Current source
+`8fc43b4` fixes that defect and advances all build identities. It has no signed
+bytes or internal delivery yet. No production submission, review, rollout,
+public availability, or rank is claimed.
 
 OpenMeteo GmbH has confirmed the exact unpaid, non-monetized organic-promotion
 scope for the non-commercial API. Two public iOS `1.0.1 (4)` crashes remain
@@ -77,7 +61,9 @@ or historical device result does not close those independent gates.
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
-| Current release source authority | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Exact `2cdd438` identity, fresh full-byte verification, atomic 3/3 verified-current manifest state, and remaining physical/store gates |
+| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and fail-closed 0/3 successor boundary |
+| Historical build-7 internal delivery | [quality/internal-store-delivery-2026-09-01-ba824be.md](quality/internal-store-delivery-2026-09-01-ba824be.md) | Exact vc9/vc1000009/build-7 internal delivery plus explicit non-production boundary |
+| Historical build-7 TestFlight QA | [quality/testflight-ios-build7-smoke-2026-09-01.md](quality/testflight-ios-build7-smoke-2026-09-01.md) | Exact iPhone TestFlight install and bounded runtime pass that found the duplicate-percent share defect |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
 | Provider clarification | [legal/open-meteo-clarification-email.md](legal/open-meteo-clarification-email.md) | Exact written Free/non-commercial API permission scope and the material-change boundary |
 | Seasonal content backlog | [content/articles.json](content/articles.json) and [content/calendar.csv](content/calendar.csv) | Two source-backed UZ/RU/EN draft articles per month from September through November 2026; every route remains draft-blocked until all publication gates pass |

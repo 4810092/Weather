@@ -3,13 +3,13 @@
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
-OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 9,
-Wear 1000009, and Apple build 7. It fixes the legacy Android launcher asset, but
-all three replacement artifacts are protected-signed, independently
-byte-verified, and atomically `3/3 verified-current` in the draft-blocked
-upload manifest. Play Internal/TestFlight delivery and physical QA remain
-pending. The previously verified phone 8, Wear 1000008, and Apple build 6 set
-remains historical evidence tied to the predecessor source. On August 31, that
+OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 10,
+Wear 1000010, and Apple build 8 from source `8fc43b4`. All three artifacts are
+fail-closed at `0/3 verified-current` pending exact-source hosted CI, protected
+signing, independent verification, internal delivery, and replacement QA. The
+previously verified phone 9, Wear 1000009, and Apple build 7 set remains
+historical evidence tied to predecessor source `ba824be`; build-7 TestFlight QA
+found the duplicate-percent share defect fixed by the successor. On August 31, the earlier
 exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
 and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
@@ -31,6 +31,15 @@ claimed. Store consoles remain the authority for live status.
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
 <!-- release-authority-current:end -->
+
+## Nimbo 1.1.0 successor build-8 checkpoint — 2026-09-01
+
+Physical TestFlight QA installed exact historical build `1.1.0 (7)` on the
+iPhone 14 Pro and passed cold/live/refresh/share-sheet execution, but the copied
+share payload contained `0%%`. Source `8fc43b4` normalizes that payload to a
+single percent, adds a regression test, and advances phone/Wear/Apple identities
+to vc10/vc1000010/build 8. No successor signed bytes or store delivery are
+claimed yet. Production remains unchanged.
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
 
@@ -81,12 +90,11 @@ a replacement phone version code is required. See the
 [Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
 
 At that historical checkpoint, `byte_verified=true` recorded the exact
-vc8/vc1000008/build-6 bytes reopened by the full verifier. The later replacement
-source supersedes their current authority: the manifest now records
-`byte_verified=true` and `verified-current` for vc9/vc1000009/build 7 after
-protected signing and independent full-byte verification. The September 1
-phone evidence remains useful regression evidence, but cannot satisfy
-replacement delivery, launcher, or physical gates.
+vc8/vc1000008/build-6 bytes reopened by the full verifier. A later historical
+checkpoint similarly verified vc9/vc1000009/build 7, delivered them internally,
+and found the build-7 share defect. The current vc10/vc1000010/build-8 manifest
+is fail-closed at `0/3 verified-current`; none of the predecessor evidence can
+satisfy successor signing, delivery, or physical gates.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 
