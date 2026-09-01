@@ -211,7 +211,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                'if manifest.get("artifacts") != expected_blocked:',
+                "if committed_artifacts not in (expected_blocked, expected_verified):",
                 "if False:",
                 1,
             )

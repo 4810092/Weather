@@ -103,8 +103,8 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Pass trusted macOS verification against the exact unpublished draft, then "
-        "deliver it to Internal/TestFlight.",
+        "Require the protected hosted chain to recheck the mutable draft before "
+        "every later use, then deliver it to Internal/TestFlight.",
     ),
     "android_physical_smoke": (
         "Android engineering",

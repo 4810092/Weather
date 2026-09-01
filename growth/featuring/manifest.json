@@ -117,7 +117,7 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Historical Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed, independently byte-verified, and internally delivered from source ba824be. Phone vc9 has a bounded Play-delivered API-25 phone/widget pass; TestFlight build 7 has a bounded iPhone pass but its share payload contains a duplicate percent. Successor source 8fc43b4 fixes the defect and advances to vc10, vc1000010, and build 8, with no signed bytes or store delivery yet. No replacement candidate is public.",
+      "claim": "Historical Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed, independently byte-verified, and internally delivered from source ba824be. Phone vc9 has a bounded Play-delivered API-25 phone/widget pass; TestFlight build 7 has a bounded iPhone pass but its share payload contains a duplicate percent. Successor source 8fc43b4 fixes the defect and advances to vc10, vc1000010, and build 8. Those three successor artifacts are protected-signed, durably materialized, independently full-byte verified, and atomically 3/3 current, but they are not yet internally store-delivered or physically exercised. No replacement candidate is public.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md",
@@ -141,12 +141,6 @@
     },
     {
       "id": "ios_physical_smoke",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
-      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

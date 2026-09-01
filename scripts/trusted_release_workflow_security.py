@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "d67b108896d89d5f5e9414d16bd62a8a2913ab236dcd7a8714bf6ed9e9c6ab44"
+TRUSTED_SHA256 = "86cd6a15edd9a4d4159d1349d0d6535e9e21a39cdee5613f37067f8dad36cd56"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -75,7 +75,8 @@ TRUSTED_REQUIRED = (
     "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
     "Create exact ephemeral verification manifest",
     "python3 scripts/verify_release_artifacts.py --contract-only",
-    "committed upload manifest blocked candidate set mismatch",
+    "committed upload manifest candidate set mismatch",
+    "committed_artifacts not in (expected_blocked, expected_verified)",
     'artifact["source_sync"] = "verified-current"',
     'artifact["physical_qa_evidence"] = None',
     'artifact["historical_candidate"] = None',
@@ -262,11 +263,11 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("committed blocked manifest must pass one contract-only check")
     if text.count('--manifest "$verification_manifest"') != 1:
         failures.append("full verifier must use the exact ephemeral manifest once")
-    if text.count('artifact["source_sync"] = "verified-current"') != 1:
-        failures.append("ephemeral manifest must promote all pinned artifacts in one loop")
-    if text.count('artifact["physical_qa_evidence"] = None') != 1:
+    if text.count('artifact["source_sync"] = "verified-current"') != 2:
+        failures.append("exact current state and ephemeral promotion must be pinned")
+    if text.count('artifact["physical_qa_evidence"] = None') != 2:
         failures.append("ephemeral manifest must not invent physical QA evidence")
-    if text.count('artifact["historical_candidate"] = None') != 1:
+    if text.count('artifact["historical_candidate"] = None') != 2:
         failures.append("ephemeral manifest must clear historical state before verification")
     if text.count("set +x") != 3:
         failures.append("every token-bearing trusted step must disable shell tracing")

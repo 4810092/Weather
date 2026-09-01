@@ -123,11 +123,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 self.assertEqual(rows[gate_id]["status"], gate["status"])
                 self.assertEqual(rows[gate_id]["evidence"], gate["reason"])
             self.assertIn(
-                "current Android artifacts are protected-signed",
+                "protected-signed and trusted-verified",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "current Apple build 8 is protected-signed",
+                "protected-signed and trusted-verified",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "protected signing and durable materialization passed",
+                "independent full-byte verification passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Pass trusted macOS verification",
+                "Require the protected hosted chain",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "manifest remains fail-closed at 0/3 verified-current",
+                "upload manifest is atomically 3/3 verified-current",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -222,8 +222,8 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 "neither candidate run yielded a retained",
                 artifact["manifest"]["blocks"][0]["body"],
             )
-            self.assertNotIn(
-                "atomically 3/3 verified-current with byte_verified=true",
+            self.assertIn(
+                "source_sync=verified-current plus byte_verified=true",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(

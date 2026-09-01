@@ -34,11 +34,11 @@ install clicks, while UZ has 0 visitors and 0 clicks; UZ conversion is
 
 Current source `8fc43b48b65d17b3339663549cd86208f62f6bb7` resolves to phone
 `1.1.0 (10)`, Wear OS `1.1.0 (1000010)`, and Apple `1.1.0 (8)`. All three
-manifest entries are blocked at `0/3 verified-current` until exact-source CI,
-protected signing, independent verification, internal delivery, and
-replacement QA complete. Historical vc9/vc1000009/build-7 evidence does not
-transfer; physical TestFlight QA found the `0%%` share defect that current
-source fixes.
+manifest entries are atomically `verified-current` with `byte_verified=true`
+after exact-source CI, protected signing, durable materialization, and trusted
+hosted run `33508130379`. Internal delivery and replacement QA remain blocked.
+Historical vc9/vc1000009/build-7 evidence does not transfer; physical
+TestFlight QA found the `0%%` share defect that current source fixes.
 
 Historical predecessor source
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` passed exact-source ordinary

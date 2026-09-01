@@ -4,10 +4,10 @@ This is a chronological release journal. Statements inside a dated paragraph des
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 10,
-Wear 1000010, and Apple build 8 from source `8fc43b4`. Protected CI has signed
-and byte-verified all three artifacts; the committed manifest remains
-fail-closed at `0/3 verified-current` after durable draft materialization and
-pending separate trusted macOS verification, internal delivery, and replacement QA. The
+Wear 1000010, and Apple build 8 from source `8fc43b4`. Protected CI has signed,
+durably materialized, and trusted-hosted byte-verified all three artifacts; the
+committed manifest is atomically `3/3 verified-current` and remains
+`draft-blocked` pending internal delivery and replacement QA. The
 previously verified phone 9, Wear 1000009, and Apple build 7 set remains
 historical evidence tied to predecessor source `ba824be`; build-7 TestFlight QA
 found the duplicate-percent share defect fixed by the successor. On August 31, the earlier
@@ -26,11 +26,11 @@ claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:8fc43b48b65d17b3339663549cd86208f62f6bb7 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=05b5e305e51240f5adb302bf896888085643e5bf149e0b477525827183514d8c -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=f00db588179bc82f0bbc5c57112b29536af3e955bc543496067f50667d037bce -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dd801a85cc4893d33282120ed16a9476279af1a8196c726b5854a55e3cd7b8f8 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=9baedf7de5d31fc4f7ab581c5540b64896a1fc98b5ed15dab66320b26bfdc373 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-8 checkpoint — 2026-09-01
@@ -41,8 +41,10 @@ share payload contained `0%%`. Source `8fc43b4` normalizes that payload to a
 single percent, adds a regression test, and advances phone/Wear/Apple identities
 to vc10/vc1000010/build 8. Protected signing run `33493356066` produced and
 byte-verified the complete successor set. Materialization run `33498085260`
-durably retained the exact package and receipt in an unpublished draft; the
-separate trusted recheck and store delivery remain unclaimed. Production remains unchanged.
+durably retained the exact package and receipt in an unpublished draft.
+Trusted hosted run `33508130379` revalidated the mutable draft and returned
+`byte_verified=true` for all three artifacts; the manifest is atomically
+current while store delivery remains unclaimed. Production remains unchanged.
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
 
@@ -96,8 +98,8 @@ At that historical checkpoint, `byte_verified=true` recorded the exact
 vc8/vc1000008/build-6 bytes reopened by the full verifier. A later historical
 checkpoint similarly verified vc9/vc1000009/build 7, delivered them internally,
 and found the build-7 share defect. The current vc10/vc1000010/build-8 manifest
-is fail-closed at `0/3 verified-current`; none of the predecessor evidence can
-satisfy successor signing, delivery, or physical gates.
+is atomically `3/3 verified-current`; none of the predecessor evidence can
+satisfy successor delivery or physical gates.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 

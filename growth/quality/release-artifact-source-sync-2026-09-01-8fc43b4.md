@@ -1,8 +1,7 @@
 # Release artifact/source sync — 2026-09-01 — 8fc43b4
 
-Status: **BLOCKED. Source identity, protected signed candidates, and durable
-draft materialization are current; trusted verification and manifest promotion
-are still 0/3**.
+Status: **PASS for exact source and signed-byte identity; the manifest is
+atomically 3/3 current. Store delivery and physical QA remain blocked**.
 
 The authoritative product/build-input revision is
 `8fc43b48b65d17b3339663549cd86208f62f6bb7`. It resolves to Android phone
@@ -37,11 +36,24 @@ as assets `539393445` and `539393546`, then redownloaded and hash-checked both.
 The draft remains mutable, has no Git tag, and is recorded in
 [`release-materialization-2026-09-01-run-33498085260.md`](release-materialization-2026-09-01-run-33498085260.md).
 
-The package has not yet passed the separate read-only trusted macOS verifier.
-The upload manifest therefore keeps every current SHA-256, signing evidence,
-and physical QA field null with `source_sync=blocked`; the exact
-vc9/vc1000009/build-7 artifacts remain historical evidence and cannot be
-relabeled current.
+Exact-source master CI run
+[`33505490040`](https://github.com/4810092/Weather/actions/runs/33505490040)
+passed all five jobs at evidence head
+`96ea869d332f4dd9689321ac6935ebe313d0e6c0`. Protected trusted run
+[`33508130379`](https://github.com/4810092/Weather/actions/runs/33508130379)
+then reopened the exact mutable draft, validated the committed blocked
+contract, safely extracted the closed candidate tree, and returned
+`source_sync=verified-current` plus `byte_verified=true` for phone vc10, Wear
+vc1000010, and Apple build 8. It revalidated live master and the staged asset
+identities after verification. The complete boundary is recorded in
+[`release-artifact-full-verification-2026-09-01-build8-hosted.md`](release-artifact-full-verification-2026-09-01-build8-hosted.md).
+
+The upload manifest is therefore promoted atomically to
+`source_sync=verified-current` with the exact three SHA-256 values and current
+signing evidence. Every `physical_qa_evidence` field remains null and the
+manifest remains `draft-blocked`. Exact vc9/vc1000009/build-7 artifacts remain
+historical evidence and cannot be relabeled current.
 
 Production remains unchanged. No upload, review, rollout, public availability,
-crash-gate closure, or rank effect is claimed.
+crash-gate closure, physical QA, or rank effect is claimed. Because the draft
+is mutable, its protected hosted chain must pass again before every later use.
