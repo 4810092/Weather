@@ -5,8 +5,8 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
 <!-- release-authority-current:end -->
 
 Current source `8fc43b4` resolves to vc10/vc1000010/build 8 and is fail-closed
@@ -28,8 +28,9 @@ independent verification, and internal delivery for phone `1.1.0 (9)`, Wear
 dedicated API-25 phone for a bounded branded-launcher/live/share/refresh/widget
 pass. TestFlight delivered build 7 to the iPhone 14 Pro; cold/live/refresh and
 the share sheet ran, but the copied share text contained `0%%`. Current source
-`8fc43b4` fixes that defect and advances all build identities. It has no signed
-bytes or internal delivery yet. No production submission, review, rollout,
+`8fc43b4` fixes that defect and advances all build identities. Protected CI has
+signed and byte-verified all three successors; durable trusted verification and
+internal delivery remain absent. No production submission, review, rollout,
 public availability, or rank is claimed.
 
 OpenMeteo GmbH has confirmed the exact unpaid, non-monetized organic-promotion
@@ -61,7 +62,8 @@ or historical device result does not close those independent gates.
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
-| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and fail-closed 0/3 successor boundary |
+| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity, protected signing pass, and fail-closed 0/3 durable-trust boundary |
+| Current protected signed candidate | [quality/signed-candidate-run-33493356066.md](quality/signed-candidate-run-33493356066.md) and [receipt](quality/receipts/signed-candidate-33493356066.json) | Exact CI/run/artifact/package/tree and three successor byte identities; durable materialization and trusted macOS recheck still required |
 | Historical build-7 internal delivery | [quality/internal-store-delivery-2026-09-01-ba824be.md](quality/internal-store-delivery-2026-09-01-ba824be.md) | Exact vc9/vc1000009/build-7 internal delivery plus explicit non-production boundary |
 | Historical build-7 TestFlight QA | [quality/testflight-ios-build7-smoke-2026-09-01.md](quality/testflight-ios-build7-smoke-2026-09-01.md) | Exact iPhone TestFlight install and bounded runtime pass that found the duplicate-percent share defect |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |

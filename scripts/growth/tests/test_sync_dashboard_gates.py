@@ -123,11 +123,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 self.assertEqual(rows[gate_id]["status"], gate["status"])
                 self.assertEqual(rows[gate_id]["evidence"], gate["reason"])
             self.assertIn(
-                "current source has no signed or store-delivered Android artifacts",
+                "current Android artifacts are protected-signed",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "current Apple build has no signed TestFlight artifact",
+                "current Apple build 8 is protected-signed",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "source-current replacement set has no protected signed",
+                "protected signing passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Pass exact-source hosted CI",
+                "Materialize the exact signed package",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "manifest is fail-closed at 0/3 verified-current",
+                "manifest remains fail-closed at 0/3 verified-current",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

@@ -392,17 +392,17 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · the source-current replacement set has no protected "
-                    "signed or independently byte-verified artifacts"
+                    "BLOCKED · protected signing passed, but the source-current set "
+                    "has not completed durable materialization and trusted macOS verification"
                 )
                 new_next = (
-                    "Pass exact-source hosted CI, protected signing, independent full-byte "
-                    "verification, and Internal/TestFlight delivery for the source-current set"
+                    "Materialize the exact signed package in an unpublished draft, pass "
+                    "trusted macOS verification, then deliver it to Internal/TestFlight"
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · the current source has no signed or store-delivered Android "
-                "artifacts; predecessor phone/Wear evidence is historical and non-transferable"
+                "BLOCKED · current Android artifacts are protected-signed but not yet "
+                "trusted-verified, store-delivered, or physically tested"
             )
             new_next = (
                 "Deliver the source-current phone and Wear artifacts through Play Internal, "
@@ -410,8 +410,8 @@ def sync(
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · the current Apple build has no signed TestFlight artifact or "
-                "complete runtime matrix; predecessor build evidence is non-transferable"
+                "BLOCKED · current Apple build 8 is protected-signed but not yet "
+                "trusted-verified, TestFlight-delivered, or physically tested"
             )
             new_next = (
                 "Distribute the source-current build through TestFlight, then install and run the "

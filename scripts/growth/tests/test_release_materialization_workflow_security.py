@@ -90,11 +90,11 @@ class ReleaseMaterializationWorkflowSecurityTest(unittest.TestCase):
 
     def test_exact_run_and_artifact_action_inputs_are_immutable(self) -> None:
         self.assert_rejected(
-            self.workflow.replace('artifact-ids: "9787670569"', 'artifact-ids: "1"', 1),
+            self.workflow.replace('artifact-ids: "9795391062"', 'artifact-ids: "1"', 1),
             "download action block differs",
         )
         self.assert_rejected(
-            self.workflow.replace('run-id: "33473684554"', 'run-id: "1"', 1),
+            self.workflow.replace('run-id: "33493356066"', 'run-id: "1"', 1),
             "download action block differs",
         )
         self.assert_rejected(
@@ -105,7 +105,7 @@ class ReleaseMaterializationWorkflowSecurityTest(unittest.TestCase):
     def test_source_artifact_and_receipt_hashes_are_immutable(self) -> None:
         self.assert_rejected(
             self.workflow.replace(
-                "381102d3ac0dbfb4f309b0dd050e681e8be558bcc9c4a4705b6ef9fcad51364d",
+                "8cd4bdae3f9f7087ce6c4b05b35f0406d3801f59799d195ddef06b92a2c9ec11",
                 "0" * 64,
                 1,
             ),
@@ -113,7 +113,7 @@ class ReleaseMaterializationWorkflowSecurityTest(unittest.TestCase):
         )
         self.assert_rejected(
             self.workflow.replace(
-                "448f2682c3fb2c2c186e0eebe794183d7cbd60e75312448dc9bae7ef608b8af3",
+                "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
                 "0" * 64,
                 1,
             ),
@@ -240,7 +240,7 @@ class ReleaseMaterializationWorkflowSecurityTest(unittest.TestCase):
     def test_pre_and_post_tag_absence_checks_are_immutable(self) -> None:
         self.assert_rejected(
             self.workflow.replace(
-                "matching-refs/tags/nimbo-candidate-v1.1.0-ba824be-run-33473684554",
+                "matching-refs/tags/nimbo-candidate-v1.1.0-8fc43b4-run-33493356066",
                 "matching-refs/tags/different",
                 1,
             ),

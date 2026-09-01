@@ -4,9 +4,10 @@ This is a chronological release journal. Statements inside a dated paragraph des
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 10,
-Wear 1000010, and Apple build 8 from source `8fc43b4`. All three artifacts are
-fail-closed at `0/3 verified-current` pending exact-source hosted CI, protected
-signing, independent verification, internal delivery, and replacement QA. The
+Wear 1000010, and Apple build 8 from source `8fc43b4`. Protected CI has signed
+and byte-verified all three artifacts; the committed manifest remains
+fail-closed at `0/3 verified-current` pending durable materialization, separate
+trusted macOS verification, internal delivery, and replacement QA. The
 previously verified phone 9, Wear 1000009, and Apple build 7 set remains
 historical evidence tied to predecessor source `ba824be`; build-7 TestFlight QA
 found the duplicate-percent share defect fixed by the successor. On August 31, the earlier
@@ -28,8 +29,8 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-8 checkpoint — 2026-09-01
@@ -38,8 +39,9 @@ Physical TestFlight QA installed exact historical build `1.1.0 (7)` on the
 iPhone 14 Pro and passed cold/live/refresh/share-sheet execution, but the copied
 share payload contained `0%%`. Source `8fc43b4` normalizes that payload to a
 single percent, adds a regression test, and advances phone/Wear/Apple identities
-to vc10/vc1000010/build 8. No successor signed bytes or store delivery are
-claimed yet. Production remains unchanged.
+to vc10/vc1000010/build 8. Protected signing run `33493356066` produced and
+byte-verified the complete successor set, while durable trusted verification
+and store delivery remain unclaimed. Production remains unchanged.
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
 
