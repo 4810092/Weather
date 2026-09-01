@@ -619,6 +619,122 @@ jobs:
             "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29"
           test "$(java -jar "$bundletool_path" version)" = "1.18.3"
 
+      - name: Create exact ephemeral verification manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_release_artifacts.py --contract-only
+          manifest_root="$RUNNER_TEMP/nimbo-trusted-manifest"
+          install -d -m 700 "$manifest_root"
+          python3 -I - \
+            store/upload-manifest-1.1.0.json \
+            "$manifest_root/verification-manifest.json" <<'PY'
+          import copy
+          import json
+          import os
+          import stat
+          import sys
+          from pathlib import Path
+
+          source = Path(sys.argv[1])
+          destination = Path(sys.argv[2])
+          manifest = json.loads(source.read_text(encoding="utf-8"))
+          if manifest.get("schema_version") != 2:
+              raise SystemExit("committed upload manifest schema mismatch")
+          if manifest.get("release") != "1.1.0":
+              raise SystemExit("committed upload manifest release mismatch")
+          if manifest.get("source_revision") != "8fc43b48b65d17b3339663549cd86208f62f6bb7":
+              raise SystemExit("committed upload manifest source revision mismatch")
+          if manifest.get("status") != "draft-blocked":
+              raise SystemExit("committed upload manifest status mismatch")
+
+          evidence = "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md"
+          expected_blocked = {
+              "android_phone": {
+                  "filename": "nimbo-phone-1.1.0-vc10.aab",
+                  "version_code": 10,
+                  "source_sync": "blocked",
+                  "sha256": None,
+                  "signing_evidence": None,
+                  "physical_qa_evidence": None,
+                  "source_sync_evidence": evidence,
+                  "historical_candidate": {
+                      "status": "historical-superseded",
+                      "filename": "nimbo-phone-1.1.0-vc9.aab",
+                      "version_code": 9,
+                      "sha256": "0fd5ae542a71f8cccb1cbbd043ffef09df9f29a2c1c6642010cfcce579f00681",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
+                      "physical_qa_evidence": "growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md",
+                  },
+              },
+              "wear_os": {
+                  "filename": "nimbo-wear-1.1.0-vc1000010.aab",
+                  "version_code": 1000010,
+                  "source_sync": "blocked",
+                  "sha256": None,
+                  "signing_evidence": None,
+                  "physical_qa_evidence": None,
+                  "source_sync_evidence": evidence,
+                  "historical_candidate": {
+                      "status": "historical-superseded",
+                      "filename": "nimbo-wear-1.1.0-vc1000009.aab",
+                      "version_code": 1000009,
+                      "sha256": "9ce725e755a09d783adacc1691d5e20a0773b88aa63e9365c00af50f51e6542c",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
+                      "physical_qa_evidence": None,
+                  },
+              },
+              "apple": {
+                  "filename": "Nimbo.ipa",
+                  "build": 8,
+                  "source_sync": "blocked",
+                  "sha256": None,
+                  "signing_evidence": None,
+                  "physical_qa_evidence": None,
+                  "source_sync_evidence": evidence,
+                  "historical_candidate": {
+                      "status": "historical-superseded",
+                      "filename": "Nimbo.ipa",
+                      "build": 7,
+                      "sha256": "b918a8d7fa66d1755ca05486ee02ffac6a73b96ddd72f681bd3f6bfb3108709d",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
+                      "physical_qa_evidence": "growth/quality/testflight-ios-build7-smoke-2026-09-01.md",
+                  },
+              },
+          }
+          if manifest.get("artifacts") != expected_blocked:
+              raise SystemExit("committed upload manifest blocked candidate set mismatch")
+
+          promotion = {
+              "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
+              "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
+              "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+          }
+          verification_manifest = copy.deepcopy(manifest)
+          for artifact_id, digest in promotion.items():
+              artifact = verification_manifest["artifacts"][artifact_id]
+              artifact["source_sync"] = "verified-current"
+              artifact["sha256"] = digest
+              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33493356066.md"
+              artifact["physical_qa_evidence"] = None
+              artifact["historical_candidate"] = None
+
+          flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+          if hasattr(os, "O_NOFOLLOW"):
+              flags |= os.O_NOFOLLOW
+          descriptor = os.open(destination, flags, 0o600)
+          with os.fdopen(descriptor, "w", encoding="utf-8") as output:
+              json.dump(verification_manifest, output, indent=2, sort_keys=False)
+              output.write("\n")
+              output.flush()
+              os.fsync(output.fileno())
+          observed = destination.lstat()
+          if not stat.S_ISREG(observed.st_mode) or stat.S_IMODE(observed.st_mode) != 0o600:
+              raise SystemExit("ephemeral verification manifest mode mismatch")
+          if json.loads(destination.read_text(encoding="utf-8")) != verification_manifest:
+              raise SystemExit("ephemeral verification manifest changed after creation")
+          PY
+
       - name: Run full signed-byte verification
         shell: bash
         env:
@@ -628,7 +744,11 @@ jobs:
           set -euo pipefail
           receipt_root="$RUNNER_TEMP/nimbo-trusted-receipt"
           install -d -m 700 "$receipt_root"
-          python3 scripts/verify_release_artifacts.py --json > "$receipt_root/verification.json"
+          verification_manifest="$RUNNER_TEMP/nimbo-trusted-manifest/verification-manifest.json"
+          python3 scripts/verify_release_artifacts.py \
+            --manifest "$verification_manifest" \
+            --json \
+            > "$receipt_root/verification.json"
           python3 -I - "$receipt_root/verification.json" <<'PY'
           import json
           import sys

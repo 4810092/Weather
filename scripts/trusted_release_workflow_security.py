@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "3c0972007fc7907535a6f06bdef82a3ae6b3a3a59491025dfd9f4c1f64c56427"
+TRUSTED_SHA256 = "d67b108896d89d5f5e9414d16bd62a8a2913ab236dcd7a8714bf6ed9e9c6ab44"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -73,7 +73,14 @@ TRUSTED_REQUIRED = (
     "trusted extracted candidate tree digest mismatch",
     "bundletool-all-1.18.3.jar",
     "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
-    "python3 scripts/verify_release_artifacts.py --json",
+    "Create exact ephemeral verification manifest",
+    "python3 scripts/verify_release_artifacts.py --contract-only",
+    "committed upload manifest blocked candidate set mismatch",
+    'artifact["source_sync"] = "verified-current"',
+    'artifact["physical_qa_evidence"] = None',
+    'artifact["historical_candidate"] = None',
+    'verification-manifest.json',
+    '--manifest "$verification_manifest"',
     "full verifier must return exactly three candidate artifacts",
     'artifact.get("source_sync") != "verified-current"',
     'artifact.get("byte_verified") is not True',
@@ -251,6 +258,16 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("only one same-run candidate download action is allowed")
     if text.count("actions/checkout@") != 1:
         failures.append("trusted workflow must use one pinned checkout action")
+    if text.count("python3 scripts/verify_release_artifacts.py --contract-only") != 1:
+        failures.append("committed blocked manifest must pass one contract-only check")
+    if text.count('--manifest "$verification_manifest"') != 1:
+        failures.append("full verifier must use the exact ephemeral manifest once")
+    if text.count('artifact["source_sync"] = "verified-current"') != 1:
+        failures.append("ephemeral manifest must promote all pinned artifacts in one loop")
+    if text.count('artifact["physical_qa_evidence"] = None') != 1:
+        failures.append("ephemeral manifest must not invent physical QA evidence")
+    if text.count('artifact["historical_candidate"] = None') != 1:
+        failures.append("ephemeral manifest must clear historical state before verification")
     if text.count("set +x") != 3:
         failures.append("every token-bearing trusted step must disable shell tracing")
     if _digest(text) != TRUSTED_SHA256:
