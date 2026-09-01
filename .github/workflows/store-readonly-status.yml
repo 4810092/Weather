@@ -53,6 +53,7 @@ jobs:
           service_account: ${{ vars.NIMBO_GOOGLE_WIF_SERVICE_ACCOUNT }}
           token_format: access_token
           access_token_lifetime: 600s
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
           create_credentials_file: false
       - name: Verify exact Play visibility without writes
         env:
