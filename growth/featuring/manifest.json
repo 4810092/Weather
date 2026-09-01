@@ -134,6 +134,12 @@
       "evidence": "growth/quality/gates.json"
     },
     {
+      "id": "release_artifact_source_sync",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
       "id": "android_physical_smoke",
       "blocker_type": "operational_gate",
       "status": "blocked",

@@ -775,7 +775,7 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
             results = {artifact_id: result}
         return results, failures
 
-    def test_repository_manifest_passes_static_promoted_contract(self) -> None:
+    def test_repository_manifest_passes_static_blocked_contract(self) -> None:
         manifest = json.loads(
             (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
         )
@@ -786,7 +786,7 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
         self.assertEqual(failures, [])
         self.assertEqual(set(results), {"android_phone", "wear_os", "apple"})
         self.assertTrue(
-            all(result.source_sync == "verified-current" for result in results.values())
+            all(result.source_sync == "blocked" for result in results.values())
         )
         self.assertTrue(all(result.contract_valid for result in results.values()))
         self.assertTrue(

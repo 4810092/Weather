@@ -1,28 +1,20 @@
 # Nimbo growth operations
 
 <!-- release-authority-current:start -->
-<!-- source_revision:2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
+<!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
 <!-- release-authority-current:end -->
 
-The machine field `byte_verified=true` records the fresh full verification of
-the exact promoted bytes. All three manifest entries are atomically
-`verified-current`, while the top-level manifest remains `draft-blocked`
-because authorized tester access, TestFlight beta distribution, and the
-remaining Android/Wear and Apple physical matrices are still missing. The
-exact candidates have reached their internal store channels. The phone has a
-Play-delivered physical API-25 install and passes the bounded natural
-background-network and widget paths, but the incorrect legacy launcher icon
-blocks promotion; no physical Wear install exists. The phone entry binds the
-exact AAB-derived physical API-25 evidence and does not satisfy the shared
-Android/Wear gate.
-Every successful current-`master` CI run must pass the protected no-checkout
-staging job and separate read-only hosted macOS verifier before Pages or later
-artifact use.
+The replacement vc9/vc1000009/build-7 set is blocked with
+`byte_verified=false` until protected signing and independent full-byte
+verification pass. Historical vc8/vc1000008/build-6 store and physical evidence
+does not transfer. The source-level legacy icon defect is fixed and passes an
+API-24 emulator launcher check; a signed Play-delivered physical API-24/25
+launcher pass is still required.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
