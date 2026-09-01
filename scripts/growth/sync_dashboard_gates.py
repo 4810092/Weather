@@ -401,8 +401,8 @@ def sync(
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · current Android artifacts are protected-signed but not yet "
-                "trusted-verified, store-delivered, or physically tested"
+                "BLOCKED · current Android artifacts are protected-signed and "
+                "trusted-verified, but not store-delivered or physically tested"
             )
             new_next = (
                 "Deliver the source-current phone and Wear artifacts through Play Internal, "
@@ -410,8 +410,8 @@ def sync(
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · current Apple build 8 is protected-signed but not yet "
-                "trusted-verified, TestFlight-delivered, or physically tested"
+                "BLOCKED · current Apple build 8 is protected-signed and "
+                "trusted-verified, but not TestFlight-delivered or physically tested"
             )
             new_next = (
                 "Distribute the source-current build through TestFlight, then install and run the "

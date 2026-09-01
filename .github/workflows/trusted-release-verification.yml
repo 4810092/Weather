@@ -702,14 +702,24 @@ jobs:
                   },
               },
           }
-          if manifest.get("artifacts") != expected_blocked:
-              raise SystemExit("committed upload manifest blocked candidate set mismatch")
-
           promotion = {
               "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
               "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
               "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
           }
+          expected_verified = copy.deepcopy(expected_blocked)
+          for artifact_id, digest in promotion.items():
+              artifact = expected_verified[artifact_id]
+              artifact["source_sync"] = "verified-current"
+              artifact["sha256"] = digest
+              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33493356066.md"
+              artifact["physical_qa_evidence"] = None
+              artifact["historical_candidate"] = None
+
+          committed_artifacts = manifest.get("artifacts")
+          if committed_artifacts not in (expected_blocked, expected_verified):
+              raise SystemExit("committed upload manifest candidate set mismatch")
+
           verification_manifest = copy.deepcopy(manifest)
           for artifact_id, digest in promotion.items():
               artifact = verification_manifest["artifacts"][artifact_id]
