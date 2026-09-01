@@ -146,10 +146,16 @@
       "evidence": "growth/quality/gates.json"
     },
     {
+      "id": "release_artifact_source_sync",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
       "id": "deliverable.candidate_store_upload",
       "blocker_type": "deliverable",
       "status": "blocked",
-      "evidence": "growth/quality/internal-track-upload-2026-08-28.md"
+      "evidence": "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md"
     },
     {
       "id": "deliverable.google_promotional_content_access",

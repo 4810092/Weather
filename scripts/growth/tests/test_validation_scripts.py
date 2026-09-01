@@ -121,9 +121,6 @@ class ValidationScriptsTest(unittest.TestCase):
             artifact["sha256"] = None
             artifact["signing_evidence"] = None
             artifact["physical_qa_evidence"] = None
-            artifact["source_sync_evidence"] = (
-                "growth/quality/release-artifact-source-sync-2026-09-01-ba824be.md"
-            )
             artifact["historical_candidate"] = historical[artifact_id]
         return manifest
 
@@ -558,11 +555,16 @@ class ValidationScriptsTest(unittest.TestCase):
 
     def test_upload_artifact_identity_must_match_source(self) -> None:
         manifest = copy.deepcopy(self.upload_manifest())
-        manifest["artifacts"]["apple"]["build"] = 5
+        source_build = manifest["artifacts"]["apple"]["build"]
+        invalid_build = source_build - 1
+        manifest["artifacts"]["apple"]["build"] = invalid_build
         failures: list[str] = []
         validate_upload_artifacts(manifest, "1.1.0", failures)
         self.assertTrue(
-            any("declared build 5 differs from source 7" in item for item in failures)
+            any(
+                f"declared build {invalid_build} differs from source {source_build}" in item
+                for item in failures
+            )
         )
 
     def test_historical_hashes_cannot_be_relabelled_as_current_bytes(self) -> None:

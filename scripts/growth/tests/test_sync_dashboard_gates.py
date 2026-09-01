@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 class SyncDashboardGatesTest(unittest.TestCase):
-    def test_sync_records_green_hosted_source_evidence(self) -> None:
+    def test_sync_records_canonical_fail_closed_source_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             temporary_root = Path(directory)
             artifact_path = temporary_root / "artifact.json"
@@ -116,51 +116,49 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 row["gate_id"]: row
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
+            canonical_gates = json.loads(
+                (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
+            )["gates"]
+            for gate_id, gate in canonical_gates.items():
+                self.assertEqual(rows[gate_id]["status"], gate["status"])
+                self.assertEqual(rows[gate_id]["evidence"], gate["reason"])
             self.assertIn(
-                "vc9 signed/verified and API-24 emulator launcher pass",
+                "current source has no signed or store-delivered Android artifacts",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "replacement build 7 is signed/verified",
+                "current Apple build has no signed TestFlight artifact",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "distribute build 7 through TestFlight",
+                "source-current TestFlight",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "protected signing and independent full-byte verification passed",
+                "source-current replacement set has no protected signed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
                 issue["id"]: issue["message"]
                 for issue in artifact["snapshot"]["accessIssues"]
             }
-            current_revision = json.loads(
-                (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
-            )["gates"]["release_artifact_source_sync"]["source_revision"]
-            self.assertIn(
-                f"Replacement source {current_revision}",
+            current_revision = canonical_gates["release_artifact_source_sync"][
+                "source_revision"
+            ]
+            self.assertEqual(
                 issues["ios_crash_report_missing"],
+                canonical_gates["ios_crash_gate"]["reason"],
             )
-            self.assertIn(
-                current_revision,
+            self.assertEqual(
                 issues["release_artifact_source_sync_missing"],
+                canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Protected signing",
-                issues["release_artifact_source_sync_missing"],
-            )
-            self.assertIn(
-                "full-byte verification",
-                issues["release_artifact_source_sync_missing"],
-            )
-            self.assertIn(
-                "Require the protected hosted chain",
+                "Pass exact-source hosted CI",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "Deliver vc9 and vc1000009 through Play Internal",
+                "source-current phone and Wear artifacts",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
@@ -180,15 +178,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Phone vc9 replaces every pre-Android-8 template launcher resource",
+                canonical_gates["release_artifact_source_sync"]["reason"],
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "atomically 3/3 verified-current with byte_verified=true",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "Protected run 33473684554 produced the replacement",
+                "manifest is fail-closed at 0/3 verified-current",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -196,27 +190,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Replacement vc9/vc1000009/build-7 artifacts are protected-signed",
+                canonical_gates["android_physical_smoke"]["reason"],
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "predecessor store artifacts are historical",
+                canonical_gates["ios_physical_smoke"]["reason"],
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "replacement build 7 is signed and byte-verified but not delivered",
+                "All predecessor artifacts and observations are historical and non-transferable",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "complete replacement physical-device and store-delivery coverage",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "Transporter-delivered Apple build 6 remain useful predecessor evidence",
-                artifact["manifest"]["blocks"][0]["body"],
-            )
-            self.assertIn(
-                "approval, publication, and propagation are not verified",
+                "Canonical release authority remains fail-closed",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -234,6 +220,14 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertNotIn(
                 "neither candidate run yielded a retained",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertNotIn(
+                "atomically 3/3 verified-current with byte_verified=true",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertNotIn(
+                "replacement build 7 is signed and byte-verified but not delivered",
                 artifact["manifest"]["blocks"][0]["body"],
             )
 

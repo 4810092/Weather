@@ -376,9 +376,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, distribute "
-                "build 7 through TestFlight, complete "
-                "the iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
+                "Obtain and symbolicate any diagnostic Apple exposes, then complete "
+                "the source-current TestFlight iPhone/iPad/widget/watch matrix and "
+                "collect post-rollout evidence"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -392,29 +392,29 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · replacement vc9/vc1000009/build-7 set has no protected "
+                    "BLOCKED · the source-current replacement set has no protected "
                     "signed or independently byte-verified artifacts"
                 )
                 new_next = (
                     "Pass exact-source hosted CI, protected signing, independent full-byte "
-                    "verification, and Internal/TestFlight delivery for the replacement set"
+                    "verification, and Internal/TestFlight delivery for the source-current set"
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · vc9 signed/verified and API-24 emulator launcher pass; "
-                "Play delivery plus physical API-24/25, tablet, and Wear remain incomplete"
+                "BLOCKED · the current source has no signed or store-delivered Android "
+                "artifacts; predecessor phone/Wear evidence is historical and non-transferable"
             )
             new_next = (
-                "Deliver vc9 and vc1000009 through Play Internal, then repeat physical "
-                "API-24/25 launcher and remaining tablet/Wear QA"
+                "Deliver the source-current phone and Wear artifacts through Play Internal, "
+                "then repeat physical API-24/25, tablet, and Wear QA"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · replacement build 7 is signed/verified but absent from "
-                "TestFlight; historical build 6 cannot satisfy the physical matrix"
+                "BLOCKED · the current Apple build has no signed TestFlight artifact or "
+                "complete runtime matrix; predecessor build evidence is non-transferable"
             )
             new_next = (
-                "Distribute build 7 through TestFlight, then install and run the "
+                "Distribute the source-current build through TestFlight, then install and run the "
                 "complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
@@ -770,21 +770,15 @@ def sync(
     current_summary = (
         "Current product/build-input commit "
         + current_revision
-        + " resolves to phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple "
-        "1.1.0 (7). Phone vc9 replaces every pre-Android-8 template launcher "
-        "resource with deterministic square and round Nimbo artwork and renders "
-        "the Nimbo mark on an API-24 emulator. Protected signing run 33473684554 "
-        "and independent full-byte verification bind all three exact replacement "
-        "artifacts; the manifest is atomically 3/3 verified-current with "
-        "byte_verified=true. Play Internal/TestFlight delivery and physical QA "
-        "remain separate. The former Play-delivered vc8, active Wear vc1000008 "
-        "Internal candidate, and Transporter-delivered Apple build 6 remain useful "
-        "predecessor evidence, but all of their binaries, screenshots, and device "
-        "results are historical and non-transferable."
+        + " is governed by the canonical fail-closed release registry. "
+        + gates["release_artifact_source_sync"]["reason"]
+        + " All predecessor artifacts and observations are historical and "
+        "non-transferable."
     )
     current_pattern = re.compile(
-        r"Current product/build-input commit [0-9a-f]{40} (?:keeps|resolves to) .*?"
-        r"are historical and non-transferable\.",
+        r"Current product/build-input commit [0-9a-f]{40} .*?"
+        r"(?:All predecessor artifacts and observations|all of their binaries, screenshots, "
+        r"and device results) are historical and non-transferable\.",
         re.DOTALL,
     )
     verdict, current_summary_count = current_pattern.subn(
@@ -1029,6 +1023,35 @@ def sync(
         "protected signing and independent verification of the replacement set, "
         "complete physical-device and store-delivery coverage",
         "complete replacement physical-device and store-delivery coverage",
+    )
+    release_authority = (
+        "Canonical release authority remains fail-closed. "
+        + gates["release_artifact_source_sync"]["reason"]
+        + " "
+        + gates["android_physical_smoke"]["reason"]
+        + " "
+        + gates["ios_physical_smoke"]["reason"]
+        + " No production submission or release followed."
+    )
+    verdict, release_authority_count = re.subn(
+        r"(?:Canonical release authority remains fail-closed\.|"
+        r"Replacement vc9/vc1000009/build-7 artifacts|Exact-current signed phone/Wear).*?"
+        r"No production submission or release followed\.",
+        release_authority,
+        verdict,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if release_authority_count != 1:
+        raise ValueError("dashboard verdict release-authority section is missing")
+    verdict = re.sub(
+        r"Scale status remains hold; public outreach and acquisition scaling remain gated on .*?"
+        r"critical console guardrails\.",
+        "Scale status remains hold; public outreach and acquisition scaling remain "
+        "gated on every blocking canonical quality gate and critical console guardrail.",
+        verdict,
+        count=1,
+        flags=re.DOTALL,
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at
