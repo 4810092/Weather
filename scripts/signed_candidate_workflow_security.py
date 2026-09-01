@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "fd96eb999047cc033beb211eb09761dbbe68ec341dc9f3cf5902adfadfdebc55"
+WORKFLOW_SHA256 = "044c992e18659948198303ca2d31be60a7d26f77925118a98f9766358cf0f245"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -129,7 +129,7 @@ SIGN_STEP_INVENTORY = [
     ("name", "Decode protected signing material outside the checkout"),
     ("name", "Upload-sign Android phone and Wear bundles"),
     ("name", "Install ephemeral Apple identity and exact profiles"),
-    ("name", "Export and retain distribution-signed Apple build 6"),
+    ("name", "Export and retain distribution-signed Apple candidate"),
     ("name", "Destroy signing material before byte verification"),
     ("name", "Byte-verify the complete signed candidate"),
     ("uses", "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"),
@@ -168,7 +168,7 @@ SIGN_RUN_SHA256 = {
     "Decode protected signing material outside the checkout": "f2485c2e40ade88500f2b583a7226a970553dce44a851b4c4ba92de6b35bc9ac",
     "Upload-sign Android phone and Wear bundles": "fced7db2bc082b396bd326021a2a0adcc860932d32aa1a63c271d8141f23a9bc",
     "Install ephemeral Apple identity and exact profiles": "dab7eb35e6873dba611735a01628f12243aad5b73e34ba90d3657a6a5fd4dba4",
-    "Export and retain distribution-signed Apple build 6": "5abf1b179498c5cd6a5dacc7782298874762a2c32c4e2591f0dd4636dca168fa",
+    "Export and retain distribution-signed Apple candidate": "2fbe7e66b71018577dc839c19b44c5d0b7f465050baacdc7c45e901161532a8b",
     "Destroy signing material before byte verification": "0821e57e2755cf08959d8cd1fdb55f043a54f937baf69584b39203936b2e9c8e",
     "Byte-verify the complete signed candidate": "d2d5c887ed1cff4f1d06b2f14a2f96407ed4136c776bcc0a8fae3a6717b1156e",
     "Destroy ephemeral signing material": "3f3b4c37fbe6ac8e436cc9f7d207f1dcc0c9065f761b2d5a55fdb299b26186d1",
