@@ -931,7 +931,7 @@ jobs:
           PY
           unset NIMBO_APPLE_P12_PASSWORD keychain_password
 
-      - name: Export and retain distribution-signed Apple build 6
+      - name: Export and retain distribution-signed Apple candidate
         shell: bash
         run: |
           set -euo pipefail
@@ -1021,17 +1021,27 @@ jobs:
           [[ "$archive_app" == "$RUNNER_TEMP/nimbo-signed-candidate-package/bytes/Nimbo.xcarchive/Products/Applications/Nimbo.app" ]]
           rm -rf -- "$archive_app"
           ditto "$app" "$archive_app"
-          python3 - "$NIMBO_ARTIFACT_ROOT/Nimbo.xcarchive/Info.plist" <<'PY'
+          python3 - \
+            "$NIMBO_ARTIFACT_ROOT/Nimbo.xcarchive/Info.plist" \
+            "$archive_app/Info.plist" <<'PY'
           import plistlib
           import sys
           from pathlib import Path
 
           path = Path(sys.argv[1])
+          app_info_path = Path(sys.argv[2])
           archive = plistlib.loads(path.read_bytes())
+          app_info = plistlib.loads(app_info_path.read_bytes())
+          app_version = app_info.get("CFBundleShortVersionString")
+          app_build = app_info.get("CFBundleVersion")
+          if not isinstance(app_version, str) or not app_version:
+              raise SystemExit("exported Apple app version is missing")
+          if not isinstance(app_build, str) or not app_build.isdigit():
+              raise SystemExit("exported Apple app build is not numeric")
           properties = archive.setdefault("ApplicationProperties", {})
           properties["CFBundleIdentifier"] = "uz.ganikhodjaev.weather"
-          properties["CFBundleShortVersionString"] = "1.1.0"
-          properties["CFBundleVersion"] = "6"
+          properties["CFBundleShortVersionString"] = app_version
+          properties["CFBundleVersion"] = app_build
           properties["Team"] = "5SWEZ7HTYP"
           path.write_bytes(plistlib.dumps(archive, sort_keys=False))
           PY
