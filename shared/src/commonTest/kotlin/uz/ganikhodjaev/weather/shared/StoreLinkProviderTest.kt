@@ -67,4 +67,21 @@ class StoreLinkProviderTest {
         assertFalse("41.2995" in message)
         assertFalse("69.2401" in message)
     }
+
+    @Test
+    fun shareMessageNormalizesEscapedPercentLeftByIosResourceFormatting() {
+        val message = formatShareMessage(
+            weatherSummary = "Ташкент: 29°, вероятность дождя 0%% — Nimbo",
+            storeCallToAction = "Скачайте Nimbo для следующей прогулки:",
+            storeUrl = NimboStoreLinks.APP_STORE
+        )
+
+        assertEquals(
+            "Ташкент: 29°, вероятность дождя 0% — Nimbo\n" +
+                "Скачайте Nimbo для следующей прогулки:\n" +
+                NimboStoreLinks.APP_STORE,
+            message
+        )
+        assertFalse("%%" in message)
+    }
 }
