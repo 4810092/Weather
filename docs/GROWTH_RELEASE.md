@@ -9,15 +9,15 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=18b4c2198521d39735458e07ec4154658e62fbc1535408dcc2e3e6d042092772 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4dd74d2713fe67a7e9600396ab6b2bd2011d92142423b5b088916da4fed68807 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=05b5e305e51240f5adb302bf896888085643e5bf149e0b477525827183514d8c -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=f00db588179bc82f0bbc5c57112b29536af3e955bc543496067f50667d037bce -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for source
 `8fc43b48b65d17b3339663549cd86208f62f6bb7`: phone vc10, Wear vc1000010, and
 Apple build 8 are `0/3 verified-current`. Protected CI has signed and
-byte-verified all three successors, but the exact package has not yet completed
-durable materialization and separate trusted macOS verification. This source
+byte-verified all three successors, and the exact package is durably retained in
+the unpublished draft. Separate trusted macOS verification is still pending. This source
 fixes the duplicate-percent share payload found during physical TestFlight QA
 of build 7. The vc9/vc1000009/build-7 set remains historical internal-store and
 device evidence only; it cannot authorize the successor.
@@ -262,8 +262,8 @@ availability; each external state must be recorded separately.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Materialize the exact protected-signed package for `8fc43b4` in the
-   unpublished draft, pass the separate trusted macOS verifier, and only then
+3. Pass the separate trusted macOS verifier against the exact protected-signed
+   package for `8fc43b4` in the unpublished draft, and only then
    deliver vc10, vc1000010, and build 8 to Internal/TestFlight. Repeat the
    physical phone/tablet/widget/Wear and iPhone/iPad/widget/watch matrices,
    including the exact copied share payload, iOS 15 coverage where available,

@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "protected signing passed",
+                "protected signing and durable materialization passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Materialize the exact signed package",
+                "Pass trusted macOS verification",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
