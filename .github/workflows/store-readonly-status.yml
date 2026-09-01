@@ -1,0 +1,60 @@
+name: Store read-only status
+
+# Google Play reviews.list needs the app-scoped Reply to reviews capability;
+# this workflow and probe still permit only a reviews GET.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: store-readonly-status-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  verify-central-apple-access:
+    if: github.repository == '4810092/Weather' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: store-readonly
+    env:
+      NIMBO_ASC_KEY_ID: ${{ secrets.NIMBO_ASC_KEY_ID }}
+      NIMBO_ASC_ISSUER_ID: ${{ secrets.NIMBO_ASC_ISSUER_ID }}
+      NIMBO_ASC_PRIVATE_KEY_B64: ${{ secrets.NIMBO_ASC_PRIVATE_KEY_B64 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify all exact Apple app visibility with scoped JWTs
+        run: |
+          set -euo pipefail
+          python3 -I scripts/store-readonly-probe.py --provider apple --online --apple-bundle-id uz.ganikhodjaev.weather
+          python3 -I scripts/store-readonly-probe.py --provider apple --online --apple-bundle-id uz.cooksy.app
+          python3 -I scripts/store-readonly-probe.py --provider apple --online --apple-bundle-id uz.ganikhodjaev.steppeloom
+  verify-google-access-wif:
+    if: github.repository == '4810092/Weather' && github.ref == 'refs/heads/master' && vars.NIMBO_GOOGLE_WIF_PROVIDER != '' && vars.NIMBO_GOOGLE_WIF_SERVICE_ACCOUNT != ''
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - id: google-auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          workload_identity_provider: ${{ vars.NIMBO_GOOGLE_WIF_PROVIDER }}
+          service_account: ${{ vars.NIMBO_GOOGLE_WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_lifetime: 600s
+          create_credentials_file: false
+      - name: Verify exact Play visibility without writes
+        env:
+          NIMBO_GOOGLE_PLAY_ACCESS_TOKEN: ${{ steps.google-auth.outputs.access_token }}
+        run: python3 -I scripts/store-readonly-probe.py --provider google --online
