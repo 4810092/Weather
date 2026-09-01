@@ -36,10 +36,10 @@ Current replacement source
 `ba824beae5e72653e42af2b8b78286f61415e3ab` resolves to phone `1.1.0 (9)`,
 Wear OS `1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Phone vc9 replaces the
 legacy Android Studio icons and passes an API-24 emulator launcher check. All
-three manifest entries are blocked with `byte_verified=false`; protected
-signing, independent verification, store delivery, and physical QA must run
-again. The vc8/vc1000008/build-6 observations below are historical predecessor
-evidence only.
+three manifest entries are atomically `verified-current` with
+`byte_verified=true` after protected signing and independent verification.
+Store delivery and physical QA must run again. The vc8/vc1000008/build-6
+observations below are historical predecessor evidence only.
 
 Historical predecessor source
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` passed exact-source ordinary
@@ -64,7 +64,7 @@ At that predecessor checkpoint, the upload manifest promoted the exact set
 atomically to `3/3 verified-current` after a fresh local macOS full-byte pass reopened the draft
 assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
 and returned `byte_verified=true` for phone, Wear, and Apple. The replacement
-manifest is now blocked and does not inherit that authority. The historical upload-key-signed phone
+manifest has its own independently verified authority. The historical upload-key-signed phone
 AAB was converted to an APK set without rebuilding; its universal APK matched
 the installed package byte-for-byte and passed clean API 25 phone smoke,
 including onboarding, live forecast, share, offline cache/error, recovery, and
@@ -91,7 +91,8 @@ exists. The vc8 phone passes the bounded natural background-network and physical
 widget render/update/open path, but its API-25 legacy launcher icon is the
 Android template and blocks production promotion. Authenticated App Store
 Connect inventory reports historical Apple build `1.1.0 (6)` as `VALID` and
-`APP_STORE_ELIGIBLE`; replacement build 7 is not signed or delivered.
+`APP_STORE_ELIGIBLE`; replacement build 7 is signed and byte-verified but not
+delivered.
 TestFlight beta distribution/install remains unverified. No production review,
 rollout, public availability, or rank follows from these internal states.
 

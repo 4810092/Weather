@@ -117,19 +117,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "vc9 source and API-24 emulator launcher pass",
+                "vc9 signed/verified and API-24 emulator launcher pass",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "replacement build 7 is unsigned",
+                "replacement build 7 is signed/verified",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "sign and independently verify build 7",
+                "distribute build 7 through TestFlight",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "replacement vc9/vc1000009/build-7 set",
+                "protected signing and independent full-byte verification passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -148,7 +148,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "protected signing",
+                "Protected signing",
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
@@ -156,11 +156,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
             )
             self.assertIn(
-                "Pass exact-source hosted CI",
+                "Require the protected hosted chain",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "deliver it through Play Internal",
+                "Deliver vc9 and vc1000009 through Play Internal",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
@@ -184,11 +184,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "blocked with byte_verified=false",
+                "atomically 3/3 verified-current with byte_verified=true",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Historical protected run 33381050098 used all 8/8 signing inputs",
+                "Protected run 33473684554 produced the replacement",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -196,7 +196,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Replacement vc9/vc1000009/build-7 artifacts are not signed",
+                "Replacement vc9/vc1000009/build-7 artifacts are protected-signed",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -204,11 +204,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "replacement build 7 is not signed or delivered",
+                "replacement build 7 is signed and byte-verified but not delivered",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "protected signing and independent verification of the replacement set",
+                "complete replacement physical-device and store-delivery coverage",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

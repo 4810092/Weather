@@ -2,19 +2,19 @@
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
 <!-- release-authority-current:end -->
 
-The replacement vc9/vc1000009/build-7 set is blocked with
-`byte_verified=false` until protected signing and independent full-byte
-verification pass. Historical vc8/vc1000008/build-6 store and physical evidence
-does not transfer. The source-level legacy icon defect is fixed and passes an
-API-24 emulator launcher check; a signed Play-delivered physical API-24/25
-launcher pass is still required.
+The replacement vc9/vc1000009/build-7 set is atomically
+`3/3 verified-current` with `byte_verified=true` after protected signing and
+independent full-byte verification. Historical vc8/vc1000008/build-6 store and
+physical evidence does not transfer. The source-level legacy icon defect is
+fixed and passes an API-24 emulator launcher check; Play Internal/TestFlight
+delivery and the applicable physical matrix remain blocked.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -23,22 +23,17 @@ the first 30 and `0/5` generic queries qualify. One auxiliary Apple
 `Toshkent ob-havo` result is incomplete, but all required goal surfaces are
 decisive and fail, so the verified Top-10 streak remains `0/7`.
 
-Product/build source `2cdd438` passed exact-source ordinary hosted CI
-[`#117`](https://github.com/4810092/Weather/actions/runs/33300967788).
-Protected signing
-[run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
-then passed both jobs with all 8/8 signing inputs and produced retained,
-independently verified candidates for phone `1.1.0 (8)`, Wear
-`1.1.0 (1000008)`, and Apple `1.1.0 (6)`. Hosted materialization run `33392732428` passed
-and stored the exact package and receipt as hash-bound assets in unpublished
-draft release `379745439`; this closes durable draft materialization relative
-to the expiring Actions artifact. A fresh local macOS run then downloaded those
-exact assets, safely extracted the closed tree, checked pinned Bundletool
-1.18.3, and returned `byte_verified=true` for the exact phone, Wear, and Apple
-artifacts. The committed manifest now holds `3/3 verified-current` atomically
-and remains `draft-blocked`. The draft remains mutable, so the protected staged
-hosted chain is mandatory for each current master before later artifact use.
-Trusted run `33405849102` completed that chain for evidence head `b07192e`.
+Product/build source `ba824be` passed exact-source hosted CI
+[`33472603346`](https://github.com/4810092/Weather/actions/runs/33472603346).
+Protected signing run
+[`33473684554`](https://github.com/4810092/Weather/actions/runs/33473684554)
+then produced independently byte-verified phone `1.1.0 (9)`, Wear
+`1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Hosted materialization run
+[`33477785531`](https://github.com/4810092/Weather/actions/runs/33477785531)
+stored the exact package and receipt in unpublished draft release `380257470`.
+The committed manifest now holds `3/3 verified-current` atomically and remains
+`draft-blocked`. The draft is mutable, so the protected staged hosted chain is
+mandatory for each current master before later artifact use.
 The exact phone AAB was then converted with pinned Bundletool to an upload-key-
 signed universal APK and passed a clean physical API 25 smoke with identical
 installed bytes. Exact phone and Wear AABs are now accepted on their separate
