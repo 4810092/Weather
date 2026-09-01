@@ -5,12 +5,12 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
+<!-- source_revision:8fc43b48b65d17b3339663549cd86208f62f6bb7 -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bbbea9aa2b864b81bde3e25b7d9aa9cc45842c6809d429229e02ed06862053c0 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=bcda75274655619d314fe4b0be802fdfd2333d2183bde2684391b68481e837e6 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
