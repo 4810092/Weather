@@ -376,8 +376,8 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, distribute "
-                "build 7 through TestFlight, complete "
+                "Obtain and symbolicate any diagnostic Apple exposes, install "
+                "build 7 from TestFlight, complete "
                 "the iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
             )
         elif gate_id == "release_artifact_source_sync":
@@ -401,21 +401,21 @@ def sync(
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · vc9 signed/verified and API-24 emulator launcher pass; "
-                "Play delivery plus physical API-24/25, tablet, and Wear remain incomplete"
+                "BLOCKED · Play-delivered vc9 physical API-25 phone/widget pass; "
+                "physical tablet and paired Wear vc1000009 remain incomplete"
             )
             new_next = (
-                "Deliver vc9 and vc1000009 through Play Internal, then repeat physical "
-                "API-24/25 launcher and remaining tablet/Wear QA"
+                "Complete replacement physical tablet/widget coverage, paired Wear "
+                "vc1000009 install/handoff, and post-delivery vitals"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · replacement build 7 is signed/verified but absent from "
-                "TestFlight; historical build 6 cannot satisfy the physical matrix"
+                "BLOCKED · build 7 is Ready to Submit with two invited internal "
+                "testers, but TestFlight installation and physical QA are unverified"
             )
             new_next = (
-                "Distribute build 7 through TestFlight, then install and run the "
-                "complete iPhone/iPad/widget/watch matrix"
+                "Install build 7 from TestFlight, then run the complete "
+                "iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -776,9 +776,14 @@ def sync(
         "the Nimbo mark on an API-24 emulator. Protected signing run 33473684554 "
         "and independent full-byte verification bind all three exact replacement "
         "artifacts; the manifest is atomically 3/3 verified-current with "
-        "byte_verified=true. Play Internal/TestFlight delivery and physical QA "
-        "remain separate. The former Play-delivered vc8, active Wear vc1000008 "
-        "Internal candidate, and Transporter-delivered Apple build 6 remain useful "
+        "byte_verified=true. Current-master hosted run 33482814222 repeated the "
+        "full pinned verification before store use. Phone vc9 and Wear vc1000009 "
+        "are active on their separate Play Internal tracks, and Apple build 7 "
+        "completed processing, is Ready to Submit, is attached to the internal group, "
+        "and has two invited owner-controlled testers. Phone vc9 has a bounded "
+        "Play-delivered API-25 physical pass. TestFlight installation and the remaining "
+        "physical QA remain separate. The former Play-delivered vc8, "
+        "active Wear vc1000008 Internal candidate, and Apple build 6 remain useful "
         "predecessor evidence, but all of their binaries, screenshots, and device "
         "results are historical and non-transferable."
     )
@@ -945,15 +950,17 @@ def sync(
         "Exact-current signed phone/Wear and Apple candidates are retained and "
         "byte-verified, but they are not manifest-promoted or store-delivered;",
         "Replacement vc9/vc1000009/build-7 candidates are protected-signed, "
-        "independently byte-verified, and manifest-current but not store-delivered; "
-        "predecessor store candidates remain historical;",
+        "independently and hosted-byte-verified, and delivered to Play Internal "
+        "plus Apple Transporter; replacement physical and TestFlight evidence remain "
+        "missing, and predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "Exact-current signed phone/Wear and Apple candidates are retained, "
         "byte-verified, and manifest-promoted, but not store-delivered;",
         "Replacement vc9/vc1000009/build-7 candidates are protected-signed, "
-        "independently byte-verified, and manifest-current but not store-delivered; "
-        "predecessor store candidates remain historical;",
+        "independently and hosted-byte-verified, and delivered to Play Internal "
+        "plus Apple Transporter; replacement physical and TestFlight evidence remain "
+        "missing, and predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "At the August 31 read-only device check, the iPad mini 5 was paired, "
@@ -1012,10 +1019,12 @@ def sync(
         "Replacement vc9/vc1000009/build-7 artifacts are not signed or byte "
         "verified; predecessor store artifacts are historical, and there is no "
         "iOS 15 runtime pass or matching physical matrix.",
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed and "
-        "independently byte-verified but not store-delivered; predecessor store "
-        "artifacts are historical, and there is no iOS 15 runtime pass or matching "
-        "physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
+        "independently and hosted-byte-verified, and delivered to internal store "
+        "channels. Phone vc9 has a bounded Play-delivered API-25 physical pass; "
+        "TestFlight installation, physical tablet/Wear, and complete Apple QA remain "
+        "unverified. Predecessor store artifacts "
+        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
     ).replace(
         "Historical protected run 33381050098 used all 8/8 signing inputs, but "
         "replacement vc9/vc1000009/build-7 signing is pending.",
@@ -1024,11 +1033,62 @@ def sync(
         "matched all three identities.",
     ).replace(
         "replacement build 7 is not signed or delivered",
-        "replacement build 7 is signed and byte-verified but not delivered",
+        "replacement build 7 completed processing, is Ready to Submit, and has two "
+        "invited internal testers, but TestFlight installation remains unverified",
     ).replace(
         "protected signing and independent verification of the replacement set, "
         "complete physical-device and store-delivery coverage",
+        "complete replacement physical-device and post-delivery coverage",
+    )
+    verdict = verdict.replace(
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed and "
+        "independently byte-verified but not store-delivered; predecessor store "
+        "artifacts are historical, and there is no iOS 15 runtime pass or matching "
+        "physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
+        "independently and hosted-byte-verified, and delivered to Play Internal plus "
+        "Apple Transporter; App Store Connect/TestFlight readiness and every "
+        "replacement physical install remain unverified. Predecessor store artifacts "
+        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
+    ).replace(
+        "replacement build 7 is signed and byte-verified but not delivered",
+        "replacement build 7 completed Transporter delivery and processing, but "
+        "App Store Connect eligibility and TestFlight distribution remain unverified",
+    ).replace(
         "complete replacement physical-device and store-delivery coverage",
+        "complete replacement physical-device and TestFlight coverage",
+    )
+    verdict = verdict.replace(
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
+        "independently and hosted-byte-verified, and delivered to Play Internal plus "
+        "Apple Transporter; App Store Connect/TestFlight readiness and every "
+        "replacement physical install remain unverified. Predecessor store artifacts "
+        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
+        "independently and hosted-byte-verified, and delivered to internal store "
+        "channels. Phone vc9 has a bounded Play-delivered API-25 physical pass; "
+        "TestFlight installation, physical tablet/Wear, and complete Apple QA remain "
+        "unverified. Predecessor store artifacts are historical, and there is no iOS "
+        "15 runtime pass or matching physical matrix.",
+    ).replace(
+        "replacement build 7 completed Transporter delivery and processing, but "
+        "App Store Connect eligibility and TestFlight distribution remain unverified",
+        "replacement build 7 completed processing, is Ready to Submit, and has two "
+        "invited internal testers, but TestFlight installation remains unverified",
+    ).replace(
+        "complete replacement physical-device and TestFlight coverage",
+        "complete replacement physical-device and post-delivery coverage",
+    )
+    verdict = verdict.replace(
+        "At the September 1 read-only device check, the iPhone 14 Pro was unavailable "
+        "and the paired iPad mini 5 was locked, so app inventory and TestFlight install "
+        "proof could not be collected. The paired Series 5 watch was compatible, but "
+        "Developer Mode was disabled and its developer tunnel disconnected.",
+        "At the latest September 1 device check, the iPhone 14 Pro was connected with "
+        "Developer Mode enabled, public Nimbo 1.0.1 (4), and TestFlight 4.3.0 installed. "
+        "The iPad mini 5 was available with a developer-installed build 7, which is not "
+        "TestFlight proof. The paired Series 5 watch remained compatible but had "
+        "Developer Mode disabled and no usable developer tunnel.",
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at

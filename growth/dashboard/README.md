@@ -37,8 +37,12 @@ Current replacement source
 Wear OS `1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Phone vc9 replaces the
 legacy Android Studio icons and passes an API-24 emulator launcher check. All
 three manifest entries are atomically `verified-current` with
-`byte_verified=true` after protected signing and independent verification.
-Store delivery and physical QA must run again. The vc8/vc1000008/build-6
+`byte_verified=true` after protected signing, independent verification, and
+current-master hosted revalidation in run `33482814222`. Phone vc9 and Wear
+vc1000009 are active on their separate Google Play Internal tracks, and Apple
+build 7 completed processing and is Ready to Submit with two invited internal
+testers. Phone vc9 has a bounded Play-delivered API-25 physical pass. TestFlight
+installation and the remaining physical QA must still run. The vc8/vc1000008/build-6
 observations below are historical predecessor evidence only.
 
 Historical predecessor source
@@ -91,9 +95,13 @@ exists. The vc8 phone passes the bounded natural background-network and physical
 widget render/update/open path, but its API-25 legacy launcher icon is the
 Android template and blocks production promotion. Authenticated App Store
 Connect inventory reports historical Apple build `1.1.0 (6)` as `VALID` and
-`APP_STORE_ELIGIBLE`; replacement build 7 is signed and byte-verified but not
-delivered.
-TestFlight beta distribution/install remains unverified. No production review,
+`APP_STORE_ELIGIBLE`; replacement build 7 is signed, hosted-byte-verified,
+delivered through Transporter, and finished processing there, but its App Store
+Connect inventory now shows it Ready to Submit, attached to the internal group,
+with two invited owner-controlled testers. Replacement phone vc9 and Wear
+vc1000009 are active and tester-addressable on their separate Internal tracks;
+phone vc9 has a bounded Play-delivered API-25 physical pass, while Wear has no
+physical install. TestFlight installation remains unverified. No production review,
 rollout, public availability, or rank follows from these internal states.
 
 OpenMeteo GmbH's written clearance passes only for the exact free,

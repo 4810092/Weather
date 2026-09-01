@@ -7,8 +7,16 @@ OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 9,
 Wear 1000009, and Apple build 7. It fixes the legacy Android launcher asset, but
 all three replacement artifacts are protected-signed, independently
 byte-verified, and atomically `3/3 verified-current` in the draft-blocked
-upload manifest. Play Internal/TestFlight delivery and physical QA remain
-pending. The previously verified phone 8, Wear 1000008, and Apple build 6 set
+upload manifest. TestFlight installation and the remaining physical QA remain
+pending. On September 1, the replacement phone `1.1.0 (9)` and Wear
+`1.1.0 (1000009)` releases became active on their separate Google Play
+Internal tracks, and exact Apple `1.1.0 (7)` completed Transporter delivery
+and processing. App Store Connect lists build 7 as `Ready to Submit`, attached
+to the internal group with two invited owner-controlled testers. Phone vc9 then
+passed a bounded Play-delivered physical API-25 launcher/runtime/widget check.
+TestFlight installation and the remaining replacement physical matrix remain
+pending. The previously
+verified phone 8, Wear 1000008, and Apple build 6 set
 remains historical evidence tied to the predecessor source. On August 31, that
 exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
@@ -25,12 +33,39 @@ claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=068404d1ab6d03570ed2bb2b2aa941a50c67de2c7aeb439046382a852783e645 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=cd38593905787c2b212ad2318edeb0027eb30113f541796f61289df25c7d6f71 -->
 <!-- release-authority-current:end -->
+
+## Replacement 1.1.0 trusted and internal-delivery checkpoint — 2026-09-01
+
+Post-merge CI run
+[`33481183010`](https://github.com/4810092/Weather/actions/runs/33481183010)
+passed all five jobs on master
+`18ebcf4b807c9ac226af16c3eba47284aa6583b7`. Protected trusted run
+[`33482814222`](https://github.com/4810092/Weather/actions/runs/33482814222)
+then staged the exact unpublished draft without checkout and independently
+reverified all three signed artifacts on macOS. The exact verified hashes are
+phone `0fd5ae542a71…`, Wear `9ce725e755a0…`, and Apple `b918a8d7fa66…`.
+See the [replacement hosted-verification
+record](../growth/quality/release-artifact-full-verification-2026-09-01-hosted.md).
+
+The same exact files were then delivered only to internal channels. Google
+Play reports phone `1.1.0 (9)` active on Internal track
+`4700083514281298386` and Wear `1.1.0 (1000009)` active on Internal track
+`4699242452771231163`, both available to internal testers. Transporter reports
+Apple `1.1.0 (7)` delivered at 12:49 Asia/Tashkent and subsequently finished
+processing. App Store Connect lists exact build ID
+`baf82ec3-33bc-4df5-898f-b95a5b85ad37` as `Ready to Submit`; it is attached to
+the internal group and two owner-controlled internal accounts are invited.
+Phone vc9 subsequently passed a bounded Play-delivered API-25 physical
+launcher/runtime/widget check. No TestFlight install, physical tablet or paired
+Wear result, production submission, rollout, review, public availability, or
+rank result is claimed. See the [replacement store-delivery
+record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md).
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
 

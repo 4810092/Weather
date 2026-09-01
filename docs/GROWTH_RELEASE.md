@@ -6,20 +6,24 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=068404d1ab6d03570ed2bb2b2aa941a50c67de2c7aeb439046382a852783e645 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=cd38593905787c2b212ad2318edeb0027eb30113f541796f61289df25c7d6f71 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
 `ba824beae5e72653e42af2b8b78286f61415e3ab`: phone vc9, Wear vc1000009, and
 Apple build 7 are protected-signed, independently byte-verified, and atomically
-`3/3 verified-current`. The former vc8/vc1000008/build-6 set remains
+`3/3 verified-current`; current-master hosted run `33482814222` repeated the
+full verification before store use. Phone vc9 and Wear vc1000009 are now active
+on their separate Google Play Internal tracks, and Apple build 7 completed
+Transporter delivery and processing. The former vc8/vc1000008/build-6 set remains
 historical store/device evidence only and cannot authorize the replacement
-release. Internal/TestFlight delivery and physical QA must run again for the
-replacement identities.
+release. Build 7 is now Ready to Submit with two invited internal testers, and
+phone vc9 has a bounded Play-delivered API-25 pass. TestFlight installation and
+the remaining physical QA must still run for the replacement identities.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -39,10 +43,10 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
-| Apple internal delivery | Exact `1.1.0 (6)` completed Transporter delivery. App Store Connect build ID `37307a66-1c14-4c7a-8140-83d6868d6a25` is `VALID` and `APP_STORE_ELIGIBLE`; TestFlight beta-group distribution and installation remain unverified. |
+| Apple internal delivery | Replacement `1.1.0 (7)` exact IPA completed processing. App Store Connect lists build ID `baf82ec3-33bc-4df5-898f-b95a5b85ad37` as `Ready to Submit`, attached to the internal group with two invited owner-controlled testers. TestFlight installation remains unverified. Historical build 6 remains `VALID` and `APP_STORE_ELIGIBLE`. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Exact phone `1.1.0 (8)` is available on Internal track `4700083514281298386`; opt-in is accepted and Google Play delivered the Play-signed split set to the dedicated API 25 target for a bounded cold/live/share/process-health pass. Exact Wear `1.1.0 (1000008)` is available on Internal track `4699242452771231163`; the four-account License testers group is attached and the track is active, but no physical Wear install exists. Production was not changed. |
+| Google Play Internal | Replacement phone `1.1.0 (9)` is active on track `4700083514281298386` and passed a preserved-data Play-delivered physical API-25 update with Google App Signing, branded launcher, live forecast, share, refresh, and widget open. Replacement Wear `1.1.0 (1000009)` is active on track `4699242452771231163` but has no physical install. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
@@ -87,57 +91,32 @@ the captured slice”; it is never converted to a synthetic rank.
   failed attempts. Cooldown/retry state survives cold starts; cross-path
   requests coalesce per process; manual refresh and a first uncached location
   remain immediate.
-- Coordinated current source identities are assigned: Android phone/tablet
-  `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
-  `1.1.0 (6)`. Every number is newer than the corresponding live store build.
-  Current product/build source is `2cdd438`; it inherits fail-closed
-  `NimboSourceRevision` plumbing, distinct Apple profiles, the pinned dependency
-  graph, deterministic Compose UI tests, API 24 desugaring, and standard hosted
-  API 24/API 36 phone/tablet jobs. It adds tolerant optional Open-Meteo decoding
-  while keeping required weather/time inputs fail-closed. Exact-source ordinary
-  hosted CI
-  [run #117](https://github.com/4810092/Weather/actions/runs/33300967788)
-  passed all five jobs. Protected signing
-  [run `33381050098`](https://github.com/4810092/Weather/actions/runs/33381050098)
-  then passed with all 8/8 signing inputs and produced retained,
-  independently byte-verified phone, Wear, and Apple candidates. The exact
-  hashes and schema-v3 receipt are recorded in the
-  [signed-candidate evidence](../growth/quality/signed-candidate-run-33381050098.md).
-  Hosted materialization run
-  [`33392732428`](https://github.com/4810092/Weather/actions/runs/33392732428)
-  then stored the exact package and receipt as hash-bound assets in unpublished
-  draft release `379745439` and rechecked their API sizes and digests. A fresh
-  local macOS full-verifier run then downloaded those exact assets, safely
-  extracted the closed tree, checked pinned Bundletool 1.18.3, and returned
-  `byte_verified=true` for the exact phone, Wear, and Apple outputs. The
-  manifest now promotes the set atomically to `3/3 verified-current` while its
-  top-level status remains `draft-blocked`. Because the draft is mutable, every
-  successful current-`master` CI run must pass the protected no-checkout
-  staging job and separate read-only hosted macOS verifier before Pages or
-  later artifact use. Exact
-  source `2cdd438` now also has a bounded exact-AAB-derived physical phone pass.
-  Pinned Bundletool produced an upload-key-signed universal APK directly from
-  phone AAB `d4a90676…`; its installed bytes matched SHA-256 `e970352d…` and
-  passed clean API 25 onboarding, Tashkent live forecast, share chooser,
-  proven-offline cache/fallback, online recovery, and PID-scoped health checks.
-  The exact phone and Wear AABs are now accepted on their separate Play
-  Internal tracks. Google Play delivered phone vc8 to the dedicated API 25
-  target and the bounded cold/live/share/process-health, large-text, and
-  system-UI-proven offline/cache/recovery paths succeed. Active system-TalkBack
-  focus/TTS traversal also reaches the forecast and all three primary controls;
-  the original incompatible TalkBack update was restored byte-for-byte. The
-  natural hourly background-network run and physical phone widget render/update/
-  open path now pass. The Wear License testers group is attached and that track
-  is active, but physical tablet and paired Wear results remain absent. The
-  API-25 launcher still exposes the Android template legacy icon, so vc8 cannot
-  be promoted. Exact Apple build 6 also completed App Store Connect
-  processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group and
-  runtime coverage remain unverified. The iOS crash diagnosis remains blocked.
-  See the
-  [exact phone physical record](../growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md),
-  the earlier [debug regression record](../growth/quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md),
-  and [current source-sync record](../growth/quality/release-artifact-source-sync-2026-08-31-2cdd438.md).
-  Predecessor source `9c2dce4` has a bounded
+- Coordinated current source identities are Android phone/tablet `1.1.0 (9)`,
+  Wear OS `1.1.0 (1000009)`, and Apple app/widget/watch `1.1.0 (7)` from
+  product source `ba824be`. Exact-source CI run `33472603346`, protected
+  signing run `33473684554`, and materialization run `33477785531` produced and
+  retained exact receipt-bound artifacts in unpublished draft release
+  `380257470`. Post-merge CI run `33481183010` passed all five jobs on master
+  `18ebcf4`, and protected run `33482814222` then revalidated the mutable draft,
+  exact source, signatures, versions, and all three artifact hashes before
+  store use. The manifest is atomically `3/3 verified-current` and remains
+  `draft-blocked`. Replacement phone vc9 and Wear vc1000009 are active and
+  tester-addressable on their separate Play Internal tracks. Exact Apple build
+  7 completed Transporter delivery and processing; App Store Connect
+  status is Ready to Submit, the internal group is attached, and two
+  owner-controlled testers are invited. Phone vc9 has a bounded Play-delivered
+  API-25 physical pass; TestFlight installation, physical tablet, and paired
+  Wear remain missing. See the
+  [source-sync record](../growth/quality/release-artifact-source-sync-2026-09-01-ba824be.md),
+  [hosted verification](../growth/quality/release-artifact-full-verification-2026-09-01-hosted.md),
+  and [internal delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md).
+  Predecessor source `2cdd438` retains a bounded exact-AAB-derived and
+  Play-delivered API 25 phone pass for vc8, including onboarding, live forecast,
+  share, offline recovery, large text, TalkBack, natural background networking,
+  and widget render/update/open. That evidence does not transfer because vc8
+  exposes the Android template launcher icon. Its exact Apple build 6 remains
+  historically `VALID` and `APP_STORE_ELIGIBLE`; vc1000008 has an active tester
+  track but no physical Wear install. Predecessor source `9c2dce4` has a bounded
   physical API 25 debug pass for
   Russian onboarding, Tashkent without location, live forecast, the truthful
   late-day Best Time boundary, first-tip persistence, cached offline fallback,
@@ -146,10 +125,10 @@ the captured slice”; it is never converted to a synthetic rank.
   behavior, plus a byte-identical API 36 tablet emulator pass for Uzbek layout,
   live forecast, Best Time, durable-tip persistence, home-screen widget
   render/tap, large text, rotation, and process health. The physical APK uses
-  the debug certificate, and the tablet/widget pass is emulator-only. A current
-  upload-key-signed phone AAB is retained and `verified-current`, but there is
-  still no upload-derived, release-certificate physical matrix. Exact source
-  `2cdd438` now has bounded simulator evidence on
+  the debug certificate, and the tablet/widget pass is emulator-only. That
+  predecessor checkpoint retained an upload-key-signed phone AAB, but there is
+  still no replacement upload-derived physical matrix. Exact source
+  `2cdd438` has bounded simulator evidence on
   all three remaining watch/phone surfaces: the unsigned iPhone Release
   Simulator passed live-provider EN/RU/UZ capture and `40/40` cold launches;
   unsigned watchOS build 6 rendered an explicitly stale retained preview-like
@@ -171,15 +150,15 @@ the captured slice”; it is never converted to a synthetic rank.
   cold-start forecasts, denied-location/manual-search flow, share sheet, 150%
   text, TalkBack, cached-network fallback/recovery, and contextual review-prompt
   dismissal/no immediate repeat. Those results do not transfer to current
-  phone vc8; [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md)
+  phone vc9; [source-sync evidence](../growth/quality/release-artifact-source-sync-2026-08-30-2cdd438.md)
   records the boundary.
 - Historical Apple `1.1.0 (5)` is archived and exported as a distribution-signed IPA with
   matching app/widget/watch dSYMs. The [Apple artifact evidence](../growth/quality/apple-release-artifacts-2026-08-28.md)
-  remains scoped to build 5. Current Apple build 6 now has a retained,
-  `verified-current` distribution archive and IPA. That exact IPA completed
+  remains scoped to build 5. Historical Apple build 6 has a retained,
+  distribution archive and IPA. That exact IPA completed
   Transporter delivery and App Store Connect processing as build 6, `VALID` and
   `APP_STORE_ELIGIBLE`, but no TestFlight beta distribution or physical runtime
-  result exists. The exact `2cdd438` unsigned Simulator evidence is current
+  result exists. The exact `2cdd438` unsigned Simulator evidence is historical
   regression proof only. The checked-in
   [localized screenshot provenance](../growth/quality/apple-localized-current-product-capture-2026-08-30.md)
   remains predecessor `9c2dce4` creative evidence; it does not prove TestFlight
@@ -203,9 +182,9 @@ the captured slice”; it is never converted to a synthetic rank.
   Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
   onboarding, live weather, and support/Play destination smoke plus a
   same-certificate preserved-data update on physical API 36; pulled bytes match
-  on both. Physical tablet and paired Wear OS coverage remains required, and
-  the API-25 legacy launcher icon requires a replacement phone version code
-  before production.
+  on both. Replacement physical tablet and paired Wear OS coverage remains
+  required. Source vc9 replaces the API-25 legacy launcher asset, but a
+  Play-delivered physical check must confirm the fix before production.
 - Metadata schema v2, an Uzbek Google custom listing persisted as unpublished
   Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
@@ -255,14 +234,13 @@ availability; each external state must be recorded separately.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Trusted hosted run `33405849102` has completed the required full pinned
-   verifier against the mutable draft for evidence head `b07192e`; repeat that
-   protected chain before every later use. Complete the remaining delivery-
-   linked matrix: prepare a replacement phone version code with branded legacy
-   launcher icons, add physical tablet and paired Wear coverage plus
-   post-delivery vitals, confirm beta-group distribution for processed
-   Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch
-   QA. The iPad mini 5 and iPhone 14 Pro are
+3. Trusted hosted run `33482814222` completed the required full pinned verifier
+   for replacement source `ba824be` and master `18ebcf4`; repeat that protected
+   chain before every later artifact reuse. Complete the remaining delivery-
+   linked matrix: add physical tablet and paired Wear vc1000009 coverage plus
+   post-delivery vitals, install ready build 7 through TestFlight, and complete
+   iPhone/iPad/widget/watch QA. The iPad mini
+   5 and iPhone 14 Pro are
    paired, booted, and Developer Mode enabled. The iPad has no Nimbo install;
    the iPhone retains public `1.0.1 (4)`. The paired Series 5 watch has
    Developer Mode disabled and its developer tunnel is disconnected. No iOS 15
@@ -272,14 +250,13 @@ availability; each external state must be recorded separately.
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Current phone vc8, Wear vc1000008, and Apple build 6 are retained and atomically
-`verified-current` from source `2cdd438`; historical phone vc7, historical Wear,
-and Apple build 5 remain non-transferable. The current manifest remains
-`draft-blocked` after the protected hosted pass, exact-AAB-derived phone smoke,
-and internal store acceptance because tester access, TestFlight beta
-distribution, and the remaining exact-artifact physical matrix are still
-pending. The [current delivery record](../growth/quality/internal-store-delivery-2026-08-31.md)
-supersedes the earlier readiness-only checkpoint without rewriting it. Play
+Current phone vc9, Wear vc1000009, and Apple build 7 are retained and atomically
+`verified-current` from source `ba824be`; all earlier release identities remain
+non-transferable. The manifest remains `draft-blocked` after the protected
+hosted pass and internal store delivery because TestFlight installation and the
+remaining exact-artifact physical matrix are still pending.
+The [replacement delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
+supersedes the predecessor delivery checkpoint without rewriting it. Play
 Internal and TestFlight remain bounded QA channels for the exact retained
 candidates.
 Production rollout and public acquisition remain fail-closed until the crash,
