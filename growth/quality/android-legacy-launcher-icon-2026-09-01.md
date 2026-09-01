@@ -32,3 +32,18 @@ resources in repository checks, increment the phone version code, and repeat
 the exact signed/internal-delivery plus API-24/25 launcher smoke. Existing
 version-code-8 runtime evidence remains truthful historical evidence and must
 not be relabeled as evidence for the replacement artifact.
+
+## Source remediation checkpoint
+
+Revision `ba824beae5e72653e42af2b8b78286f61415e3ab` replaces the ten template
+WebPs with density-correct square and round PNGs generated from the canonical
+Nimbo 1024 x 1024 artwork and advances the phone identity to `1.1.0 (9)`.
+The generator's check mode compares all committed pixels to its canonical
+render. A debug APK assembled successfully and Launcher3 on an API-24 emulator
+rendered the Nimbo mark; the aggregate app-drawer screenshot SHA-256 is
+`d65e813b192980e9bccc0d846e1be78d2b2d46b61c05d744af2940d988ca70f3`.
+
+This closes the source-level defect only. The gate remains blocked until an
+exact signed vc9 is independently verified, delivered through Google Play
+Internal, and shows the Nimbo icon on physical API 24 or 25. Version code 8 is
+still not eligible for production promotion.
