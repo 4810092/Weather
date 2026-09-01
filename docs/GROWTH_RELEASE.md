@@ -9,18 +9,19 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dd801a85cc4893d33282120ed16a9476279af1a8196c726b5854a55e3cd7b8f8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=9baedf7de5d31fc4f7ab581c5540b64896a1fc98b5ed15dab66320b26bfdc373 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
 `8fc43b48b65d17b3339663549cd86208f62f6bb7` to phone vc10, Wear vc1000010,
 and Apple build 8 as `3/3 verified-current` with `byte_verified=true` after
 protected signing, durable draft materialization, and trusted hosted run
-`33508130379`. Store delivery and physical gates remain blocked. This source
-fixes the duplicate-percent share payload found during physical TestFlight QA
-of build 7. The vc9/vc1000009/build-7 set remains historical internal-store and
-device evidence only; it cannot authorize the successor.
+`33514410839`. The successor is now available on both Play Internal tracks and
+the internal TestFlight group. Phone vc10 and Apple build 8 passed bounded
+physical smoke, including the corrected single-percent share payload; the
+complete Android and iOS physical gates remain blocked. The
+vc9/vc1000009/build-7 set remains historical evidence only.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -40,10 +41,10 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
-| Apple internal delivery | Historical `1.1.0 (7)` completed Transporter processing, entered the internal TestFlight group as `Testing`, and was installed from TestFlight on an iPhone 14 Pro. Its copied share payload contained `0%%`, so build 7 is blocked. Successor build 8 is protected-signed, trusted-hosted byte-verified, and manifest-current but not delivered. |
+| Apple internal delivery | Current `1.1.0 (8)` completed Transporter processing, entered the internal TestFlight group, and was installed from TestFlight on an iPhone 14 Pro. Cold/live/refresh/share passed and the copied payload contains one literal percent sign. The connected iPad remains on build 7; visible widget and physical watch QA remain missing. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Historical phone `1.1.0 (9)` and Wear `1.1.0 (1000009)` are active on separate Internal tracks. Play-delivered vc9 passed a bounded API-25 phone/widget smoke; Wear has no paired-device pass. Successor vc10/vc1000010 are protected-signed, trusted-hosted byte-verified, and manifest-current but not delivered. Production was not changed. |
+| Google Play Internal | Current phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` are active on separate Internal tracks. Play delivered vc10 to the API-25 General Mobile; cold/live/share/refresh/widget and bounded process filters passed. Current physical tablet and Wear results remain missing. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
