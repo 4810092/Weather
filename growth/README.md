@@ -5,15 +5,17 @@
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dd801a85cc4893d33282120ed16a9476279af1a8196c726b5854a55e3cd7b8f8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=9baedf7de5d31fc4f7ab581c5540b64896a1fc98b5ed15dab66320b26bfdc373 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
 <!-- release-authority-current:end -->
 
 Current source `8fc43b4` resolves to vc10/vc1000010/build 8 and is atomically
-`3/3 verified-current` with trusted-hosted byte verification. It fixes the
-duplicate-percent share payload found during physical TestFlight QA of
-historical build 7. Historical vc9/vc1000009/build-7 internal delivery and
-device observations do not transfer to the successor.
+`3/3 verified-current` with trusted-hosted byte verification. It is available
+on both Play Internal tracks and the internal TestFlight group. Phone vc10 and
+Apple build 8 passed bounded physical QA, including the corrected one-percent
+share payload; current tablet/Wear/iPad/widget/watch and crash-window evidence
+remain incomplete. Historical vc9/vc1000009/build-7 observations do not
+transfer to the successor.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -63,10 +65,13 @@ or historical device result does not close those independent gates.
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
-| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and atomic 3/3 trusted-hosted byte authority; delivery and physical QA remain blocked |
+| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and atomic 3/3 trusted-hosted byte authority; current delivery and bounded phone/iPhone QA are recorded separately |
 | Current trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-09-01-build8-hosted.md](quality/release-artifact-full-verification-2026-09-01-build8-hosted.md) | Trusted run `33508130379`, exact mutable draft/assets, full byte identities, non-secret receipt, and mandatory later-reuse recheck boundary |
 | Current protected signed candidate | [quality/signed-candidate-run-33493356066.md](quality/signed-candidate-run-33493356066.md) and [receipt](quality/receipts/signed-candidate-33493356066.json) | Exact CI/run/artifact/package/tree and three successor byte identities |
 | Current durable draft materialization | [quality/release-materialization-2026-09-01-run-33498085260.md](quality/release-materialization-2026-09-01-run-33498085260.md) | Exact unpublished draft/release/asset IDs and hashes; no tag, publication, or store delivery |
+| Current internal store delivery | [quality/internal-store-delivery-2026-09-01-8fc43b4.md](quality/internal-store-delivery-2026-09-01-8fc43b4.md) | Exact vc10/vc1000010/build-8 Play Internal and TestFlight delivery, post-promotion trusted reuse check, and unchanged-production boundary |
+| Current Play-delivered phone QA | [quality/play-delivered-android-vc10-smoke-2026-09-01.md](quality/play-delivered-android-vc10-smoke-2026-09-01.md) | Exact vc10 Play update on the API-25 General Mobile, live/share/refresh/widget/process pass, and remaining tablet/Wear/vitals boundary |
+| Current TestFlight iPhone QA | [quality/testflight-ios-build8-smoke-2026-09-01.md](quality/testflight-ios-build8-smoke-2026-09-01.md) | Exact build-8 TestFlight install, live/refresh/share-copy pass with one literal percent sign, and remaining crash/iPad/widget/watch/iOS-15 boundary |
 | Historical build-7 internal delivery | [quality/internal-store-delivery-2026-09-01-ba824be.md](quality/internal-store-delivery-2026-09-01-ba824be.md) | Exact vc9/vc1000009/build-7 internal delivery plus explicit non-production boundary |
 | Historical build-7 TestFlight QA | [quality/testflight-ios-build7-smoke-2026-09-01.md](quality/testflight-ios-build7-smoke-2026-09-01.md) | Exact iPhone TestFlight install and bounded runtime pass that found the duplicate-percent share defect |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |

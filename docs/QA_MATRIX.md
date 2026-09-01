@@ -7,14 +7,15 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dd801a85cc4893d33282120ed16a9476279af1a8196c726b5854a55e3cd7b8f8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=9baedf7de5d31fc4f7ab581c5540b64896a1fc98b5ed15dab66320b26bfdc373 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds replacement source
 `8fc43b48b65d17b3339663549cd86208f62f6bb7` to all three artifacts as
-`verified-current` with `byte_verified=true`. Physical and internal-store
-delivery gates remain blocked, so no surface is release-ready. Former
+`verified-current` with `byte_verified=true`. Internal delivery and bounded
+phone/iPhone QA are current, but the full physical gates remain blocked, so no
+surface is release-ready. Former
 vc9/vc1000009/build-7 bytes and their observations remain historical only.
 
 This document separates the exact `1.1.0` release candidate from historical

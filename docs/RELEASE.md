@@ -7,7 +7,10 @@ OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 10,
 Wear 1000010, and Apple build 8 from source `8fc43b4`. Protected CI has signed,
 durably materialized, and trusted-hosted byte-verified all three artifacts; the
 committed manifest is atomically `3/3 verified-current` and remains
-`draft-blocked` pending internal delivery and replacement QA. The
+`draft-blocked`. Both Play Internal tracks and the internal TestFlight group
+now contain the exact successor set; phone vc10 and Apple build 8 passed bounded
+physical QA, while current tablet/Wear/iPad/widget/watch coverage and the iOS
+crash-free window remain missing. The
 previously verified phone 9, Wear 1000009, and Apple build 7 set remains
 historical evidence tied to predecessor source `ba824be`; build-7 TestFlight QA
 found the duplicate-percent share defect fixed by the successor. On August 31, the earlier
@@ -29,8 +32,8 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dd801a85cc4893d33282120ed16a9476279af1a8196c726b5854a55e3cd7b8f8 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=9baedf7de5d31fc4f7ab581c5540b64896a1fc98b5ed15dab66320b26bfdc373 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-8 checkpoint — 2026-09-01
@@ -44,7 +47,13 @@ byte-verified the complete successor set. Materialization run `33498085260`
 durably retained the exact package and receipt in an unpublished draft.
 Trusted hosted run `33508130379` revalidated the mutable draft and returned
 `byte_verified=true` for all three artifacts; the manifest is atomically
-current while store delivery remains unclaimed. Production remains unchanged.
+current. Post-promotion trusted run `33514410839` repeated the live draft and
+byte checks immediately before use. Phone vc10 and Wear vc1000010 are now
+available on their separate Play Internal tracks; Apple build 8 completed
+Transporter processing, entered the internal TestFlight group, and was
+installed on an iPhone 14 Pro. The phone and iPhone bounded smokes passed,
+including a copied iOS share payload with one literal percent sign. Production
+remains unchanged, and the incomplete physical/crash matrices remain blocked.
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
 
