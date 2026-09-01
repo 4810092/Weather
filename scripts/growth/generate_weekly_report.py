@@ -91,8 +91,8 @@ GUARDRAIL_LABELS = {
 GATE_ACTIONS = {
     "ios_crash_gate": (
         "Engineering",
-        "Obtain and symbolicate any diagnostic Apple exposes, sign and independently "
-        "verify build 7, complete the iPhone, iPad, "
+        "Obtain and symbolicate any diagnostic Apple exposes, distribute build 7 "
+        "through TestFlight, complete the iPhone, iPad, "
         "widget, and watch matrix, and collect post-rollout crash evidence before "
         "acquisition resumes.",
     ),
@@ -103,19 +103,19 @@ GATE_ACTIONS = {
     ),
     "release_artifact_source_sync": (
         "Release engineering",
-        "Pass exact-source hosted CI, protected signing, independent full-byte "
-        "verification, and Internal/TestFlight delivery for the replacement set.",
+        "Require the protected hosted chain to recheck the mutable draft before "
+        "every later use, then bind store-delivered physical QA.",
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Sign and independently verify vc9, deliver it through Play Internal, then "
-        "repeat physical API-24/25 launcher and remaining tablet/Wear QA.",
+        "Deliver vc9 and vc1000009 through Play Internal, then repeat physical "
+        "API-24/25 launcher and remaining tablet/Wear QA.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Sign and independently verify build 7, distribute it through TestFlight, "
-        "restore an available unlocked iPhone or iPad and watch readiness, then install and "
-        "complete iPhone, iPad, widget, and watch QA.",
+        "Distribute build 7 through TestFlight, restore an available unlocked "
+        "iPhone or iPad and watch readiness, then install and complete iPhone, "
+        "iPad, widget, and watch QA.",
     ),
     "domain_activation": (
         "Web operations",

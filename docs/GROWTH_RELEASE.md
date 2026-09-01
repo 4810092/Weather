@@ -6,19 +6,20 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
 `ba824beae5e72653e42af2b8b78286f61415e3ab`: phone vc9, Wear vc1000009, and
-Apple build 7 are not signed or byte verified yet. The former vc8/vc1000008/
-build-6 set remains historical store/device evidence only and cannot authorize
-the replacement release. Protected exact-source CI, signing, independent byte
-verification, Internal/TestFlight delivery, and physical QA must run again.
+Apple build 7 are protected-signed, independently byte-verified, and atomically
+`3/3 verified-current`. The former vc8/vc1000008/build-6 set remains
+historical store/device evidence only and cannot authorize the replacement
+release. Internal/TestFlight delivery and physical QA must run again for the
+replacement identities.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,

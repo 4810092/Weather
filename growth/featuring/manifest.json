@@ -117,24 +117,18 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Android phone 1.1.0 (8) and Apple 1.1.0 (6) have exact source-synced signed artifacts. The exact phone AAB-derived upload-key-signed APK passed bounded physical API 25 QA, but neither candidate has store-delivery proof and Apple has no matching physical result. Signed phone 1.1.0 (7) and Apple 1.1.0 (5) remain historical; no 1.1.0 candidate is uploaded or public.",
+      "claim": "Replacement Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed and independently byte-verified from source ba824be. They are not yet Play-delivered or TestFlight-delivered and have no matching replacement physical matrix. Historical vc8, vc1000008, and build 6 delivery or device evidence does not transfer; no replacement candidate is public.",
       "evidence": [
-        "growth/quality/release-artifact-full-verification-2026-08-31-hosted.md",
-        "growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md",
+        "growth/quality/signed-candidate-run-33473684554.md",
+        "growth/quality/release-materialization-2026-09-01-run-33477785531.md",
         "store/upload-manifest-1.1.0.json",
-        "growth/quality/internal-track-upload-2026-08-28.md"
+        "growth/quality/release-artifact-source-sync-2026-09-01-ba824be.md"
       ]
     }
   ],
   "blockers": [
     {
       "id": "ios_crash_gate",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
-      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

@@ -5,10 +5,12 @@ that checkpoint and may be superseded later in the same document. The latest rec
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 9,
 Wear 1000009, and Apple build 7. It fixes the legacy Android launcher asset, but
-all three replacement artifacts are fail-closed pending protected signing and
-independent byte verification. The previously verified phone 8, Wear 1000008,
-and Apple build 6 set remains historical evidence tied to the predecessor
-source. On August 31, that exact Apple `1.1.0 (6)` IPA completed
+all three replacement artifacts are protected-signed, independently
+byte-verified, and atomically `3/3 verified-current` in the draft-blocked
+upload manifest. Play Internal/TestFlight delivery and physical QA remain
+pending. The previously verified phone 8, Wear 1000008, and Apple build 6 set
+remains historical evidence tied to the predecessor source. On August 31, that
+exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
 and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
 `1.1.0 (1000008)` AABs were published to their separate Google Play Internal
@@ -23,11 +25,11 @@ claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=d3d6c5d64cc259d3fabff9c9cdb2df8678f54f946e027adadbc6f258adc29b27 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=770422408d39ff77e1915f418b62ed90b7f609b687a0a0474a0012bdd25237f7 -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
@@ -80,10 +82,11 @@ a replacement phone version code is required. See the
 
 At that historical checkpoint, `byte_verified=true` recorded the exact
 vc8/vc1000008/build-6 bytes reopened by the full verifier. The later replacement
-source supersedes their current authority: the manifest is now blocked with
-`byte_verified=false` for vc9/vc1000009/build 7. The September 1 phone evidence
-remains useful regression evidence, but cannot satisfy replacement signing,
-delivery, launcher, or physical gates.
+source supersedes their current authority: the manifest now records
+`byte_verified=true` and `verified-current` for vc9/vc1000009/build 7 after
+protected signing and independent full-byte verification. The September 1
+phone evidence remains useful regression evidence, but cannot satisfy
+replacement delivery, launcher, or physical gates.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 

@@ -131,13 +131,13 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
 
     def test_fixed_release_and_asset_endpoints_are_immutable(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/379745439", "releases/latest", 1)
+            self.trusted.replace("releases/380257470", "releases/latest", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/537966386", "releases/assets/1", 1)
+            self.trusted.replace("releases/assets/539108193", "releases/assets/1", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/537966414", "releases/assets/2", 1)
+            self.trusted.replace("releases/assets/539108272", "releases/assets/2", 1)
         )
 
     def test_draft_and_exact_asset_set_cannot_be_weakened(self) -> None:
@@ -179,7 +179,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                "d4a90676f32745ea314b50ced2c9955e86923589534a1a7654ac6f1207e88a62",
+                "0fd5ae542a71f8cccb1cbbd043ffef09df9f29a2c1c6642010cfcce579f00681",
                 "0" * 64,
                 1,
             )
@@ -250,7 +250,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         self.assert_pages_rejected(
             self.pages.replace(
                 marker,
-                "      - name: Read draft\n        run: gh api repos/4810092/Weather/releases/379745439\n" + marker,
+                "      - name: Read draft\n        run: gh api repos/4810092/Weather/releases/380257470\n" + marker,
                 1,
             )
         )
