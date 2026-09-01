@@ -603,10 +603,18 @@ jobs:
             "$package_root" \
             "$artifact_root" \
             "$verifier_root"
-          [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" | awk '{print $1}')" == \
-            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]
-          [[ "$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/release_artifact_verifier.py" | awk '{print $1}')" == \
-            "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82" ]]
+          verify_candidate_sha256="$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" | awk '{print $1}')"
+          artifact_verifier_sha256="$(shasum -a 256 "$GITHUB_WORKSPACE/scripts/release_artifact_verifier.py" | awk '{print $1}')"
+          if [[ "$verify_candidate_sha256" != \
+            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]; then
+            echo "reviewed verify_signed_candidate.py digest mismatch" >&2
+            exit 1
+          fi
+          if [[ "$artifact_verifier_sha256" != \
+            "584c08f0acf308a4362a6f9205495a6b730694d3f6438e1499a82abaa0d2f35b" ]]; then
+            echo "reviewed release_artifact_verifier.py digest mismatch" >&2
+            exit 1
+          fi
           install -m 500 \
             "$GITHUB_WORKSPACE/scripts/verify_signed_candidate.py" \
             "$verifier_root/verify_signed_candidate.py"
@@ -1097,10 +1105,16 @@ jobs:
           verify_candidate_sha256="$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/verify_signed_candidate.py" | awk '{print $1}')"
           artifact_verifier_sha256="$(shasum -a 256 "$NIMBO_VERIFIER_ROOT/release_artifact_verifier.py" | awk '{print $1}')"
           workflow_sha256="$(shasum -a 256 "$GITHUB_WORKSPACE/.github/workflows/signed-candidate.yml" | awk '{print $1}')"
-          [[ "$verify_candidate_sha256" == \
-            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]
-          [[ "$artifact_verifier_sha256" == \
-            "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82" ]]
+          if [[ "$verify_candidate_sha256" != \
+            "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8" ]]; then
+            echo "reviewed verify_signed_candidate.py digest mismatch" >&2
+            exit 1
+          fi
+          if [[ "$artifact_verifier_sha256" != \
+            "584c08f0acf308a4362a6f9205495a6b730694d3f6438e1499a82abaa0d2f35b" ]]; then
+            echo "reviewed release_artifact_verifier.py digest mismatch" >&2
+            exit 1
+          fi
           python3 -I -B - \
             "$NIMBO_VERIFIER_ROOT" \
             --repository-root "$GITHUB_WORKSPACE" \
