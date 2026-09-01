@@ -117,15 +117,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "vc9 signed/verified and API-24 emulator launcher pass",
+                "Play-delivered vc9 physical API-25 phone/widget pass",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "replacement build 7 is signed/verified",
+                "build 7 is Ready to Submit with two invited internal testers",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "distribute build 7 through TestFlight",
+                "install build 7 from TestFlight",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
@@ -160,7 +160,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "Deliver vc9 and vc1000009 through Play Internal",
+                "Complete replacement physical tablet/widget coverage",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
@@ -200,19 +200,19 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "predecessor store artifacts are historical",
+                "Predecessor store artifacts are historical",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "replacement build 7 is signed and byte-verified but not delivered",
+                "replacement build 7 completed processing, is Ready to Submit",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "complete replacement physical-device and store-delivery coverage",
+                "complete replacement physical-device and post-delivery coverage",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Transporter-delivered Apple build 6 remain useful predecessor evidence",
+                "Apple build 7 completed processing, is Ready to Submit",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

@@ -1,19 +1,21 @@
 # Release QA matrix
 
-Status date: August 31, 2026.
+Status date: September 1, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:ba824beae5e72653e42af2b8b78286f61415e3ab -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=dc64f2b34ea2d37d103678a45d946a6c999dfdd1dbd211de5c811831f5908a59 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=217b5ed118eb1ae2bb976699717794fda62f6e5f57c41587413f06c1db32a2df -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=068404d1ab6d03570ed2bb2b2aa941a50c67de2c7aeb439046382a852783e645 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=cd38593905787c2b212ad2318edeb0027eb30113f541796f61289df25c7d6f71 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block is fail-closed for replacement source
 `ba824beae5e72653e42af2b8b78286f61415e3ab`: all three artifacts are
-`verified-current` with `byte_verified=true`. Physical gates remain blocked,
+`verified-current` with `byte_verified=true`; current-master hosted verification
+passed before exact vc9/vc1000009 Play Internal activation and build-7
+Transporter delivery/processing. Physical and TestFlight gates remain blocked,
 so no surface is release-ready. The former vc8/vc1000008/build-6 bytes and their
 store/device observations remain historical evidence only.
 
@@ -73,7 +75,12 @@ and its explicit external-build provenance boundary are recorded in
   stored only the package and receipt in unpublished mutable draft release
   `380257470`. The manifest is atomically `3/3 verified-current` and remains
   `draft-blocked`; protected hosted revalidation is mandatory before later
-  artifact use. No Play/TestFlight delivery or physical-device result transfers
+  artifact use. Replacement phone vc9 and Wear vc1000009 are active on their
+  separate Play Internal tracks, and Apple build 7 completed Transporter
+  delivery and processing. App Store Connect lists build 7 as Ready to Submit
+  with two invited internal testers. Phone vc9 has a bounded Play-delivered
+  API-25 physical pass; TestFlight installation, physical tablet/Wear, and
+  complete Apple QA remain unverified. No device result transfers
   from the historical vc8/vc1000008/build-6 set.
 - Android phone and Wear bundles compiled from predecessor commit `9c2dce4` and
   embed that full revision, but both exact outputs have zero signature entries.
@@ -131,11 +138,11 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — replacement vc9 removes the legacy template assets, renders the Nimbo mark on an API-24 emulator, and is upload-signed plus independently verified, but no Play-delivered vc9 exists. The broad Play-delivered vc8 phone evidence is historical and cannot transfer |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Partial pass** — replacement vc9 is Play-delivered on physical API 25 with Google App Signing; branded launcher, cold/live forecast, Best Time, share, refresh, widget render/open, and bounded process health pass. Clean install and vc9 TalkBack regression remain unverified |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — the historical Play-delivered vc8 widget pass and predecessor emulator coverage do not satisfy replacement vc9; no current signed physical-tablet result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — replacement vc1000009 is upload-signed and independently verified but absent from Play; historical vc1000008 remains on Internal without a physical paired-watch pass |
-| Apple app and widget | Distribution-signed build 7 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — replacement build 7 is distribution-signed and independently verified but absent from TestFlight. Historical build 6 is `VALID` / `APP_STORE_ELIGIBLE` but has no TestFlight physical pass and cannot transfer |
-| Apple Watch | Build-7 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — replacement build 7 has a verified signed companion but no TestFlight or physical-watch result |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — replacement vc1000009 is active on Play Internal but has no Play-delivered physical paired-watch install/handoff; historical vc1000008 evidence cannot transfer |
+| Apple app and widget | Distribution-signed build 7 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — replacement build 7 is Ready to Submit, attached to the internal group, and has two invited owner-controlled testers, but no TestFlight installation or physical QA exists. Historical build 6 cannot transfer |
+| Apple Watch | Build-7 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — replacement build 7 completed Transporter delivery/processing but has no verified TestFlight or physical-watch result |
 
 ## Historical evidence — non-transferable
 
