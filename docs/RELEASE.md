@@ -31,7 +31,7 @@ for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
@@ -73,16 +73,24 @@ system-UI transition proved
 saved-weather warning, then `wifi_on=1` and successful direct-IP reachability
 before recovery refresh. The existing four-account License testers group is
 attached to Wear Internal and the exact vc1000008 track now reports active; no
-physical watch install or paired handoff is claimed. See the
+physical watch install or paired handoff is claimed. A later natural hourly
+WorkManager run completed while Google Launcher remained foreground, transferred
+17,568 received and 3,504 transmitted DEFAULT-set bytes, returned `SUCCESS`,
+and updated the bound physical widget's AQI from 48 to 46. The widget rendered
+and opened the live forecast in 215 ms without a Nimbo fatal exception or ANR.
+This same physical check exposed the API-25 legacy Android template launcher
+icon instead of the Nimbo brand mark, so vc8 must not be promoted to production;
+a replacement phone version code is required. See the
 [Play-delivered Android record](../growth/quality/play-delivered-android-smoke-2026-09-01.md).
 
 Here `byte_verified=true` is the exact upload-manifest byte state after the
 fresh local full verifier reopened all three signed artifacts. The top-level
 manifest remains `draft-blocked`. The September 1 follow-up closes the bounded
 phone tester/delivery subset, but TestFlight beta distribution and the remaining
-Android/Wear and Apple physical matrices are absent. The phone entry binds the exact
-AAB-derived physical API 25 pass. The protected staged hosted chain remains
-mandatory for every current master.
+Android/Wear and Apple physical matrices are absent. The phone entry binds the
+exact AAB-derived physical API 25 pass while the legacy-icon failure blocks
+promotion of that artifact. The protected staged hosted chain remains mandatory
+for every current master.
 
 ## Nimbo 1.1.0 exact phone physical checkpoint — 2026-08-31
 

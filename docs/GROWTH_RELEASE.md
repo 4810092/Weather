@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
@@ -128,8 +128,11 @@ the captured slice”; it is never converted to a synthetic rank.
   system-UI-proven offline/cache/recovery paths succeed. Active system-TalkBack
   focus/TTS traversal also reaches the forecast and all three primary controls;
   the original incompatible TalkBack update was restored byte-for-byte. The
-  Wear License testers group is attached and that track is active, but physical
-  tablet/widget and paired Wear results remain absent. Exact Apple build 6 also completed App Store Connect
+  natural hourly background-network run and physical phone widget render/update/
+  open path now pass. The Wear License testers group is attached and that track
+  is active, but physical tablet and paired Wear results remain absent. The
+  API-25 launcher still exposes the Android template legacy icon, so vc8 cannot
+  be promoted. Exact Apple build 6 also completed App Store Connect
   processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group and
   runtime coverage remain unverified. The iOS crash diagnosis remains blocked.
   See the
@@ -202,8 +205,9 @@ the captured slice”; it is never converted to a synthetic rank.
   Exact `df5f824` debug bytes additionally pass fresh API 25 no-location
   onboarding, live weather, and support/Play destination smoke plus a
   same-certificate preserved-data update on physical API 36; pulled bytes match
-  on both. Upload-signed physical tablet/widget and paired Wear OS coverage
-  remain required.
+  on both. Physical tablet and paired Wear OS coverage remains required, and
+  the API-25 legacy launcher icon requires a replacement phone version code
+  before production.
 - Metadata schema v2, an Uzbek Google custom listing persisted as unpublished
   Console draft `4834799756935529888`, separate Russian copy, an
   Uzbek-oriented Apple Custom Product Page draft, 36 deterministic EN/RU/UZ
@@ -256,8 +260,8 @@ availability; each external state must be recorded separately.
 3. Trusted hosted run `33405849102` has completed the required full pinned
    verifier against the mutable draft for evidence head `b07192e`; repeat that
    protected chain before every later use. Complete the remaining delivery-
-   linked matrix: complete background checks on the Play-delivered phone
-   package, add physical tablet/widget and paired Wear coverage plus
+   linked matrix: prepare a replacement phone version code with branded legacy
+   launcher icons, add physical tablet and paired Wear coverage plus
    post-delivery vitals, confirm beta-group distribution for processed
    Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch
    QA. The iPad mini 5 and iPhone 14 Pro are

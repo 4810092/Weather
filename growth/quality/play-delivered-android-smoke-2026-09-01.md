@@ -2,8 +2,8 @@
 
 Status: **PASS for the bounded Play-delivered phone scope** and **PASS for
 Wear Internal tester activation**. The combined Android physical gate remains
-**BLOCKED** because physical tablet/widget, paired Wear OS, background-retry,
-and post-delivery vitals evidence are incomplete.
+**BLOCKED** because the API-25 legacy launcher icon is incorrect and physical
+tablet, paired Wear OS, and post-delivery vitals evidence are incomplete.
 
 All times are `Asia/Tashkent` (`UTC+05:00`). Production was not changed.
 
@@ -127,7 +127,7 @@ and ARM split
 Nimbo remained Play-installed `1.1.0 (8)` with installer
 `com.android.vending`, Wi-Fi on, and airplane mode off. This closes the bounded
 API-25 TalkBack path for the Play-delivered phone package; it does not prove
-newer-OS screen-reader, tablet, widget, background, or Wear behavior.
+newer-OS screen-reader, tablet, or Wear behavior.
 
 ## Wear Internal result
 
@@ -141,15 +141,84 @@ This is tester-access and active-track evidence. No Play-delivered physical
 watch install, cold start, phone handoff, forecast transfer, or paired-device
 result is claimed.
 
+## Background retry contract
+
+The current-source background suite was rerun before the physical background
+observation. It passed 61/61 focused tests with zero failures or errors:
+
+- 28 Android-host and 28 iOS-simulator `BackgroundWeatherUpdaterTest` cases;
+- two Android-host `BackgroundRefreshFailureAndroidTest` cases;
+- three Android `WeatherRefreshWorkerTest` cases.
+
+These tests cover transient/permanent failure classification, the durable
+retry-pending/cooldown policy, cancellation, cached publication, and the exact
+WorkManager mapping: transient failure returns `retry`, updated/no-work returns
+`success`, and permanent failure returns `failure`. This is retry-contract
+evidence; it is not a claim that a physical transient provider failure was
+injected into the Play-delivered package.
+
+## Natural background and widget result
+
+The Play-delivered package retained periodic WorkSpec
+`139cee06-d828-4738-9492-e002a4139066`, JobScheduler job `8`, with connected
+network and no low-battery or idle requirement blocking it. No force-run,
+clock change, app launch, provider substitution, or network fault was used.
+
+Before the due window, the Nimbo 3 x 2 home-screen widget was bound through
+the system launcher. It rendered Tashkent, `18°C`, `↑31° ↓18°`, precipitation
+`0%`, and `AQI 48`. Adding it did not change the Nimbo UID's network counters.
+The pre-background screenshot SHA-256 is
+`02713f3762360cec4a430897d83bf03a63da22d71d6fd443146a75fa9c857cc1`;
+the raw image remains outside Git.
+
+At `06:44:52`, immediately before the natural window:
+
+- Google Launcher was both resumed and focused; Nimbo `MainActivity` was the
+  last paused activity;
+- Nimbo UID `10116` had DEFAULT-set counters `rx_bytes=0`, `rx_packets=0`,
+  `tx_bytes=248`, `tx_packets=4`;
+- the FOREGROUND-set counters were `rx_bytes=110173`, `rx_packets=167`,
+  `tx_bytes=22994`, `tx_packets=180`.
+
+At `06:45:02.810`, JobScheduler started generation 5 of that exact WorkSpec.
+WorkManager recorded constraints met for the delegated
+`uz.ganikhodjaev.weather.WeatherRefreshWorker`. At `06:45:04.598`, it returned
+`SUCCESS`; the processor recorded `reschedule=false`, JobScheduler recorded the
+work executed, and the same periodic job was scheduled again with a new
+60-minute minimum latency.
+
+At `06:45:10`, Google Launcher was still resumed and focused and Nimbo remained
+last paused. FOREGROUND counters were byte-for-byte unchanged. DEFAULT counters
+were now `rx_bytes=17568`, `rx_packets=26`, `tx_bytes=3752`,
+`tx_packets=31`: deltas of 17,568 received bytes, 26 received packets, 3,504
+transmitted bytes, and 27 transmitted packets while no Nimbo activity was in
+the foreground. This binds actual background provider traffic to the successful
+worker execution instead of inferring refresh from a scheduler result alone.
+
+The bound widget then rendered the same Tashkent forecast with `AQI 46` rather
+than the pre-run `AQI 48`; its `RemoteViews` instance changed and its
+post-background screenshot SHA-256 is
+`732b23a41c57b5236c95ec5775fe8a413d02b025814098bea12747a25042fc55`.
+A tap on the widget opened the Play-delivered Nimbo forecast in 215 ms with
+Tashkent, the Best Time card, and all three primary actions present. The phone
+was returned to the launcher. No Nimbo fatal exception or ANR occurred.
+
+This closes a natural successful background-network execution and the bounded
+API-25 phone-widget render/update/open path. Physical transient retry remains a
+test-contract result rather than a fault-injected device claim.
+
 ## Remaining boundary
 
 The bounded phone pass proves Google Play delivery, split selection, the
 Google-managed signing identity, a clean first run, a live Tashkent forecast,
 the primary Best Time value, native share dispatch, and process health on API
 25. The separate `font_scale=1.3` onboarding/live-forecast pass and the
-system-UI-proven offline/cache/recovery path also succeed. Still missing are
-background retry, physical tablet/widget coverage, paired physical Wear OS
-coverage, and post-delivery crash/ANR rates. The connected Samsung API 36
-device contains user data and was not modified. No production review, rollout,
-public availability, ranking improvement, or crash-gate closure follows from
-this internal-test result.
+system-UI-proven offline/cache/recovery path also succeed. A natural background
+provider refresh and the physical phone widget render/update/open path now pass.
+The API-25 launcher icon is nevertheless the Android Studio template rather
+than the Nimbo brand mark; this separately blocks promotion and is recorded in
+`android-legacy-launcher-icon-2026-09-01.md`. Still missing are physical tablet
+coverage, paired physical Wear OS coverage, and post-delivery crash/ANR rates.
+The connected Samsung API 36 device contains user data and was not modified. No
+production review, rollout, public availability, ranking improvement, or
+crash-gate closure follows from this internal-test result.

@@ -65,3 +65,23 @@ No review change, release, rollout, tester assignment, invite acceptance,
 notification change, archive action, export, deletion, message, or spend was
 performed. Public acquisition remains held by the independent iOS crash,
 physical store-delivery, and critical-metric gates.
+
+## 05:55–06:19 follow-up
+
+The review state is unchanged. The listing index identifies
+`Uzbekistan country — Best Time Outside` as a 100% Uzbekistan-targeted page,
+last updated August 31 and still `На рассмотрении`. A read-only traversal of
+its locked review form verified the exact submitted composition:
+
+- separate en-US Uzbek-language and ru-RU Russian-language title, short-copy,
+  and full-copy fields;
+- one feature graphic, six phone screenshots, and one Wear OS screenshot per
+  locale, with distinct object URL sets between the two locales;
+- no 7-inch or 10-inch tablet screenshots in either locale.
+
+The form was not edited and its save action remained disabled. The rolling
+global dashboard at this later cutoff displayed 1.12 thousand device
+impressions, 26 installations, 18 first launches, 13 monthly active devices,
+and 34.29% store-listing conversion; D7 retention remained unavailable. These
+newer rolling values are recorded here as a separate observation and are not
+mixed into the source-windowed August 31 baseline.

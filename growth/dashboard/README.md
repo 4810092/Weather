@@ -84,7 +84,10 @@ production remains `1.0.2 (6)`. Exact phone `1.1.0 (8)` and Wear
 `1.1.0 (1000008)` are on their separate Play Internal tracks. The phone opt-in
 is accepted and the Play-signed vc8 package is installed; the Wear License
 testers group is attached and its track is active, but no physical Wear install
-exists. Authenticated App Store Connect inventory now
+exists. The vc8 phone passes the bounded natural background-network and physical
+widget render/update/open path, but its API-25 legacy launcher icon is the
+Android template and blocks production promotion. Authenticated App Store
+Connect inventory now
 reports exact Apple build `1.1.0 (6)` as `VALID` and `APP_STORE_ELIGIBLE`;
 TestFlight beta distribution/install remains unverified. No production review,
 rollout, public availability, or rank follows from these internal states.

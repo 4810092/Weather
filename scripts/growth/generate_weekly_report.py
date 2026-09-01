@@ -109,9 +109,9 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Complete background checks on the Play-delivered phone package, physical "
-        "tablet and widget coverage, a Play-delivered paired Wear OS install/handoff, "
-        "and post-delivery vitals.",
+        "Prepare and internally deliver a new phone version code with branded "
+        "legacy launcher icons, then complete physical tablet coverage, a "
+        "Play-delivered paired Wear OS install/handoff, and post-delivery vitals.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",

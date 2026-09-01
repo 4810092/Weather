@@ -21,7 +21,26 @@ The reviewed Uzbekistan Custom Store Listing is expected to expose
 `Nimbo: Погода и прогноз` for ru-RU. Neither submitted title appears on the
 corresponding fixed public UZ page. The Uzbek surface also continues to expose
 the old English short description rather than
-`Tashqariga chiqish uchun eng yaxshi vaqtni toping.`
+`Toshkent va O‘zbekiston ob-havosi: chiqish uchun eng yaxshi vaqtni toping.`,
+which the authenticated review form exposes as the submitted en-US short
+description for this Uzbekistan-only listing.
+
+## 05:56 follow-up
+
+A second logged-out request kept the same publication conclusion. The raw
+responses were inspected in a temporary owner-local directory and removed
+after the aggregate fields below were recorded.
+
+| Surface | Public description still observed | Bytes | Response SHA-256 |
+| --- | --- | ---: | --- |
+| `hl=uz&gl=UZ` | `Understand the hours ahead through weather you have recently felt.` | 1,154,916 | `fe9942934799c28c11ddd3e144ea55731d72b0ac994e3000f729df862effc695` |
+| `hl=ru&gl=UZ` | `Поймите погоду на ближайшие часы через знакомые недавние ощущения.` | 1,153,705 | `ae4fade130358eafd15072503c5695874de589faddc76c9426065782e9d95523` |
+
+Neither reviewed title nor the exact reviewed Uzbek short description occurred
+in the corresponding response. The fixed public App Store UZ response remained
+254,400 bytes with title `Nimbo Weather` and SHA-256
+`d9a7eae203000e1aaa450112aad5435cdd0c21b2d53db438d8aead8137b7764d`.
+This follow-up is still public propagation evidence only.
 
 For comparison, the fixed public App Store UZ page still exposes the intended
 global name `Nimbo Weather`; its 254,400-byte response had SHA-256

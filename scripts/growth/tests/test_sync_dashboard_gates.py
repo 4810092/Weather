@@ -168,6 +168,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
+                "branded legacy launcher icons",
+                rows["android_physical_smoke"]["next_action"],
+            )
+            self.assertNotIn(
                 "background checks",
                 rows["android_physical_smoke"]["next_action"],
             )

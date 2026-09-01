@@ -7,7 +7,7 @@ Status date: August 31, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=ee66bb4a7bdc9752d03d96d1c04384187ec3278a1153fec448cea2b751fcbd71 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
@@ -110,7 +110,9 @@ and its explicit external-build provenance boundary are recorded in
   debug-emulator pass: EN/RU/UZ render the honestly stale cached Mountain View
   Data Layer item and the restored-English cold loop passes `10/10` with no
   PID-scoped fatal match. No fresh paired-phone refresh occurred; current
-  upload-signed physical tablet/widget and paired Wear OS coverage is absent.
+  physical tablet and paired Wear OS coverage is absent. The Play-delivered
+  phone now passes natural background-network and widget render/update/open,
+  but its API-25 legacy launcher icon is the Android template.
 - Exact `2cdd438` Apple app/widget Release Simulator bytes embed the full source
   revision. On iPhone 16 Pro Max / iOS 18.1, EN/RU/UZ each passed the real
   Tashkent quick-city and live-provider flow, twelve localized states were
@@ -148,8 +150,8 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc8 was installed by Google Play on physical API 25 with the expected Play signing identity and passed bounded cold/onboarding/live Tashkent/Best Time/share/process-health, `font_scale=1.3`, system-UI-proven offline/cache/recovery, and active system-TalkBack focus/TTS checks. The incompatible TalkBack 12.2 update was restored byte-for-byte afterward. Background, update-over-production, and current physical tablet/widget coverage remain absent |
-| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc8 was installed by Google Play on physical API 25 with the expected Play signing identity and passed bounded cold/onboarding/live Tashkent/Best Time/share/process-health, `font_scale=1.3`, system-UI-proven offline/cache/recovery, active system-TalkBack focus/TTS, natural background-network, and widget render/update/open checks. The incompatible TalkBack 12.2 update was restored byte-for-byte afterward. The API-25 legacy launcher icon is the Android template and requires a replacement phone version code; update-over-production and physical tablet coverage remain absent |
+| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — the Play-delivered physical phone widget render/update/open path passes and predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical-tablet result |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact vc1000008 is available on an active Wear Internal track with the four-account License testers group; exact-current API 37 debug emulator stale-cache render/cold loop passes, while Play-delivered physical watch and paired handoff remain absent |
 | Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and exact build 6 is processed `VALID` / `APP_STORE_ELIGIBLE`, but TestFlight beta distribution/install, widget placement, older-runtime rendering, and physical evidence are absent |
 | Apple Watch | Build-6 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — exact-current unsigned simulator localization and 30-loop evidence uses a stale preview-like retained fixture; no fresh paired transfer or physical-watch result |

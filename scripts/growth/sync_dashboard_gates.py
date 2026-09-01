@@ -392,14 +392,14 @@ def sync(
             )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · Play-delivered phone vc8 cold/live/share and "
-                "offline/cache/recovery smoke passes; large text and active system "
-                "TalkBack pass; background/tablet/widget/Wear remain incomplete"
+                "BLOCKED · Play-delivered phone vc8 runtime passes; large text and "
+                "active system TalkBack pass; background/widget pass; legacy "
+                "launcher icon fails; tablet/Wear remain incomplete"
             )
             new_next = (
-                "Complete background checks on the Play-delivered phone package, "
-                "physical tablet/widget and paired Wear OS QA, and post-delivery "
-                "vitals"
+                "Prepare and internally deliver a new phone version code with "
+                "branded legacy launcher icons, then complete physical tablet and "
+                "paired Wear OS QA plus post-delivery vitals"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
