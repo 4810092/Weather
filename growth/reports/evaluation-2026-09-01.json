@@ -150,7 +150,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Authenticated App Store Connect reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29. The 2026-08-29 event maps to iPhone; the 2026-08-25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. Historical build 6 completed Transporter delivery and became VALID and APP_STORE_ELIGIBLE but cannot identify either public-build crash. Replacement source ba824beae5e72653e42af2b8b78286f61415e3ab now has independently byte-verified distribution-signed build 7, but build 7 is not yet delivered to App Store Connect or installed through TestFlight. Diagnostic access and symbolication, TestFlight distribution, an exact physical iPhone/iPad/widget/watch pass, and post-rollout crash evidence remain missing."
+        "reason": "Authenticated App Store Connect reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29. The 2026-08-29 event maps to iPhone; the 2026-08-25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. Exact historical build 7 reached the internal TestFlight group, was installed from TestFlight on a physical iPhone 14 Pro, and completed a bounded cold/live/refresh/share-sheet path without a visible crash, but its share payload exposed a duplicate-percent defect and it has no diagnostic, symbolication, iPad/widget/watch matrix, or post-delivery crash-free window. Successor source 8fc43b48b65d17b3339663549cd86208f62f6bb7 advances to build 8 with the share fix but has no signed bytes or runtime evidence. The gate remains blocked."
       },
       {
         "id": "open_meteo_promotion_clearance",
@@ -162,23 +162,23 @@
       {
         "id": "release_artifact_source_sync",
         "required": "pass",
-        "actual": "pass",
-        "status": "pass",
-        "reason": "Product/build-input commit ba824beae5e72653e42af2b8b78286f61415e3ab resolves to Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7). Exact-source hosted CI run 33472603346 passed all five jobs. Protected signing run 33473684554 produced receipt-bound signed artifacts, and an independent full-byte verification matched the hosted source, package, tree, signer, version, and SHA-256 identities for all three. Materialization run 33477785531 retained the exact package and receipt in unpublished mutable draft release 380257470. The upload manifest is atomically 3/3 verified-current and remains draft-blocked because store delivery and physical QA are separate. The protected hosted chain must revalidate the mutable draft before every later use."
+        "actual": "blocked",
+        "status": "fail",
+        "reason": "Product/build-input commit 8fc43b48b65d17b3339663549cd86208f62f6bb7 resolves to Android phone 1.1.0 (10), Wear OS 1.1.0 (1000010), and Apple 1.1.0 (8). It fixes the duplicate-percent share payload found during exact build-7 TestFlight physical QA and adds a regression test; targeted Android-host StoreLinkProviderTest passed. No exact-source hosted CI, protected signing receipt, signed artifact hash, independent byte verification, internal-store delivery, or physical runtime evidence exists yet for this revision. The manifest is fail-closed at 0/3 verified-current; vc9, vc1000009, and build 7 remain historical evidence and cannot be relabeled current."
       },
       {
         "id": "android_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Historical phone vc8 and Wear vc1000008 retain Play-delivered evidence, but vc8 displayed the Android Studio template launcher icon and is ineligible for production. Replacement source ba824beae5e72653e42af2b8b78286f61415e3ab removes all ten template WebPs, deterministically generates branded legacy resources, and renders the Nimbo mark in Launcher3 on an API-24 emulator. Exact upload-signed phone vc9 and Wear vc1000009 now pass protected signing and independent byte verification, but neither replacement artifact is Play-delivered yet. Internal delivery, physical API-24/25 launcher smoke, physical tablet and paired Wear coverage, and post-delivery vitals remain missing. The Samsung API-36 device contains user data and was not modified. Production was not changed. The gate remains blocked."
+        "reason": "Exact historical phone vc9 and Wear vc1000009 are protected-signed, independently byte-verified, and active on separate Google Play Internal tracks. Google Play delivered vc9 to the dedicated physical API-25 phone with the branded launcher; cold/live Tashkent forecast, Best Time, share resolver, manual refresh, widget render/open, and bounded fatal/ANR/TLS filters passed. No replacement physical tablet, paired Wear vc1000009 install/handoff, or post-delivery vitals exist. Successor source 8fc43b48b65d17b3339663549cd86208f62f6bb7 advances to phone vc10 and Wear vc1000010 for the cross-platform share fix but has no signed artifacts, store delivery, or physical evidence. The Samsung API-36 device contains user data and was not modified. Production was not changed. The gate remains blocked."
       },
       {
         "id": "ios_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Historical Apple 1.1.0 (6) completed Transporter delivery and App Store Connect reported it VALID and APP_STORE_ELIGIBLE, but no TestFlight physical install or production availability was proved. Replacement source ba824beae5e72653e42af2b8b78286f61415e3ab now has independently byte-verified distribution-signed build 7; build 6 delivery evidence does not transfer, and build 7 is not yet delivered to App Store Connect. The iPhone 14 Pro remains unavailable; the paired iPad mini 5 app inventory is blocked by CoreDevice/mobile-image-mounter state, and the paired Series 5 watch has Developer Mode disabled. TestFlight delivery/install, the physical iPhone/iPad/widget/watch matrix, crash diagnosis, and post-rollout crash evidence remain missing. The gate remains blocked."
+        "reason": "Exact historical Apple 1.1.0 (7) completed Transporter processing, entered the internal TestFlight group as Testing, and was installed from TestFlight on the connected iPhone 14 Pro. Bundle inventory proved 1.1.0 (7); cold launch, live Tashkent forecast, Best Time, first-success tip, manual refresh, and the native share sheet passed. Copied share content failed because it contained 0%% instead of 0%. No Nimbo widget render/open, iPad TestFlight install, paired-watch install/handoff, iOS 15 runtime, crash diagnosis, or post-delivery crash-free window exists. Successor source 8fc43b48b65d17b3339663549cd86208f62f6bb7 advances to build 8 with the regression-tested fix but has no signed artifact or TestFlight runtime evidence. The gate remains blocked."
       },
       {
         "id": "domain_activation",

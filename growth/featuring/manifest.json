@@ -117,12 +117,12 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Replacement Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed and independently byte-verified from source ba824be. They are not yet Play-delivered or TestFlight-delivered and have no matching replacement physical matrix. Historical vc8, vc1000008, and build 6 delivery or device evidence does not transfer; no replacement candidate is public.",
+      "claim": "Historical Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed, independently byte-verified, and internally delivered from source ba824be. Phone vc9 has a bounded Play-delivered API-25 phone/widget pass; TestFlight build 7 has a bounded iPhone pass but its share payload contains a duplicate percent. Successor source 8fc43b4 fixes the defect and advances to vc10, vc1000010, and build 8, with no signed bytes or store delivery yet. No replacement candidate is public.",
       "evidence": [
-        "growth/quality/signed-candidate-run-33473684554.md",
-        "growth/quality/release-materialization-2026-09-01-run-33477785531.md",
         "store/upload-manifest-1.1.0.json",
-        "growth/quality/release-artifact-source-sync-2026-09-01-ba824be.md"
+        "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md",
+        "growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md",
+        "growth/quality/testflight-ios-build7-smoke-2026-09-01.md"
       ]
     }
   ],
