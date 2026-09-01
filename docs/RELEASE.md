@@ -31,8 +31,8 @@ for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=be085d777920931fc72e31ec2c3f4b09572e7d43ca917f42bf09ba0e770a6a1d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 internal store-delivery checkpoint — 2026-08-31
@@ -60,10 +60,15 @@ The phone Internal opt-in is accepted. Google Play installed exact version
 expected Google-managed Play App Signing certificate. Cold onboarding without
 location, live Tashkent forecast, Best Time, native share dispatch, and bounded
 process-health checks pass. A separate `font_scale=1.3` onboarding and live-
-forecast render also passes. The installed TalkBack service fails to initialize
-on this Android 7.1 device because it references API-26-only classes, so the
-keyboard-focus semantics check is not counted as a TalkBack pass. The physical
-offline/cache/recovery path also passes: the counted system-UI transition proved
+forecast render also passes. The installed TalkBack 12.2 update fails to
+initialize on this Android 7.1 device because it references API-26-only classes.
+Its signed system TalkBack 5.0.4 was therefore temporarily exposed after the
+exact 12.2 update splits were backed up. With the spoken-feedback service
+active, Nimbo cold launch and focus traversal reached the forecast plus Share,
+Refresh, and Change location with visible focus and TTS AudioTrack activity.
+The original 12.2 update and disabled accessibility/TTS settings were restored
+exactly. The physical offline/cache/recovery path also passes: the counted
+system-UI transition proved
 `wifi_on=0` and failed direct-IP reachability before cold start and the localized
 saved-weather warning, then `wifi_on=1` and successful direct-IP reachability
 before recovery refresh. The existing four-account License testers group is

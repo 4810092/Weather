@@ -7,8 +7,8 @@ Status date: August 31, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=be085d777920931fc72e31ec2c3f4b09572e7d43ca917f42bf09ba0e770a6a1d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
 In the machine-validated block, `byte_verified=true` records the full-verifier
@@ -148,7 +148,7 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc8 was installed by Google Play on physical API 25 with the expected Play signing identity and passed bounded cold/onboarding/live Tashkent/Best Time/share/process-health, `font_scale=1.3`, and system-UI-proven offline/cache/recovery checks; TalkBack, background, update-over-production, and current physical tablet/widget coverage remain absent. The device TalkBack service itself fails on API-26-only class references, so keyboard semantics evidence is not promoted to a screen-reader pass |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc8 was installed by Google Play on physical API 25 with the expected Play signing identity and passed bounded cold/onboarding/live Tashkent/Best Time/share/process-health, `font_scale=1.3`, system-UI-proven offline/cache/recovery, and active system-TalkBack focus/TTS checks. The incompatible TalkBack 12.2 update was restored byte-for-byte afterward. Background, update-over-production, and current physical tablet/widget coverage remain absent |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — predecessor API 36 debug emulator layout/widget/large-text/rotation smoke passes; no current signed physical tablet/widget result |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact vc1000008 is available on an active Wear Internal track with the four-account License testers group; exact-current API 37 debug emulator stale-cache render/cold loop passes, while Play-delivered physical watch and paired handoff remain absent |
 | Apple app and widget | Distribution-signed build 6 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — exact-current unsigned iPhone Simulator live-provider localization and 40-loop evidence passes and exact build 6 is processed `VALID` / `APP_STORE_ELIGIBLE`, but TestFlight beta distribution/install, widget placement, older-runtime rendering, and physical evidence are absent |

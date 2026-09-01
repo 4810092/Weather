@@ -393,13 +393,13 @@ def sync(
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
                 "BLOCKED · Play-delivered phone vc8 cold/live/share and "
-                "offline/cache/recovery smoke passes; large text passes; "
-                "background/tablet/widget/Wear/TalkBack remain incomplete"
+                "offline/cache/recovery smoke passes; large text and active system "
+                "TalkBack pass; background/tablet/widget/Wear remain incomplete"
             )
             new_next = (
-                "Complete TalkBack and background checks on the Play-delivered phone "
-                "package, physical tablet/widget and paired Wear OS QA, and "
-                "post-delivery vitals"
+                "Complete background checks on the Play-delivered phone package, "
+                "physical tablet/widget and paired Wear OS QA, and post-delivery "
+                "vitals"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
@@ -408,8 +408,8 @@ def sync(
             )
             new_next = (
                 "Confirm TestFlight beta-group distribution for processed build 6, "
-                "install it on the ready iPhone and iPad, restore watch readiness, "
-                "then run the complete iPhone/iPad/widget/watch matrix"
+                "restore an available unlocked iPhone or iPad and watch readiness, "
+                "then install and run the complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -647,9 +647,9 @@ def sync(
         "were subsequently accepted into separate phone and Wear Play Internal "
         "tracks and Apple build 6 completed processing as VALID and APP_STORE_ELIGIBLE. "
         "A bounded Play-delivered Android phone cold/live/share/offline/cache/recovery "
-        "smoke now passes and the Wear Internal track is active with testers. "
-        "TestFlight beta installation, Play-delivered phone TalkBack/background, "
-        "tablet/widget/Wear coverage, and "
+        "smoke plus active system-TalkBack traversal now pass, and the Wear Internal "
+        "track is active with testers. TestFlight beta installation, Play-delivered "
+        "phone background, tablet/widget/Wear coverage, and "
         "post-delivery vitals remain missing; two public iOS crashes still lack "
         "diagnostics. No production "
         "submission, review, rollout, public availability, or rank is claimed."
@@ -754,20 +754,23 @@ def sync(
         "August 18–24 Store Listings import remains authoritative for its own window: "
         "26 all-country visitors and 11 unique install clicks, while UZ had zero "
         "visitors and zero clicks.\n\n"
-        "Review request 14 contains only the Uzbekistan Custom Store Listing's en-US "
+        "A 05:05 +05:00 recheck confirms review request 14 still contains only the "
+        "Uzbekistan Custom Store Listing's en-US "
         "and ru-RU store data and is under review. Managed publishing is off; approval, "
         "publication, and rank impact are not verified. A fixed logged-out gl=UZ "
-        "recheck at 00:27–00:29 on September 1 still exposed the pre-review public "
+        "recheck at the same checkpoint still exposed the pre-review public "
         "title Nimbo in both Uzbek and Russian product pages, so propagation is "
         "explicitly not verified. Phone Internal "
         "track 4700083514281298386 is active with the selected four-account License "
         "testers group. On September 1 the General Mobile opt-in was accepted and "
-        "Google Play delivered version 1.1.0 (8) for a bounded API 25 cold/live/share "
-        "smoke. Wear Internal track 4699242452771231163 now has the same tester list "
+        "Google Play delivered version 1.1.0 (8) for bounded API 25 cold/live/share, "
+        "offline/cache/recovery, large-text, and active system-TalkBack smoke. Wear "
+        "Internal track 4699242452771231163 now has the same tester list "
         "and reports Active, but no physical Wear install exists. Evidence: "
         "growth/quality/google-play-console-2026-08-31.md and "
         "growth/quality/play-delivered-android-smoke-2026-09-01.md, with public response "
-        "hashes in growth/quality/google-play-public-propagation-2026-09-01.md."
+        "hashes in growth/quality/google-play-public-propagation-2026-09-01.md and the "
+        "current cross-store state in growth/quality/store-release-recheck-2026-09-01.md."
     )
     verdict = blocks[0].get("body")
     if not isinstance(verdict, str):
@@ -841,11 +844,11 @@ def sync(
         "their separate Play Internal tracks. The phone opt-in is accepted and Google "
         "Play delivered vc8 to the General Mobile API 25 target; cold start, Tashkent "
         "live forecast, Best Time, share chooser, system-UI-proven offline/cache/recovery, "
-        "and process-health checks pass. The "
+        "large text, active system-TalkBack traversal, and process-health checks pass. The "
         "Wear License testers group is attached and that track is active, but no "
         "physical Wear install exists. Apple accepted the exact IPA as build 6 with "
         "VALID and APP_STORE_ELIGIBLE processing state. Play-delivered phone large-text "
-        "QA now passes; TalkBack/background, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
+        "and TalkBack QA now pass; background, tablet/widget/Wear runtime QA and TestFlight beta distribution/"
         "install remain missing. Google review request 14 contains only the Uzbekistan Custom Store "
         "Listing en-US and ru-RU data and is under review; this is not publication or "
         "rank evidence. A fixed logged-out gl=UZ recheck on September 1 still exposed "
@@ -914,11 +917,10 @@ def sync(
     verdict = verdict.replace(
         "At 20:44 +05:00 the iPad was paired but not action-ready; the iPhone "
         "and watch remained unavailable.",
-        "At the August 31 read-only device check, the iPhone 14 Pro and iPad mini 5 "
-        "were paired, booted, and Developer Mode enabled; the iPhone can take a "
-        "TestFlight update and the iPad a fresh install after processing. The paired "
-        "Series 5 watch was compatible, but Developer Mode was disabled and its "
-        "developer tunnel disconnected.",
+        "At the September 1 read-only device check, the iPhone 14 Pro was unavailable "
+        "and the paired iPad mini 5 was locked, so app inventory and TestFlight install "
+        "proof could not be collected. The paired Series 5 watch was compatible, but "
+        "Developer Mode was disabled and its developer tunnel disconnected.",
     )
     verdict = verdict.replace(
         "Scale status remains hold; public outreach and acquisition scaling "
@@ -1001,10 +1003,20 @@ def sync(
         "unlocked, and DDI-ready with Nimbo absent; the iPhone 14 Pro was paired "
         "but locked/DDI-blocked, and the paired Series 5 watch was visible but "
         "offline for detail/app queries.",
+        "At the September 1 read-only device check, the iPhone 14 Pro was unavailable "
+        "and the paired iPad mini 5 was locked, so app inventory and TestFlight install "
+        "proof could not be collected. The paired Series 5 watch was compatible, but "
+        "Developer Mode was disabled and its developer tunnel disconnected.",
+    )
+    verdict = verdict.replace(
         "At the August 31 read-only device check, the iPhone 14 Pro and iPad mini 5 "
         "were paired, booted, and Developer Mode enabled; the iPad had no Nimbo "
         "install. The paired Series 5 watch was compatible, but Developer Mode was "
         "disabled and its developer tunnel disconnected.",
+        "At the September 1 read-only device check, the iPhone 14 Pro was unavailable "
+        "and the paired iPad mini 5 was locked, so app inventory and TestFlight install "
+        "proof could not be collected. The paired Series 5 watch was compatible, but "
+        "Developer Mode was disabled and its developer tunnel disconnected.",
     )
     verdict = verdict.replace(
         "Authenticated App Store Connect inventory reads expose public iOS 1.0.1 "
@@ -1036,8 +1048,8 @@ def sync(
         "Uzbekistan-only draft.",
         "Google Play Custom Store Listing 4834799756935529888 is under review in "
         "request 14 with en-US and ru-RU store data; approval, publication, and "
-        "propagation are not verified. A fixed logged-out gl=UZ recheck at "
-        "2026-09-01 00:27–00:29 still exposed the pre-review public title Nimbo in "
+        "propagation are not verified. A fixed logged-out gl=UZ recheck at the "
+        "2026-09-01 05:05 +05:00 checkpoint still exposed the pre-review public title Nimbo in "
         "both Uzbek and Russian product pages.",
     )
     blocks[0]["body"] = verdict

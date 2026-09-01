@@ -117,7 +117,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 for row in artifact["snapshot"]["datasets"]["gate_snapshot"]
             }
             self.assertIn(
-                "Play-delivered phone vc8 cold/live/share and offline/cache/recovery smoke passes",
+                "large text and active system TalkBack pass",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -168,7 +168,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "TalkBack and background checks",
+                "background checks",
+                rows["android_physical_smoke"]["next_action"],
+            )
+            self.assertNotIn(
+                "TalkBack and background",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(
@@ -205,6 +209,10 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertIn(
                 "installed and pulled bytes matched at e970352d",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "active system-TalkBack traversal",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

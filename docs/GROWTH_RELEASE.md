@@ -9,8 +9,8 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/android-phone-vc8-physical-smoke-2026-08-31.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=be085d777920931fc72e31ec2c3f4b09572e7d43ca917f42bf09ba0e770a6a1d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1f169aa03548bb51c05df3e528f530d678365a5d74cfff1b8c8a52428fa5dc0c -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=c91f7d2e3ab5ea088e984831d5fcb5ed7797b362e59de21e6ea8d1948ca3fc75 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=73962bee315b59b08b136fbd8a400c79c7b483c19c7402011c6743aebd745090 -->
 <!-- release-authority-current:end -->
 
 In the machine-validated block, `byte_verified=true` records the exact
@@ -125,8 +125,10 @@ the captured slice”; it is never converted to a synthetic rank.
   The exact phone and Wear AABs are now accepted on their separate Play
   Internal tracks. Google Play delivered phone vc8 to the dedicated API 25
   target and the bounded cold/live/share/process-health, large-text, and
-  system-UI-proven offline/cache/recovery paths succeed. The Wear License
-  testers group is attached and that track is active, but physical
+  system-UI-proven offline/cache/recovery paths succeed. Active system-TalkBack
+  focus/TTS traversal also reaches the forecast and all three primary controls;
+  the original incompatible TalkBack update was restored byte-for-byte. The
+  Wear License testers group is attached and that track is active, but physical
   tablet/widget and paired Wear results remain absent. Exact Apple build 6 also completed App Store Connect
   processing as `VALID` and `APP_STORE_ELIGIBLE`, but TestFlight beta-group and
   runtime coverage remain unverified. The iOS crash diagnosis remains blocked.
@@ -254,8 +256,8 @@ availability; each external state must be recorded separately.
 3. Trusted hosted run `33405849102` has completed the required full pinned
    verifier against the mutable draft for evidence head `b07192e`; repeat that
    protected chain before every later use. Complete the remaining delivery-
-   linked matrix: complete TalkBack and background checks on the Play-delivered
-   phone package, add physical tablet/widget and paired Wear coverage plus
+   linked matrix: complete background checks on the Play-delivered phone
+   package, add physical tablet/widget and paired Wear coverage plus
    post-delivery vitals, confirm beta-group distribution for processed
    Apple build 6, and install it through TestFlight for iPhone/iPad/widget/watch
    QA. The iPad mini 5 and iPhone 14 Pro are

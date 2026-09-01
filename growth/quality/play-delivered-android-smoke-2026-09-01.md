@@ -2,8 +2,8 @@
 
 Status: **PASS for the bounded Play-delivered phone scope** and **PASS for
 Wear Internal tester activation**. The combined Android physical gate remains
-**BLOCKED** because physical tablet/widget, paired Wear OS, TalkBack,
-background-retry, and post-delivery vitals evidence are incomplete.
+**BLOCKED** because physical tablet/widget, paired Wear OS, background-retry,
+and post-delivery vitals evidence are incomplete.
 
 All times are `Asia/Tashkent` (`UTC+05:00`). Production was not changed.
 
@@ -89,17 +89,45 @@ evidence policy.
 ## Accessibility boundary
 
 The installed Nimbo build exposes text nodes for the live forecast and explicit
-content descriptions for share, refresh, and change-location actions. Keyboard
-focus traversed those controls and reached the refresh action. This is useful
-semantics evidence, but it is not counted as a TalkBack pass.
+content descriptions for share, refresh, and change-location actions. The
+device's installed TalkBack `12.2.0.442723463` update could not establish a
+valid service on Android 7.1 because it references API-26-only classes. That
+first attempt remains excluded.
 
-The device's installed TalkBack package could not establish a valid service on
-Android 7.1: its runtime references API-26-only
-`FingerprintGestureController.FingerprintGestureCallback` and
-`AudioManager.AudioPlaybackCallback` classes. `dumpsys accessibility` therefore
-reported no active service. The attempted screen-reader run is fail-closed and
-the TalkBack requirement remains blocked. Accessibility and font-scale settings
-were restored to their original disabled / `1.0` state after the check.
+The device also contains its signed system TalkBack `5.0.4`, which targets API
+24. Before temporarily removing only the incompatible update, both update APKs
+were pulled and hashed. With system TalkBack active, `dumpsys accessibility`
+reported a live `TalkBack` service with spoken, haptic, and audible feedback,
+`touchExplorationEnabled=true`, and the Nimbo application window focused.
+
+A cold Nimbo launch followed by hardware-key focus traversal produced visible
+green screen-reader focus on the forecast surface and then on all three primary
+controls. The focused bounds and nested semantics matched:
+
+- `[352,80][448,176]` → `Поделиться погодой`;
+- `[464,80][560,176]` → `Обновить`;
+- `[576,80][672,176]` → `Сменить место`.
+
+TalkBack/Google TTS emitted AudioTrack activity during each captured transition;
+no audio transcript is claimed. Nimbo remained in `MainActivity`, and the
+filtered log contained no Nimbo fatal exception or ANR. The four local capture
+SHA-256 values are
+`5fed99234380b0998dac5ff0feccb3ea9e146a1b681f6adc008e3376e450798b`,
+`3beab412813904a664668c04f6c44e0ce70b871697a570bc2f064d81a2beb9e1`,
+`a20cb27693b489b47f437a2a1488caea128acb60f8535fdeb3edd3a125b87e7c`,
+and `c72cb9e79c505dc7e045883fa8eee5a7f740b591032cc92fb94955711d3f6b7a`.
+Raw captures stay outside Git under the aggregate-only evidence policy.
+
+After the counted pass, accessibility and the temporary TTS default were
+disabled/deleted, `touchExplorationEnabled=false`, and `font_scale=1.0`. The
+original TalkBack 12.2 split set was reinstalled byte-for-byte: base
+`e9f1591c7cba627d85edfc90467a063ca330d15db708b1ff39ab2d931da9b88d`
+and ARM split
+`28dfdf41ba10a07c01e29390832b198ddab777b96fb359c5d8cbcb1b38d721fc`.
+Nimbo remained Play-installed `1.1.0 (8)` with installer
+`com.android.vending`, Wi-Fi on, and airplane mode off. This closes the bounded
+API-25 TalkBack path for the Play-delivered phone package; it does not prove
+newer-OS screen-reader, tablet, widget, background, or Wear behavior.
 
 ## Wear Internal result
 
@@ -120,8 +148,8 @@ Google-managed signing identity, a clean first run, a live Tashkent forecast,
 the primary Best Time value, native share dispatch, and process health on API
 25. The separate `font_scale=1.3` onboarding/live-forecast pass and the
 system-UI-proven offline/cache/recovery path also succeed. Still missing are
-TalkBack/background retry, physical tablet/widget coverage, paired physical
-Wear OS coverage, and post-delivery crash/ANR rates. The connected Samsung API
-36 device contains user data and was not modified. No production review,
-rollout, public availability, ranking improvement, or crash-gate closure
-follows from this internal-test result.
+background retry, physical tablet/widget coverage, paired physical Wear OS
+coverage, and post-delivery crash/ANR rates. The connected Samsung API 36
+device contains user data and was not modified. No production review, rollout,
+public availability, ranking improvement, or crash-gate closure follows from
+this internal-test result.

@@ -109,15 +109,15 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Complete TalkBack and background checks on the Play-delivered phone "
-        "package, physical tablet and widget coverage, a Play-delivered paired "
-        "Wear OS install/handoff, and post-delivery vitals.",
+        "Complete background checks on the Play-delivered phone package, physical "
+        "tablet and widget coverage, a Play-delivered paired Wear OS install/handoff, "
+        "and post-delivery vitals.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Confirm TestFlight beta-group distribution for processed build 6, install "
-        "it on the ready iPhone and iPad, restore watch readiness, then complete "
-        "iPhone, iPad, widget, and watch QA.",
+        "Confirm TestFlight beta-group distribution for processed build 6, restore "
+        "an available unlocked iPhone or iPad and watch readiness, then install and "
+        "complete iPhone, iPad, widget, and watch QA.",
     ),
     "domain_activation": (
         "Web operations",
