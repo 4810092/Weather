@@ -201,6 +201,36 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
             )
         )
 
+    def test_prepromotion_manifest_contract_and_exact_full_verifier_are_immutable(self) -> None:
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                "python3 scripts/verify_release_artifacts.py --contract-only",
+                "true",
+                1,
+            )
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                'if manifest.get("artifacts") != expected_blocked:',
+                "if False:",
+                1,
+            )
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                '--manifest "$verification_manifest"',
+                "--manifest store/upload-manifest-1.1.0.json",
+                1,
+            )
+        )
+        self.assert_trusted_rejected(
+            self.trusted.replace(
+                'artifact["physical_qa_evidence"] = None',
+                'artifact["physical_qa_evidence"] = "invented.md"',
+                1,
+            )
+        )
+
     def test_receipt_upload_cannot_expand_to_signed_bytes(self) -> None:
         self.assert_trusted_rejected(
             self.trusted.replace(
