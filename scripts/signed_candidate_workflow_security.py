@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "044c992e18659948198303ca2d31be60a7d26f77925118a98f9766358cf0f245"
+WORKFLOW_SHA256 = "877ffa2656f160b4699de88020bb4952e0ffaa3ae00febdf4c1d6e85acf116d7"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -151,7 +151,7 @@ SIGN_ACTION_STEP_SHA256 = [
 ]
 REVIEWED_VERIFIER_SHA256 = {
     "verify_signed_candidate.py": "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
-    "release_artifact_verifier.py": "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82",
+    "release_artifact_verifier.py": "584c08f0acf308a4362a6f9205495a6b730694d3f6438e1499a82abaa0d2f35b",
 }
 BUILD_RUN_SHA256 = {
     "Resolve exact release source and unsigned staging paths": "e7f591227861f1cb074317294a06906ff7da5e27e8c7c022f42e7a2244aef940",
@@ -163,14 +163,14 @@ BUILD_RUN_SHA256 = {
     "Remove unsigned build clone": "e76ab6f50b0eab2675461657cb4d3ce9e767cd4c481ca5206ac97222680a3ee5",
 }
 SIGN_RUN_SHA256 = {
-    "Validate and unpack inert unsigned inputs": "c2ad86caa5b6180130d60c7f31f0eb9b56cbb27a71ea87ec167ee30ddf13f4af",
+    "Validate and unpack inert unsigned inputs": "9a1b2c0f679f3bb504535a2d3e201f0d5b7ad3df48a78629bcb231c8ebf111cd",
     "Fetch pinned Bundletool": "8654644e5fab003fd6b3e98bd8b61d3e9f1f7f1bf76fa290458095bc9875cc79",
     "Decode protected signing material outside the checkout": "f2485c2e40ade88500f2b583a7226a970553dce44a851b4c4ba92de6b35bc9ac",
     "Upload-sign Android phone and Wear bundles": "fced7db2bc082b396bd326021a2a0adcc860932d32aa1a63c271d8141f23a9bc",
     "Install ephemeral Apple identity and exact profiles": "dab7eb35e6873dba611735a01628f12243aad5b73e34ba90d3657a6a5fd4dba4",
     "Export and retain distribution-signed Apple candidate": "2fbe7e66b71018577dc839c19b44c5d0b7f465050baacdc7c45e901161532a8b",
     "Destroy signing material before byte verification": "0821e57e2755cf08959d8cd1fdb55f043a54f937baf69584b39203936b2e9c8e",
-    "Byte-verify the complete signed candidate": "d2d5c887ed1cff4f1d06b2f14a2f96407ed4136c776bcc0a8fae3a6717b1156e",
+    "Byte-verify the complete signed candidate": "90d4fe173d08ed1ddc10585f814625bca178dd82552b62954dafbf8541ed1219",
     "Destroy ephemeral signing material": "3f3b4c37fbe6ac8e436cc9f7d207f1dcc0c9065f761b2d5a55fdb299b26186d1",
 }
 
@@ -544,7 +544,9 @@ def validate_signed_candidate_workflow(text: str) -> list[str]:
         "--apple-profile-bindings \"$NIMBO_APPLE_PROFILE_BINDINGS\"",
         'receipt.get("schema_version") != 3',
         "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
-        "96dadb1691ea5c73da5e127df2dd250148d8338c2df4c588660759b7c50ebf82",
+        "584c08f0acf308a4362a6f9205495a6b730694d3f6438e1499a82abaa0d2f35b",
+        "reviewed verify_signed_candidate.py digest mismatch",
+        "reviewed release_artifact_verifier.py digest mismatch",
         "Destroy signing material before byte verification",
         "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
         "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",

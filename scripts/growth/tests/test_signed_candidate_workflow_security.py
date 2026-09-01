@@ -11,6 +11,7 @@ from pathlib import Path
 from scripts.signed_candidate_workflow_security import (
     FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES,
     RELEASE_SOURCE_PATHS,
+    REVIEWED_VERIFIER_SHA256,
     validate_signed_candidate_workflow,
 )
 
@@ -100,6 +101,17 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
 
     def test_repository_workflow_passes(self) -> None:
         self.assertEqual(validate_signed_candidate_workflow(self.workflow), [])
+
+    def test_reviewed_verifier_pins_match_repository_bytes(self) -> None:
+        for filename, expected_digest in REVIEWED_VERIFIER_SHA256.items():
+            with self.subTest(filename=filename):
+                actual_digest = subprocess.run(
+                    ["shasum", "-a", "256", ROOT / "scripts" / filename],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.split()[0]
+                self.assertEqual(actual_digest, expected_digest)
 
     def test_gradle_wrapper_distribution_is_checksum_pinned(self) -> None:
         properties = (
@@ -314,6 +326,22 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
                 1,
             ),
             "reviewed verifier digest pin count differs",
+        )
+
+    def test_verifier_digest_checks_use_explicit_fail_closed_branches(self) -> None:
+        for message in (
+            "reviewed verify_signed_candidate.py digest mismatch",
+            "reviewed release_artifact_verifier.py digest mismatch",
+        ):
+            with self.subTest(message=message):
+                self.assertEqual(self.workflow.count(message), 2)
+        self.assertNotIn(
+            '[[ "$verify_candidate_sha256" ==',
+            self.workflow,
+        )
+        self.assertNotIn(
+            '[[ "$artifact_verifier_sha256" ==',
+            self.workflow,
         )
 
     def test_unsigned_package_body_change_is_rejected(self) -> None:

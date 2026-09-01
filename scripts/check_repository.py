@@ -21,6 +21,7 @@ try:
         validate_release_materialization_workflow,
     )
     from scripts.signed_candidate_workflow_security import (
+        REVIEWED_VERIFIER_SHA256,
         validate_signed_candidate_workflow,
     )
     from scripts.trusted_release_workflow_security import (
@@ -35,6 +36,7 @@ except ModuleNotFoundError:
         validate_release_materialization_workflow,
     )
     from signed_candidate_workflow_security import (  # type: ignore[no-redef]
+        REVIEWED_VERIFIER_SHA256,
         validate_signed_candidate_workflow,
     )
     from trusted_release_workflow_security import (  # type: ignore[no-redef]
@@ -75,6 +77,7 @@ REQUIRED = (
     "scripts/GenerateAndroidLegacyIcons.java",
     "scripts/hosted_rank_workflow_security.py",
     "scripts/release_materialization_workflow_security.py",
+    "scripts/release_artifact_verifier.py",
     "scripts/signed_candidate_workflow_security.py",
     "scripts/trusted_release_workflow_security.py",
     "scripts/verify_signed_candidate.py",
@@ -119,6 +122,17 @@ def fail(message: str) -> None:
 for relative in REQUIRED:
     if not (ROOT / relative).is_file():
         fail(f"missing {relative}")
+
+for filename, expected_digest in REVIEWED_VERIFIER_SHA256.items():
+    verifier = ROOT / "scripts" / filename
+    if not verifier.is_file():
+        fail(f"missing reviewed verifier scripts/{filename}")
+    actual_digest = hashlib.sha256(verifier.read_bytes()).hexdigest()
+    if actual_digest != expected_digest:
+        fail(
+            f"reviewed verifier digest differs for scripts/{filename}: "
+            f"expected {expected_digest}, got {actual_digest}"
+        )
 
 repository_paths = list(
     filter(
