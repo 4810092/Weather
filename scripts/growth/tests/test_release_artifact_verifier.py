@@ -785,11 +785,12 @@ class ReleaseArtifactVerifierTest(unittest.TestCase):
 
         self.assertEqual(failures, [])
         self.assertEqual(set(results), {"android_phone", "wear_os", "apple"})
-        self.assertTrue(
-            all(
-                result.source_sync == "verified-current"
-                for result in results.values()
-            )
+        self.assertEqual(
+            {artifact_id: result.source_sync for artifact_id, result in results.items()},
+            {
+                artifact_id: artifact["source_sync"]
+                for artifact_id, artifact in manifest["artifacts"].items()
+            },
         )
         self.assertTrue(all(result.contract_valid for result in results.values()))
         self.assertTrue(

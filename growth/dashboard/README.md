@@ -32,18 +32,13 @@ and ratings remain carried forward from 2026-08-28. The validated
 install clicks, while UZ has 0 visitors and 0 clicks; UZ conversion is
 `UNKNOWN`, not zero.
 
-Current replacement source
-`ba824beae5e72653e42af2b8b78286f61415e3ab` resolves to phone `1.1.0 (9)`,
-Wear OS `1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Phone vc9 replaces the
-legacy Android Studio icons and passes an API-24 emulator launcher check. All
-three manifest entries are atomically `verified-current` with
-`byte_verified=true` after protected signing, independent verification, and
-current-master hosted revalidation in run `33482814222`. Phone vc9 and Wear
-vc1000009 are active on their separate Google Play Internal tracks, and Apple
-build 7 completed processing and is Ready to Submit with two invited internal
-testers. Phone vc9 has a bounded Play-delivered API-25 physical pass. TestFlight
-installation and the remaining physical QA must still run. The vc8/vc1000008/build-6
-observations below are historical predecessor evidence only.
+Current source `8fc43b48b65d17b3339663549cd86208f62f6bb7` resolves to phone
+`1.1.0 (10)`, Wear OS `1.1.0 (1000010)`, and Apple `1.1.0 (8)`. All three
+manifest entries are blocked at `0/3 verified-current` until exact-source CI,
+protected signing, independent verification, internal delivery, and
+replacement QA complete. Historical vc9/vc1000009/build-7 evidence does not
+transfer; physical TestFlight QA found the `0%%` share defect that current
+source fixes.
 
 Historical predecessor source
 `2cdd4387fc2b8b0f4cd3e3a873f019a6ca8a3652` passed exact-source ordinary
@@ -95,13 +90,12 @@ exists. The vc8 phone passes the bounded natural background-network and physical
 widget render/update/open path, but its API-25 legacy launcher icon is the
 Android template and blocks production promotion. Authenticated App Store
 Connect inventory reports historical Apple build `1.1.0 (6)` as `VALID` and
-`APP_STORE_ELIGIBLE`; replacement build 7 is signed, hosted-byte-verified,
-delivered through Transporter, and finished processing there, but its App Store
-Connect inventory now shows it Ready to Submit, attached to the internal group,
-with two invited owner-controlled testers. Replacement phone vc9 and Wear
-vc1000009 are active and tester-addressable on their separate Internal tracks;
-phone vc9 has a bounded Play-delivered API-25 physical pass, while Wear has no
-physical install. TestFlight installation remains unverified. No production review,
+`APP_STORE_ELIGIBLE`. Historical build 7 is signed, hosted-byte-verified,
+delivered through Transporter, `Testing` in the internal TestFlight group, and
+installed on an iPhone 14 Pro; its copied share payload failed with `0%%`.
+Historical phone vc9 and Wear vc1000009 are active on separate Internal tracks;
+phone vc9 has a bounded Play-delivered API-25 pass, while Wear has no physical
+install. Successor vc10/vc1000010/build 8 are not delivered. No production review,
 rollout, public availability, or rank follows from these internal states.
 
 OpenMeteo GmbH's written clearance passes only for the exact free,

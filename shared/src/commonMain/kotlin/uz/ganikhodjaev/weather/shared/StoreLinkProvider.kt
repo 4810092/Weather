@@ -23,6 +23,10 @@ internal fun formatShareMessage(
     weatherSummary: String,
     storeCallToAction: String,
     storeUrl: String
-): String = listOf(weatherSummary.trim(), storeCallToAction.trim(), storeUrl.trim())
+): String = listOf(
+    weatherSummary.replace("%%", "%").trim(),
+    storeCallToAction.trim(),
+    storeUrl.trim()
+)
     .filter(String::isNotBlank)
     .joinToString("\n")

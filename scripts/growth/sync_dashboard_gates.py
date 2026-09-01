@@ -376,9 +376,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, install "
-                "build 7 from TestFlight, complete "
-                "the iPhone/iPad/widget/watch matrix, and collect post-rollout evidence"
+                "Obtain and symbolicate any diagnostic Apple exposes, then complete "
+                "the source-current TestFlight iPhone/iPad/widget/watch matrix and "
+                "collect post-rollout evidence"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -392,30 +392,30 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · replacement vc9/vc1000009/build-7 set has no protected "
+                    "BLOCKED · the source-current replacement set has no protected "
                     "signed or independently byte-verified artifacts"
                 )
                 new_next = (
                     "Pass exact-source hosted CI, protected signing, independent full-byte "
-                    "verification, and Internal/TestFlight delivery for the replacement set"
+                    "verification, and Internal/TestFlight delivery for the source-current set"
                 )
         elif gate_id == "android_physical_smoke":
             row["decision"] = (
-                "BLOCKED · Play-delivered vc9 physical API-25 phone/widget pass; "
-                "physical tablet and paired Wear vc1000009 remain incomplete"
+                "BLOCKED · the current source has no signed or store-delivered Android "
+                "artifacts; predecessor phone/Wear evidence is historical and non-transferable"
             )
             new_next = (
-                "Complete replacement physical tablet/widget coverage, paired Wear "
-                "vc1000009 install/handoff, and post-delivery vitals"
+                "Deliver the source-current phone and Wear artifacts through Play Internal, "
+                "then repeat physical API-24/25, tablet, and Wear QA"
             )
         elif gate_id == "ios_physical_smoke":
             row["decision"] = (
-                "BLOCKED · build 7 is Ready to Submit with two invited internal "
-                "testers, but TestFlight installation and physical QA are unverified"
+                "BLOCKED · the current Apple build has no signed TestFlight artifact or "
+                "complete runtime matrix; predecessor build evidence is non-transferable"
             )
             new_next = (
-                "Install build 7 from TestFlight, then run the complete "
-                "iPhone/iPad/widget/watch matrix"
+                "Distribute the source-current build through TestFlight, then install and run the "
+                "complete iPhone/iPad/widget/watch matrix"
             )
         if not all(
             isinstance(value, str)
@@ -770,26 +770,15 @@ def sync(
     current_summary = (
         "Current product/build-input commit "
         + current_revision
-        + " resolves to phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple "
-        "1.1.0 (7). Phone vc9 replaces every pre-Android-8 template launcher "
-        "resource with deterministic square and round Nimbo artwork and renders "
-        "the Nimbo mark on an API-24 emulator. Protected signing run 33473684554 "
-        "and independent full-byte verification bind all three exact replacement "
-        "artifacts; the manifest is atomically 3/3 verified-current with "
-        "byte_verified=true. Current-master hosted run 33482814222 repeated the "
-        "full pinned verification before store use. Phone vc9 and Wear vc1000009 "
-        "are active on their separate Play Internal tracks, and Apple build 7 "
-        "completed processing, is Ready to Submit, is attached to the internal group, "
-        "and has two invited owner-controlled testers. Phone vc9 has a bounded "
-        "Play-delivered API-25 physical pass. TestFlight installation and the remaining "
-        "physical QA remain separate. The former Play-delivered vc8, "
-        "active Wear vc1000008 Internal candidate, and Apple build 6 remain useful "
-        "predecessor evidence, but all of their binaries, screenshots, and device "
-        "results are historical and non-transferable."
+        + " is governed by the canonical fail-closed release registry. "
+        + gates["release_artifact_source_sync"]["reason"]
+        + " All predecessor artifacts and observations are historical and "
+        "non-transferable."
     )
     current_pattern = re.compile(
-        r"Current product/build-input commit [0-9a-f]{40} (?:keeps|resolves to) .*?"
-        r"are historical and non-transferable\.",
+        r"Current product/build-input commit [0-9a-f]{40} .*?"
+        r"(?:All predecessor artifacts and observations|all of their binaries, screenshots, "
+        r"and device results) are historical and non-transferable\.",
         re.DOTALL,
     )
     verdict, current_summary_count = current_pattern.subn(
@@ -950,17 +939,15 @@ def sync(
         "Exact-current signed phone/Wear and Apple candidates are retained and "
         "byte-verified, but they are not manifest-promoted or store-delivered;",
         "Replacement vc9/vc1000009/build-7 candidates are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to Play Internal "
-        "plus Apple Transporter; replacement physical and TestFlight evidence remain "
-        "missing, and predecessor store candidates remain historical;",
+        "independently byte-verified, and manifest-current but not store-delivered; "
+        "predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "Exact-current signed phone/Wear and Apple candidates are retained, "
         "byte-verified, and manifest-promoted, but not store-delivered;",
         "Replacement vc9/vc1000009/build-7 candidates are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to Play Internal "
-        "plus Apple Transporter; replacement physical and TestFlight evidence remain "
-        "missing, and predecessor store candidates remain historical;",
+        "independently byte-verified, and manifest-current but not store-delivered; "
+        "predecessor store candidates remain historical;",
     )
     verdict = verdict.replace(
         "At the August 31 read-only device check, the iPad mini 5 was paired, "
@@ -1019,12 +1006,10 @@ def sync(
         "Replacement vc9/vc1000009/build-7 artifacts are not signed or byte "
         "verified; predecessor store artifacts are historical, and there is no "
         "iOS 15 runtime pass or matching physical matrix.",
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to internal store "
-        "channels. Phone vc9 has a bounded Play-delivered API-25 physical pass; "
-        "TestFlight installation, physical tablet/Wear, and complete Apple QA remain "
-        "unverified. Predecessor store artifacts "
-        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
+        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed and "
+        "independently byte-verified but not store-delivered; predecessor store "
+        "artifacts are historical, and there is no iOS 15 runtime pass or matching "
+        "physical matrix.",
     ).replace(
         "Historical protected run 33381050098 used all 8/8 signing inputs, but "
         "replacement vc9/vc1000009/build-7 signing is pending.",
@@ -1033,62 +1018,40 @@ def sync(
         "matched all three identities.",
     ).replace(
         "replacement build 7 is not signed or delivered",
-        "replacement build 7 completed processing, is Ready to Submit, and has two "
-        "invited internal testers, but TestFlight installation remains unverified",
+        "replacement build 7 is signed and byte-verified but not delivered",
     ).replace(
         "protected signing and independent verification of the replacement set, "
         "complete physical-device and store-delivery coverage",
-        "complete replacement physical-device and post-delivery coverage",
-    )
-    verdict = verdict.replace(
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed and "
-        "independently byte-verified but not store-delivered; predecessor store "
-        "artifacts are historical, and there is no iOS 15 runtime pass or matching "
-        "physical matrix.",
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to Play Internal plus "
-        "Apple Transporter; App Store Connect/TestFlight readiness and every "
-        "replacement physical install remain unverified. Predecessor store artifacts "
-        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
-    ).replace(
-        "replacement build 7 is signed and byte-verified but not delivered",
-        "replacement build 7 completed Transporter delivery and processing, but "
-        "App Store Connect eligibility and TestFlight distribution remain unverified",
-    ).replace(
         "complete replacement physical-device and store-delivery coverage",
-        "complete replacement physical-device and TestFlight coverage",
     )
-    verdict = verdict.replace(
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to Play Internal plus "
-        "Apple Transporter; App Store Connect/TestFlight readiness and every "
-        "replacement physical install remain unverified. Predecessor store artifacts "
-        "are historical, and there is no iOS 15 runtime pass or matching physical matrix.",
-        "Replacement vc9/vc1000009/build-7 artifacts are protected-signed, "
-        "independently and hosted-byte-verified, and delivered to internal store "
-        "channels. Phone vc9 has a bounded Play-delivered API-25 physical pass; "
-        "TestFlight installation, physical tablet/Wear, and complete Apple QA remain "
-        "unverified. Predecessor store artifacts are historical, and there is no iOS "
-        "15 runtime pass or matching physical matrix.",
-    ).replace(
-        "replacement build 7 completed Transporter delivery and processing, but "
-        "App Store Connect eligibility and TestFlight distribution remain unverified",
-        "replacement build 7 completed processing, is Ready to Submit, and has two "
-        "invited internal testers, but TestFlight installation remains unverified",
-    ).replace(
-        "complete replacement physical-device and TestFlight coverage",
-        "complete replacement physical-device and post-delivery coverage",
+    release_authority = (
+        "Canonical release authority remains fail-closed. "
+        + gates["release_artifact_source_sync"]["reason"]
+        + " "
+        + gates["android_physical_smoke"]["reason"]
+        + " "
+        + gates["ios_physical_smoke"]["reason"]
+        + " No production submission or release followed."
     )
-    verdict = verdict.replace(
-        "At the September 1 read-only device check, the iPhone 14 Pro was unavailable "
-        "and the paired iPad mini 5 was locked, so app inventory and TestFlight install "
-        "proof could not be collected. The paired Series 5 watch was compatible, but "
-        "Developer Mode was disabled and its developer tunnel disconnected.",
-        "At the latest September 1 device check, the iPhone 14 Pro was connected with "
-        "Developer Mode enabled, public Nimbo 1.0.1 (4), and TestFlight 4.3.0 installed. "
-        "The iPad mini 5 was available with a developer-installed build 7, which is not "
-        "TestFlight proof. The paired Series 5 watch remained compatible but had "
-        "Developer Mode disabled and no usable developer tunnel.",
+    verdict, release_authority_count = re.subn(
+        r"(?:Canonical release authority remains fail-closed\.|"
+        r"Replacement vc9/vc1000009/build-7 artifacts|Exact-current signed phone/Wear).*?"
+        r"No production submission or release followed\.",
+        release_authority,
+        verdict,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if release_authority_count != 1:
+        raise ValueError("dashboard verdict release-authority section is missing")
+    verdict = re.sub(
+        r"Scale status remains hold; public outreach and acquisition scaling remain gated on .*?"
+        r"critical console guardrails\.",
+        "Scale status remains hold; public outreach and acquisition scaling remain "
+        "gated on every blocking canonical quality gate and critical console guardrail.",
+        verdict,
+        count=1,
+        flags=re.DOTALL,
     )
     blocks[0]["body"] = verdict
     manifest["generatedAt"] = generated_at
