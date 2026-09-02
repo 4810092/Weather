@@ -121,12 +121,12 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share-sheet anchor fix and resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). All three source-current artifacts remain blocked without protected signing or byte verification. The prior vc10/vc1000010/build-8 set is historical internal-delivery evidence only, and build 8 is failed after two reproducible current iPad share crashes. Physical tablet, paired Wear, current iPad distribution share, visible iOS widget, physical Apple Watch, iOS 15, post-delivery vitals, crash close-out, production release, public availability, and rank impact remain unproved.",
+      "claim": "Source 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share-sheet anchor fix and resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). All three source-current artifacts are protected-signed, durably materialized, independently full-byte verified, and atomically 3/3 current. The prior vc10/vc1000010/build-8 set is historical internal-delivery evidence only, and build 8 is failed after two reproducible current iPad share crashes. Physical tablet, paired Wear, current iPad distribution share, visible iOS widget, physical Apple Watch, iOS 15, post-delivery vitals, crash close-out, production release, public availability, and rank impact remain unproved.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
+        "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
         "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
-        "growth/quality/release-artifact-full-verification-2026-09-01-build8-hosted.md",
         "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md",
         "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md",
         "growth/quality/testflight-ios-build8-smoke-2026-09-01.md"
@@ -148,12 +148,6 @@
     },
     {
       "id": "ios_physical_smoke",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
-      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

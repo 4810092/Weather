@@ -162,8 +162,8 @@
       {
         "id": "release_artifact_source_sync",
         "required": "pass",
-        "actual": "blocked",
-        "status": "fail",
+        "actual": "pass",
+        "status": "pass",
         "reason": "Product/build-input authority 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share popover-anchor fix and resolves to Android phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). Protected run 33616952267 passed signing and candidate-byte verification, hosted run 33626711140 durably materialized the exact package and receipt as unpublished draft 381212810, and trusted run 33629490609 independently reopened and reverified every exact byte. The upload manifest is atomically 3/3 verified-current with current hashes and signing evidence; physical evidence remains null. The prior vc10/vc1000010/build-8 set is historical-only and build 8 is explicitly failed for the iPad share path. Internal delivery and physical QA remain separate downstream gates."
       },
       {

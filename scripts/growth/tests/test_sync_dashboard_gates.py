@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "has not completed trusted macOS verification",
+                "independent full-byte verification passed",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Pass trusted macOS verification",
+                "Require the protected hosted chain",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
