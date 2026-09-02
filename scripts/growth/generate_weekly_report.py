@@ -112,8 +112,9 @@ GATE_ACTIONS = {
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Deliver the source-current build through TestFlight, restore watch "
-        "readiness, then complete iPhone, iPad, widget, and watch QA.",
+        "Install the processed source-current build from TestFlight, confirm the "
+        "iPad share sheet and widget, restore watch readiness, then complete the "
+        "iPhone, iPad, widget, and watch QA matrix.",
     ),
     "domain_activation": (
         "Web operations",

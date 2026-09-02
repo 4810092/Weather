@@ -10,7 +10,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=06d5da4898d4797f937404e416a7003e8e0741aa887f62f6d4276ecab5e4afc6 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=039c8753102c0fd5f9f866e246dbf49ab56f436190ad141801e15a73a719e312 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
