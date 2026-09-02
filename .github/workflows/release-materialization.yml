@@ -152,18 +152,18 @@ jobs:
               raise SystemExit("downloaded artifact digest mismatch")
 
           expected = {
-              "signed-candidate-bytes.tar.gz": {
-                  "size": 58208833,
-                  "compressed_size": 57937648,
-                  "sha256": (
-                      "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64"
-                  ),
-              },
               "signed-candidate-receipt.json": {
                   "size": 11716,
                   "compressed_size": 2497,
                   "sha256": (
                       "51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072"
+                  ),
+              },
+              "signed-candidate-bytes.tar.gz": {
+                  "size": 58208833,
+                  "compressed_size": 57937648,
+                  "sha256": (
+                      "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64"
                   ),
               },
           }
