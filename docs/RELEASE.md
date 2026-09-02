@@ -6,9 +6,9 @@ public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
 Wear 1000011, and Apple build 9 from source `052d12c7`. It contains the iPad
 share popover-anchor fix. Protected run `33616952267` signed and candidate-byte-
-verified the exact set, but durable materialization and independent trusted
-verification are still absent; the committed manifest is atomically `3/3
-blocked`. The prior phone vc10, Wear vc1000010, and Apple build-8 set is
+verified the exact set, and run `33626711140` durably materialized those exact
+bytes. Independent trusted verification remains absent; the committed manifest
+is atomically `3/3 blocked`. The prior phone vc10, Wear vc1000010, and Apple build-8 set is
 historical internal-delivery evidence. Build 8 passed bounded iPhone QA but
 reproduced two iPad Share crashes, so none of its evidence transfers to build 9.
 On August 31, the earlier
@@ -30,8 +30,8 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=0f44f3e64d450a237a38aa5b18062ddbacb5e4c51637dd5e8b69461c33c80e49 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4c496b4921bdf15a8580a437745b1e43f88d982f22e1bfd853655ba5bd2a106a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4862377115e5ad6e46da19f87f0c2001e608892b0247363571ab207fdf68481e -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a728bc136819f5bca6a1762637a56e91b49ee2ee434e3f43b2abfed1c592c55 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-9 signing checkpoint — 2026-09-02

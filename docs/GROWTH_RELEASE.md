@@ -9,15 +9,16 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=0f44f3e64d450a237a38aa5b18062ddbacb5e4c51637dd5e8b69461c33c80e49 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4c496b4921bdf15a8580a437745b1e43f88d982f22e1bfd853655ba5bd2a106a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4862377115e5ad6e46da19f87f0c2001e608892b0247363571ab207fdf68481e -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a728bc136819f5bca6a1762637a56e91b49ee2ee434e3f43b2abfed1c592c55 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
 `052d12c7dfa6411428d85205d9568462d20ff87d` to phone vc11, Wear vc1000011,
 and Apple build 9. Protected run `33616952267` signed and candidate-byte-
-verified the exact set; all three manifest entries remain blocked pending
-durable materialization and independent trusted full-byte verification. The prior vc10/vc1000010/build-8 set is
+verified the exact set, and run `33626711140` durably materialized those exact
+bytes. All three manifest entries remain blocked pending independent trusted
+full-byte verification. The prior vc10/vc1000010/build-8 set is
 historical-only because build 8 crashes on the iPad Share path; none of its
 internal delivery or physical evidence transfers to the successor.
 

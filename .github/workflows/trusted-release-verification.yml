@@ -52,15 +52,15 @@ jobs:
 
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/380406897 \
+            repos/4810092/Weather/releases/381212810 \
             > "$metadata_root/release.before.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393445 \
+            repos/4810092/Weather/releases/assets/541102822 \
             > "$metadata_root/package.before.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393546 \
+            repos/4810092/Weather/releases/assets/541102876 \
             > "$metadata_root/receipt.before.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -68,31 +68,31 @@ jobs:
             > "$metadata_root/master.before.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-8fc43b4-run-33493356066 \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-052d12c-run-33616952267 \
             > "$metadata_root/tag.before.json"
 
           gh api \
             -H "Accept: application/octet-stream" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393445 \
+            repos/4810092/Weather/releases/assets/541102822 \
             > "$download_root/signed-candidate-bytes.tar.gz"
           gh api \
             -H "Accept: application/octet-stream" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393546 \
+            repos/4810092/Weather/releases/assets/541102876 \
             > "$download_root/signed-candidate-receipt.json"
 
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/380406897 \
+            repos/4810092/Weather/releases/381212810 \
             > "$metadata_root/release.after.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393445 \
+            repos/4810092/Weather/releases/assets/541102822 \
             > "$metadata_root/package.after.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/releases/assets/539393546 \
+            repos/4810092/Weather/releases/assets/541102876 \
             > "$metadata_root/receipt.after.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -100,7 +100,7 @@ jobs:
             > "$metadata_root/master.after.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-8fc43b4-run-33493356066 \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-052d12c-run-33616952267 \
             > "$metadata_root/tag.after.json"
 
           python3 -I - \
@@ -151,26 +151,26 @@ jobs:
                   raise SystemExit(f"{label} mismatch")
 
           expected_release = {
-              "id": 380406897,
-              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 8fc43b4",
-              "tag_name": "nimbo-candidate-v1.1.0-8fc43b4-run-33493356066",
-              "target_commitish": "e9dd7d1e0678e51412b3bc691fb1c1fc1851e7a8",
+              "id": 381212810,
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate 052d12c",
+              "tag_name": "nimbo-candidate-v1.1.0-052d12c-run-33616952267",
+              "target_commitish": "de80135f8c89a79fc2432498fd7c2863a2bf318c",
               "draft": True,
               "prerelease": True,
               "published_at": None,
               "immutable": False,
           }
           expected_assets = {
-              539393445: {
+              541102822: {
                   "name": "signed-candidate-bytes.tar.gz",
-                  "size": 58205143,
-                  "digest": "sha256:cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+                  "size": 58208833,
+                  "digest": "sha256:5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
                   "content_type": "application/octet-stream",
               },
-              539393546: {
+              541102876: {
                   "name": "signed-candidate-receipt.json",
                   "size": 11716,
-                  "digest": "sha256:090ece08e9ede31502532a9622875854f7936fdb0b84036055090d3c93c27d87",
+                  "digest": "sha256:51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072",
                   "content_type": "application/octet-stream",
               },
           }
@@ -186,7 +186,7 @@ jobs:
               if set(by_id) != set(expected_assets):
                   raise SystemExit(f"{phase} draft release asset ID set mismatch")
               for asset_id, specification in expected_assets.items():
-                  endpoint_name = "package" if asset_id == 539393445 else "receipt"
+                  endpoint_name = "package" if asset_id == 541102822 else "receipt"
                   endpoint_asset = json.loads(
                       (metadata_root / f"{endpoint_name}.{phase}.json").read_text()
                   )
@@ -213,12 +213,12 @@ jobs:
 
           expected_downloads = {
               "signed-candidate-bytes.tar.gz": (
-                  58205143,
-                  "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+                  58208833,
+                  "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
               ),
               "signed-candidate-receipt.json": (
                   11716,
-                  "090ece08e9ede31502532a9622875854f7936fdb0b84036055090d3c93c27d87",
+                  "51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072",
               ),
           }
           if sorted(path.name for path in download_root.iterdir()) != sorted(expected_downloads):
@@ -235,19 +235,19 @@ jobs:
               raise SystemExit("candidate receipt schema mismatch")
           if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
               raise SystemExit("candidate receipt state mismatch")
-          if receipt.get("source_revision") != "8fc43b48b65d17b3339663549cd86208f62f6bb7":
+          if receipt.get("source_revision") != "052d12c7dfa6411428d85205d9568462d20ff87d":
               raise SystemExit("candidate receipt source revision mismatch")
           if receipt.get("package") != {
-              "candidate_tree_sha256": "98523eb7846aa96b27c72c641bb075c7070d8ccfa52d27f153b8641d7f788300",
+              "candidate_tree_sha256": "b69d7d124c8160ee2af68667ecbd74d2f90bf72cec77b06c4a80b7ad31e55f12",
               "filename": "signed-candidate-bytes.tar.gz",
               "format": "tar.gz",
-              "sha256": "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+              "sha256": "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
           }:
               raise SystemExit("candidate receipt package binding mismatch")
           expected_artifacts = {
-              "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
-              "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
-              "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+              "android_phone": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+              "wear_os": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+              "apple": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
           }
           artifacts = receipt.get("artifacts")
           if not isinstance(artifacts, dict) or set(artifacts) != set(expected_artifacts):
@@ -315,7 +315,7 @@ jobs:
             > "$metadata_root/master.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-8fc43b4-run-33493356066 \
+            repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-052d12c-run-33616952267 \
             > "$metadata_root/tag.before.json"
           python3 -I - "$metadata_root" "$NIMBO_SOURCE_RUN_ID" "$NIMBO_SOURCE_SHA" <<'PY'
           import json
@@ -411,12 +411,12 @@ jobs:
           root = Path(sys.argv[1])
           expected = {
               "signed-candidate-bytes.tar.gz": (
-                  58205143,
-                  "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+                  58208833,
+                  "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
               ),
               "signed-candidate-receipt.json": (
                   11716,
-                  "090ece08e9ede31502532a9622875854f7936fdb0b84036055090d3c93c27d87",
+                  "51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072",
               ),
           }
           inventory = sorted(path.name for path in root.iterdir())
@@ -436,20 +436,20 @@ jobs:
               raise SystemExit("candidate receipt schema mismatch")
           if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
               raise SystemExit("candidate receipt state mismatch")
-          if receipt.get("source_revision") != "8fc43b48b65d17b3339663549cd86208f62f6bb7":
+          if receipt.get("source_revision") != "052d12c7dfa6411428d85205d9568462d20ff87d":
               raise SystemExit("candidate receipt source revision mismatch")
           package = receipt.get("package")
           if package != {
-              "candidate_tree_sha256": "98523eb7846aa96b27c72c641bb075c7070d8ccfa52d27f153b8641d7f788300",
+              "candidate_tree_sha256": "b69d7d124c8160ee2af68667ecbd74d2f90bf72cec77b06c4a80b7ad31e55f12",
               "filename": "signed-candidate-bytes.tar.gz",
               "format": "tar.gz",
-              "sha256": "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+              "sha256": "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
           }:
               raise SystemExit("candidate receipt package binding mismatch")
           expected_artifacts = {
-              "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
-              "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
-              "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+              "android_phone": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+              "wear_os": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+              "apple": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
           }
           artifacts = receipt.get("artifacts")
           if not isinstance(artifacts, dict) or set(artifacts) != set(expected_artifacts):
@@ -487,17 +487,17 @@ jobs:
           expected_files = {
               "bytes/ExportOptions.plist": (988, None),
               "bytes/Nimbo.ipa": (
-                  22745485,
-                  "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+                  22747241,
+                  "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
               ),
-              "bytes/nimbo-phone-1.1.0-vc10-mapping.txt": (42367345, None),
-              "bytes/nimbo-phone-1.1.0-vc10.aab": (
-                  5591742,
-                  "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
+              "bytes/nimbo-phone-1.1.0-vc11-mapping.txt": (42367345, None),
+              "bytes/nimbo-phone-1.1.0-vc11.aab": (
+                  5591748,
+                  "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
               ),
-              "bytes/nimbo-wear-1.1.0-vc1000010.aab": (
-                  2595786,
-                  "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
+              "bytes/nimbo-wear-1.1.0-vc1000011.aab": (
+                  2595787,
+                  "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
               ),
           }
           with tarfile.open(package_path, "r:gz") as archive:
@@ -509,7 +509,7 @@ jobs:
                   raise SystemExit("candidate package regular-file count mismatch")
               if sum(member.isdir() for member in members) != 88:
                   raise SystemExit("candidate package directory count mismatch")
-              if sum(member.size for member in members if member.isfile()) != 152287399:
+              if sum(member.size for member in members if member.isfile()) != 152291108:
                   raise SystemExit("candidate package expanded size mismatch")
 
               for member in members:
@@ -583,20 +583,20 @@ jobs:
                   "ExportOptions.plist",
                   "Nimbo.ipa",
                   "Nimbo.xcarchive",
-                  "nimbo-phone-1.1.0-vc10-mapping.txt",
-                  "nimbo-phone-1.1.0-vc10.aab",
-                  "nimbo-wear-1.1.0-vc1000010.aab",
+                  "nimbo-phone-1.1.0-vc11-mapping.txt",
+                  "nimbo-phone-1.1.0-vc11.aab",
+                  "nimbo-wear-1.1.0-vc1000011.aab",
               },
           )
           if snapshot_failures:
               raise SystemExit("; ".join(snapshot_failures))
           if snapshot is None:
               raise SystemExit("trusted extracted candidate snapshot is missing")
-          if snapshot.tree_sha256 != "98523eb7846aa96b27c72c641bb075c7070d8ccfa52d27f153b8641d7f788300":
+          if snapshot.tree_sha256 != "b69d7d124c8160ee2af68667ecbd74d2f90bf72cec77b06c4a80b7ad31e55f12":
               raise SystemExit("trusted extracted candidate tree digest mismatch")
           if snapshot.file_count != 104 or snapshot.directory_count != 88:
               raise SystemExit("trusted extracted candidate tree count mismatch")
-          if snapshot.total_bytes != 152287399:
+          if snapshot.total_bytes != 152291108:
               raise SystemExit("trusted extracted candidate tree size mismatch")
           PY
 
@@ -643,16 +643,16 @@ jobs:
               raise SystemExit("committed upload manifest schema mismatch")
           if manifest.get("release") != "1.1.0":
               raise SystemExit("committed upload manifest release mismatch")
-          if manifest.get("source_revision") != "8fc43b48b65d17b3339663549cd86208f62f6bb7":
+          if manifest.get("source_revision") != "052d12c7dfa6411428d85205d9568462d20ff87d":
               raise SystemExit("committed upload manifest source revision mismatch")
           if manifest.get("status") != "draft-blocked":
               raise SystemExit("committed upload manifest status mismatch")
 
-          evidence = "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md"
+          evidence = "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md"
           expected_blocked = {
               "android_phone": {
-                  "filename": "nimbo-phone-1.1.0-vc10.aab",
-                  "version_code": 10,
+                  "filename": "nimbo-phone-1.1.0-vc11.aab",
+                  "version_code": 11,
                   "source_sync": "blocked",
                   "sha256": None,
                   "signing_evidence": None,
@@ -660,16 +660,16 @@ jobs:
                   "source_sync_evidence": evidence,
                   "historical_candidate": {
                       "status": "historical-superseded",
-                      "filename": "nimbo-phone-1.1.0-vc9.aab",
-                      "version_code": 9,
-                      "sha256": "0fd5ae542a71f8cccb1cbbd043ffef09df9f29a2c1c6642010cfcce579f00681",
-                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
-                      "physical_qa_evidence": "growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md",
+                      "filename": "nimbo-phone-1.1.0-vc10.aab",
+                      "version_code": 10,
+                      "sha256": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
+                      "physical_qa_evidence": "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md",
                   },
               },
               "wear_os": {
-                  "filename": "nimbo-wear-1.1.0-vc1000010.aab",
-                  "version_code": 1000010,
+                  "filename": "nimbo-wear-1.1.0-vc1000011.aab",
+                  "version_code": 1000011,
                   "source_sync": "blocked",
                   "sha256": None,
                   "signing_evidence": None,
@@ -677,16 +677,16 @@ jobs:
                   "source_sync_evidence": evidence,
                   "historical_candidate": {
                       "status": "historical-superseded",
-                      "filename": "nimbo-wear-1.1.0-vc1000009.aab",
-                      "version_code": 1000009,
-                      "sha256": "9ce725e755a09d783adacc1691d5e20a0773b88aa63e9365c00af50f51e6542c",
-                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
+                      "filename": "nimbo-wear-1.1.0-vc1000010.aab",
+                      "version_code": 1000010,
+                      "sha256": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
                       "physical_qa_evidence": None,
                   },
               },
               "apple": {
                   "filename": "Nimbo.ipa",
-                  "build": 8,
+                  "build": 9,
                   "source_sync": "blocked",
                   "sha256": None,
                   "signing_evidence": None,
@@ -695,24 +695,24 @@ jobs:
                   "historical_candidate": {
                       "status": "historical-superseded",
                       "filename": "Nimbo.ipa",
-                      "build": 7,
-                      "sha256": "b918a8d7fa66d1755ca05486ee02ffac6a73b96ddd72f681bd3f6bfb3108709d",
-                      "signing_evidence": "growth/quality/signed-candidate-run-33473684554.md",
-                      "physical_qa_evidence": "growth/quality/testflight-ios-build7-smoke-2026-09-01.md",
+                      "build": 8,
+                      "sha256": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+                      "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
+                      "physical_qa_evidence": "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
                   },
               },
           }
           promotion = {
-              "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
-              "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
-              "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+              "android_phone": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+              "wear_os": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+              "apple": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
           }
           expected_verified = copy.deepcopy(expected_blocked)
           for artifact_id, digest in promotion.items():
               artifact = expected_verified[artifact_id]
               artifact["source_sync"] = "verified-current"
               artifact["sha256"] = digest
-              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33493356066.md"
+              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33616952267.md"
               artifact["physical_qa_evidence"] = None
               artifact["historical_candidate"] = None
 
@@ -725,7 +725,7 @@ jobs:
               artifact = verification_manifest["artifacts"][artifact_id]
               artifact["source_sync"] = "verified-current"
               artifact["sha256"] = digest
-              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33493356066.md"
+              artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33616952267.md"
               artifact["physical_qa_evidence"] = None
               artifact["historical_candidate"] = None
 
@@ -768,9 +768,9 @@ jobs:
           if verification.get("schema_version") != 1:
               raise SystemExit("full verifier summary schema mismatch")
           expected = {
-              "android_phone": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
-              "wear_os": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
-              "apple": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
+              "android_phone": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+              "wear_os": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+              "apple": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
           }
           artifacts = verification.get("artifacts")
           if not isinstance(artifacts, dict) or set(artifacts) != set(expected):
@@ -826,11 +826,11 @@ jobs:
                   "attempt": int(sys.argv[6]),
               },
               "draft_release": {
-                  "id": 380406897,
-                  "package_asset_id": 539393445,
-                  "package_sha256": "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
-                  "receipt_asset_id": 539393546,
-                  "receipt_sha256": "090ece08e9ede31502532a9622875854f7936fdb0b84036055090d3c93c27d87",
+                  "id": 381212810,
+                  "package_asset_id": 541102822,
+                  "package_sha256": "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
+                  "receipt_asset_id": 541102876,
+                  "receipt_sha256": "51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072",
               },
               "verification": verification,
               "boundary": "This receipt contains identities only; no signed candidate bytes are included.",
@@ -876,12 +876,12 @@ jobs:
           downloads = Path(sys.argv[3])
           expected_downloads = {
               "signed-candidate-bytes.tar.gz": (
-                  58205143,
-                  "cb26a7d69fd35676957a6bfa6984f148fbe874959c133c95029e0688132ee023",
+                  58208833,
+                  "5b8186e0aaa1d1ba74d475ba462d545fe2f3da1a321f77fbab3f7663df021d64",
               ),
               "signed-candidate-receipt.json": (
                   11716,
-                  "090ece08e9ede31502532a9622875854f7936fdb0b84036055090d3c93c27d87",
+                  "51fc10894dc9c0ff99c528a9778b01e4f78cf8354a13ca300d449c9b8fca4072",
               ),
           }
           if sorted(path.name for path in downloads.iterdir()) != sorted(expected_downloads):

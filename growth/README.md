@@ -5,14 +5,15 @@
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=0f44f3e64d450a237a38aa5b18062ddbacb5e4c51637dd5e8b69461c33c80e49 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4c496b4921bdf15a8580a437745b1e43f88d982f22e1bfd853655ba5bd2a106a -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4862377115e5ad6e46da19f87f0c2001e608892b0247363571ab207fdf68481e -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a728bc136819f5bca6a1762637a56e91b49ee2ee434e3f43b2abfed1c592c55 -->
 <!-- release-authority-current:end -->
 
 Current source `052d12c7` resolves to vc11/vc1000011/build 9 and contains the
 iPad share popover-anchor fix. Protected run `33616952267` signed and candidate-
-byte-verified the exact set, but durable materialization and independent trusted
-verification remain missing, so the manifest is atomically `3/3 blocked`. The prior vc10/vc1000010/build-8 set is historical-only; build 8
+byte-verified the exact set, and run `33626711140` durably materialized those
+exact bytes. Independent trusted verification remains missing, so the manifest
+is atomically `3/3 blocked`. The prior vc10/vc1000010/build-8 set is historical-only; build 8
 is explicitly failed for the iPad Share path and none of its delivery or QA
 observations transfers to the successor.
 

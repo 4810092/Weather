@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-09-02 — 052d12c
 
-Status: **SIGNED CANDIDATE VERIFIED; BLOCKED pending durable materialization and
-trusted hosted byte verification**.
+Status: **DURABLY MATERIALIZED; BLOCKED pending independent trusted hosted byte
+verification**.
 
 The exact product/build-input authority is
 `052d12c7dfa6411428d85205d9568462d20ff87d`. It contains the iPad share-sheet
@@ -17,17 +17,19 @@ Wear SHA-256
 `48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a`,
 and Apple IPA SHA-256
 `a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29`.
-The upload manifest still keeps all three current artifact hashes and signing
-evidence null with `source_sync=blocked`, because transient Actions storage and
-the signing job alone do not satisfy durable materialization plus independent
-trusted-hosted verification. The prior vc10/vc1000010/build-8 set remains
-historical evidence only.
+Hosted materialization run
+[`33626711140`](https://github.com/4810092/Weather/actions/runs/33626711140)
+then created unpublished draft release `381212810` and durably stored only the
+exact package and receipt. The upload manifest still keeps all three current
+artifact hashes and signing evidence null with `source_sync=blocked`, because
+the mutable draft must pass the separately bound read-only trusted-hosted
+verification. The prior vc10/vc1000010/build-8 set remains historical evidence
+only.
 
-Required next action: materialize only run `33616952267` artifact `9842047484`
-using its exact API digest, package, receipt, tree, and artifact hashes, then run
-the independent trusted-byte chain before any internal delivery or later
-release decision.
+Required next action: run the independent trusted-byte chain against exact
+draft `381212810` and its fixed asset IDs before any manifest promotion,
+internal delivery, or later release decision.
 
-This record proves the protected signing checkpoint only. It does not prove
-durable retention, manifest promotion, upload, internal delivery, physical QA,
-review, publication, or public availability.
+This record proves protected signing and durable unpublished retention. It does
+not prove trusted verification, manifest promotion, store upload, internal
+delivery, physical QA, review, publication, or public availability.
