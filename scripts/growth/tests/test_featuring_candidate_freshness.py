@@ -50,7 +50,7 @@ class FeaturingCandidateFreshnessTest(unittest.TestCase):
 
     def test_upload_identity_drift_invalidates_drafts(self) -> None:
         upload = copy.deepcopy(self.upload)
-        upload["artifacts"]["android_phone"]["version_code"] = 11
+        upload["artifacts"]["android_phone"]["version_code"] = 12
         self.assert_rejected(
             self.validate(upload=upload),
             "Google phone draft does not name current upload identity",

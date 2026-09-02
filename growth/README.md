@@ -1,21 +1,20 @@
 # Nimbo growth operations
 
 <!-- release-authority-current:start -->
-<!-- source_revision:8fc43b48b65d17b3339663549cd86208f62f6bb7 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
+<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=60c343790fffc9735601eaa22028cffcdbf468b3791a542a1e6a132b70c1cee7 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dc0358fa318e0b3d2556c0a534bea064049f7d1c7794ba7eeb999799d5d0567d -->
 <!-- release-authority-current:end -->
 
-Current source `8fc43b4` resolves to vc10/vc1000010/build 8 and is atomically
-`3/3 verified-current` with trusted-hosted byte verification. It is available
-on both Play Internal tracks and the internal TestFlight group. Phone vc10 and
-Apple build 8 passed bounded physical QA, including the corrected one-percent
-share payload; current tablet/Wear/iPad/widget/watch and crash-window evidence
-remain incomplete. Historical vc9/vc1000009/build-7 observations do not
-transfer to the successor.
+Current source `052d12c7` resolves to vc11/vc1000011/build 9 and contains the
+iPad share popover-anchor fix. No protected-signed or independently
+byte-verified artifact is bound to this revision, so the manifest is atomically
+`3/3 blocked`. The prior vc10/vc1000010/build-8 set is historical-only; build 8
+is explicitly failed for the iPad Share path and none of its delivery or QA
+observations transfers to the successor.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`

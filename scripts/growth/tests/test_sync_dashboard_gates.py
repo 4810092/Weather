@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "independent full-byte verification passed",
+                "has not completed trusted macOS verification",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Require the protected hosted chain",
+                "Pass trusted macOS verification",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "upload manifest is atomically 3/3 verified-current",
+                "upload manifest is atomically 3/3 blocked",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -223,7 +223,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "source_sync=verified-current plus byte_verified=true",
+                "No protected-signed or independently byte-verified artifact",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(

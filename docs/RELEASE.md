@@ -3,17 +3,14 @@
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
-OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 10,
-Wear 1000010, and Apple build 8 from source `8fc43b4`. Protected CI has signed,
-durably materialized, and trusted-hosted byte-verified all three artifacts; the
-committed manifest is atomically `3/3 verified-current` and remains
-`draft-blocked`. Both Play Internal tracks and the internal TestFlight group
-now contain the exact successor set; phone vc10 and Apple build 8 passed bounded
-physical QA, while current tablet/Wear/iPad/widget/watch coverage and the iOS
-crash-free window remain missing. The
-previously verified phone 9, Wear 1000009, and Apple build 7 set remains
-historical evidence tied to predecessor source `ba824be`; build-7 TestFlight QA
-found the duplicate-percent share defect fixed by the successor. On August 31, the earlier
+OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
+Wear 1000011, and Apple build 9 from source `052d12c7`. It contains the iPad
+share popover-anchor fix, but no protected-signed or independently byte-verified
+artifact is yet bound to this revision; the committed manifest is atomically
+`3/3 blocked`. The prior phone vc10, Wear vc1000010, and Apple build-8 set is
+historical internal-delivery evidence. Build 8 passed bounded iPhone QA but
+reproduced two iPad Share crashes, so none of its evidence transfers to build 9.
+On August 31, the earlier
 exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
 and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
@@ -28,12 +25,12 @@ review, public availability, or complete delivery-linked physical matrix is
 claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:8fc43b48b65d17b3339663549cd86208f62f6bb7 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
+<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=60c343790fffc9735601eaa22028cffcdbf468b3791a542a1e6a132b70c1cee7 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dc0358fa318e0b3d2556c0a534bea064049f7d1c7794ba7eeb999799d5d0567d -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-8 checkpoint — 2026-09-01

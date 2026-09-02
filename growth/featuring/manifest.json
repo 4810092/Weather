@@ -153,6 +153,12 @@
       "evidence": "growth/quality/gates.json"
     },
     {
+      "id": "release_artifact_source_sync",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
       "id": "deliverable.candidate_public_release",
       "blocker_type": "deliverable",
       "status": "blocked",

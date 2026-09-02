@@ -5,23 +5,20 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:8fc43b48b65d17b3339663549cd86208f62f6bb7 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9bcd50d02c67d90f1cb4e0acd248bb41ac4878ddecaf1609f09e609a9ba86d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=5fe55a048c444676fb6f394ae0a8f78849e55ebbc92a1b6f677160033299ae07 -->
+<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=60c343790fffc9735601eaa22028cffcdbf468b3791a542a1e6a132b70c1cee7 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dc0358fa318e0b3d2556c0a534bea064049f7d1c7794ba7eeb999799d5d0567d -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
-`8fc43b48b65d17b3339663549cd86208f62f6bb7` to phone vc10, Wear vc1000010,
-and Apple build 8 as `3/3 verified-current` with `byte_verified=true` after
-protected signing, durable draft materialization, and trusted hosted run
-`33514410839`. The successor is now available on both Play Internal tracks and
-the internal TestFlight group. Phone vc10 and Apple build 8 passed bounded
-physical smoke, including the corrected single-percent share payload; the
-complete Android and iOS physical gates remain blocked. The
-vc9/vc1000009/build-7 set remains historical evidence only.
+`052d12c7dfa6411428d85205d9568462d20ff87d` to phone vc11, Wear vc1000011,
+and Apple build 9. All three entries remain blocked pending protected signing
+and trusted full-byte verification. The prior vc10/vc1000010/build-8 set is
+historical-only because build 8 crashes on the iPad Share path; none of its
+internal delivery or physical evidence transfers to the successor.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -41,10 +38,10 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
-| Apple internal delivery | Current `1.1.0 (8)` completed Transporter processing, entered the internal TestFlight group, and was installed from TestFlight on an iPhone 14 Pro. Cold/live/refresh/share passed and the copied payload contains one literal percent sign. The connected iPad remains on build 7; visible widget and physical watch QA remain missing. |
+| Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Successor build 9 is not yet protected-signed, TestFlight-delivered, or physically passed. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Current phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` are active on separate Internal tracks. Play delivered vc10 to the API-25 General Mobile; cold/live/share/refresh/widget and bounded process filters passed. Current physical tablet and Wear results remain missing. Production was not changed. |
+| Google Play Internal | Historical phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` remain on separate Internal tracks; vc10 passed bounded API-25 phone QA. Successor vc11/vc1000011 are not yet protected-signed or delivered. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
@@ -89,12 +86,12 @@ the captured slice”; it is never converted to a synthetic rank.
   failed attempts. Cooldown/retry state survives cold starts; cross-path
   requests coalesce per process; manual refresh and a first uncached location
   remain immediate.
-- Coordinated current identities are Android phone/tablet `1.1.0 (10)`, Wear OS
-  `1.1.0 (1000010)`, and Apple app/widget/watch `1.1.0 (8)` from source
-  `8fc43b48b65d17b3339663549cd86208f62f6bb7`. The regression-tested source
-  normalizes the `0%%` share defect. All three artifact entries are atomically
-  `verified-current` with exact trusted-hosted byte hashes. Internal delivery
-  and replacement physical QA remain separate blocked gates.
+- Coordinated current identities are Android phone/tablet `1.1.0 (11)`, Wear OS
+  `1.1.0 (1000011)`, and Apple app/widget/watch `1.1.0 (9)` from source
+  `052d12c7dfa6411428d85205d9568462d20ff87d`. The source anchors the native
+  share controller for iPad popover presentation. All three artifact entries
+  remain blocked with no current hashes or signing evidence; protected signing,
+  delivery, and physical QA remain separate gates.
 - Historical coordinated checkpoint identities were Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
