@@ -31,7 +31,7 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=039c8753102c0fd5f9f866e246dbf49ab56f436190ad141801e15a73a719e312 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 successor build-9 signing checkpoint — 2026-09-02

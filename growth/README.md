@@ -6,7 +6,7 @@
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=039c8753102c0fd5f9f866e246dbf49ab56f436190ad141801e15a73a719e312 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
 <!-- release-authority-current:end -->
 
 Current source `052d12c7` resolves to vc11/vc1000011/build 9 and contains the
@@ -73,6 +73,7 @@ or historical device result does not close those independent gates.
 | Current internal store delivery | [quality/internal-store-delivery-2026-09-01-8fc43b4.md](quality/internal-store-delivery-2026-09-01-8fc43b4.md) | Exact vc10/vc1000010/build-8 Play Internal and TestFlight delivery, post-promotion trusted reuse check, and unchanged-production boundary |
 | Current Play-delivered phone QA | [quality/play-delivered-android-vc10-smoke-2026-09-01.md](quality/play-delivered-android-vc10-smoke-2026-09-01.md) | Exact vc10 Play update on the API-25 General Mobile, live/share/refresh/widget/process pass, and remaining tablet/Wear/vitals boundary |
 | Current TestFlight iPhone QA | [quality/testflight-ios-build8-smoke-2026-09-01.md](quality/testflight-ios-build8-smoke-2026-09-01.md) | Exact build-8 TestFlight install, live/refresh/share-copy pass with one literal percent sign, and remaining crash/iPad/widget/watch/iOS-15 boundary |
+| Current iPad build-9 widget render | [quality/ios-build9-ipad-widget-2026-09-02.md](quality/ios-build9-ipad-widget-2026-09-02.md) | Physical iPadOS 26.6.1 medium-widget render with a privacy-bounded crop; CoreDevice still reports developer-built identity, so Share, widget-open, TestFlight, watch, iOS-15, crash-window, and release gates remain blocked |
 | Historical build-7 internal delivery | [quality/internal-store-delivery-2026-09-01-ba824be.md](quality/internal-store-delivery-2026-09-01-ba824be.md) | Exact vc9/vc1000009/build-7 internal delivery plus explicit non-production boundary |
 | Historical build-7 TestFlight QA | [quality/testflight-ios-build7-smoke-2026-09-01.md](quality/testflight-ios-build7-smoke-2026-09-01.md) | Exact iPhone TestFlight install and bounded runtime pass that found the duplicate-percent share defect |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |
