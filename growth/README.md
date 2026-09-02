@@ -193,6 +193,16 @@ The checkpoint is 2026-11-26. The evaluator applies rules in this order:
 
 No script publishes store changes, sends email/outreach, buys ads, changes the Open-Meteo endpoint, or authorizes spend. Those remain explicit human approvals.
 
+The local [UZ query-headline experiment](experiments/growth-2026-09-uz-query-headline.json)
+is a separate `draft-blocked` planning artifact, not a registered or running
+store experiment. It changes only the title in each platform/locale unit,
+preserves hashes for every non-title field, discloses that Apple localization
+is not UZ-only, and requires all publication gates, public-release proof, a
+fresh storefront recheck, at least 500 weekly visitors, and separate
+action-time authorization before activation. Its validator rejects extra copy
+variables, unapproved query tokens, gate omission, inferred readiness, paid or
+incentivized traffic, and metadata drift.
+
 ## Verification
 
 All parser and metric tests use local fixtures and do not require network access:

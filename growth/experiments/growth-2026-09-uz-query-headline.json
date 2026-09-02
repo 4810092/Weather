@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "id": "growth-2026-09-uz-query-headline",
+  "status": "draft-blocked",
+  "objective": "Improve organic UZ Weather-category discovery with one title-only query-intent variable.",
+  "storefront": "UZ",
+  "single_variable": "title",
+  "product_source_revision": "052d12c7dfa6411428d85205d9568462d20ff87d",
+  "metadata_source": "store/metadata.json",
+  "evidence_refs": [
+    "growth/data/public-rank/2026-09-01.json",
+    "growth/reports/aso-competitor-audit-2026-08-29.md",
+    "growth/quality/testflight-ios-build9-delivery-2026-09-02.md",
+    "growth/quality/gates.json"
+  ],
+  "approved_intent_terms": [
+    "Toshkent",
+    "ob-havo",
+    "погода",
+    "Ташкент"
+  ],
+  "activation": {
+    "required_gate_statuses": {
+      "ios_crash_gate": "pass",
+      "open_meteo_promotion_clearance": "pass",
+      "android_physical_smoke": "pass",
+      "ios_physical_smoke": "pass",
+      "release_artifact_source_sync": "pass",
+      "domain_activation": "pass",
+      "store_policy_console_clearance": "pass"
+    },
+    "required_scale_status": "scale",
+    "minimum_weekly_store_visitors": 500,
+    "observed_weekly_store_visitors": null,
+    "public_release_verified": false,
+    "current_storefront_recheck_verified": false,
+    "explicit_action_authorization_at_activation_required": true,
+    "activation_ready": false
+  },
+  "current_blockers": [
+    "ios_crash_gate",
+    "android_physical_smoke",
+    "ios_physical_smoke",
+    "scale_status:hold",
+    "public_release_unverified",
+    "weekly_traffic_unknown",
+    "storefront_recheck_unverified"
+  ],
+  "surfaces": [
+    {
+      "id": "apple-en-gb-visible-in-uz",
+      "platform": "app-store",
+      "listing_id": "app-store-default",
+      "locale": "en-GB",
+      "field": "title",
+      "control": "Nimbo Weather",
+      "variant": "Nimbo: Toshkent Ob-havo",
+      "control_characters": 13,
+      "variant_characters": 23,
+      "maximum_characters": 30,
+      "required_intent_terms": [
+        "Toshkent",
+        "ob-havo"
+      ],
+      "unchanged_fields_sha256": "ab79257f0836e9b53d2609b2b9f878e9289d04099f194a8477c03b1e74e476b5",
+      "scope_limit": "Apple en-GB is a global localization that can be visible in UZ; this is not a UZ-only metadata surface.",
+      "claim_source_refs": [
+        "store/metadata.json",
+        "growth/data/public-rank/2026-09-01.json"
+      ]
+    },
+    {
+      "id": "apple-ru-ru-visible-in-uz",
+      "platform": "app-store",
+      "listing_id": "app-store-default",
+      "locale": "ru-RU",
+      "field": "title",
+      "control": "Nimbo: Погода и прогноз",
+      "variant": "Nimbo: Погода Ташкент",
+      "control_characters": 23,
+      "variant_characters": 21,
+      "maximum_characters": 30,
+      "required_intent_terms": [
+        "погода",
+        "Ташкент"
+      ],
+      "unchanged_fields_sha256": "04d026fcf4266c267c89b7f3f7de404028d6f6d643c40a18b3f9d0ffb2b9b48f",
+      "scope_limit": "Apple ru-RU is a global localization that can be visible in UZ; this is not a UZ-only metadata surface.",
+      "claim_source_refs": [
+        "store/metadata.json",
+        "growth/data/public-rank/2026-09-01.json"
+      ]
+    },
+    {
+      "id": "google-uz-en-us",
+      "platform": "google-play",
+      "listing_id": "google-play-uz-country-listing",
+      "locale": "en-US",
+      "field": "title",
+      "control": "Nimbo Weather: Ob-havo",
+      "variant": "Nimbo: Toshkent Ob-havo",
+      "control_characters": 22,
+      "variant_characters": 23,
+      "maximum_characters": 30,
+      "required_intent_terms": [
+        "Toshkent",
+        "ob-havo"
+      ],
+      "unchanged_fields_sha256": "19b3e7baa8a1072f05b83ac149e28b5bf944e7db015f183349699a66265ce28f",
+      "scope_limit": "This title belongs only to the draft Google Play UZ country listing.",
+      "claim_source_refs": [
+        "store/metadata.json",
+        "growth/data/public-rank/2026-09-01.json"
+      ]
+    },
+    {
+      "id": "google-uz-ru-ru",
+      "platform": "google-play",
+      "listing_id": "google-play-uz-country-listing",
+      "locale": "ru-RU",
+      "field": "title",
+      "control": "Nimbo: Погода и прогноз",
+      "variant": "Nimbo: Погода Ташкент",
+      "control_characters": 23,
+      "variant_characters": 21,
+      "maximum_characters": 30,
+      "required_intent_terms": [
+        "погода",
+        "Ташкент"
+      ],
+      "unchanged_fields_sha256": "b2b3eb72414d274e0bc74462674c681a5ad49ba5e91dd543d071280c841b8ccd",
+      "scope_limit": "This title belongs only to the draft Google Play UZ country listing.",
+      "claim_source_refs": [
+        "store/metadata.json",
+        "growth/data/public-rank/2026-09-01.json"
+      ]
+    }
+  ],
+  "analysis_plan": {
+    "unit_of_analysis": "platform-locale",
+    "primary_metric": "store-listing-conversion",
+    "secondary_metric": "category-rank",
+    "minimum_complete_days": 14,
+    "decision_rule": "platform-native-statistical-significance-and-no-critical-guardrail-regression",
+    "pool_platforms": false,
+    "pool_locales": false,
+    "paid_traffic": false,
+    "incentivized_activity": false
+  },
+  "forbidden_actions": [
+    "publish_metadata",
+    "submit_review",
+    "start_store_experiment",
+    "send_outreach",
+    "paid_acquisition",
+    "incentivized_installs_or_reviews"
+  ],
+  "negative_claims": [
+    "The variant is not live in either store.",
+    "No rank, conversion, approval, availability, or statistical lift is claimed.",
+    "Apple localization changes are not UZ-only.",
+    "Missing or privacy-suppressed evidence cannot be treated as zero or pass."
+  ],
+  "external_mutation_performed": false
+}

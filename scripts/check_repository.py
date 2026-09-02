@@ -24,6 +24,7 @@ try:
     from scripts.google_play_vitals_workflow_security import (
         validate_google_play_vitals_workflow,
     )
+    from scripts.growth.check_aso_experiment import validate_aso_experiment
     from scripts.release_materialization_workflow_security import (
         validate_release_materialization_workflow,
     )
@@ -44,6 +45,9 @@ except ModuleNotFoundError:
     )
     from google_play_vitals_workflow_security import (  # type: ignore[no-redef]
         validate_google_play_vitals_workflow,
+    )
+    from growth.check_aso_experiment import (  # type: ignore[no-redef]
+        validate_aso_experiment,
     )
     from release_materialization_workflow_security import (  # type: ignore[no-redef]
         validate_release_materialization_workflow,
@@ -87,6 +91,8 @@ REQUIRED = (
     "growth/reviews/README.md",
     "growth/reviews/review-inbox.csv",
     "scripts/growth/hosted_rank_state.py",
+    "scripts/growth/check_aso_experiment.py",
+    "scripts/growth/tests/test_aso_experiment.py",
     "scripts/check_featuring_candidate_freshness.py",
     "scripts/growth/tests/test_trusted_release_workflow_security.py",
     "scripts/GenerateAndroidLegacyIcons.java",
@@ -179,6 +185,18 @@ upload_manifest = json.loads(
 quality_gates = json.loads(
     (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
 )
+aso_experiment = json.loads(
+    (ROOT / "growth/experiments/growth-2026-09-uz-query-headline.json").read_text(
+        encoding="utf-8"
+    )
+)
+store_metadata = json.loads(
+    (ROOT / "store/metadata.json").read_text(encoding="utf-8")
+)
+for aso_failure in validate_aso_experiment(
+    aso_experiment, store_metadata, quality_gates, ROOT
+):
+    fail(f"ASO experiment: {aso_failure}")
 for featuring_failure in validate_featuring_candidate(
     featuring_manifest,
     upload_manifest,
