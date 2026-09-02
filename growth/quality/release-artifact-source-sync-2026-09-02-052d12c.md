@@ -1,7 +1,7 @@
 # Release artifact source sync — 2026-09-02 — 052d12c
 
-Status: **DURABLY MATERIALIZED; BLOCKED pending independent trusted hosted byte
-verification**.
+Status: **PASS for exact source and signed-byte identity; the manifest is
+atomically 3/3 current. Store delivery and physical QA remain blocked**.
 
 The exact product/build-input authority is
 `052d12c7dfa6411428d85205d9568462d20ff87d`. It contains the iPad share-sheet
@@ -20,16 +20,26 @@ and Apple IPA SHA-256
 Hosted materialization run
 [`33626711140`](https://github.com/4810092/Weather/actions/runs/33626711140)
 then created unpublished draft release `381212810` and durably stored only the
-exact package and receipt. The upload manifest still keeps all three current
-artifact hashes and signing evidence null with `source_sync=blocked`, because
-the mutable draft must pass the separately bound read-only trusted-hosted
-verification. The prior vc10/vc1000010/build-8 set remains historical evidence
-only.
+exact package and receipt.
 
-Required next action: run the independent trusted-byte chain against exact
-draft `381212810` and its fixed asset IDs before any manifest promotion,
-internal delivery, or later release decision.
+Exact-source master CI run
+[`33628011906`](https://github.com/4810092/Weather/actions/runs/33628011906)
+passed all five jobs at evidence head
+`cffb55ae6f52bb91893b398d3a9bfdad92a9d7ac`. Protected trusted run
+[`33629490609`](https://github.com/4810092/Weather/actions/runs/33629490609)
+then reopened the exact mutable draft, validated the committed blocked
+contract, safely extracted the closed candidate tree, and returned
+`source_sync=verified-current` plus `byte_verified=true` for phone vc11, Wear
+vc1000011, and Apple build 9. It revalidated live master and the staged asset
+identities after verification. The complete boundary is recorded in
+[`release-artifact-full-verification-2026-09-02-build9-hosted.md`](release-artifact-full-verification-2026-09-02-build9-hosted.md).
 
-This record proves protected signing and durable unpublished retention. It does
-not prove trusted verification, manifest promotion, store upload, internal
-delivery, physical QA, review, publication, or public availability.
+The upload manifest is therefore promoted atomically to
+`source_sync=verified-current` with the exact three SHA-256 values and current
+signing evidence. Every `physical_qa_evidence` field remains null and the
+manifest remains `draft-blocked`. Exact vc10/vc1000010/build-8 artifacts remain
+historical evidence and cannot be relabeled current.
+
+Production remains unchanged. No upload, review, rollout, public availability,
+crash-gate closure, physical QA, or rank effect is claimed. Because the draft
+is mutable, its protected hosted chain must pass again before every later use.

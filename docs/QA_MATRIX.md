@@ -4,19 +4,19 @@ Status date: September 1, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=4862377115e5ad6e46da19f87f0c2001e608892b0247363571ab207fdf68481e -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a728bc136819f5bca6a1762637a56e91b49ee2ee434e3f43b2abfed1c592c55 -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=06d5da4898d4797f937404e416a7003e8e0741aa887f62f6d4276ecab5e4afc6 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds replacement source
 `052d12c7dfa6411428d85205d9568462d20ff87d` to vc11, vc1000011, and build 9.
 Protected run `33616952267` signed and candidate-byte-verified all three exact
 artifacts, and run `33626711140` durably materialized those exact bytes.
-Independent trusted verification remains absent, so all three manifest entries
-remain blocked.
+Trusted run `33629490609` independently reverified every exact byte, so all
+three manifest entries are atomically `verified-current`.
 The vc10/vc1000010/build-8 bytes and their observations are historical only;
 build 8 is explicitly failed for the iPad Share path.
 
@@ -37,9 +37,9 @@ remain exact.
 <!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required physical QA | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (11)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Wear OS | `1.1.0 (1000011)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Apple app/widget/watch | `1.1.0 (9)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `ios_physical_smoke: blocked` | **BLOCKED** |
+| Android phone/tablet | `1.1.0 (11)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Wear OS | `1.1.0 (1000011)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Apple app/widget/watch | `1.1.0 (9)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `ios_physical_smoke: blocked` | **BLOCKED** |
 <!-- release-qa-current:end -->
 
 `READY` is permitted only when the corresponding artifact is
@@ -55,8 +55,8 @@ JSON/Markdown receipt, or an older artifact cannot establish readiness. Apple
 also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
 and the exact App Store Connect `ExportOptions.plist`. Current build 9 has a
-protected-signed, candidate-byte-verified distribution archive and IPA, but no
-durable independently trusted-hosted byte verification.
+protected-signed, independently trusted-byte-verified distribution archive and
+IPA, but no TestFlight delivery or physical pass.
 The protected staged hosted chain is mandatory before every later use. The
 single staged directory layout and action-time command are documented in
 [`store/README.md`](../store/README.md). The verifier
@@ -69,8 +69,8 @@ and its explicit external-build provenance boundary are recorded in
   build-8 TestFlight QA and advances phone, Wear, and Apple identities to vc11,
   vc1000011, and build 9. Local regression and surface suites pass; protected
   run `33616952267` signed and candidate-byte-verified the exact set. Durable
-  materialization and independent trusted-hosted verification remain missing,
-  so the manifest stays atomically `3/3 blocked`.
+  run `33626711140` materialized it, and trusted run `33629490609` reverified
+  all exact bytes, so the manifest is atomically `3/3 verified-current`.
 - Historical source `ba824be` passed hosted CI, protected signing, independent
   byte verification, and internal delivery for vc9, vc1000009, and build 7.
   Play-delivered vc9 has a bounded API-25 phone/widget pass. TestFlight build 7
@@ -133,11 +133,11 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc11 is protected-signed and candidate-byte-verified, but not durably trusted-verified, Play-delivered, or physically tested; historical vc10 evidence cannot transfer |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc11 is protected-signed and trusted-byte-verified, but not Play-delivered or physically tested; historical vc10 evidence cannot transfer |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc11 store-delivered physical phone/tablet/widget result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is protected-signed and candidate-byte-verified, but not durably trusted-verified or Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
-| Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is protected-signed and candidate-byte-verified, but not durably trusted-verified or TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
-| Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is protected-signed and candidate-byte-verified, but not durably trusted-verified or physically tested |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is protected-signed and trusted-byte-verified, but not Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
+| Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is protected-signed and trusted-byte-verified, but not TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
+| Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is protected-signed and trusted-byte-verified, but not physically tested |
 
 ## Historical evidence — non-transferable
 

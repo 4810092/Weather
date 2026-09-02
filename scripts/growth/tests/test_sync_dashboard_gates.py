@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "upload manifest is atomically 3/3 blocked",
+                "upload manifest is atomically 3/3 verified-current",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(

@@ -23,53 +23,32 @@
     "android_phone": {
       "filename": "nimbo-phone-1.1.0-vc11.aab",
       "version_code": 11,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-phone-1.1.0-vc10.aab",
-        "version_code": 10,
-        "sha256": "c11bc62221c11a16b1d6614aae2060af60ca7b98ad989e68dc5f87c224bbcd89",
-        "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
-        "physical_qa_evidence": "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md"
-      }
+      "historical_candidate": null
     },
     "wear_os": {
       "filename": "nimbo-wear-1.1.0-vc1000011.aab",
       "version_code": 1000011,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-wear-1.1.0-vc1000010.aab",
-        "version_code": 1000010,
-        "sha256": "e66a9891f70c3d532de23430d176d8c77f2bf49de55a343a7541cf0b0f99f676",
-        "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
-        "physical_qa_evidence": null
-      }
+      "historical_candidate": null
     },
     "apple": {
       "filename": "Nimbo.ipa",
       "build": 9,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
+      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "Nimbo.ipa",
-        "build": 8,
-        "sha256": "6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4",
-        "signing_evidence": "growth/quality/signed-candidate-run-33493356066.md",
-        "physical_qa_evidence": "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md"
-      }
+      "historical_candidate": null
     }
   },
   "listing_payloads": [
@@ -167,7 +146,6 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "Protected signed and independently byte-verified replacement candidates for phone 11, Wear 1000011, and Apple 9",
     "Play-delivered physical phone, tablet, widget, and Wear OS 1.1.0 (1000011) runtime matrix after completing authorized tester access",
     "TestFlight beta-group distribution and physical iPhone, iPad, widget, and watch runtime matrix for Apple 1.1.0 (9)",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment"
