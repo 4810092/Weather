@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "as_of": "2026-09-01",
+  "as_of": "2026-09-02",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Authenticated App Store Connect reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29. The 2026-08-29 event maps to iPhone; the 2026-08-25 device/OS dimension is suppressed or unavailable. Neither event exposes a diagnostic, stack, incident/signature ID, or crashed-binary UUID. Exact successor build 8 from source 8fc43b48b65d17b3339663549cd86208f62f6bb7 is now TestFlight-delivered, attached to the internal group, installed on a physical iPhone 14 Pro, and passed the bounded cold/live/refresh/share path with one literal percent sign. Post-promotion trusted run 33514410839 independently rechecked the exact app/widget/watch bytes before upload. No crash diagnostic, symbolication, current iPad/widget/watch/iOS 15 matrix, or post-delivery crash-free metric window exists. The gate remains blocked."
+      "reason": "Authenticated App Store Connect reports two crashes for public iOS 1.0.1 (4): one on 2026-08-25 and one on 2026-08-29, without a usable diagnostic, incident/signature ID, or crashed-binary UUID. Exact TestFlight build 8 additionally produced two reproducible iPad share crashes on 2026-09-02; both device reports show EXC_CRASH/SIGABRT in UIPopoverPresentationController because the activity controller lacked an iPad source anchor. Commit 37c2a80 fixes that path and its native regression test passes. Successor authority 052d12c7dfa6411428d85205d9568462d20ff87d advances Apple to build 9, but no distribution-signed/TestFlight build-9 artifact, visual physical share pass, current widget/watch/iOS 15 matrix, or post-delivery crash-free metric window exists. The gate remains blocked."
     },
     "open_meteo_promotion_clearance": {
       "status": "pass",
@@ -15,18 +15,18 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Exact phone vc10 and Wear vc1000010 from source 8fc43b48b65d17b3339663549cd86208f62f6bb7 are protected-signed, independently byte-verified by post-promotion trusted run 33514410839, and available on separate Google Play Internal tracks. Google Play delivered vc10 to the dedicated physical API-25 phone with preserved data; package identity, Play installer, signing certificate, cold/live Tashkent forecast, Best Time, share resolver, manual refresh, widget render/open with Осадки 0%, and bounded fatal/ANR/TLS filters passed. No current physical tablet, paired Wear vc1000010 install/handoff, or post-delivery vitals exist. The Samsung API-36 device contains user data and was not modified. Production was not changed. The gate remains blocked."
+      "reason": "The prior phone vc10 and Wear vc1000010 set from source 8fc43b48b65d17b3339663549cd86208f62f6bb7 remains historical internal-track evidence; vc10 passed the bounded Play-delivered API-25 phone and widget path, while physical tablet, paired Wear, and conclusive post-delivery UZ vitals remained missing. Successor authority 052d12c7dfa6411428d85205d9568462d20ff87d resolves to phone vc11 and Wear vc1000011, but neither replacement artifact is protected-signed, byte-verified, internally delivered, or physically tested. The Samsung API-36 device contains user data and was not modified. Production was not changed. The gate remains blocked."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Exact Apple 1.1.0 (8) from source 8fc43b48b65d17b3339663549cd86208f62f6bb7 completed Transporter processing, entered the internal TestFlight group, and was installed from TestFlight on the connected iPhone 14 Pro. Bundle inventory proved 1.1.0 (8); first launch, live Tashkent forecast, Best Time, manual refresh, and the native share sheet passed. The copied payload contains one literal percent sign, the localized CTA, and the canonical App Store URL without coordinates or analytics parameters. The app and widget-extension processes remained present. The connected iPad remains on build 7; no visible Nimbo widget render/open, current physical watch launch, iOS 15 runtime, crash diagnosis, or post-delivery crash-free window exists. The gate remains blocked."
+      "reason": "Exact Apple 1.1.0 (8) from source 8fc43b48b65d17b3339663549cd86208f62f6bb7 passed the bounded TestFlight iPhone path, but the current iPad reproduced two share crashes caused by a missing UIPopoverPresentationController anchor. A development-signed build 9 containing commit 37c2a80 installed and remained alive without a new crash log, but its system share sheet was not visually observed and it is not distribution/TestFlight evidence. Successor authority 052d12c7dfa6411428d85205d9568462d20ff87d has no protected-signed build-9 artifact, internal delivery, visible widget render/open, current physical watch launch, iOS 15 runtime, or post-delivery crash-free window. The gate remains blocked."
     },
     "release_artifact_source_sync": {
-      "status": "pass",
+      "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "8fc43b48b65d17b3339663549cd86208f62f6bb7",
-      "reason": "Product/build-input commit 8fc43b48b65d17b3339663549cd86208f62f6bb7 resolves to Android phone 1.1.0 (10), Wear OS 1.1.0 (1000010), and Apple 1.1.0 (8). It fixes the duplicate-percent share payload found during exact build-7 TestFlight physical QA and adds a regression test. Protected signing and materialization retained the exact package in unpublished draft 380406897 as assets 539393445 and 539393546. After manifest promotion and master CI run 33512537950, post-promotion trusted run 33514410839 rechecked live master and the exact draft/assets before and after download and returned source_sync=verified-current plus byte_verified=true for all three exact SHA-256 identities. The exact set is now available on phone and Wear Play Internal tracks and Apple TestFlight internal; phone vc10 and Apple build 8 received bounded physical runtime passes. The upload manifest is atomically 3/3 verified-current and remains draft-blocked. The mutable draft must pass the protected hosted chain again before every later reuse."
+      "source_revision": "052d12c7dfa6411428d85205d9568462d20ff87d",
+      "reason": "Product/build-input authority 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share popover-anchor fix and resolves to Android phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). No protected-signed or independently byte-verified artifact is bound to this revision. The upload manifest is atomically 3/3 blocked with null current hashes and signing evidence; the prior vc10/vc1000010/build-8 set is historical-only and build 8 is explicitly failed for the iPad share path. Protected signing, immutable receipt import, durable materialization, trusted full-byte verification, internal delivery, and physical QA remain required before later reuse or promotion."
     },
     "domain_activation": {
       "status": "pass",
@@ -40,5 +40,5 @@
     }
   },
   "scale_status": "hold",
-  "scale_status_reason": "Public outreach and acquisition scaling remain gated on iOS crash diagnosis, complete exact-build physical-device coverage, and critical console guardrails. Successor source 8fc43b48b65d17b3339663549cd86208f62f6bb7 fixes the build-7 duplicate-percent share defect and is now available on phone and Wear Play Internal tracks plus Apple TestFlight internal. Protected signing, durable materialization, post-promotion trusted full-byte verification, atomic 3/3 manifest promotion, the API-25 phone pass, and the build-8 iPhone share-fix pass are current. Physical Wear, current iPad, visible iOS widget, physical watch, iOS 15, post-delivery vitals, and an iOS crash-free metric window remain missing. The mutable draft must pass the protected hosted chain before every later reuse. Open-Meteo written clearance passes only for the exact unpaid, non-monetized organic-promotion scope."
+  "scale_status_reason": "Public outreach and acquisition scaling remain gated on iOS crash close-out, complete exact-build physical-device coverage, and critical console guardrails. TestFlight build 8 is failed after two reproducible iPad share crashes. Successor source 052d12c7dfa6411428d85205d9568462d20ff87d fixes the iPad popover anchor and advances phone vc11, Wear vc1000011, and Apple build 9, but all three source-current artifacts are blocked pending the protected signing and trusted-byte chain. Physical tablet/Wear, distribution-signed iPad share, visible iOS widget, physical watch, iOS 15, conclusive post-delivery vitals, and an iOS crash-free metric window remain missing. Open-Meteo written clearance passes only for the exact unpaid, non-monetized organic-promotion scope."
 }
