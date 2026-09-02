@@ -391,8 +391,9 @@ def _verify_rank_parity(
         evaluation = rank["evaluation"]
         profiles = requirements["google_required_profiles"]
         rank_target = requirements["apple_weather_chart_rank_lte"]
-        generic_target = requirements["generic_queries_required"]
-        quorum = requirements["generic_query_profile_quorum"]
+        diagnostics = framework["primary_goal"]["diagnostic_requirements"]
+        generic_target = diagnostics["generic_queries_required"]
+        quorum = diagnostics["generic_query_profile_quorum"]
     except (KeyError, TypeError) as error:
         raise DashboardConsistencyError(
             f"rank/framework source schema is incomplete: {error}"
@@ -426,7 +427,7 @@ def _verify_rank_parity(
     number_words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
     query_label = f"{number_words.get(query_count, query_count)} configured queries"
     expected_rows.append(
-        {"check": "Google generic-query quorum", "result": f"{qualifying}/{query_count} qualify · target ≥{generic_target}", "surface": "Google Play UZ generic-query quorum", "profile": f"{quorum}-of-{len(profiles)} profiles", "query": query_label, "observed_rank": f"{qualifying} qualifying queries", "target_rank": generic_target, "evidence_class": "fixed_logged_out_capture"}
+        {"check": "Google generic-query diagnostic", "result": f"{qualifying}/{query_count} qualify · diagnostic benchmark ≥{generic_target}", "surface": "Google Play UZ generic-query diagnostic", "profile": f"{quorum}-of-{len(profiles)} profiles", "query": query_label, "observed_rank": f"{qualifying} qualifying queries", "target_rank": generic_target, "evidence_class": "fixed_logged_out_capture"}
     )
     if datasets.get("rank_snapshot") != expected_rows:
         raise DashboardConsistencyError(

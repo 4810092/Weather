@@ -20,9 +20,10 @@ transfer to the successor.
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
 for Apple `weather`; all three fixed Google UZ category profiles remain outside
-the first 30 and `0/5` generic queries qualify. One auxiliary Apple
-`Toshkent ob-havo` result is incomplete, but all required goal surfaces are
-decisive and fail, so the verified Top-10 streak remains `0/7`.
+the first 30; `0/5` generic queries meet the separate diagnostic benchmark.
+One auxiliary Apple `Toshkent ob-havo` result is incomplete, but all required
+category surfaces are decisive and fail, so the verified Top-10 streak remains
+`0/7`.
 
 Historical source `ba824be` passed exact-source hosted CI, protected signing,
 independent verification, and internal delivery for phone `1.1.0 (9)`, Wear
@@ -149,6 +150,17 @@ are not rank-monitor responsibilities.
 
 ## Weekly console import
 
+The manual `google-play-vitals-readonly.yml` workflow can produce the Android
+vitals portion without browser transcription. It accepts an inclusive complete
+`week_end`, obtains a 10-minute OIDC token scoped only to the Play Developer
+Reporting API, verifies crash and ANR freshness, and exports `OS_PUBLIC`, `UZ`,
+provider-weighted seven-day summary plus concrete phone and Wear model rows. The
+provider's daily boundary is necessarily `America/Los_Angeles`; the artifact
+records that boundary and must not be relabelled as `Asia/Tashkent`. Missing,
+privacy-suppressed, non-UZ, stale, incomplete phone/Wear pairs, or an existing
+output path fail closed. Dispatching the workflow is an authenticated external
+operation and still requires action-time authorization.
+
 1. In App Store Connect, select the same seven complete days, territory `UZ`, and the needed source/device/version cuts. Capture acquisition, downloads, usage/retention, ratings, crashes, and current policy state. Preserve unique versus total labels.
 2. In Play Console, select the same seven days and `UZ`. Capture store-listing visitors/install clicks, installations/first launches, retention, active users, ratings, Android vitals (including worst relevant device models), user loss, and policy state.
 3. Copy [imports/templates/weekly_metrics.csv](imports/templates/weekly_metrics.csv). Add one row per metric and dimension. Use `source_scope=summary`, `device=all`, and `app_version=all` only for an actual all-up UZ summary; keep breakdown rows separate.
@@ -176,7 +188,7 @@ The checkpoint is 2026-11-26. The evaluator applies rules in this order:
 1. Any critical gate/guardrail failed or unknown → hold acquisition and fix the gate.
 2. Sufficient conversion or retention data below target → iterate product and listing.
 3. Quality passes and at least one exact comparable primary surface improves by 20+ positions → continue organic work.
-4. Quality passes and comparable improvement is below 20 → prepare a paid-pilot/provider-cost proposal only.
+4. Quality passes and comparable improvement is below 20 → iterate one bounded organic lever at a time.
 5. Non-comparable or insufficient evidence → continue measurement; no paid decision.
 
 No script publishes store changes, sends email/outreach, buys ads, changes the Open-Meteo endpoint, or authorizes spend. Those remain explicit human approvals.

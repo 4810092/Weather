@@ -22,6 +22,16 @@ SOURCE_REVISION = "1" * 40
 
 
 class HostedRankStateTest(unittest.TestCase):
+    def test_category_goal_contract_marker_starts_a_new_fingerprint_epoch(self) -> None:
+        config = load_json(ROOT / "growth/config.json")
+        self.assertEqual(
+            config["monitor"]["goal_contract_version"], "category-only-v2"
+        )
+        legacy = copy.deepcopy(config)
+        legacy["monitor"].pop("goal_contract_version")
+
+        self.assertNotEqual(config_fingerprint(config), config_fingerprint(legacy))
+
     def snapshot(self, *, status: str = "fail") -> dict:
         config = load_json(ROOT / "growth/config.json")
         complete = status != "unknown"

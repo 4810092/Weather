@@ -32,7 +32,7 @@ The simultaneous Top-10 goal is not achieved: the current verified streak is **0
 | Google UZ Weather, `uz-UZ` | #8 | #14 (2026-08-23) | 6 | PASS |
 | Google UZ Weather, `ru-UZ` | #12 | #18 (2026-08-23) | 6 | FAIL |
 | Google UZ Weather, `en-UZ` | >30 | Unknown | Unknown | FAIL |
-| Generic queries in Top 10 | 1 (weather) | Unknown | Unknown | FAIL |
+| Generic-query diagnostic | 1 (weather) | Unknown | Unknown | Diagnostic: FAIL |
 
 Current verified Top-10 streak: **0 / 7 complete days**.
 
@@ -67,7 +67,7 @@ Rank comparisons include only exact numeric observations under the current monit
 ## Unknown or missing evidence
 
 - Unknown quality guardrails: User loss rate.
-- Rank evidence is incomplete for the goal: Google UZ Weather category is not top 10 in all fixed profiles; only 1 generic query meets the top-10 profile quorum.
+- Rank evidence is incomplete for the goal: Google UZ Weather category is not top 10 in all fixed profiles.
 
 ## Next actions
 

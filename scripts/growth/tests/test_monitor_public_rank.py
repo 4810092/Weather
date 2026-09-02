@@ -174,7 +174,7 @@ class PublicRankParserTest(unittest.TestCase):
         self.assertEqual(surface["error_type"], "InsufficientUniqueApps")
         self.assertEqual(surface["unique_observed_count"], 9)
 
-    def test_daily_goal_requires_category_and_query_quorum(self) -> None:
+    def test_daily_goal_requires_categories_and_keeps_queries_diagnostic(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")
         snapshot = goal_snapshot()
         google_search = snapshot["surfaces"]["google"]["search"]
@@ -196,9 +196,12 @@ class PublicRankParserTest(unittest.TestCase):
         google_search["en-UZ"]["weather"]["status"] = "error"
         result = evaluate_day(snapshot, framework)
         self.assertEqual(result["status"], "pass")
+        self.assertTrue(result["complete"])
+        self.assertTrue(result["requirements_pass"])
         self.assertEqual(result["google_generic_query_status"], "pass")
         self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
         self.assertIn("weather", result["google_generic_unresolved_queries"])
+        self.assertEqual(result["reasons"], [])
 
     def test_generic_quorum_is_fail_when_only_one_query_can_still_qualify(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")
@@ -214,8 +217,10 @@ class PublicRankParserTest(unittest.TestCase):
 
         self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
         self.assertEqual(result["google_generic_query_status"], "fail")
-        self.assertEqual(result["status"], "fail")
+        self.assertEqual(result["status"], "pass")
         self.assertTrue(result["complete"])
+        self.assertTrue(result["requirements_pass"])
+        self.assertEqual(result["reasons"], [])
 
     def test_generic_quorum_stays_unknown_when_missing_evidence_can_change_result(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")
@@ -234,8 +239,9 @@ class PublicRankParserTest(unittest.TestCase):
         self.assertEqual(result["google_generic_top10_queries"], ["ob-havo"])
         self.assertEqual(result["google_query_statuses"]["weather"], "unknown")
         self.assertEqual(result["google_generic_query_status"], "unknown")
-        self.assertEqual(result["status"], "unknown")
-        self.assertFalse(result["complete"])
+        self.assertEqual(result["status"], "pass")
+        self.assertTrue(result["complete"])
+        self.assertTrue(result["requirements_pass"])
 
     def test_entirely_missing_configured_queries_stay_unknown(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")
@@ -250,8 +256,9 @@ class PublicRankParserTest(unittest.TestCase):
         self.assertEqual(result["google_query_statuses"]["pogoda"], "unknown")
         self.assertEqual(result["google_query_unknown_profile_counts"]["pogoda"], 3)
         self.assertEqual(result["google_generic_query_status"], "unknown")
-        self.assertEqual(result["status"], "unknown")
-        self.assertFalse(result["complete"])
+        self.assertEqual(result["status"], "pass")
+        self.assertTrue(result["complete"])
+        self.assertTrue(result["requirements_pass"])
 
     def test_legacy_snapshot_infers_expected_queries_from_present_surfaces(self) -> None:
         framework = load_json(GROWTH_ROOT / "kpi-framework.json")

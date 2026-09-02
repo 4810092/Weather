@@ -186,8 +186,9 @@ def sync(
     category_rank = _observed_rank(rank_apple["category"])
     rank_target = requirements["apple_weather_chart_rank_lte"]
     google_rank_target = requirements["google_weather_category_rank_lte"]
-    generic_target = requirements["generic_queries_required"]
-    quorum = requirements["generic_query_profile_quorum"]
+    diagnostics = framework["primary_goal"]["diagnostic_requirements"]
+    generic_target = diagnostics["generic_queries_required"]
+    quorum = diagnostics["generic_query_profile_quorum"]
     query_ids = set(rank_google["search"][profiles[0]])
     if any(set(rank_google["search"][profile]) != query_ids for profile in profiles):
         raise ValueError("rank profiles do not share one fixed query set")
@@ -278,9 +279,9 @@ def sync(
         )
     rank_rows.append(
         {
-            "check": "Google generic-query quorum",
-            "result": f"{qualifying_queries}/{query_count} qualify · target ≥{generic_target}",
-            "surface": "Google Play UZ generic-query quorum",
+            "check": "Google generic-query diagnostic",
+            "result": f"{qualifying_queries}/{query_count} qualify · diagnostic benchmark ≥{generic_target}",
+            "surface": "Google Play UZ generic-query diagnostic",
             "profile": f"{quorum}-of-{len(profiles)} profiles",
             "query": f"{_number_word(query_count)} configured queries",
             "observed_rank": f"{qualifying_queries} qualifying queries",
@@ -510,9 +511,9 @@ def sync(
     driver_query["sql"] = driver_sql_path.read_text(encoding="utf-8")
     rank_query["sql"] = rank_sql_path.read_text(encoding="utf-8")
     rank_query["description"] = (
-        "Loads the complete required goal surfaces from the canonical public-rank "
-        "capture while preserving bounded absences; one auxiliary non-goal Apple "
-        "query is incomplete."
+        "Loads the complete required category surfaces and separate search "
+        "diagnostics from the canonical public-rank capture while preserving "
+        "bounded absences."
     )
     rank_query["executed_at"] = captured_at
     rank_query["tables_used"] = [
@@ -523,7 +524,7 @@ def sync(
         "Storefront UZ",
         "Google logged-out profiles " + ", ".join(profiles),
         "diagnostic_capture_complete=false because auxiliary Apple Toshkent ob-havo search returned only one unique app",
-        "goal_evidence_complete=true and evaluation.complete=true for all required goal surfaces",
+        "goal_evidence_complete=true and evaluation.complete=true for all required category surfaces",
     ]
     baseline_query["executed_at"] = generated_at
     driver_query["executed_at"] = generated_at
@@ -562,7 +563,11 @@ def sync(
     ]
     evaluation_query["filters"] = [
         "Current comparable config fingerprint",
-        f"Consecutive complete required goal days through {rank_date}",
+        f"Consecutive complete required category days through {rank_date}",
+    ]
+    evaluation_query["metric_definitions"] = [
+        "Current streak counts consecutive complete days satisfying the Apple UZ Weather chart and all three fixed Google UZ Weather category profiles",
+        "Generic-query results are validated ASO diagnostics and do not change the category-day result",
     ]
     evaluation_query["executed_at"] = generated_at
     snapshot = artifact.get("snapshot")
@@ -662,8 +667,8 @@ def sync(
     if not isinstance(baseline_table, dict) or not isinstance(rank_table, dict):
         raise ValueError("dashboard baseline table is missing")
     rank_table["subtitle"] = (
-        "The required goal surfaces are complete and fail every category surface "
-        "plus the generic-query quorum; one auxiliary Apple query was too sparse."
+        "The required category surfaces are complete and fail in both stores; "
+        "generic-query results remain diagnostic only."
     )
     baseline_table["subtitle"] = (
         "Apple overview values and selected global Play last-28-days counts are "
@@ -734,12 +739,13 @@ def sync(
         raise ValueError("dashboard verdict body is malformed")
     rank_summary = (
         "Nimbo is **not ready to scale acquisition**. The canonical "
-        f"{rank_date} capture at {captured_at} fails every required goal surface, "
+        f"{rank_date} capture at {captured_at} fails every required category surface, "
         f"so the verified streak remains {top10_goal['current_streak_days']}/"
         f"{top10_goal['required_days']}: Apple weather search is {weather_rank}, "
         f"the official Apple Weather chart is #{category_rank}, all three fixed "
         "logged-out Google category profiles are outside the first 30, and "
-        f"{qualifying_queries}/{query_count} generic Google queries qualify. The "
+        f"{qualifying_queries}/{query_count} generic Google queries meet the "
+        "diagnostic benchmark. The "
         "auxiliary Apple Toshkent ob-havo search returned only one unique result "
         "and remains a non-goal diagnostic error; required goal evidence is "
         "complete. The current App Store Connect overview reports 300 impressions, "

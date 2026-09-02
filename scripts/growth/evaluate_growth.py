@@ -516,9 +516,9 @@ def decide_90_day(
         )
     if improvement is not None:
         return (
-            "prepare_paid_pilot_and_provider_cost_only_no_spend",
+            "iterate_organic_program",
             "Best comparable primary-surface improvement is "
-            f"{improvement}, below {threshold:g}.",
+            f"{improvement}, below {threshold:g}; continue bounded organic iteration.",
         )
     return (
         "continue_measurement_no_paid_decision",

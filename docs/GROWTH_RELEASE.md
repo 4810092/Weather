@@ -293,10 +293,11 @@ provider, physical-device, and console guardrails pass.
 - After 500 weekly store visitors: change one creative element at a time and
   accept only a platform-confirmed winner.
 - On November 26, 2026: apply the fail-closed 90-day rule in
-  [`growth/kpi-framework.json`](../growth/kpi-framework.json). A paid pilot may be
-  costed but not purchased without new approval.
+  [`growth/kpi-framework.json`](../growth/kpi-framework.json). Continue bounded
+  organic iteration; paid acquisition is outside the approved program.
 
-The success condition remains seven consecutive complete days with Top-10 on
-both required category surfaces and Top-10 for at least two generic Google
-queries under the fixed profile quorum. Algorithms cannot make this outcome a
-guarantee.
+The success condition remains seven consecutive complete days with Top-10 in
+Apple's UZ Weather chart and in Google Play's UZ Weather category across all
+three fixed language profiles. Generic Google queries remain ASO diagnostics
+and do not advance or break the category streak. Algorithms cannot guarantee
+the outcome.

@@ -55,8 +55,7 @@
     "google_generic_query_status": "fail",
     "requirements_pass": false,
     "reasons": [
-      "Google UZ Weather category is not top 10 in all fixed profiles",
-      "only 1 generic query meets the top-10 profile quorum"
+      "Google UZ Weather category is not top 10 in all fixed profiles"
     ]
   }
 }

@@ -105,7 +105,7 @@ class GrowthEvaluationTest(unittest.TestCase):
                 {"max_improvement": 10},
                 self.framework,
             )[0],
-            "prepare_paid_pilot_and_provider_cost_only_no_spend",
+            "iterate_organic_program",
         )
 
     def test_evaluator_reads_driver_and_rank_thresholds_from_framework(self) -> None:
@@ -181,7 +181,7 @@ class GrowthEvaluationTest(unittest.TestCase):
             framework,
         )
         self.assertEqual(
-            decision[0], "prepare_paid_pilot_and_provider_cost_only_no_spend"
+            decision[0], "iterate_organic_program"
         )
 
     def test_conflicting_driver_evidence_blocks_paid_decision(self) -> None:

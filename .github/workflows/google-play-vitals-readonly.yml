@@ -1,0 +1,63 @@
+name: Google Play vitals read-only evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      week_end:
+        description: Inclusive complete Google Play day (YYYY-MM-DD, America/Los_Angeles)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: google-play-vitals-readonly-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  export:
+    if: github.repository == '4810092/Weather' && github.ref == 'refs/heads/master' && vars.NIMBO_GOOGLE_WIF_PROVIDER != '' && vars.NIMBO_GOOGLE_WIF_SERVICE_ACCOUNT != ''
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    environment: store-readonly
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - id: google-auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          workload_identity_provider: ${{ vars.NIMBO_GOOGLE_WIF_PROVIDER }}
+          service_account: ${{ vars.NIMBO_GOOGLE_WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_lifetime: 600s
+          access_token_scopes: https://www.googleapis.com/auth/playdeveloperreporting
+          create_credentials_file: false
+      - name: Export complete public UZ vitals window
+        env:
+          NIMBO_GOOGLE_PLAY_REPORTING_ACCESS_TOKEN: ${{ steps.google-auth.outputs.access_token }}
+          NIMBO_WEEK_END: ${{ inputs.week_end }}
+        run: |
+          set -euo pipefail
+          evidence="$RUNNER_TEMP/google-play-vitals-$NIMBO_WEEK_END.csv"
+          normalized="$RUNNER_TEMP/google-play-vitals-$NIMBO_WEEK_END.json"
+          python3 -I scripts/google-play-vitals-readonly-probe.py \
+            --week-end "$NIMBO_WEEK_END" \
+            --output "$evidence"
+          python3 -I scripts/growth/import_weekly.py \
+            "$evidence" \
+            --output "$normalized"
+      - name: Upload aggregate evidence only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: google-play-vitals-${{ inputs.week_end }}
+          path: |
+            ${{ runner.temp }}/google-play-vitals-${{ inputs.week_end }}.csv
+            ${{ runner.temp }}/google-play-vitals-${{ inputs.week_end }}.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9

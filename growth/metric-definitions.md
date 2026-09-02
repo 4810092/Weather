@@ -1,6 +1,6 @@
 # Nimbo growth metric contract
 
-Last reviewed: 2026-08-28. Operating timezone: `Asia/Tashkent`. Target market: Uzbekistan (`UZ`).
+Last reviewed: 2026-09-01. Operating timezone: `Asia/Tashkent`. Target market: Uzbekistan (`UZ`).
 
 The machine-readable catalogue is [metric-catalog.json](metric-catalog.json). Weekly imports must preserve platform, storefront, acquisition source, device, app version, time window, and source path. Values from different scopes are not combined.
 
@@ -9,7 +9,7 @@ The machine-readable catalogue is [metric-catalog.json](metric-catalog.json). We
 - **Apple Weather chart rank** is the position in Apple's public UZ Top Free Weather feed (`genre=6001`), first item = rank 1. The feed is Apple-hosted but is a public observation rather than an App Store Connect metric. Absence means only `> observed_count`, never “unranked.”
 - **Apple query position** is the order returned by Apple's public Search API with `country=uz`, `entity=software`, and a fixed limit. Apple documents that public API as a catalog search surface; it is not guaranteed to reproduce every device's personalized App Store UI.
 - **Google category/query position** is the first occurrence of a unique package ID in public logged-out Google Play HTML with fixed `gl=UZ`, language, user agent, and no cookie jar. Google states that results can vary by device, location, carrier, compatibility, and personalization. It is an auditable public-surface observation, not an official Google rank.
-- A **complete Top-10 day** requires Apple Weather rank 10 or better, Google Weather category position 10 or better in all three fixed profiles, and at least two distinct generic queries in the top 10 on at least two Google profiles. A failed or incomplete fetch is `unknown` and breaks, rather than advances, the seven-day streak.
+- A **complete Top-10 day** requires Apple Weather rank 10 or better and Google Weather category position 10 or better in all three fixed profiles. A failed or incomplete required category fetch is `unknown` and breaks, rather than advances, the seven-day streak. Generic-query ranks remain separately validated ASO diagnostics and never change the category-day result.
 
 ## Acquisition and engagement
 
@@ -23,6 +23,12 @@ The machine-readable catalogue is [metric-catalog.json](metric-catalog.json). We
 
 - iOS crash data in App Store Connect covers users who opted in to share diagnostics. Apple's `Crashes` is a crash count; it does not define crash-free sessions. The 99.8% guardrail therefore requires a direct source-defined crash-free-session metric. See [Apple app usage](https://developer.apple.com/help/app-store-connect-analytics/engagement/app-usage/).
 - Android vitals user-perceived rates are percentages of daily active users who experienced at least one issue. Current bad-behavior thresholds are: overall crash `<1.09%`, overall ANR `<0.47%`, phone-model crash/ANR `<8%`, watch-model crash `<4%`, and watch-model ANR `<5%`. See [Android vitals](https://developer.android.com/games/optimize/vitals).
+- Automated Google vitals evidence uses the Play Developer Reporting API's
+  `userPerceivedCrashRate7dUserWeighted` and
+  `userPerceivedAnrRate7dUserWeighted` values directly. It never recomputes a
+  weekly rate from rounded distinct-user counts or averages model rows. Google
+  exposes daily data for these metric sets only in `America/Los_Angeles`, so
+  that provider boundary is retained alongside the UZ country filter.
 - Google **User loss** counts users who uninstalled from all devices or became inactive for more than 30 days. A percentage is evaluated only when the same denominator definition is recorded for every compared period. See [Google Play statistics](https://support.google.com/googleplay/android-developer/answer/139628).
 - Low-volume console data can be thresholded or omitted. Missing usage rows are not zeros. Apple documents privacy thresholds and statistical noise for analytics reports in [Analytics Reports](https://developer.apple.com/help/app-store-connect-analytics/overview/analytics-reports-api).
 

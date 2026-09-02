@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-08-31",
+  "as_of": "2026-09-01",
   "status": "draft-blocked",
   "campaign": {
     "market": "UZ",
@@ -10,14 +10,18 @@
       "ru",
       "en"
     ],
-    "external_actions_performed": []
+    "external_actions_performed": [
+      "google_play_internal_phone_vc10",
+      "google_play_internal_wear_vc1000010",
+      "apple_testflight_internal_build8"
+    ]
   },
   "scope": {
     "copy_and_checklists": "prepared-locally",
     "site_publication": "not-performed",
     "store_assets": "prepared-locally-unsubmitted",
     "video": "not-created-by-scope",
-    "store_console_changes": "not-performed"
+    "store_console_changes": "internal-delivery-only-no-production-or-featuring"
   },
   "assets": [
     {
@@ -117,12 +121,14 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Historical Android phone 1.1.0 (9), Wear OS 1.1.0 (1000009), and Apple 1.1.0 (7) are protected-signed, independently byte-verified, and internally delivered from source ba824be. Phone vc9 has a bounded Play-delivered API-25 phone/widget pass; TestFlight build 7 has a bounded iPhone pass but its share payload contains a duplicate percent. Successor source 8fc43b4 fixes the defect and advances to vc10, vc1000010, and build 8. Those three successor artifacts are protected-signed, durably materialized, independently full-byte verified, and atomically 3/3 current, but they are not yet internally store-delivered or physically exercised. No replacement candidate is public.",
+      "claim": "Source 8fc43b48b65d17b3339663549cd86208f62f6bb7 produced protected-signed, durably materialized, independently full-byte-verified phone 1.1.0 (10), Wear OS 1.1.0 (1000010), and Apple 1.1.0 (8) candidates. All three reached their intended internal store channels. Phone vc10 has a bounded Play-delivered API-25 phone/widget pass, and TestFlight build 8 has a bounded physical iPhone cold/live/refresh/share pass with the corrected single-percent payload. Physical tablet, paired Wear, current iPad, visible iOS widget, physical Apple Watch, iOS 15, post-delivery vitals, crash close-out, production release, public availability, and rank impact remain unproved.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md",
-        "growth/quality/play-delivered-android-vc9-smoke-2026-09-01.md",
-        "growth/quality/testflight-ios-build7-smoke-2026-09-01.md"
+        "growth/quality/release-artifact-full-verification-2026-09-01-build8-hosted.md",
+        "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md",
+        "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md",
+        "growth/quality/testflight-ios-build8-smoke-2026-09-01.md"
       ]
     }
   ],
@@ -146,10 +152,10 @@
       "evidence": "growth/quality/gates.json"
     },
     {
-      "id": "deliverable.candidate_store_upload",
+      "id": "deliverable.candidate_public_release",
       "blocker_type": "deliverable",
       "status": "blocked",
-      "evidence": "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md"
+      "evidence": "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md"
     },
     {
       "id": "deliverable.google_promotional_content_access",

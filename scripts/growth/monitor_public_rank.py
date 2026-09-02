@@ -481,11 +481,12 @@ def evaluate_day(
     expected_query_ids: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     requirements = framework["primary_goal"]["daily_requirements"]
+    diagnostics = framework["primary_goal"]["diagnostic_requirements"]
     max_rank = int(requirements["google_weather_category_rank_lte"])
     required_profiles = requirements["google_required_profiles"]
-    query_max_rank = int(requirements["generic_query_rank_lte"])
-    query_quorum = int(requirements["generic_query_profile_quorum"])
-    query_required = int(requirements["generic_queries_required"])
+    query_max_rank = int(diagnostics["generic_query_rank_lte"])
+    query_quorum = int(diagnostics["generic_query_profile_quorum"])
+    query_required = int(diagnostics["generic_queries_required"])
     minimum_unique_apps = _minimum_unique_apps(framework)
 
     apple_category = snapshot["surfaces"]["apple"]["category"]
@@ -579,9 +580,7 @@ def evaluate_day(
     else:
         generic_query_status = "unknown"
 
-    status = _conjunction_status(
-        (apple_status, google_category_status, generic_query_status)
-    )
+    status = _conjunction_status((apple_status, google_category_status))
     complete = status != "unknown"
     requirements_pass = status == "pass"
     reasons: list[str] = []
@@ -593,15 +592,6 @@ def evaluate_day(
         reasons.append("Google UZ Weather category evidence is incomplete")
     elif google_category_status == "fail":
         reasons.append("Google UZ Weather category is not top 10 in all fixed profiles")
-    if generic_query_status == "unknown":
-        reasons.append(
-            "generic-query evidence is incomplete and could change the two-query quorum"
-        )
-    elif generic_query_status == "fail":
-        reasons.append(
-            f"only {len(qualifying_queries)} generic queries meet the top-10 profile quorum"
-        )
-
     return {
         "status": status,
         "complete": complete,

@@ -10,7 +10,7 @@ Goal evidence completeness: `complete | incomplete | unknown`
 
 ## Executive summary
 
-**`HOLD | ITERATE | CONTINUE ORGANIC | PREPARE PAID PILOT, NO SPEND | INSUFFICIENT DATA`.**
+**`HOLD | ITERATE | CONTINUE ORGANIC | ITERATE ORGANIC | INSUFFICIENT DATA`.**
 
 Lead with the single most important reason, the verified Top-10 streak, and the
 paid/external-action authorization state. Missing, rejected, stale, or
@@ -34,7 +34,7 @@ conflicting linked evidence is not a pass and suppresses the affected result.
 | Google UZ Weather, `uz-UZ` | — | — | — | |
 | Google UZ Weather, `ru-UZ` | — | — | — | |
 | Google UZ Weather, `en-UZ` | — | — | — | |
-| Generic queries in Top 10 | — | — | — | |
+| Generic-query diagnostic | — | — | — | Diagnostic only |
 
 Current verified Top-10 streak: `0 / 7 complete days`.
 

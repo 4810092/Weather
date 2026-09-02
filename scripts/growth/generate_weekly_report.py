@@ -31,6 +31,7 @@ from scripts.growth.common import (  # noqa: E402
 
 TIMEZONE = "Asia/Tashkent"
 SUPPORTED_SCHEMA_VERSION = 1
+SUPPORTED_FRAMEWORK_SCHEMA_VERSION = 2
 REQUIRED_STREAK_DAYS = 7
 RANK_THRESHOLD = 10
 GENERIC_QUERY_REQUIRED = 2
@@ -45,9 +46,7 @@ DECISION_LABELS = {
     "hold_acquisition_and_fix_gate": "HOLD",
     "iterate_product_and_store_listing": "ITERATE",
     "continue_organic_program": "CONTINUE ORGANIC",
-    "prepare_paid_pilot_and_provider_cost_only_no_spend": (
-        "PREPARE PAID PILOT, NO SPEND"
-    ),
+    "iterate_organic_program": "ITERATE ORGANIC",
     "continue_measurement_no_paid_decision": "INSUFFICIENT DATA",
 }
 
@@ -269,7 +268,7 @@ def _framework_contract() -> dict[str, Any]:
     payload = _mapping(
         load_json(GROWTH_ROOT / "kpi-framework.json"), "KPI framework"
     )
-    if payload.get("schema_version") != SUPPORTED_SCHEMA_VERSION:
+    if payload.get("schema_version") != SUPPORTED_FRAMEWORK_SCHEMA_VERSION:
         raise ReportInputError("KPI framework schema_version is unsupported")
     return payload
 
@@ -823,7 +822,7 @@ def _validate_decision(payload: dict[str, Any]) -> None:
     ):
         expected = "continue_organic_program"
     else:
-        expected = "prepare_paid_pilot_and_provider_cost_only_no_spend"
+        expected = "iterate_organic_program"
     if identifier != expected:
         raise ReportInputError(
             f"evaluation decision {identifier!r} conflicts with evaluated evidence; "
@@ -989,14 +988,16 @@ def _derived_generic_status(snapshot: dict[str, Any]) -> tuple[str, list[str]]:
 def _validate_rank_payload(
     evaluation: dict[str, Any], snapshot: dict[str, Any]
 ) -> dict[str, Any]:
-    requirements = _framework_contract()["primary_goal"]["daily_requirements"]
+    primary_goal = _framework_contract()["primary_goal"]
+    requirements = primary_goal["daily_requirements"]
+    diagnostics = primary_goal["diagnostic_requirements"]
     if (
         int(requirements["apple_weather_chart_rank_lte"]) != RANK_THRESHOLD
         or int(requirements["google_weather_category_rank_lte"]) != RANK_THRESHOLD
-        or int(requirements["generic_query_rank_lte"]) != RANK_THRESHOLD
-        or int(requirements["generic_queries_required"])
+        or int(diagnostics["generic_query_rank_lte"]) != RANK_THRESHOLD
+        or int(diagnostics["generic_queries_required"])
         != GENERIC_QUERY_REQUIRED
-        or int(requirements["generic_query_profile_quorum"])
+        or int(diagnostics["generic_query_profile_quorum"])
         != GENERIC_QUERY_PROFILE_QUORUM
         or tuple(requirements["google_required_profiles"])
         != ("uz-UZ", "ru-UZ", "en-UZ")
@@ -1202,7 +1203,6 @@ def _validate_rank_payload(
             surface_statuses[f"google.category.{profile}"]
             for profile in ("uz-UZ", "ru-UZ", "en-UZ")
         ]
-        + [generic_status]
     )
     if snapshot_evaluation.get("status") != overall:
         raise ReportInputError(
@@ -2209,8 +2209,8 @@ def render_weekly_report(
     )
     lines.extend(
         [
-            "| Generic queries in Top 10 | "
-            f"{_escape(generic_text)} | Unknown | Unknown | {generic_complete} |",
+            "| Generic-query diagnostic | "
+            f"{_escape(generic_text)} | Unknown | Unknown | Diagnostic: {generic_complete} |",
             "",
             "Current verified Top-10 streak: "
             f"**{current_streak} / {required_streak} complete days**.",

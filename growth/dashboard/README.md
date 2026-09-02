@@ -12,10 +12,11 @@ The dashboard is intentionally `blocked`, with scale status `hold`.
 The canonical `2026-09-01T01:02:39+05:00` capture places Nimbo outside the
 first 192 Apple `weather` results (`>192`) and at `#66` in the official Apple
 UZ Weather chart.
-All three fixed Google category profiles remain outside the first 30 and
-`0/5` generic Google queries qualify. The incomplete auxiliary Apple
-`Toshkent ob-havo` result is not a required goal surface; required evidence
-is decisive and failed, so the verified Top-10 streak remains `0/7`.
+All three fixed Google category profiles remain outside the first 30;
+`0/5` generic Google queries meet the separate diagnostic benchmark. The
+incomplete auxiliary Apple `Toshkent ob-havo` result is not a required category
+surface; required evidence is decisive and failed, so the verified Top-10
+streak remains `0/7`.
 
 The current App Store Connect overview reports 300 impressions, 23 product-page
 views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported

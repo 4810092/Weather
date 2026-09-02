@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "baseline_date": "2026-08-28",
   "checkpoint_90_day": "2026-11-26",
   "target_date": "2027-02-28",
@@ -14,7 +14,9 @@
         "ru-UZ",
         "en-UZ"
       ],
-      "minimum_unique_observed_apps": 10,
+      "minimum_unique_observed_apps": 10
+    },
+    "diagnostic_requirements": {
       "generic_query_rank_lte": 10,
       "generic_queries_required": 2,
       "generic_query_profile_quorum": 2
@@ -193,7 +195,7 @@
     {
       "priority": 4,
       "when": "quality_gates_pass_and_comparable_rank_improvement_lt_configured_threshold",
-      "decision": "prepare_paid_pilot_and_provider_cost_only_no_spend"
+      "decision": "iterate_organic_program"
     },
     {
       "priority": 5,

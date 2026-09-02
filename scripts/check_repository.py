@@ -7,6 +7,7 @@ import pathlib
 import plistlib
 import re
 import hashlib
+import json
 import ssl
 import subprocess
 import sys
@@ -14,8 +15,14 @@ import xml.etree.ElementTree as ET
 from urllib.parse import unquote
 
 try:
+    from scripts.check_featuring_candidate_freshness import (
+        validate_featuring_candidate,
+    )
     from scripts.hosted_rank_workflow_security import (
         validate_hosted_rank_workflow,
+    )
+    from scripts.google_play_vitals_workflow_security import (
+        validate_google_play_vitals_workflow,
     )
     from scripts.release_materialization_workflow_security import (
         validate_release_materialization_workflow,
@@ -29,8 +36,14 @@ try:
         validate_trusted_release_workflow,
     )
 except ModuleNotFoundError:
+    from check_featuring_candidate_freshness import (  # type: ignore[no-redef]
+        validate_featuring_candidate,
+    )
     from hosted_rank_workflow_security import (  # type: ignore[no-redef]
         validate_hosted_rank_workflow,
+    )
+    from google_play_vitals_workflow_security import (  # type: ignore[no-redef]
+        validate_google_play_vitals_workflow,
     )
     from release_materialization_workflow_security import (  # type: ignore[no-redef]
         validate_release_materialization_workflow,
@@ -58,6 +71,7 @@ REQUIRED = (
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/workflows/pages.yml",
+    ".github/workflows/google-play-vitals-readonly.yml",
     ".github/workflows/release-materialization.yml",
     ".github/workflows/signed-candidate.yml",
     ".github/workflows/trusted-release-verification.yml",
@@ -73,9 +87,11 @@ REQUIRED = (
     "growth/reviews/README.md",
     "growth/reviews/review-inbox.csv",
     "scripts/growth/hosted_rank_state.py",
+    "scripts/check_featuring_candidate_freshness.py",
     "scripts/growth/tests/test_trusted_release_workflow_security.py",
     "scripts/GenerateAndroidLegacyIcons.java",
     "scripts/hosted_rank_workflow_security.py",
+    "scripts/google_play_vitals_workflow_security.py",
     "scripts/release_materialization_workflow_security.py",
     "scripts/release_artifact_verifier.py",
     "scripts/signed_candidate_workflow_security.py",
@@ -153,6 +169,24 @@ for relative in repository_paths:
     payload = path.read_bytes()
     if any(pattern.search(payload) for pattern in SECRET_MARKERS):
         fail(f"possible embedded secret in {relative}")
+
+featuring_manifest = json.loads(
+    (ROOT / "growth/featuring/manifest.json").read_text(encoding="utf-8")
+)
+upload_manifest = json.loads(
+    (ROOT / "store/upload-manifest-1.1.0.json").read_text(encoding="utf-8")
+)
+quality_gates = json.loads(
+    (ROOT / "growth/quality/gates.json").read_text(encoding="utf-8")
+)
+for featuring_failure in validate_featuring_candidate(
+    featuring_manifest,
+    upload_manifest,
+    quality_gates,
+    (ROOT / "growth/featuring/apple-2026-09.md").read_text(encoding="utf-8"),
+    (ROOT / "growth/featuring/google-2026-09.md").read_text(encoding="utf-8"),
+):
+    fail(f"featuring candidate: {featuring_failure}")
 
 markdown_link = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 for relative in repository_paths:
@@ -286,6 +320,14 @@ hosted_rank_workflow = (
 ).read_text(encoding="utf-8")
 for workflow_failure in validate_hosted_rank_workflow(hosted_rank_workflow):
     fail(f"hosted-rank workflow: {workflow_failure}")
+
+google_play_vitals_workflow = (
+    ROOT / ".github/workflows/google-play-vitals-readonly.yml"
+).read_text(encoding="utf-8")
+for workflow_failure in validate_google_play_vitals_workflow(
+    google_play_vitals_workflow
+):
+    fail(f"Google Play vitals workflow: {workflow_failure}")
 
 gradle_wrapper_properties = (
     ROOT / "gradle/wrapper/gradle-wrapper.properties"

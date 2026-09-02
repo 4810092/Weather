@@ -16,6 +16,11 @@ One `YYYY-MM-DD.json` is captured in `Asia/Tashkent` time. The schema contains:
   failure unknown. The monitor exits non-zero only when missing required goal
   evidence could change the day's result.
 
+A goal day requires Apple UZ Weather chart rank `<=10` and Google Play UZ
+Weather category rank `<=10` in every fixed `uz-UZ`, `ru-UZ`, and `en-UZ`
+profile. Generic-query results remain captured and validated as ASO diagnostics
+but do not advance, fail, or make the category streak unknown.
+
 Do not edit a snapshot to make a day pass. A configuration change starts a new
 comparability series because the fingerprint changes. The unattended hosted
 path never uses `--replace`; correction of a known manual capture problem is a

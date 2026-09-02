@@ -448,6 +448,36 @@ class WeeklyReportTest(unittest.TestCase):
             report,
         )
 
+    def test_generic_query_failure_is_diagnostic_when_categories_pass(self) -> None:
+        rank_snapshot = self.rank_snapshot()
+        rank_evaluation = rank_snapshot["evaluation"]
+        for profile, surface in rank_snapshot["surfaces"]["google"]["category"].items():
+            surface["target_rank"] = 8
+            surface["target_rank_bound"] = None
+            rank_evaluation["google_category_top10_by_profile"][profile] = True
+            rank_evaluation["google_category_status_by_profile"][profile] = "pass"
+        rank_evaluation["google_weather_category_top10_all_profiles"] = True
+        rank_evaluation["google_weather_category_status"] = "pass"
+        rank_evaluation["status"] = "pass"
+        rank_evaluation["complete"] = True
+        rank_evaluation["requirements_pass"] = True
+        rank_evaluation["reasons"] = []
+
+        report = render_weekly_report(
+            self.evaluation(),
+            evaluation_source="evaluation.json",
+            rank_snapshot=rank_snapshot,
+            rank_source="rank.json",
+            weekly=self.weekly(),
+            weekly_source="weekly.json",
+        )
+
+        self.assertNotIn("public-rank snapshot was rejected", report)
+        self.assertIn(
+            "| Generic-query diagnostic | 1 (weather) | Unknown | Unknown | Diagnostic: FAIL |",
+            report,
+        )
+
     def test_semantic_evaluation_contract_rejects_impossible_or_inconsistent_data(
         self,
     ) -> None:
