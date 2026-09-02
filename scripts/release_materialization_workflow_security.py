@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-WORKFLOW_SHA256 = "e4e0a6acad8825057408a20f5003bbca268f940b0f4b6776ae82fa2d67bfc75f"
+WORKFLOW_SHA256 = "a6d235c0861c6ae8c67b0ee7577c240ae153e5766b1f9499bfe4c4caca22adb4"
 REPOSITORY_GUARD = (
     "github.repository == '4810092/Weather' && "
     "github.repository_id == '1329018769' && "
@@ -35,7 +35,7 @@ RUN_SHA256 = {
         "2c19b318a923508dc836c23726871cb4afcca3b0b750175a360675b2603bd514"
     ),
     "Verify and stage exact candidate assets": (
-        "2c3b8ac5be5147ab1da540fb3079ebf9ba1a9025235d847695c79338be21ce4c"
+        "0e0d2dc0f8cf78583421427510e2d187e4778bcf4c3f9148be044be3682d540e"
     ),
     "Create or reuse exact unpublished draft": (
         "a8071ed93886a3e6a9b6ae34d10d9d26c59c6a69dd07c22205d8c3560a6951a5"

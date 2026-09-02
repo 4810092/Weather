@@ -213,7 +213,7 @@ jobs:
               raise SystemExit("candidate package regular-file count mismatch")
           if sum(member.isdir() for member in package_members) != 88:
               raise SystemExit("candidate package directory count mismatch")
-          if sum(member.size for member in package_members if member.isfile()) != 152287399:
+          if sum(member.size for member in package_members if member.isfile()) != 152291108:
               raise SystemExit("candidate package expanded size mismatch")
           for member in package_members:
               path = PurePosixPath(member.name)
