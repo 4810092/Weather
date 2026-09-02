@@ -6,6 +6,9 @@ The connected iPad mini installed exact TestFlight `Nimbo 1.1.0 (8)`. Live
 Toshkent refresh and bounded cache inspection passed, but two attempts to use
 Share terminated the app at 13:58 and 13:59 Asia/Tashkent.
 
+The historical distribution-signed build-8 IPA SHA-256 is
+`6aff05fc50a0e1546a196cc8f7f9139bfb87f8e89c0dcda7c91dc1ddb1defac4`.
+
 Both device system crash reports identified `EXC_CRASH` / `SIGABRT` and the
 last Objective-C exception in
 `-[UIPopoverPresentationController presentationTransitionWillBegin]`. The

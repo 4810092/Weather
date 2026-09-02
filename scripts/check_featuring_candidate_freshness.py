@@ -23,7 +23,8 @@ EXPECTED_INTERNAL_ACTIONS = [
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
-    "growth/quality/release-artifact-source-sync-2026-09-01-8fc43b4.md",
+    "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
+    "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
     "growth/quality/release-artifact-full-verification-2026-09-01-build8-hosted.md",
     "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md",
     "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md",
