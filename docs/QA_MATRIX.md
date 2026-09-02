@@ -7,7 +7,7 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=21cbb1dfddd8e8a43cfaba0b7758e325caba2ea26f87b7a2c11c4fb803df8fca -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
 <!-- release-authority-current:end -->
 
@@ -133,8 +133,8 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc11 is protected-signed and trusted-byte-verified, but not Play-delivered or physically tested; historical vc10 evidence cannot transfer |
-| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc11 store-delivered physical phone/tablet/widget result exists |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc11 passed a clean upload-signed API-25 cold/live/share/refresh/widget/process smoke, but it was not Play-delivered and the remaining cache/location/review/large-text/TalkBack/background matrix is incomplete |
+| Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — current vc11 widget population/open passes on the API-25 phone, but no current physical tablet, rotation, large-text, or TalkBack result exists |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is protected-signed and trusted-byte-verified, but not Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
 | Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is protected-signed and trusted-byte-verified, but not TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
 | Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is protected-signed and trusted-byte-verified, but not physically tested |

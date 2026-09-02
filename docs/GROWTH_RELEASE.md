@@ -9,7 +9,7 @@ Current decision: **HOLD ACQUISITION**
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=21cbb1dfddd8e8a43cfaba0b7758e325caba2ea26f87b7a2c11c4fb803df8fca -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
 <!-- release-authority-current:end -->
 
@@ -43,7 +43,7 @@ UZ-only.
 | Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Successor build 9 is protected-signed and trusted-byte-verified, but not yet TestFlight-delivered or physically passed. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Historical phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` remain on separate Internal tracks; vc10 passed bounded API-25 phone QA. Successor vc11/vc1000011 are protected-signed and trusted-byte-verified, but not yet delivered. Production was not changed. |
+| Google Play Internal | Historical phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` remain on separate Internal tracks. Successor vc11/vc1000011 are protected-signed and trusted-byte-verified but not delivered; exact vc11 separately passed a clean upload-signed API-25 live/share/refresh/widget smoke. Production was not changed. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
@@ -94,7 +94,9 @@ the captured slice”; it is never converted to a synthetic rank.
   share controller for iPad popover presentation. Protected run `33616952267`
   signed and candidate-byte-verified all three exact artifacts. Their manifest
   entries are atomically `verified-current` after durable materialization and
-  trusted run `33629490609`; delivery and physical QA remain separate gates.
+  trusted run `33629490609`. Exact vc11 later passed a bounded clean upload-
+  signed physical API-25 live/share/refresh/widget smoke, while Play delivery
+  and the remaining tablet/Wear/vitals matrix stay separate blocked gates.
 - Historical coordinated checkpoint identities were Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.

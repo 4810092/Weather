@@ -11,6 +11,9 @@ bytes. Trusted run `33629490609` independently reverified them; the committed
 manifest is atomically `3/3 verified-current`. The prior phone vc10, Wear vc1000010, and Apple build-8 set is
 historical internal-delivery evidence. Build 8 passed bounded iPhone QA but
 reproduced two iPad Share crashes, so none of its evidence transfers to build 9.
+Exact phone vc11 separately passed a clean upload-signed physical API-25
+cold/live/share/refresh/widget/open/process smoke on September 2. It was not
+Play-delivered and does not close the tablet, Wear, or Vitals requirements.
 On August 31, the earlier
 exact Apple `1.1.0 (6)` IPA completed
 Transporter delivery and App Store Connect processing with build state `VALID`
@@ -30,7 +33,7 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a127c5322265cf07561c59077cc2e8577cf43aff6d5278f6aa7335453c61f075 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=21cbb1dfddd8e8a43cfaba0b7758e325caba2ea26f87b7a2c11c4fb803df8fca -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
 <!-- release-authority-current:end -->
 
