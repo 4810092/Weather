@@ -7,13 +7,15 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=60c343790fffc9735601eaa22028cffcdbf468b3791a542a1e6a132b70c1cee7 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dc0358fa318e0b3d2556c0a534bea064049f7d1c7794ba7eeb999799d5d0567d -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=0f44f3e64d450a237a38aa5b18062ddbacb5e4c51637dd5e8b69461c33c80e49 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4c496b4921bdf15a8580a437745b1e43f88d982f22e1bfd853655ba5bd2a106a -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds replacement source
 `052d12c7dfa6411428d85205d9568462d20ff87d` to vc11, vc1000011, and build 9.
-No current artifact is signed or byte-verified, so all three remain blocked.
+Protected run `33616952267` signed and candidate-byte-verified all three exact
+artifacts, but durable materialization and independent trusted verification are
+still absent, so all three manifest entries remain blocked.
 The vc10/vc1000010/build-8 bytes and their observations are historical only;
 build 8 is explicitly failed for the iPad Share path.
 
@@ -51,8 +53,9 @@ tools, or an unrecognized state fail closed. A successful build, an editable
 JSON/Markdown receipt, or an older artifact cannot establish readiness. Apple
 also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
-and the exact App Store Connect `ExportOptions.plist`. Current build 9 has no
-protected-signed or trusted-hosted byte-verified distribution archive or IPA.
+and the exact App Store Connect `ExportOptions.plist`. Current build 9 has a
+protected-signed, candidate-byte-verified distribution archive and IPA, but no
+durable independently trusted-hosted byte verification.
 The protected staged hosted chain is mandatory before every later use. The
 single staged directory layout and action-time command are documented in
 [`store/README.md`](../store/README.md). The verifier
@@ -63,9 +66,10 @@ and its explicit external-build provenance boundary are recorded in
 
 - Current product/build source `052d12c7` fixes the iPad popover crash found in
   build-8 TestFlight QA and advances phone, Wear, and Apple identities to vc11,
-  vc1000011, and build 9. Local regression and surface suites pass, but no
-  protected-signed or independently byte-verified artifact is bound to this
-  source. The manifest remains atomically `3/3 blocked`.
+  vc1000011, and build 9. Local regression and surface suites pass; protected
+  run `33616952267` signed and candidate-byte-verified the exact set. Durable
+  materialization and independent trusted-hosted verification remain missing,
+  so the manifest stays atomically `3/3 blocked`.
 - Historical source `ba824be` passed hosted CI, protected signing, independent
   byte verification, and internal delivery for vc9, vc1000009, and build 7.
   Play-delivered vc9 has a bounded API-25 phone/widget pass. TestFlight build 7
@@ -128,11 +132,11 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc11 is not protected-signed, byte-verified, Play-delivered, or physically tested; historical vc10 evidence cannot transfer |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current vc11 is protected-signed and candidate-byte-verified, but not durably trusted-verified, Play-delivered, or physically tested; historical vc10 evidence cannot transfer |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — no current vc11 store-delivered physical phone/tablet/widget result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is not protected-signed, byte-verified, or Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
-| Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is not protected-signed, byte-verified, or TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
-| Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is not protected-signed, byte-verified, or physically tested |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is protected-signed and candidate-byte-verified, but not durably trusted-verified or Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
+| Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is protected-signed and candidate-byte-verified, but not durably trusted-verified or TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
+| Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is protected-signed and candidate-byte-verified, but not durably trusted-verified or physically tested |
 
 ## Historical evidence — non-transferable
 

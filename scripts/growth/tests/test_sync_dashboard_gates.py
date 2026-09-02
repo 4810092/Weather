@@ -222,8 +222,12 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 "neither candidate run yielded a retained",
                 artifact["manifest"]["blocks"][0]["body"],
             )
-            self.assertIn(
+            self.assertNotIn(
                 "No protected-signed or independently byte-verified artifact",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "Protected run 33616952267 passed signing and candidate-byte verification",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(
