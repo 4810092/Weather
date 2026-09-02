@@ -13,7 +13,7 @@ android {
         targetSdk = 36
         // Play requires a version code that is unique across every form factor.
         // Keep Wear OS in a separate range so phone and watch releases can evolve independently.
-        versionCode = 1_000_010
+        versionCode = 1_000_011
         versionName = "1.1.0"
     }
 

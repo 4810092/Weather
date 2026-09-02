@@ -12,7 +12,7 @@ android {
         applicationId = "uz.ganikhodjaev.weather"
         minSdk = 24
         targetSdk = 36
-        versionCode = 10
+        versionCode = 11
         versionName = "1.1.0"
     }
 
