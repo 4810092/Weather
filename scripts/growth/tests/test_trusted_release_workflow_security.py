@@ -225,7 +225,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                'artifact["physical_qa_evidence"] = None',
+                'artifact["physical_qa_evidence"] = runtime_evidence',
                 'artifact["physical_qa_evidence"] = "invented.md"',
                 1,
             )

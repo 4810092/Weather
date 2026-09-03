@@ -649,6 +649,7 @@ jobs:
               raise SystemExit("committed upload manifest status mismatch")
 
           evidence = "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md"
+          runtime_evidence = "growth/quality/emulator-runtime-qa-2026-09-03.md"
           expected_blocked = {
               "android_phone": {
                   "filename": "nimbo-phone-1.1.0-vc11.aab",
@@ -713,7 +714,7 @@ jobs:
               artifact["source_sync"] = "verified-current"
               artifact["sha256"] = digest
               artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33616952267.md"
-              artifact["physical_qa_evidence"] = None
+              artifact["physical_qa_evidence"] = runtime_evidence
               artifact["historical_candidate"] = None
 
           committed_artifacts = manifest.get("artifacts")
@@ -726,7 +727,6 @@ jobs:
               artifact["source_sync"] = "verified-current"
               artifact["sha256"] = digest
               artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33616952267.md"
-              artifact["physical_qa_evidence"] = None
               artifact["historical_candidate"] = None
 
           flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL

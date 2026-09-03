@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "8eed9d0fae5d894501e3eda2911b2a0980ba367b7c29e9976882a0d3ad2a699e"
+TRUSTED_SHA256 = "4de3a52ecc53f6020470fbd9c5efc1a096e1ad5b6de3e2c4d3d7ff70bffc2eea"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -78,7 +78,7 @@ TRUSTED_REQUIRED = (
     "committed upload manifest candidate set mismatch",
     "committed_artifacts not in (expected_blocked, expected_verified)",
     'artifact["source_sync"] = "verified-current"',
-    'artifact["physical_qa_evidence"] = None',
+    'artifact["physical_qa_evidence"] = runtime_evidence',
     'artifact["historical_candidate"] = None',
     'verification-manifest.json',
     '--manifest "$verification_manifest"',
@@ -265,8 +265,10 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("full verifier must use the exact ephemeral manifest once")
     if text.count('artifact["source_sync"] = "verified-current"') != 2:
         failures.append("exact current state and ephemeral promotion must be pinned")
-    if text.count('artifact["physical_qa_evidence"] = None') != 2:
-        failures.append("ephemeral manifest must not invent physical QA evidence")
+    if text.count('artifact["physical_qa_evidence"] = runtime_evidence') != 1:
+        failures.append("verified candidate must pin the reviewed runtime QA evidence")
+    if text.count('artifact["physical_qa_evidence"] = None') != 0:
+        failures.append("ephemeral manifest must preserve committed runtime QA evidence")
     if text.count('artifact["historical_candidate"] = None') != 2:
         failures.append("ephemeral manifest must clear historical state before verification")
     if text.count("set +x") != 3:
