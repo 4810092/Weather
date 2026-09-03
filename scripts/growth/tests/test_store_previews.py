@@ -393,7 +393,7 @@ class StorePreviewCheckTest(unittest.TestCase):
             manifest = json.loads(
                 (package / "manifest.json").read_text(encoding="utf-8")
             )
-            manifest["blocking_gates"].remove("android_physical_smoke")
+            manifest["blocking_gates"].remove("ios_crash_gate")
             self._write_manifest(package, manifest)
 
             failures = MODULE.validate(root)

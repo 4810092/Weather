@@ -584,7 +584,7 @@ def _expected_blocks(
     block = "\n".join(
         (
             CURRENT_BLOCK_START,
-            "| Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required physical QA | Fail-closed status |",
+            "| Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required runtime QA (legacy gate ID) | Fail-closed status |",
             "| --- | --- | --- | --- | --- | --- | --- |",
             *rows,
             CURRENT_BLOCK_END,

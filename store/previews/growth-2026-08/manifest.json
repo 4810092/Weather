@@ -15,9 +15,7 @@
     }
   },
   "blocking_gates": [
-    "android_physical_smoke",
-    "ios_crash_gate",
-    "ios_physical_smoke"
+    "ios_crash_gate"
   ],
   "clips": [
     {

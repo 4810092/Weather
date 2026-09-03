@@ -123,11 +123,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 self.assertEqual(rows[gate_id]["status"], gate["status"])
                 self.assertEqual(rows[gate_id]["evidence"], gate["reason"])
             self.assertIn(
-                "protected-signed and trusted-verified",
+                "owner-approved emulator policy",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "protected-signed and trusted-verified",
+                "owner-approved simulator policy",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -158,7 +158,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "source-current phone and Wear artifacts",
+                "Play-deliver phone and Wear",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

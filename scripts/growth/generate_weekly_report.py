@@ -69,8 +69,8 @@ GATE_LABELS = {
     "ios_crash_gate": "iOS crash gate",
     "open_meteo_promotion_clearance": "Open-Meteo promotion clearance",
     "release_artifact_source_sync": "Release artifact / source sync",
-    "android_physical_smoke": "Android physical smoke",
-    "ios_physical_smoke": "iOS physical smoke",
+    "android_physical_smoke": "Android runtime smoke (legacy ID)",
+    "ios_physical_smoke": "Apple runtime smoke (legacy ID)",
     "domain_activation": "nimbo.uz activation",
     "store_policy_console_clearance": "Store policy console clearance",
 }
@@ -107,14 +107,13 @@ GATE_ACTIONS = {
     ),
     "android_physical_smoke": (
         "Android engineering",
-        "Deliver the source-current phone and Wear artifacts through Play Internal, "
-        "then repeat physical API-24/25, tablet, widget, and Wear QA.",
+        "Preserve source-bound emulator/runtime coverage; separately deliver phone "
+        "and Wear through Play and collect conclusive UZ Vitals.",
     ),
     "ios_physical_smoke": (
         "Apple engineering",
-        "Install the processed source-current build from TestFlight, confirm the "
-        "iPad share sheet and widget, restore watch readiness, then complete the "
-        "iPhone, iPad, widget, and watch QA matrix.",
+        "Preserve the source-current iPad Share and watch simulator coverage; "
+        "separately complete App Store release and crash-free evidence.",
     ),
     "domain_activation": (
         "Web operations",

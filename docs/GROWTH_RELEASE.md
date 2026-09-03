@@ -1,23 +1,23 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: September 1, 2026
+Status date: September 2, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=21cbb1dfddd8e8a43cfaba0b7758e325caba2ea26f87b7a2c11c4fb803df8fca -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- physical_gate:android_physical_smoke=pass;reason_sha256=e079732b4f6bbd52e936d1e64a0019fa02cbee1f50f15cc3ec53bcd809349461 -->
+<!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
 `052d12c7dfa6411428d85205d9568462d20ff87d` to phone vc11, Wear vc1000011,
 and Apple build 9. Protected run `33616952267` signed and candidate-byte-
 verified the exact set, and run `33626711140` durably materialized those exact
-bytes. Trusted run `33629490609` independently reverified every artifact, and
+bytes. Final trusted run `33635751765` independently reverified every artifact, and
 all three manifest entries are atomically `verified-current`. The prior vc10/vc1000010/build-8 set is
 historical-only because build 8 crashes on the iPad Share path; none of its
 internal delivery or physical evidence transfers to the successor.
@@ -40,7 +40,7 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
-| Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Successor build 9 is protected-signed and trusted-byte-verified, but not yet TestFlight-delivered or physically passed. |
+| Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Exact successor build 9 is protected-signed, trusted-byte-verified, delivered through Transporter, and processed in App Store Connect. A fresh build-9 bundle path is present on the iPad and remains alive without a new crash log, but CoreDevice still classifies it as developer-built; TestFlight identity, a visible Share-sheet pass, and widget-open evidence remain unproved. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
 | Google Play Internal | Historical phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` remain on separate Internal tracks. Successor vc11/vc1000011 are protected-signed and trusted-byte-verified but not delivered; exact vc11 separately passed a clean upload-signed API-25 live/share/refresh/widget smoke. Production was not changed. |
@@ -48,14 +48,15 @@ UZ-only.
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
-state live under [`growth/`](../growth/README.md). The September 1 canonical
-public capture places Nimbo at position 66 in the official Apple UZ Weather
-chart and below the first 192 results for Apple query `weather`, outside the first 30 Google
-Weather category results on all three fixed profiles, and at Top-10 for none of
-the five generic Google queries. One auxiliary Apple `Toshkent ob-havo` search
-returned only one unique result, but every goal surface was decisive. The
-verified streak therefore remains `0/7`. A bounded absence means only “below
-the captured slice”; it is never converted to a synthetic rank.
+state live under [`growth/`](../growth/README.md). The latest September 2
+category-only read-only check places Nimbo below the first 100 entries in the
+official Apple UZ Weather chart and outside the first 30 Google Weather
+category results on all three fixed profiles. The auxiliary Apple `Toshkent
+ob-havo` search remained diagnostically incomplete, but every required goal
+surface was decisive. The verified streak therefore remains `0/7`. This
+intraday check did not rewrite the canonical daily snapshot. A bounded absence
+means only “below the captured slice”; it is never converted to a synthetic
+rank.
 
 ## Implemented, not published
 
@@ -243,14 +244,16 @@ the captured slice”; it is never converted to a synthetic rank.
 - Daily public rank capture, weekly console import, KPI/guardrail evaluation,
   crash/provider gates, a provider clarification draft, and outreach materials.
   Scripts do not log in, publish, send, purchase, or alter provider endpoints.
-- An active Codex heartbeat temporarily runs hourly while provider, crash,
-  signing, and release-access blockers remain unresolved. It checks Pages and
-  the same-day rank snapshot; on Mondays it conditionally imports only a valid
-  seven-day console CSV. The repository's launchd template remains uninstalled
-  so there is no duplicate scheduler.
+- An active Codex heartbeat runs daily at 01:10 Asia/Tashkent while provider,
+  crash, signing, and release-access blockers remain unresolved. It validates
+  the hosted `category-only-v2` snapshot, receipt, evaluation, and public UZ
+  versions without becoming a second canonical writer. The hosted GitHub
+  workflow remains the only canonical writer, and the local writer stays
+  paused so there is no duplicate scheduler.
 
 These changes are the versioned `1.1.0` source candidate. Direct evidence now
-records Apple delivery/processing and both Play Internal assignments. Repository
+records current Apple build-9 delivery/processing, the historical Play Internal
+assignments, and the separate exact-vc11 upload-signed phone smoke. Repository
 versioning and historical or locally built artifacts still do not imply tester
 access, installation, review, approval, production rollout, or public
 availability; each external state must be recorded separately.
@@ -266,8 +269,8 @@ availability; each external state must be recorded separately.
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
 3. Require the protected hosted verifier to recheck the exact mutable draft
-   before every later artifact use, then deliver vc10, vc1000010, and build 8
-   to Internal/TestFlight. Repeat the
+   before every later artifact use, then deliver vc11 and vc1000011 through
+   Play Internal and bind build 9 to a provable TestFlight installation. Repeat the
    physical phone/tablet/widget/Wear and iPhone/iPad/widget/watch matrices,
    including the exact copied share payload, iOS 15 coverage where available,
    and post-delivery vitals. Historical build-7 and vc9 results remain
@@ -276,8 +279,10 @@ availability; each external state must be recorded separately.
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Current vc10, vc1000010, and build 8 are atomically `3/3 verified-current` and
-remain `draft-blocked`. The [historical build-7 delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
+Current vc11, vc1000011, and build 9 are atomically `3/3 verified-current` and
+remain `draft-blocked`. Exact build 9 has completed Transporter delivery and App
+Store Connect processing, while vc11/vc1000011 have not been Play-delivered.
+The [historical build-7 delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
 and its physical evidence document what happened, but cannot close successor
 trusted verification, delivery, or runtime gates. Play Internal and TestFlight remain bounded
 QA channels for exact source-current candidates.

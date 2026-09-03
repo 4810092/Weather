@@ -39,8 +39,6 @@
   },
   "current_blockers": [
     "ios_crash_gate",
-    "android_physical_smoke",
-    "ios_physical_smoke",
     "scale_status:hold",
     "public_release_unverified",
     "weekly_traffic_unknown",

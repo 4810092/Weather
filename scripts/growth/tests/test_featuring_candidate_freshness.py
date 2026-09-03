@@ -71,7 +71,7 @@ class FeaturingCandidateFreshnessTest(unittest.TestCase):
 
     def test_blocker_status_must_match_canonical_gate(self) -> None:
         gates = copy.deepcopy(self.gates)
-        gates["gates"]["ios_physical_smoke"]["status"] = "pass"
+        gates["gates"]["ios_physical_smoke"]["status"] = "blocked"
         self.assert_rejected(
             self.validate(gates=gates),
             "blocker ios_physical_smoke differs",

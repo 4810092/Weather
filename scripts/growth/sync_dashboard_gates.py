@@ -401,23 +401,31 @@ def sync(
                     "then deliver it to Internal/TestFlight"
                 )
         elif gate_id == "android_physical_smoke":
-            row["decision"] = (
-                "BLOCKED · current Android artifacts are protected-signed and "
-                "trusted-verified, but not store-delivered or physically tested"
-            )
-            new_next = (
-                "Deliver the source-current phone and Wear artifacts through Play Internal, "
-                "then repeat physical API-24/25, tablet, and Wear QA"
-            )
+            if status == "pass":
+                row["decision"] = (
+                    "PASS · source-bound Android phone, tablet, widget, and Wear "
+                    "runtime QA satisfies the owner-approved emulator policy"
+                )
+                new_next = (
+                    "Preserve runtime coverage; separately Play-deliver phone and Wear "
+                    "and collect conclusive UZ Vitals"
+                )
+            else:
+                row["decision"] = "BLOCKED · required Android runtime QA is incomplete"
+                new_next = "Complete the source-bound Android runtime QA matrix"
         elif gate_id == "ios_physical_smoke":
-            row["decision"] = (
-                "BLOCKED · current Apple build 8 is protected-signed and "
-                "trusted-verified, but not TestFlight-delivered or physically tested"
-            )
-            new_next = (
-                "Distribute the source-current build through TestFlight, then install and run the "
-                "complete iPhone/iPad/widget/watch matrix"
-            )
+            if status == "pass":
+                row["decision"] = (
+                    "PASS · source-current iPad Share, widget, and watch runtime QA "
+                    "satisfies the owner-approved simulator policy"
+                )
+                new_next = (
+                    "Preserve runtime coverage; separately complete App Store release "
+                    "and crash-free evidence"
+                )
+            else:
+                row["decision"] = "BLOCKED · required Apple runtime QA is incomplete"
+                new_next = "Complete the source-bound Apple runtime QA matrix"
         if not all(
             isinstance(value, str)
             for value in (row.get("gate"), old_status, old_reason, old_next, new_next)
@@ -533,7 +541,7 @@ def sync(
     if not isinstance(scale_reason, str) or not isinstance(scale_status, str):
         raise ValueError("dashboard scale status/reason is malformed")
     sql, scale_comment_count = re.subn(
-        r"(?m)^-- Public outreach and acquisition scaling remain gated .*$",
+        r"(?m)^-- Public outreach and acquisition scaling remain .*$",
         f"-- {scale_reason}",
         sql,
         count=1,

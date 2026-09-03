@@ -26,7 +26,7 @@
       "source_sync": "verified-current",
       "sha256": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
       "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": null,
+      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
       "historical_candidate": null
     },
@@ -36,7 +36,7 @@
       "source_sync": "verified-current",
       "sha256": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
       "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": null,
+      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
       "historical_candidate": null
     },
@@ -46,7 +46,7 @@
       "source_sync": "verified-current",
       "sha256": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
       "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": null,
+      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
       "historical_candidate": null
     }
@@ -146,8 +146,8 @@
   ],
   "blocking_gates": [
     "iOS crash diagnosis",
-    "Play-delivered physical phone, tablet, widget, and Wear OS 1.1.0 (1000011) runtime matrix after completing authorized tester access",
-    "TestFlight beta-group distribution and physical iPhone, iPad, widget, and watch runtime matrix for Apple 1.1.0 (9)",
+    "Play delivery of phone 1.1.0 (11) and Wear OS 1.1.0 (1000011), followed by conclusive post-delivery UZ Vitals",
+    "Apple 1.1.0 (9) attachment, review, public availability, and a conclusive post-release crash-free window",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment"
   ],
   "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."

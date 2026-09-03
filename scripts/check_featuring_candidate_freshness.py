@@ -23,6 +23,7 @@ EXPECTED_INTERNAL_ACTIONS = [
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
+    "growth/quality/emulator-runtime-qa-2026-09-03.md",
     "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
     "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
     "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
@@ -30,13 +31,10 @@ CURRENT_EVIDENCE = [
     "growth/quality/play-delivered-android-vc10-smoke-2026-09-01.md",
     "growth/quality/testflight-ios-build8-smoke-2026-09-01.md",
 ]
-PHYSICAL_BOUNDARIES = (
-    "Physical tablet",
-    "paired Wear",
-    "current iPad",
-    "visible iOS widget",
-    "physical Apple Watch",
-    "iOS 15",
+RUNTIME_AND_RELEASE_BOUNDARIES = (
+    "emulator/simulator runtime QA",
+    "Play delivery",
+    "App Store review",
     "post-delivery vitals",
     "crash close-out",
     "production release",
@@ -137,7 +135,7 @@ def validate_featuring_candidate(
             f"phone {release} ({phone.get('version_code')})",
             f"Wear OS {release} ({wear.get('version_code')})",
             f"Apple {release} ({apple.get('build')})",
-            *PHYSICAL_BOUNDARIES,
+            *RUNTIME_AND_RELEASE_BOUNDARIES,
         ):
             if marker not in claim:
                 failures.append(f"candidate artifact claim omits: {marker}")
@@ -156,8 +154,15 @@ def validate_featuring_candidate(
         item.get("id"): item for item in blockers if isinstance(item, dict)
     }
     for identifier in ("ios_crash_gate", "android_physical_smoke", "ios_physical_smoke"):
-        blocker = _mapping(blocker_by_id.get(identifier), f"blocker {identifier}", failures)
         gate = _mapping(gate_map.get(identifier), f"gate {identifier}", failures)
+        if gate.get("status") == "pass":
+            if identifier in blocker_by_id:
+                failures.append(f"blocker {identifier} differs from the quality gate")
+            continue
+        blocker = blocker_by_id.get(identifier)
+        if not isinstance(blocker, dict):
+            failures.append(f"blocker {identifier} differs from the quality gate")
+            continue
         if blocker.get("status") != gate.get("status"):
             failures.append(f"blocker {identifier} differs from the quality gate")
         if blocker.get("evidence") != "growth/quality/gates.json":

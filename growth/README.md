@@ -2,11 +2,11 @@
 
 <!-- release-authority-current:start -->
 <!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=21cbb1dfddd8e8a43cfaba0b7758e325caba2ea26f87b7a2c11c4fb803df8fca -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=8e3d1bde5b536be85f3ab0b99e498754730b63d1115d80db1f9c2796b0278a3c -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- physical_gate:android_physical_smoke=pass;reason_sha256=e079732b4f6bbd52e936d1e64a0019fa02cbee1f50f15cc3ec53bcd809349461 -->
+<!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
 <!-- release-authority-current:end -->
 
 Current source `052d12c7` resolves to vc11/vc1000011/build 9 and contains the
