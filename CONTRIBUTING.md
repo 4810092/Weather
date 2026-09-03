@@ -18,7 +18,10 @@ Thank you for helping improve Nimbo as an application and as a Kotlin Multiplatf
 5. Update docs when architecture, privacy, provider terms, localization behavior, or release requirements change.
 6. Open a pull request that explains the reason, affected platforms, test evidence, and screenshots for visible UI changes.
 
-CI builds Android/shared code on Linux and the unsigned iOS/watchOS targets on macOS. Maintainer signing keys are never required for a contributor PR.
+Routine CI runs locally with `bash scripts/local-ci.sh full`; scoped modes are
+available for iteration. Pull requests and pushes do not start the manual
+GitHub fallback. Maintainer signing keys are never required for a contributor
+PR.
 
 ## Design and architecture expectations
 

@@ -159,9 +159,9 @@ and Apple IPA
 
 At this local-verifier checkpoint, the manifest promoted the complete set
 atomically to `verified-current`; all physical-QA evidence was still null and
-top-level status remained `draft-blocked`. Successful CI on current `master`
-must be followed by the
-protected no-checkout staging job and separate read-only macOS verifier. This is not store upload,
+top-level status remained `draft-blocked`. The policy at that checkpoint
+followed successful hosted CI with a protected no-checkout staging job and
+separate read-only macOS verifier; routine CI is now local-first. This is not store upload,
 internal delivery, physical QA, crash diagnosis, publication, or ranking
 evidence. See the [full-verification record](../growth/quality/release-artifact-full-verification-2026-08-31-local.md).
 

@@ -1,10 +1,7 @@
-name: CI
+name: Manual hosted CI fallback
 
 on:
-  pull_request:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 permissions: {}
 
@@ -25,8 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
-          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
-             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]]; then
             echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
             exit 1
           fi
@@ -39,10 +35,10 @@ jobs:
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
-          python-version: "3.13"
+          python-version: "3.11"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - name: Install Python validation dependencies
         run: python3 -m pip install --disable-pip-version-check Pillow==12.2.0
@@ -54,37 +50,8 @@ jobs:
           fi
           ffprobe -version
           ffmpeg -version
-      - name: Compile and test growth tooling
-        run: |
-          python3 -m compileall -q scripts
-          python3 scripts/release_materialization_workflow_security.py
-          python3 scripts/trusted_release_workflow_security.py
-          python3 -m unittest discover -s scripts/growth/tests -p 'test_*.py'
-      - name: Repository and localization checks
-        run: |
-          python3 scripts/check_repository.py
-          python3 scripts/verify_release_artifacts.py --contract-only
-          python3 scripts/check_release_qa_matrix.py --contract-only
-          python3 scripts/check_localizations.py
-          python3 scripts/check_store_metadata.py
-          python3 scripts/check_store_assets.py
-          python3 scripts/check_store_previews.py
-          python3 scripts/check_dashboard_report.py
-          python3 scripts/build_site.py --output build/pages-ci
-          python3 scripts/build_site.py --output build/pages-drafts-ci --include-drafts
-          git diff --check
-      - name: Static analysis, tests, migrations, and Android release build
-        run: >-
-          ./gradlew ktlintCheck
-          :shared:allTests
-          :shared:testAndroidHostTest
-          :app:testDebugUnitTest
-          :wearApp:testDebugUnitTest
-          :shared:verifySqlDelightMigration
-          :app:lintRelease
-          :wearApp:lintRelease
-          :app:bundleRelease
-          :wearApp:bundleRelease
+      - name: Run the canonical local Android and shared gate
+        run: bash scripts/local-ci.sh core
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: android-release-unsigned
@@ -124,8 +91,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
-          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
-             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]]; then
             echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
             exit 1
           fi
@@ -138,10 +104,10 @@ jobs:
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          python-version: "3.13"
+          python-version: "3.11"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - name: Require hardware-accelerated KVM
         shell: bash
@@ -202,8 +168,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$NIMBO_CHECKOUT_SHA" =~ ^[0-9a-f]{40}$ ]]
-          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]] &&
-             [[ ! "$NIMBO_CHECKOUT_REF" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+          if [[ "$NIMBO_CHECKOUT_REF" != "refs/heads/master" ]]; then
             echo "::error::Unexpected public CI ref: $NIMBO_CHECKOUT_REF"
             exit 1
           fi
@@ -216,20 +181,13 @@ jobs:
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
-          python-version: "3.13"
+          python-version: "3.11"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
-      - name: Validate release source identity
-        id: release-source
-        run: |
-          revision="$(python3 scripts/verify_release_artifacts.py --print-source-revision)"
-          echo "revision=$revision" >> "$GITHUB_OUTPUT"
-      - name: Run shared iOS Simulator tests
-        run: ./gradlew :shared:iosSimulatorArm64Test
-      - name: Run iOS glanceable-surface state tests
-        run: bash scripts/test_ios_surfaces.sh
+      - name: Run the canonical local Apple gate
+        run: bash scripts/local-ci.sh apple
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
@@ -239,27 +197,3 @@ jobs:
             shared/build/reports/tests/iosSimulatorArm64Test
           if-no-files-found: warn
           retention-days: 7
-      - name: Build iOS application without signing
-        run: |
-          xcodebuild \
-            -project iosApp/Nimbo.xcodeproj \
-            -scheme NimboSimulator \
-            -configuration Release \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=YES \
-            NIMBO_SOURCE_REVISION='${{ steps.release-source.outputs.revision }}' \
-            build
-          xcodebuild \
-            -project iosApp/Nimbo.xcodeproj \
-            -scheme NimboWatch \
-            -configuration Release \
-            -sdk watchsimulator \
-            -destination 'generic/platform=watchOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=YES \
-            NIMBO_SOURCE_REVISION='${{ steps.release-source.outputs.revision }}' \
-            build

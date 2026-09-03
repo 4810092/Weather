@@ -2,7 +2,7 @@
 
 Nimbo’s quality evidence has four layers: deterministic shared tests, actual SQLite migration/retention host tests, cross-platform build gates, and dated manual release QA. A claim belongs in the narrowest layer that proves it.
 
-## Automated pull-request gates
+## Local automated gates
 
 - Repository policy, workflow integrity, dependency checksums, and simple
   secret-pattern checks for tracked files.
@@ -14,7 +14,7 @@ Nimbo’s quality evidence has four layers: deterministic shared tests, actual S
   persistence, and migration tests; plus the repository's complete Python
   growth/release/security regression suite.
 - SQLDelight numbered-migration/schema verification plus a released-v1 SQLite fixture migration.
-- Deterministic Compose UI device tests on GitHub-hosted API 24 phone, API 36
+- Deterministic Compose UI device tests on local API 24 phone, API 36
   phone, and API 36 tablet emulators.
 - R8/resource-shrunk Android phone/tablet and Wear OS bundles.
 - Unsigned Release builds for iOS/WidgetKit and watchOS.
@@ -43,11 +43,12 @@ store or repository write permission. A green run proves signed candidate
 bytes only; it does not close physical-device, crash, upload, review, rollout,
 or public-availability gates.
 
-Both ordinary CI workflows and the protected release workflow use reviewed
-full-commit action pins. Gradle verifies the official wrapper checksum and the
-SHA-256 inventory for 1,700+ resolved dependency artifacts. Generated checksum
-metadata is reviewed as a supply-chain allowlist; it is not a claim that every
-upstream artifact has independent PGP provenance.
+The dated hosted run above and the protected release workflow use reviewed
+full-commit action pins. Routine validation now runs locally. Gradle verifies
+the official wrapper checksum and the SHA-256 inventory for 1,700+ resolved
+dependency artifacts. Generated checksum metadata is reviewed as a supply-chain
+allowlist; it is not a claim that every upstream artifact has independent PGP
+provenance.
 
 ## Runtime and product protections
 
@@ -64,7 +65,7 @@ upstream artifact has independent PGP provenance.
 The shared UI provides semantic labels/roles/selected state for timeline hours, reflows unit/theme/hour details at increased font scale, constrains content width, and uses expanded-width composition. Arabic mirrors surrounding layout while the chronological timeline is explicitly left-to-right.
 
 The Compose device-test suite covers deterministic onboarding, retry,
-large-text, LTR/RTL, and forecast-header semantics on GitHub-hosted emulators.
+large-text, LTR/RTL, and forecast-header semantics on local emulators.
 It does not yet assert selected-hour state or prove clipping-free expanded
 tablet composition. The dated [QA matrix](QA_MATRIX.md) separately records
 historical emulator/simulator and TalkBack evidence. Physical VoiceOver/
@@ -78,7 +79,7 @@ emulator automation does not close them.
 ## Known gaps
 
 - No screenshot-golden suite.
-- No physical-device performance runner in CI.
+- No automated physical-device performance gate.
 - No end-to-end live-provider test, by design; unit tests avoid depending on an external service.
 - Physical VoiceOver and paired watch handoff remain manual.
 

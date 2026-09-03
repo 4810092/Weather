@@ -107,7 +107,8 @@ The matching Xcode archive is retained beside the IPA at
 
 ## Remaining release follow-ups
 
-- Let GitHub CI pass on the exact release commit.
+- Run `bash scripts/local-ci.sh full` on the exact release worktree and retain
+  the local test/build evidence.
 - Perform a release-candidate smoke test on a physical iPhone/iPad and paired
   Apple Watch: fresh install, upgrade, WidgetKit, watch sync, C/F and Auto units,
   light/dark appearance, background refresh, offline state, and VoiceOver.

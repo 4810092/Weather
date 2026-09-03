@@ -237,7 +237,9 @@ snapshot is immutable in `growth-observations`. A bounded absence means only
   The uncaptured home-screen widget story remains excluded.
 - Uzbek/Russian/English landing, press kit, privacy, support, store links, and a
   source-backed growth dashboard. GitHub Pages is deployed and configured for
-  `nimbo.uz`; future site/dashboard changes on `master` deploy automatically.
+  `nimbo.uz`. Source changes no longer deploy automatically under the
+  local-first CI policy. The former publication chain is dormant; restoring a
+  manual hosted deployment path requires separate authorization.
   Public Cloudflare delegation, DNS, Let's Encrypt TLS, redirects, canonicals,
   and the localized production routes have passed the dated launch gate.
 - Daily public rank capture, weekly console import, KPI/guardrail evaluation,
@@ -267,8 +269,8 @@ availability; each external state must be recorded separately.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Require the protected hosted verifier to recheck the exact mutable draft
-   before every later artifact use, then deliver vc11 and vc1000011 through
+3. Run the local full-byte verifier against the exact mutable draft before
+   every later artifact use, then deliver vc11 and vc1000011 through
    Play Internal and bind build 9 to a provable TestFlight installation. Repeat the
    physical phone/tablet/widget/Wear and iPhone/iPad/widget/watch matrices,
    including the exact copied share payload, iOS 15 coverage where available,

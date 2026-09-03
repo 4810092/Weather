@@ -49,9 +49,9 @@ fi
 adb logcat -c
 
 set +e
-timeout --signal=TERM --kill-after=60s 28m \
+python3 scripts/run_with_timeout.py 1680 60 -- \
   ./gradlew --no-daemon --max-workers=2 \
-  :shared:connectedAndroidDeviceTest --stacktrace
+    :shared:connectedAndroidDeviceTest --stacktrace
 gradle_status="$?"
 set -e
 

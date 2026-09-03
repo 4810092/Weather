@@ -1269,24 +1269,49 @@ class ValidationScriptsTest(unittest.TestCase):
             with self.assertRaisesRegex(DashboardConsistencyError, "SQL differs"):
                 verify_dashboard_sources(artifact, repo_root=temporary_root)
 
-    def test_ci_runs_growth_tests_compileall_and_dashboard_check(self) -> None:
+    def test_local_ci_is_authoritative_and_hosted_fallback_is_manual(self) -> None:
         ci = (ROOT / ".github/workflows/ci.yml").read_text()
-        self.assertIn("python3 -m compileall -q scripts", ci)
-        self.assertIn("python3 -m unittest discover -s scripts/growth/tests", ci)
-        self.assertIn("python3 scripts/trusted_release_workflow_security.py", ci)
-        self.assertIn("python3 scripts/verify_release_artifacts.py --contract-only", ci)
-        self.assertIn("python3 scripts/check_release_qa_matrix.py --contract-only", ci)
+        local_ci = (ROOT / "scripts/local-ci.sh").read_text()
+        android_ui = (ROOT / "scripts/run_local_android_ui_matrix.sh").read_text()
+        device_test = (ROOT / "scripts/run_android_ui_ci.sh").read_text()
+        timeout_runner = (ROOT / "scripts/run_with_timeout.py").read_text()
+
+        self.assertTrue(
+            ci.startswith(
+                "name: Manual hosted CI fallback\n\non:\n  workflow_dispatch:\n"
+            )
+        )
+        self.assertNotRegex(ci, r"(?m)^  (?:pull_request|push|schedule):")
+        self.assertIn("python3 -m compileall -q scripts", local_ci)
+        self.assertIn("python3 -m unittest discover -s scripts/growth/tests", local_ci)
+        self.assertIn("python3 scripts/trusted_release_workflow_security.py", local_ci)
+        self.assertIn(
+            "python3 scripts/verify_release_artifacts.py --contract-only", local_ci
+        )
+        self.assertIn(
+            "python3 scripts/check_release_qa_matrix.py --contract-only", local_ci
+        )
         self.assertIn("permissions: {}", ci)
         self.assertNotIn("actions/checkout@", ci)
         self.assertEqual(ci.count("Checkout exact public source without credentials"), 3)
-        self.assertIn("python3 scripts/check_dashboard_report.py", ci)
+        self.assertIn("python3 scripts/check_dashboard_report.py", local_ci)
         self.assertIn("Pillow==12.2.0", ci)
         self.assertIn("command -v ffprobe", ci)
         self.assertIn("command -v ffmpeg", ci)
-        self.assertIn(":app:testDebugUnitTest", ci)
-        self.assertIn(":wearApp:testDebugUnitTest", ci)
-        self.assertIn("./gradlew :shared:iosSimulatorArm64Test", ci)
-        self.assertIn("bash scripts/test_ios_surfaces.sh", ci)
+        self.assertIn(":app:testDebugUnitTest", local_ci)
+        self.assertIn(":wearApp:testDebugUnitTest", local_ci)
+        self.assertIn("./gradlew :shared:iosSimulatorArm64Test", local_ci)
+        self.assertIn("bash scripts/test_ios_surfaces.sh", local_ci)
+        self.assertIn("bash scripts/local-ci.sh core", ci)
+        self.assertIn("bash scripts/local-ci.sh apple", ci)
+        self.assertEqual(ci.count('java-version: "17"'), 3)
+        self.assertEqual(ci.count('python-version: "3.11"'), 3)
+        self.assertIn('java_version" != "17"', local_ci)
+        self.assertIn("sys.version_info[:2] != (3, 11)", local_ci)
+        for workflow in (ROOT / ".github/workflows").glob("*.yml"):
+            workflow_text = workflow.read_text()
+            self.assertNotRegex(workflow_text, r"(?m)^  (?:pull_request|push):")
+            self.assertFalse(workflow_text.startswith("name: CI\n"))
         self.assertIn("shared/build/test-results/iosSimulatorArm64Test", ci)
         self.assertIn("shared/build/reports/tests/iosSimulatorArm64Test", ci)
         kvm_chmod = ci.index("sudo chmod 0666 /dev/kvm")
@@ -1295,6 +1320,12 @@ class ValidationScriptsTest(unittest.TestCase):
         self.assertIn("disable-linux-hw-accel: false", ci)
         self.assertIn("-accel on", ci)
         self.assertNotIn("disable-linux-hw-accel: true", ci)
+        for matrix_name in ("phone-api24", "phone-api36", "tablet-api36"):
+            self.assertIn(f"run_matrix_entry {matrix_name}", android_ui)
+        self.assertIn("ANDROID_SERIAL=", android_ui)
+        self.assertIn("scripts/run_with_timeout.py 1680 60", device_test)
+        self.assertNotRegex(device_test, r"(?m)^timeout ")
+        self.assertIn("os.killpg", timeout_runner)
 
         build_site = (ROOT / "scripts/build_site.py").read_text()
         self.assertIn("verify_dashboard_report(artifact, source)", build_site)

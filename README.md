@@ -1,6 +1,5 @@
 # Nimbo
 
-[![CI](https://github.com/4810092/Weather/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/4810092/Weather/actions/workflows/ci.yml)
 [![Kotlin 2.4.10](https://img.shields.io/badge/Kotlin-2.4.10-7F52FF?logo=kotlin&logoColor=white)](gradle/libs.versions.toml)
 [![Android and iOS](https://img.shields.io/badge/platforms-Android%20%7C%20iOS-2F6F8F)](#platforms-and-release-state)
 [![GitHub release](https://img.shields.io/github/v/release/4810092/Weather?include_prereleases&label=checkpoint)](https://github.com/4810092/Weather/releases)
@@ -112,8 +111,8 @@ No weather API key is required. On first launch, search for a city or choose the
 
 ### Prerequisites
 
-- Git and Python 3.
-- JDK 17. The project targets Java 17; CI also verifies the Gradle build on JDK 21.
+- Git and Python 3.11.
+- JDK 17. The project targets Java 17 and the local gate uses the checked-in wrapper.
 - Android SDK 36 for Android builds.
 - macOS with Xcode 26 or newer for iOS/watchOS builds. Xcode 26.6 is the latest locally verified toolchain.
 
@@ -148,33 +147,21 @@ The checked-in `NimboSimulator` scheme does not require an Apple developer ident
 
 ## Quality gates
 
-The pull-request workflow runs repository/secret-hygiene checks, localization parity, store metadata/assets, ktlint, release Android Lint for phone and Wear, shared tests on Android host and iOS Simulator, the released-database migration test, SQLDelight migration verification, R8 Android bundles, an unsigned iOS app/WidgetKit build, and a watchOS Simulator build.
+Routine CI is local-first. The full gate runs repository/secret-hygiene checks,
+the Python regression suite, localization and store validation, ktlint, Android
+and shared tests, SQLDelight migration verification, release lint and bundles,
+the API 24/36 Compose emulator matrix, iOS Simulator tests, and unsigned
+iOS/WidgetKit/watchOS builds.
 
-Run the main local gate from a clean tree with:
+Run it from the worktree being validated:
 
 ```sh
-python3 scripts/check_repository.py
-python3 scripts/verify_release_artifacts.py
-python3 scripts/check_release_qa_matrix.py
-python3 scripts/check_localizations.py
-python3 scripts/check_store_metadata.py
-python3 scripts/check_store_assets.py
-python3 scripts/check_store_previews.py
-python3 scripts/check_dashboard_report.py
-python3 scripts/build_site.py --output build/pages-check
-python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
-./gradlew clean ktlintCheck \
-  :shared:allTests \
-  :shared:testAndroidHostTest \
-  :shared:iosSimulatorArm64Test \
-  :app:testDebugUnitTest \
-  :wearApp:testDebugUnitTest \
-  :shared:verifySqlDelightMigration \
-  :app:lintRelease \
-  :wearApp:lintRelease \
-  :app:bundleRelease \
-  :wearApp:bundleRelease
+bash scripts/local-ci.sh full
 ```
+
+Use `core`, `android-ui`, or `apple` instead of `full` for a targeted local
+gate. The GitHub workflow no longer runs on pushes or pull requests; it is
+retained only as a manually authorized hosted fallback.
 
 Test counts are discovered from the current tree and reported by Gradle/JUnit
 and Python unittest rather than copied into this page. See
@@ -216,12 +203,14 @@ Read the full [privacy policy](docs/PRIVACY.md), [store privacy declarations](st
   assets, safely extracted the closed tree, verified pinned Bundletool 1.18.3,
   and returned `byte_verified=true` for all three exact signed artifacts. The
   upload manifest now promotes the set atomically to `3/3 verified-current`
-  while remaining `draft-blocked`. The draft is mutable. Every successful CI
-  run for current `master` must pass the protected hosted chain: an isolated
-  Ubuntu job with no repository checkout stages only the two exact assets,
-  then a separate read-only macOS job reopens and verifies every byte. Pages is
-  downstream of that verifier, and every later artifact use must recheck the
-  exact release and asset identity. Trusted run
+  while remaining `draft-blocked`. The draft is mutable. At that checkpoint,
+  every successful CI run for current `master` passed a protected hosted chain:
+  an isolated Ubuntu job with no repository checkout staged only the two exact
+  assets, then a separate read-only macOS job reopened and verified every byte.
+  Pages was downstream of that verifier. The automatic chain, including Pages
+  publication, is now disabled under the local-first CI policy; re-enabling a
+  manual publication path requires separate authorization. Every later artifact
+  use must still recheck the exact release and asset identity locally. Trusted run
   [`33405849102`](https://github.com/4810092/Weather/actions/runs/33405849102)
   completed that chain for evidence head `b07192e`. The exact phone AAB was
   then converted with pinned Bundletool to an upload-key-signed universal APK;

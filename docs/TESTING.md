@@ -54,10 +54,10 @@ python3 scripts/build_site.py --output build/pages-drafts-check --include-drafts
 git diff --check
 ```
 
-Run only the targeted checks that help during development. Standard
-GitHub-hosted runners are the complete CI authority; the maintainer Mac is not
-configured as a self-hosted runner and is reserved for signing authorization
-and physical-device QA.
+Run only the targeted checks that help during development. Before integration,
+`bash scripts/local-ci.sh full` is the complete locally reproducible gate.
+GitHub-hosted CI is not the routine authority and is not started by pushes or
+pull requests.
 
 ## Clean Android/shared gate
 
@@ -86,15 +86,19 @@ The phone and Wear unit-test tasks both execute the shared Android surface contr
 
 Run `bash scripts/test_ios_surfaces.sh` for the deterministic Swift Empty/Fresh/Stale contract. Its 18 XCTest cases cover missing and malformed payloads, strict integer storage types, valid zero values, AQI sentinels, daily-range consistency, the strict six-hour boundary, bounded future clock skew and clock rollback, cache clearing, and WidgetKit's cache-only boundary reload date.
 
-The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md) and mirror the two CI builds. The macOS job runs both `:shared:iosSimulatorArm64Test` and the Swift surface suite, then retains the shared Kotlin JUnit XML and HTML report for seven days.
+The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md).
+`bash scripts/local-ci.sh apple` runs both `:shared:iosSimulatorArm64Test`, the
+Swift surface suite, and the two unsigned simulator builds.
 
 ## Android Compose UI gate
 
 The `androidDeviceTest` source set uses the AndroidJUnitRunner and Compose UI
-test v2. The ordinary CI workflow executes
-`:shared:connectedAndroidDeviceTest` on standard GitHub-hosted Ubuntu runners
-for an API 24 phone, API 36 phone, and API 36 tablet. The three jobs are a
-fail-independent matrix and retain instrumentation reports for seven days.
+test v2. `bash scripts/local-ci.sh android-ui` runs
+`:shared:connectedAndroidDeviceTest` sequentially on a local API 24 phone, API
+36 phone, and API 36 tablet AVD. The runner auto-selects matching AVDs. Override
+them with `NIMBO_AVD_PHONE_API24`, `NIMBO_AVD_PHONE_API36`, and
+`NIMBO_AVD_TABLET_API36` when needed; a missing exact form factor/API fails
+closed rather than silently reducing coverage.
 
 The suite verifies deterministic UI behavior and semantics only. Emulator
 success is not upload signing, Play delivery, physical phone/tablet evidence,
@@ -126,16 +130,21 @@ Simulator/emulator evidence is useful but does not prove physical-device battery
 
 ## CI behavior
 
-`.github/workflows/ci.yml` runs on every pull request and push to `master`, uses
-read-only repository permissions, cancels superseded runs for the same ref, and
-applies job timeouts. Standard GitHub-hosted Ubuntu runners execute the Android
-unit/release gate and the API 24/36 Compose UI matrix; the standard hosted
-macOS runner executes iOS tests and unsigned simulator builds. Android unsigned
-release bundles and UI/iOS test results are retained for seven days as
-diagnostic artifacts.
-All external actions use reviewed full commit SHAs. The Gradle wrapper validates
-the official 9.7.0 distribution SHA-256, and normal task resolution enforces the
-checked-in dependency verification metadata.
+`scripts/local-ci.sh` is the canonical ordinary CI entrypoint. `core`,
+`android-ui`, and `apple` correspond to the former hosted jobs; `full` runs all
+three. The Android emulator runner uses a portable TERM-then-KILL timeout and
+writes local diagnostics below `build/android-ui-diagnostics`.
+
+`.github/workflows/ci.yml` has only a manual trigger and must not be dispatched
+for routine validation. It remains a separately authorized hosted fallback,
+keeps read-only repository permissions, and delegates its core and Apple work
+to the same local script to prevent command drift. Automatic GitHub execution
+is reserved for capabilities that need a hosted trust boundary, OIDC, or the
+unattended canonical rank writer. The former Trusted-to-Pages chain is dormant;
+restoring a manual Pages publication path is a separately authorized workflow
+change. The Gradle wrapper validates the official 9.7.0 distribution SHA-256,
+and normal task resolution enforces the checked-in dependency verification
+metadata.
 
 `.github/workflows/signed-candidate.yml` is a distinct manual, environment-
 protected GitHub-hosted path for maintainer release bytes. It never runs for a
@@ -148,7 +157,7 @@ complete action blocks, run bodies, shells, exact secret environments, and
 upload paths. The final job uploads only a receipt-bound signed tarball and
 receipt after phone, Wear OS, Apple archive/IPA, profile, signer, Bundletool,
 source-revision, closed-tree, mapping, and dSYM checks all pass. Ordinary
-contributors and normal CI never receive signing material.
+contributors and local CI never receive signing material.
 
 No mutable repository script executes on the protected runner while secret
 files or the unlocked ephemeral Keychain exist. The verifier scripts are

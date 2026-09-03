@@ -6,11 +6,17 @@ This guide covers an unsigned contributor workflow. Production signing, store co
 
 | Tool | Required or verified state |
 | --- | --- |
-| JDK | JDK 17 is the local baseline and the Xcode build script selects it. CI also verifies Gradle on Temurin 21. |
-| Gradle | Use the checked-in Gradle 9.3.1 wrapper. Do not substitute a system Gradle. |
+| JDK | JDK 17 is the local baseline and the Xcode build script selects it. |
+| Gradle | Use the checked-in Gradle 9.7.0 wrapper. Do not substitute a system Gradle. |
 | Android | Android SDK 36; phone/tablet min SDK 24; Wear OS min SDK 30. |
 | Apple | macOS and Xcode 26+; Xcode 26.6 with iOS/watchOS 26.5 SDKs is locally verified. |
-| Python | Python 3 for repository/localization/store validation scripts. |
+| Python | Python 3.11 for the canonical local gate. |
+
+The local and manually hosted fallback gates use the same JDK 17/Python 3.11
+toolchain. The complete local gate additionally requires Pillow 12.2.0, `ffmpeg`/
+`ffprobe`, three Android AVDs described in [Testing](TESTING.md), and Xcode for
+the Apple portion. Run `bash scripts/local-ci.sh full`; use its scoped modes
+while iterating.
 
 `local.properties`, IDE metadata, build directories, signing material, and `.codex/` session state are intentionally ignored.
 
@@ -44,7 +50,9 @@ Useful source entry points:
 - [Android location adapter](../shared/src/androidMain/kotlin/uz/ganikhodjaev/weather/shared/location/DeviceLocationProvider.android.kt)
 - [Android surface publisher](../shared/src/androidMain/kotlin/uz/ganikhodjaev/weather/shared/WeatherSurfacePublisher.android.kt)
 
-The normal release Gradle build is unsigned unless a maintainer supplies signing outside the repository. CI artifacts are explicitly unsigned and are not store releases.
+The normal release Gradle build is unsigned unless a maintainer supplies
+signing outside the repository. Local or manually hosted CI artifacts are
+explicitly unsigned and are not store releases.
 
 ## iOS and watchOS
 

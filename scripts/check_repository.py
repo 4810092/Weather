@@ -74,6 +74,7 @@ REQUIRED = (
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/ci.yml",
     ".github/workflows/pages.yml",
     ".github/workflows/google-play-vitals-readonly.yml",
     ".github/workflows/release-materialization.yml",
@@ -95,6 +96,9 @@ REQUIRED = (
     "scripts/growth/tests/test_aso_experiment.py",
     "scripts/check_featuring_candidate_freshness.py",
     "scripts/growth/tests/test_trusted_release_workflow_security.py",
+    "scripts/local-ci.sh",
+    "scripts/run_local_android_ui_matrix.sh",
+    "scripts/run_with_timeout.py",
     "scripts/GenerateAndroidLegacyIcons.java",
     "scripts/hosted_rank_workflow_security.py",
     "scripts/google_play_vitals_workflow_security.py",
@@ -314,6 +318,29 @@ signed_candidate_workflow = (
 ).read_text(encoding="utf-8")
 for workflow_failure in validate_signed_candidate_workflow(signed_candidate_workflow):
     fail(f"signed-candidate workflow: {workflow_failure}")
+
+ordinary_ci_workflow = (ROOT / ".github/workflows/ci.yml").read_text(
+    encoding="utf-8"
+)
+if not ordinary_ci_workflow.startswith(
+    "name: Manual hosted CI fallback\n\non:\n  workflow_dispatch:\n"
+):
+    fail("ordinary hosted CI must be manual-only")
+if re.search(r"(?m)^  (?:pull_request|push|schedule):", ordinary_ci_workflow):
+    fail("ordinary hosted CI must not run automatically")
+for local_gate in (
+    "bash scripts/local-ci.sh core",
+    "bash scripts/local-ci.sh apple",
+):
+    if local_gate not in ordinary_ci_workflow:
+        fail(f"ordinary hosted fallback must delegate to {local_gate}")
+
+for workflow_path in sorted((ROOT / ".github/workflows").glob("*.yml")):
+    workflow_text = workflow_path.read_text(encoding="utf-8")
+    if re.search(r"(?m)^  (?:pull_request|push):", workflow_text):
+        fail(f"hosted push/pull CI is forbidden: {workflow_path.name}")
+    if workflow_text.startswith("name: CI\n"):
+        fail(f"retired CI workflow name would reactivate the hosted chain: {workflow_path.name}")
 
 release_materialization_workflow = (
     ROOT / ".github/workflows/release-materialization.yml"
