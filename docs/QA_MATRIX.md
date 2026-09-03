@@ -7,7 +7,7 @@ Status date: September 1, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- physical_gate:android_physical_smoke=pass;reason_sha256=e079732b4f6bbd52e936d1e64a0019fa02cbee1f50f15cc3ec53bcd809349461 -->
+<!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
 <!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
 <!-- release-authority-current:end -->
 
@@ -135,9 +135,9 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc11 passed a clean upload-signed API-25 cold/live/share/refresh/widget/process smoke, but it was not Play-delivered and the remaining cache/location/review/large-text/TalkBack/background matrix is incomplete |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — exact vc11 is available to Internal testers and passed the owner-approved runtime matrix, but conclusive post-delivery UZ Vitals and production/public proof remain missing |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — current vc11 widget population/open passes on the API-25 phone, but no current physical tablet, rotation, large-text, or TalkBack result exists |
-| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current vc1000011 is protected-signed and trusted-byte-verified, but not Play-delivered; historical vc1000010 has no physical paired-watch pass and cannot transfer |
+| Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — exact vc1000011 is available to Internal testers and passes the owner-approved Wear emulator runtime policy, but conclusive post-delivery UZ Vitals and production/public proof remain missing |
 | Apple app and widget | Distribution-signed build 9 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — current build 9 is protected-signed and trusted-byte-verified, but not TestFlight-delivered. Historical build 8 crashes on the iPad Share path and cannot transfer |
 | Apple Watch | Build-9 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — current build 9 companion is protected-signed and trusted-byte-verified, but not physically tested |
 

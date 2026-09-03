@@ -407,8 +407,8 @@ def sync(
                     "runtime QA satisfies the owner-approved emulator policy"
                 )
                 new_next = (
-                    "Preserve runtime coverage; separately Play-deliver phone and Wear "
-                    "and collect conclusive UZ Vitals"
+                    "Preserve runtime and Internal-delivery evidence; collect a complete "
+                    "post-delivery UZ Vitals window before any production decision"
                 )
             else:
                 row["decision"] = "BLOCKED · required Android runtime QA is incomplete"

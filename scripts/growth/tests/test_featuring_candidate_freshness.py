@@ -63,10 +63,10 @@ class FeaturingCandidateFreshnessTest(unittest.TestCase):
             for item in manifest["verified_claims"]
             if item["id"] == "candidate_artifact_boundary"
         )
-        claim["claim"] = claim["claim"].replace("post-delivery vitals, ", "")
+        claim["claim"] = claim["claim"].replace("post-delivery Vitals, ", "")
         self.assert_rejected(
             self.validate(manifest=manifest),
-            "candidate artifact claim omits: post-delivery vitals",
+            "candidate artifact claim omits: post-delivery Vitals",
         )
 
     def test_blocker_status_must_match_canonical_gate(self) -> None:

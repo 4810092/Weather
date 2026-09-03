@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-09-02",
+  "as_of": "2026-09-03",
   "status": "draft-blocked",
   "campaign": {
     "market": "UZ",
@@ -13,7 +13,9 @@
     "external_actions_performed": [
       "google_play_internal_phone_vc10",
       "google_play_internal_wear_vc1000010",
-      "apple_testflight_internal_build8"
+      "apple_testflight_internal_build8",
+      "google_play_internal_phone_vc11",
+      "google_play_internal_wear_vc1000011"
     ]
   },
   "scope": {
@@ -121,10 +123,11 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share-sheet anchor fix and resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). All three source-current artifacts are protected-signed, durably materialized, independently full-byte verified, and atomically 3/3 current. The prior vc10/vc1000010/build-8 set is historical internal-delivery evidence only, and build 8 is failed after two reproducible current iPad share crashes. Owner-approved emulator/simulator runtime QA now passes for both platforms, including the build-9 iPad Share regression. Play delivery, post-delivery vitals, crash close-out, App Store review, production release, public availability, and rank impact remain unproved.",
+      "claim": "Source 052d12c7dfa6411428d85205d9568462d20ff87d contains the iPad share-sheet anchor fix and resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (9). All three source-current artifacts are protected-signed, durably materialized, independently full-byte verified, and atomically 3/3 current. Google Play Internal delivery is confirmed for exact phone vc11 and Wear vc1000011 only; production remains 1.0.2. The prior vc10/vc1000010/build-8 set is historical internal-delivery evidence only, and build 8 is failed after two reproducible current iPad share crashes. Owner-approved emulator/simulator runtime QA passes for both platforms, including the build-9 iPad Share regression. Conclusive post-delivery Vitals, crash close-out, App Store review, production release, public availability, and rank impact remain unproved.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/emulator-runtime-qa-2026-09-03.md",
+        "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md",
         "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
         "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
         "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
@@ -145,7 +148,7 @@
       "id": "deliverable.candidate_public_release",
       "blocker_type": "deliverable",
       "status": "blocked",
-      "evidence": "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md"
+      "evidence": "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md"
     },
     {
       "id": "deliverable.google_promotional_content_access",

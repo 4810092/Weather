@@ -158,7 +158,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "Play-deliver phone and Wear",
+                "post-delivery UZ Vitals",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

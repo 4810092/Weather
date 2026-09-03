@@ -20,10 +20,13 @@ EXPECTED_INTERNAL_ACTIONS = [
     "google_play_internal_phone_vc10",
     "google_play_internal_wear_vc1000010",
     "apple_testflight_internal_build8",
+    "google_play_internal_phone_vc11",
+    "google_play_internal_wear_vc1000011",
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
     "growth/quality/emulator-runtime-qa-2026-09-03.md",
+    "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md",
     "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
     "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
     "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
@@ -33,9 +36,9 @@ CURRENT_EVIDENCE = [
 ]
 RUNTIME_AND_RELEASE_BOUNDARIES = (
     "emulator/simulator runtime QA",
-    "Play delivery",
+    "Google Play Internal delivery",
     "App Store review",
-    "post-delivery vitals",
+    "post-delivery Vitals",
     "crash close-out",
     "production release",
     "public availability",
@@ -173,7 +176,7 @@ def validate_featuring_candidate(
         failures,
     )
     if public_release.get("status") != "blocked" or public_release.get("evidence") != (
-        "growth/quality/internal-store-delivery-2026-09-01-8fc43b4.md"
+        "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md"
     ):
         failures.append("public release blocker must preserve the internal-only boundary")
     if "uploaded, submitted, approved, or public 1.1.0 release" not in manifest.get(

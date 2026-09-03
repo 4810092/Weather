@@ -33,7 +33,7 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- physical_gate:android_physical_smoke=pass;reason_sha256=e079732b4f6bbd52e936d1e64a0019fa02cbee1f50f15cc3ec53bcd809349461 -->
+<!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
 <!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
 <!-- release-authority-current:end -->
 
