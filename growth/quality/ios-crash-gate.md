@@ -1,14 +1,26 @@
-# iOS crash gate — 2026-08-28, refreshed 2026-09-01
+# iOS crash gate — 2026-08-28, refreshed 2026-09-03
 
 Status: **BLOCKED**. Do not scale public acquisition or send outreach while this gate is blocked.
 
 ## Evidence reviewed
 
-- The authoritative App Store Connect overview on `2026-08-31` reports two
+- A fresh authenticated read-only App Store Connect Analytics check on
+  `2026-09-03` supersedes the prior aggregate total. Public `1.0.1 (4)` now has
+  three consented crashes in both the displayed 30-day
+  (`2026-08-03`–`2026-09-01`) and 90-day
+  (`2026-06-04`–`2026-09-01`) UTC windows. The seven-day
+  (`2026-08-26`–`2026-09-01`) window contains two, with non-zero chart points
+  on August 29 and August 30. Combined with the retained August 25/August 29
+  checkpoint, a third production event became visible. Apple still exposes no
+  usable diagnostic or source-defined crash-free-session percentage. See
+  `app-store-crash-refresh-2026-09-03.md`.
+- The historical App Store Connect overview on `2026-08-31` reported two
   crashes for the public iOS `1.0.1 (4)` build: one on `2026-08-25` and one on
   `2026-08-29`. The August 29 event maps to iPhone; the August 25 device/OS
   dimension is suppressed or unavailable. Neither event exposes a diagnostic,
-  stack, incident/signature ID, or crashed-binary UUID.
+  stack, incident/signature ID, or crashed-binary UUID. This older two-event
+  state is retained for audit history and superseded by the September 3
+  refresh above.
 - The same overview reports 300 impressions, 23 product-page views, 8 first
   downloads, 1 redownload, 3 updates, and 4.86% conversion. Retention is
   insufficient. These aggregate growth values do not identify either crash,

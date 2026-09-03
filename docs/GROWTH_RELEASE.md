@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: September 2, 2026
+Status date: September 3, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
@@ -39,24 +39,23 @@ UZ-only.
 | Surface | Verified state |
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
-| iOS quality | As of August 31, two crashes are shown under version 1.0.1: August 25 and August 29. The August 29 event maps to iPhone; the older device/OS dimension is suppressed. Neither event exposes a diagnostic, stack, incident/signature ID, or binary UUID, so the crash gate remains blocked. |
+| iOS quality | A September 3 read-only Analytics refresh reports three consented crashes for public 1.0.1 in both the displayed 30-day and 90-day windows. The seven-day August 26–September 1 window contains two, on August 29 and August 30. No diagnostic, stack, incident/signature ID, crashed-process identity, binary UUID, or source-defined crash-free-session percentage is exposed, so the crash gate remains blocked. |
 | Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Exact successor build 9 is protected-signed, trusted-byte-verified, delivered through Transporter, and processed in App Store Connect. A fresh build-9 bundle path is present on the iPad and remains alive without a new crash log, but CoreDevice still classifies it as developer-built; TestFlight identity, a visible Share-sheet pass, and widget-open evidence remain unproved. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
-| Google Play Internal | Historical phone `1.1.0 (10)` and Wear `1.1.0 (1000010)` remain on separate Internal tracks. Successor vc11/vc1000011 are protected-signed and trusted-byte-verified but not delivered; exact vc11 separately passed a clean upload-signed API-25 live/share/refresh/widget smoke. Production was not changed. |
+| Google Play Internal | Exact phone `1.1.0 (11)` and Wear `1.1.0 (1000011)` are available only to Internal testers on their separate tracks as of September 3. Their exact AABs remain protected-signed and trusted-byte-verified, device support did not regress, and production remains `1.0.2`; conclusive post-delivery UZ Vitals are still unavailable. |
 | Play overview | The August 29 rolling 28-day refresh showed 778 device impressions, 21 installs, 14 first opens, and 11 monthly active devices; D7 and numeric crash/ANR rates remained unavailable. The global rating is 1.000 from one star-only rating and there are zero text reviews. UZ custom listing `4834799756935529888` remains an unpublished draft, without review submission or production change. |
 | Store policy | App Store Connect has no open review/compliance action and Google Play Policy status explicitly reports `No issues found`. Play separately warns that production phone 1.0.2 (6) contains deprecated Fragment 1.1.0. |
 
 The versioned baseline, denominator caveats, public-rank snapshot, and gate
-state live under [`growth/`](../growth/README.md). The latest September 2
-category-only read-only check places Nimbo below the first 100 entries in the
+state live under [`growth/`](../growth/README.md). The canonical September 3
+category-only hosted check places Nimbo below the first 100 entries in the
 official Apple UZ Weather chart and outside the first 30 Google Weather
 category results on all three fixed profiles. The auxiliary Apple `Toshkent
 ob-havo` search remained diagnostically incomplete, but every required goal
 surface was decisive. The verified streak therefore remains `0/7`. This
-intraday check did not rewrite the canonical daily snapshot. A bounded absence
-means only “below the captured slice”; it is never converted to a synthetic
-rank.
+snapshot is immutable in `growth-observations`. A bounded absence means only
+“below the captured slice”; it is never converted to a synthetic rank.
 
 ## Implemented, not published
 

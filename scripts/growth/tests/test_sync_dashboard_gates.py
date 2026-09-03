@@ -186,7 +186,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "The August 29 event maps to iPhone",
+                "three consented crashes in the current 30-day and 90-day",
+                artifact["manifest"]["blocks"][0]["body"],
+            )
+            self.assertIn(
+                "source-defined crash-free-session percentage",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
