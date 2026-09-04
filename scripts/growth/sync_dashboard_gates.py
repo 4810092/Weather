@@ -378,8 +378,8 @@ def sync(
         if gate_id == "ios_crash_gate":
             new_next = (
                 "Keep build 9 detached and unreleased after its Developer Rejected submission; build 10 "
-                "is selected for the editable version, so observe a natural OS-scheduled "
-                "refresh on iPhone and iPad, inspect fresh crash logs, then submit review"
+                "is Waiting for Review with manual release, so observe a natural OS-scheduled "
+                "refresh on iPhone and iPad, inspect fresh crash logs, and do not release"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -1053,12 +1053,17 @@ def sync(
         + gates["android_physical_smoke"]["reason"]
         + " "
         + gates["ios_physical_smoke"]["reason"]
-        + " No production submission or release followed."
+        + " Exact Apple build 10 is Waiting for Review in submission "
+        + "a16af9ec-1946-46be-9af4-7797a15b174d with manual release preserved; "
+        + "no Google Play production submission or public release followed."
     )
     verdict, release_authority_count = re.subn(
         r"(?:Canonical release authority remains fail-closed\.|"
         r"Replacement vc9/vc1000009/build-7 artifacts|Exact-current signed phone/Wear).*?"
-        r"No production submission or release followed\.",
+        r"(?:No production submission or release followed\.|"
+        r"Exact Apple build 10 is Waiting for Review in submission "
+        r"a16af9ec-1946-46be-9af4-7797a15b174d with manual release preserved; "
+        r"no Google Play production submission or public release followed\.)",
         release_authority,
         verdict,
         count=1,

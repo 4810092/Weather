@@ -81,10 +81,12 @@ natural OS-scheduled refresh and its post-completion crash-log window remain
 pending. Build 9 is runtime-failed. Its App Store release was cancelled, its
 former submission ended as `Developer Rejected`, and no public release occurred. At 15:47
 Asia/Tashkent on September 4, build 9 was detached and exact build 10 was
-selected and saved for version 1.1.0. The version is now `Prepare for
-Submission` with manual release preserved. Review resubmission remains blocked
-until the natural background gate passes; build 9 must not be reattached or
-released. Detailed
+selected and saved for version 1.1.0. At 16:03, App Store Connect confirmed that
+submission `a16af9ec-1946-46be-9af4-7797a15b174d` contains only iOS `1.1.0
+(10)` and is `Waiting for Review`. Manual release remains selected, so approval
+cannot publish automatically. The natural background gate remains blocked;
+review submission does not prove runtime stability, approval, or public release.
+Build 9 must not be reattached or released. Detailed
 storage evidence is in the
 [materialization record](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
 Trusted evidence is in

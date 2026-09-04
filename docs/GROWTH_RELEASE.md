@@ -49,7 +49,7 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | A September 3 read-only Analytics refresh reports three consented crashes for public 1.0.1 in both the displayed 30-day and 90-day windows. The seven-day August 26–September 1 window contains two, on August 29 and August 30. No diagnostic, stack, incident/signature ID, crashed-process identity, binary UUID, or source-defined crash-free-session percentage is exposed, so the crash gate remains blocked. |
-| Apple internal delivery | Historical `1.1.0 (8)` failed on iPad Share. Exact TestFlight build 9 is runtime-failed by two UUID-matched main-process crashes during OS-scheduled background refresh. Its App Store release was cancelled, its former submission ended as `Developer Rejected`, and no public release occurred. At 15:47 Asia/Tashkent on September 4, build 9 was detached from the editable version and exact build 10 was selected and saved instead. Version 1.1.0 is now `Prepare for Submission` with manual release preserved; review resubmission remains blocked until the natural background gate passes. Protected run `33852229166`, materialization run `33855931653`, and final trusted run `33859392482` establish exact corrected build-10 signed-byte identity. Build 10 is processed, attached to the two-person internal group, and installed on the connected iPhone and iPad; bounded physical smoke and the iPad widget render are clean, while a natural OS-scheduled refresh remains pending. |
+| Apple internal delivery | Historical `1.1.0 (8)` failed on iPad Share. Exact TestFlight build 9 is runtime-failed by two UUID-matched main-process crashes during OS-scheduled background refresh. Its App Store release was cancelled, its former submission ended as `Developer Rejected`, and no public release occurred. At 15:47 Asia/Tashkent on September 4, build 9 was detached from the editable version and exact build 10 was selected and saved instead. At 16:03 the owner explicitly directed review submission; App Store Connect confirmed submission `a16af9ec-1946-46be-9af4-7797a15b174d` contains exactly iOS `1.1.0 (10)` and is `Waiting for Review`. Manual release remains selected, so approval cannot publish automatically. Protected run `33852229166`, materialization run `33855931653`, and final trusted run `33859392482` establish exact corrected build-10 signed-byte identity. Build 10 is processed, attached to the two-person internal group, and installed on the connected iPhone and iPad; bounded physical smoke and the iPad widget render are clean, while a natural OS-scheduled refresh remains pending and the runtime gates stay blocked. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
 | Google Play Internal | Exact phone `1.1.0 (11)` and Wear `1.1.0 (1000011)` are available only to Internal testers on their separate tracks as of September 3. Their exact AABs remain protected-signed and trusted-byte-verified, device support did not regress, and production remains `1.0.2`; conclusive post-delivery UZ Vitals are still unavailable. |
@@ -299,10 +299,11 @@ signed artifacts on the upload authority. Historical
 vc11/vc1000011 are available only to Play Internal. Historical build 9 is
 runtime-failed; its release was cancelled into `Developer Rejected`, and it was
 detached from the editable version at 15:47 Asia/Tashkent on September 4. Exact
-build 10 is now selected and saved for version 1.1.0, which is `Prepare for
-Submission` with manual release preserved. Review resubmission remains blocked
-until the natural background gate passes; build 9 must not be reattached or
-released, and no public release occurred.
+build 10 was submitted for App Review at 16:03 as the only item in submission
+`a16af9ec-1946-46be-9af4-7797a15b174d`; it is `Waiting for Review` with manual
+release preserved. The owner directed review submission as a separate stage;
+the natural background gate and public release remain blocked. Build 9 must not
+be reattached or released, and no public release occurred.
 The [historical build-7 delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
 and its physical evidence document what happened, but cannot close successor
 trusted verification, delivery, or runtime gates. Play Internal and TestFlight remain bounded

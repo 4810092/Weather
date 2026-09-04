@@ -186,7 +186,7 @@ def validate_featuring_candidate(
         "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md"
     ):
         failures.append("public release blocker must preserve the internal-only boundary")
-    if "build 10 App Store review, approval, or public 1.1.0 release" not in manifest.get(
+    if "build 10 App Store approval or public 1.1.0 release" not in manifest.get(
         "prohibited_claims", []
     ):
         failures.append("public-release claim must remain prohibited")

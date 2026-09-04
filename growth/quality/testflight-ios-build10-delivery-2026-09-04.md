@@ -92,7 +92,7 @@ the one-hour-earliest refresh request. A separate read-only hourly audit will
 compare later app-group timestamps and system crash inventories without
 launching either app.
 
-A read-only poll at 15:43 Asia/Tashkent confirmed that both devices still had
+A read-only poll at 16:01 Asia/Tashkent confirmed that both devices still had
 exact `1.1.0 (10)` and no additional `Nimbo-*.ips` file. The iPhone and iPad
 `updated_at` values and plist hashes were still identical to the baselines
 above, so this poll does not establish a natural background completion.
@@ -110,13 +110,22 @@ A fresh authenticated reload at 15:55 showed exactly one build row, build 10,
 with version status `Prepare for Submission`, manual release, and the seven-day
 phased update still selected.
 
+At 16:02, after the owner repeated the explicit submission instruction, App
+Store Connect created a review draft containing exactly one object: iOS
+`1.1.0 (10)`. The final submission completed at 16:03. The confirmation reported
+one submitted object, and submission
+`a16af9ec-1946-46be-9af4-7797a15b174d` now shows `Waiting for Review` with build
+10 as its only item. Manual release remains selected, so approval cannot publish
+the version automatically; no public release occurred.
+
 ## Fail-closed boundary
 
 Exact device reports prove build 9's main process crashes during OS-scheduled
 background refresh. Build 10 has been exercised on both affected form factors
 and its iPad widget has been visually observed. It still requires a natural
 OS-scheduled background-refresh completion and fresh post-completion crash-log
-inspection before the runtime gates can change. No App Store review resubmission
-or public release was performed. The owner authorized review submission, but the
-repository's fail-closed policy still prohibits that final click until the
-natural background gate passes.
+inspection before the runtime gates can change. The App Store review resubmission
+was not treated as runtime-gate evidence: the owner explicitly directed review
+submission as a separate stage, while the crash and physical-smoke gates remain
+blocked. Submission does not prove approval, runtime stability, public release,
+or future crash freedom.
