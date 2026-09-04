@@ -5,11 +5,13 @@ that checkpoint and may be superseded later in the same document. The latest rec
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
 Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
-the iPad share fix and the background-refresh actor-isolation correction. No
-artifact is signed from this source, so the committed manifest is atomically
-blocked. The prior vc11/vc1000011/build-9 set remains historical-superseded
-provenance; build 9 has two exact TestFlight background-refresh crashes and its
-signing, delivery, review, and QA evidence cannot validate build 10.
+the iPad share fix and the background-refresh actor-isolation correction.
+Protected run `33852229166` signed and candidate-byte-verified this exact set,
+but the artifact is not yet durably materialized or independently trusted, so
+the committed manifest remains atomically blocked. The prior
+vc11/vc1000011/build-9 set remains historical-superseded provenance; build 9
+has exact TestFlight background-refresh crashes and its signing, delivery,
+review, and QA evidence cannot validate build 10.
 Exact phone vc11 separately passed a clean upload-signed physical API-25
 cold/live/share/refresh/widget/open/process smoke on September 2. It was not
 Play-delivered and does not close the tablet, Wear, or Vitals requirements.
@@ -33,7 +35,7 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a5dcba17f63f00dcc7ad959d21b8909f646c054183196c281fc28e2eb5d0cd4 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=ce4d35fdf2c9b8868f66706a1262d39666e7353719d5bc0e6650a9160982e8a9 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
@@ -55,9 +57,13 @@ builds.
 
 The upload manifest is now atomically blocked for this source. The prior
 vc11/vc1000011/build-9 bytes are retained only as historical-superseded
-provenance; no signed build-10 artifact exists. No hosted signing, upload,
-withdrawal, review-state change, production action, or public release was
-performed. Build 9 remains under manual release and must not be released.
+provenance. Protected run `33852229166` signed and candidate-byte-verified the
+replacement set; artifact `9929313750` contains Apple build-10 IPA SHA-256
+`20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061`.
+The bytes are not yet durably materialized, independently trusted, uploaded, or
+TestFlight-exercised. Build 9 is approved as `Pending Developer Release` under
+manual release and must not be released. No upload, review withdrawal,
+production action, or public release was performed.
 Detailed evidence is in
 [`growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md`](../growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md).
 

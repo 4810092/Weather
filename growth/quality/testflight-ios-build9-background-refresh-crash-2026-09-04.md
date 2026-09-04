@@ -26,6 +26,15 @@ deleted.
 - The UUID of the retained build-9 app dSYM matches the UUID in both reports.
 - Device class and OS: iPad mini 5 (`iPad11,1`), iPadOS `26.6.1 (23G83)`.
 
+## TestFlight build-level metric
+
+A read-only TestFlight build-detail observation on 2026-09-04 reports exact
+Nimbo Weather `1.1.0 (9)`: 2 installs, 7 sessions, and 3 crashes. This is
+build-scoped UI telemetry. The tester-group aggregate of 22 sessions and 8
+crashes spans builds and is not attributed to build 9. The two recovered,
+UUID-matched iPad `.ips` reports below are separately symbolicated incident
+evidence; they do not identify or account for every console-counted crash.
+
 ## Recovered incidents
 
 Both reports name `Nimbo` as `procName`, not `NimboWidget`, and both have the
@@ -89,7 +98,10 @@ with an explicit `MainActor` hop.
   iOS tests, `18/18` native surface tests, and unsigned Release iOS/widget/watch
   builds. No missing signed byte was relabelled as current.
 - The corrected build 10 source is not present in the already signed/uploaded
-  build 9, and no build-10 signed artifact exists yet.
+  build 9. Protected run `33852229166` has since signed and
+  candidate-byte-verified build 10, but that transient artifact is not yet
+  durably materialized, independently trusted, uploaded, or exercised through
+  TestFlight.
 
 Apple build 9 is therefore a failed candidate even though its bytes and prior
 source identity remain verifiable. It must remain unreleased. A monotonically

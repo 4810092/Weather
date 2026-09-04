@@ -6,16 +6,17 @@
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a5dcba17f63f00dcc7ad959d21b8909f646c054183196c281fc28e2eb5d0cd4 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=ce4d35fdf2c9b8868f66706a1262d39666e7353719d5bc0e6650a9160982e8a9 -->
 <!-- release-authority-current:end -->
 
 Current source `fc4b6de9` retains vc11/vc1000011 and advances Apple to build 10
-with the background-refresh actor-isolation correction. No artifact has been
-signed from this source, so the manifest is atomically blocked. The previously
-verified vc11/vc1000011/build-9 bytes remain historical-superseded provenance;
-build 9 is explicitly failed after two exact TestFlight background-refresh
-crashes, and none of its signing, delivery, review, or QA evidence transfers to
-build 10.
+with the background-refresh actor-isolation correction. Protected run
+`33852229166` signed and candidate-byte-verified the exact set, but the
+transient artifact is not yet durably materialized or independently trusted,
+so the manifest remains atomically blocked. The previously verified
+vc11/vc1000011/build-9 bytes remain historical-superseded provenance; build 9
+is explicitly failed after exact TestFlight background-refresh crashes, and
+none of its signing, delivery, review, or QA evidence transfers to build 10.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
@@ -53,6 +54,7 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
+| Current protected build-10 candidate | [quality/signed-candidate-run-33852229166.md](quality/signed-candidate-run-33852229166.md) and [receipt](quality/receipts/signed-candidate-33852229166.json) | Exact source/run/artifact/package/tree and three candidate byte identities; protected signing only, with durable materialization, trusted verification, upload, TestFlight, QA, review, and publication still unproven |
 | Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
 | Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share, `font_scale=1.3`, system-UI-proven offline/cache/recovery, active system-TalkBack, natural background-network, and physical widget render/update/open smoke; active Wear tester track; remaining icon/tablet/Wear/vitals boundaries |
 | Android legacy launcher icon | [quality/android-legacy-launcher-icon-2026-09-01.md](quality/android-legacy-launcher-icon-2026-09-01.md) | Physical API-25 template-icon failure, exact legacy resource identity, and replacement-version boundary |
@@ -67,14 +69,14 @@ or historical device result does not close those independent gates.
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
 | GitHub-hosted signed-candidate readiness | [quality/github-hosted-signed-candidate-readiness-2026-08-30.md](quality/github-hosted-signed-candidate-readiness-2026-08-30.md) | Dated pre-execution design snapshot: two isolated manual master-only hosted jobs, closed-tree verification, the then-current 4/8-secret blocker, and the no-store-upload boundary; the successful run outcome is recorded separately above |
 | GitHub release-signing environment | [quality/github-release-signing-environment-2026-08-30.md](quality/github-release-signing-environment-2026-08-30.md) | Dated environment-creation snapshot with the then-current 4/8-secret inventory and no-run/no-signing boundary; current protected-run evidence is recorded by the successful signed-candidate entry above |
-| Current release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and atomic 3/3 trusted-hosted byte authority; current delivery and bounded phone/iPhone QA are recorded separately |
-| Current trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-09-01-build8-hosted.md](quality/release-artifact-full-verification-2026-09-01-build8-hosted.md) | Trusted run `33508130379`, exact mutable draft/assets, full byte identities, non-secret receipt, and mandatory later-reuse recheck boundary |
-| Current protected signed candidate | [quality/signed-candidate-run-33493356066.md](quality/signed-candidate-run-33493356066.md) and [receipt](quality/receipts/signed-candidate-33493356066.json) | Exact CI/run/artifact/package/tree and three successor byte identities |
-| Current durable draft materialization | [quality/release-materialization-2026-09-01-run-33498085260.md](quality/release-materialization-2026-09-01-run-33498085260.md) | Exact unpublished draft/release/asset IDs and hashes; no tag, publication, or store delivery |
-| Current internal store delivery | [quality/internal-store-delivery-2026-09-01-8fc43b4.md](quality/internal-store-delivery-2026-09-01-8fc43b4.md) | Exact vc10/vc1000010/build-8 Play Internal and TestFlight delivery, post-promotion trusted reuse check, and unchanged-production boundary |
-| Current Play-delivered phone QA | [quality/play-delivered-android-vc10-smoke-2026-09-01.md](quality/play-delivered-android-vc10-smoke-2026-09-01.md) | Exact vc10 Play update on the API-25 General Mobile, live/share/refresh/widget/process pass, and remaining tablet/Wear/vitals boundary |
-| Current TestFlight iPhone QA | [quality/testflight-ios-build8-smoke-2026-09-01.md](quality/testflight-ios-build8-smoke-2026-09-01.md) | Exact build-8 TestFlight install, live/refresh/share-copy pass with one literal percent sign, and remaining crash/iPad/widget/watch/iOS-15 boundary |
-| Current iPad build-9 widget render | [quality/ios-build9-ipad-widget-2026-09-02.md](quality/ios-build9-ipad-widget-2026-09-02.md) | Physical iPadOS 26.6.1 medium-widget render with a privacy-bounded crop; CoreDevice still reports developer-built identity, so Share, widget-open, TestFlight, watch, iOS-15, crash-window, and release gates remain blocked |
+| Historical build-8 release source authority | [quality/release-artifact-source-sync-2026-09-01-8fc43b4.md](quality/release-artifact-source-sync-2026-09-01-8fc43b4.md) | Exact `8fc43b4` vc10/vc1000010/build-8 identity and atomic 3/3 trusted-hosted byte authority; superseded by later source revisions |
+| Historical build-8 trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-09-01-build8-hosted.md](quality/release-artifact-full-verification-2026-09-01-build8-hosted.md) | Trusted run `33508130379`, exact mutable draft/assets, full byte identities, and mandatory later-reuse boundary for that superseded set |
+| Historical build-8 protected signed candidate | [quality/signed-candidate-run-33493356066.md](quality/signed-candidate-run-33493356066.md) and [receipt](quality/receipts/signed-candidate-33493356066.json) | Exact run/artifact/package/tree and three superseded byte identities |
+| Historical build-8 durable draft materialization | [quality/release-materialization-2026-09-01-run-33498085260.md](quality/release-materialization-2026-09-01-run-33498085260.md) | Exact unpublished draft/release/asset IDs and hashes for the superseded build-8 set |
+| Historical build-8 internal store delivery | [quality/internal-store-delivery-2026-09-01-8fc43b4.md](quality/internal-store-delivery-2026-09-01-8fc43b4.md) | Exact vc10/vc1000010/build-8 Play Internal and TestFlight delivery; production stayed unchanged |
+| Historical build-8 Play-delivered phone QA | [quality/play-delivered-android-vc10-smoke-2026-09-01.md](quality/play-delivered-android-vc10-smoke-2026-09-01.md) | Exact vc10 Play update on the API-25 General Mobile and bounded runtime pass; not transferable to current source |
+| Historical build-8 TestFlight iPhone QA | [quality/testflight-ios-build8-smoke-2026-09-01.md](quality/testflight-ios-build8-smoke-2026-09-01.md) | Exact build-8 TestFlight runtime pass; not transferable to current build 10 |
+| Historical build-9 iPad widget render | [quality/ios-build9-ipad-widget-2026-09-02.md](quality/ios-build9-ipad-widget-2026-09-02.md) | Physical iPadOS 26.6.1 medium-widget render for runtime-failed build 9; not transferable to build 10 |
 | Historical build-7 internal delivery | [quality/internal-store-delivery-2026-09-01-ba824be.md](quality/internal-store-delivery-2026-09-01-ba824be.md) | Exact vc9/vc1000009/build-7 internal delivery plus explicit non-production boundary |
 | Historical build-7 TestFlight QA | [quality/testflight-ios-build7-smoke-2026-09-01.md](quality/testflight-ios-build7-smoke-2026-09-01.md) | Exact iPhone TestFlight install and bounded runtime pass that found the duplicate-percent share defect |
 | Review inbox | [reviews/README.md](reviews/README.md) and [reviews/review-inbox.csv](reviews/review-inbox.csv) | Daily non-PII aggregate ratings/review check, 48-hour substantive-response policy, notification boundary, and machine-validated action/SLA state |

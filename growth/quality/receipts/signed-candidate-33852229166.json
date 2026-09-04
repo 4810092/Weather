@@ -1,0 +1,284 @@
+{
+  "artifacts": {
+    "android_phone": {
+      "byte_verified": true,
+      "details": {
+        "bundletool_sha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+        "bundletool_version": "1.18.3",
+        "mapping": {
+          "embedded_path": "BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map",
+          "filename": "nimbo-phone-1.1.0-vc11-mapping.txt",
+          "sha256": "178ac8d62ddb0ea7359f1c95259add2fec16b9aee561e04ce2481412c230ccae",
+          "size": 42367345
+        },
+        "package_id": "uz.ganikhodjaev.weather",
+        "signer_sha256": "431548a4871c9c090eee808ac3a34898f5d78602d9e747dfe81e228415aac252",
+        "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+        "version_code": 11,
+        "version_name": "1.1.0"
+      },
+      "sha256": "52e924d4ce5dba7370007632b9e421aa548af79b6395ba4b6b0ee1645daf6862",
+      "source_sync": "candidate-verified"
+    },
+    "apple": {
+      "byte_verified": true,
+      "details": {
+        "archive_products": [
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather",
+            "macho_uuids": [
+              "64AFA35C-03B1-3981-87E8-0D9B8881BB9E (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather",
+              "sha256": "eb248d9edecc50d7b6e4b1a935efeb8be6eca44f1d1a07f7fe5d20e6f042fae9",
+              "uuid": "BF8FBEB9-C6C7-411B-9AA9-F2C909D39643"
+            },
+            "role": "app",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          },
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather.widget",
+            "macho_uuids": [
+              "5AD6AAB9-FB0B-3FBB-A8B1-D7EC41B5A72A (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.widget",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget",
+              "sha256": "356c6fde225b0ab844ed4558877a53a5e126011ff93b99239b9851421ec6d667",
+              "uuid": "97AA4DE4-EF16-4744-A767-EB6B9774977D"
+            },
+            "role": "widget",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          },
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather.watchkitapp",
+            "macho_uuids": [
+              "5993CC9B-2BFE-3754-AADC-E234B34F6BA1 (arm64_32)",
+              "70EAEF28-EC27-3C2F-9AC9-B9ABDFC7CC3A (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.watchkitapp",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp",
+              "sha256": "59038be7184860800f59cc65e63a5e08a6002006bb96a45fdd897e9580a4810c",
+              "uuid": "12FF3C9B-4CD7-4504-B5C9-3B5507A60847"
+            },
+            "role": "watch",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          }
+        ],
+        "build": 10,
+        "products": [
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather",
+            "macho_uuids": [
+              "64AFA35C-03B1-3981-87E8-0D9B8881BB9E (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather",
+              "sha256": "eb248d9edecc50d7b6e4b1a935efeb8be6eca44f1d1a07f7fe5d20e6f042fae9",
+              "uuid": "BF8FBEB9-C6C7-411B-9AA9-F2C909D39643"
+            },
+            "role": "app",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          },
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather.widget",
+            "macho_uuids": [
+              "5AD6AAB9-FB0B-3FBB-A8B1-D7EC41B5A72A (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.widget",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget",
+              "sha256": "356c6fde225b0ab844ed4558877a53a5e126011ff93b99239b9851421ec6d667",
+              "uuid": "97AA4DE4-EF16-4744-A767-EB6B9774977D"
+            },
+            "role": "widget",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          },
+          {
+            "build": 10,
+            "bundle_id": "uz.ganikhodjaev.weather.watchkitapp",
+            "macho_uuids": [
+              "5993CC9B-2BFE-3754-AADC-E234B34F6BA1 (arm64_32)",
+              "70EAEF28-EC27-3C2F-9AC9-B9ABDFC7CC3A (arm64)"
+            ],
+            "provisioning_profile": {
+              "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.watchkitapp",
+              "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp",
+              "sha256": "59038be7184860800f59cc65e63a5e08a6002006bb96a45fdd897e9580a4810c",
+              "uuid": "12FF3C9B-4CD7-4504-B5C9-3B5507A60847"
+            },
+            "role": "watch",
+            "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+            "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+            "team_id": "5SWEZ7HTYP",
+            "version": "1.1.0"
+          }
+        ],
+        "release": "1.1.0",
+        "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+        "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+        "team_id": "5SWEZ7HTYP"
+      },
+      "sha256": "20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061",
+      "source_sync": "candidate-verified"
+    },
+    "wear_os": {
+      "byte_verified": true,
+      "details": {
+        "bundletool_sha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+        "bundletool_version": "1.18.3",
+        "package_id": "uz.ganikhodjaev.weather",
+        "signer_sha256": "431548a4871c9c090eee808ac3a34898f5d78602d9e747dfe81e228415aac252",
+        "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+        "version_code": 1000011,
+        "version_name": "1.1.0"
+      },
+      "sha256": "0bb295d2898a0cfcaff018ec43bc0d70663d1529771087cb48a0d7dd1b3c77a8",
+      "source_sync": "candidate-verified"
+    }
+  },
+  "boundary": "This receipt proves staged signed bytes only. It does not promote the committed upload manifest, prove physical QA, upload a build, or establish store availability.",
+  "candidate_set": {
+    "apple_archive": {
+      "directory_count": 87,
+      "file_count": 99,
+      "top_level_entries": [
+        "Info.plist",
+        "Products",
+        "dSYMs"
+      ],
+      "total_bytes": 78991847,
+      "tree_sha256": "e05b7586ca00405566721a2d50d265f6cab799309f88be02590bcbe965a0fc3f"
+    },
+    "apple_dsyms": {
+      "app": {
+        "directory_count": 6,
+        "file_count": 3,
+        "top_level_entries": [
+          "Contents"
+        ],
+        "total_bytes": 39045522,
+        "tree_sha256": "483a0514ec4142e5c777e2b91b3242a78098143fbceac1df090fb7e58a726ef5"
+      },
+      "watch": {
+        "directory_count": 7,
+        "file_count": 4,
+        "top_level_entries": [
+          "Contents"
+        ],
+        "total_bytes": 2609313,
+        "tree_sha256": "113f7aaa433a8c517f0ae3cc011304da57ac65233e45ee1aaac5ebf99e1c746d"
+      },
+      "widget": {
+        "directory_count": 6,
+        "file_count": 3,
+        "top_level_entries": [
+          "Contents"
+        ],
+        "total_bytes": 1391285,
+        "tree_sha256": "8c5903499443e70a05d55273024473d182b555ab08b95c28b7755c846a176723"
+      }
+    },
+    "directory_count": 88,
+    "export_options_sha256": "d913719a273e731d81e8cd2d545fa084f5ecae0960cb89648b7ad51b044aded4",
+    "file_count": 104,
+    "phone_mapping": {
+      "embedded_path": "BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map",
+      "filename": "nimbo-phone-1.1.0-vc11-mapping.txt",
+      "sha256": "178ac8d62ddb0ea7359f1c95259add2fec16b9aee561e04ce2481412c230ccae",
+      "size": 42367345
+    },
+    "top_level_entries": [
+      "ExportOptions.plist",
+      "Nimbo.ipa",
+      "Nimbo.xcarchive",
+      "nimbo-phone-1.1.0-vc11-mapping.txt",
+      "nimbo-phone-1.1.0-vc11.aab",
+      "nimbo-wear-1.1.0-vc1000011.aab"
+    ],
+    "total_bytes": 152297678,
+    "tree_sha256": "d2aaf8caca3e087fb6acc46eb35c9506cc51b1b52be814f1b9a14b5a6aeef9d0"
+  },
+  "package": {
+    "candidate_tree_sha256": "d2aaf8caca3e087fb6acc46eb35c9506cc51b1b52be814f1b9a14b5a6aeef9d0",
+    "filename": "signed-candidate-bytes.tar.gz",
+    "format": "tar.gz",
+    "sha256": "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254"
+  },
+  "provenance": {
+    "provider": "github-actions",
+    "run": {
+      "attempt": 1,
+      "id": 33852229166
+    },
+    "source": {
+      "head_sha": "9b785e19b52f09e3eca37cf0c00ef961a03bd73b",
+      "ref": "refs/heads/master"
+    },
+    "verifiers": {
+      "release_artifact_verifier.py": {
+        "sha256": "584c08f0acf308a4362a6f9205495a6b730694d3f6438e1499a82abaa0d2f35b"
+      },
+      "verify_signed_candidate.py": {
+        "sha256": "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8"
+      }
+    },
+    "workflow": {
+      "path": ".github/workflows/signed-candidate.yml",
+      "sha256": "877ffa2656f160b4699de88020bb4952e0ffaa3ae00febdf4c1d6e85acf116d7"
+    }
+  },
+  "release": "1.1.0",
+  "schema_version": 3,
+  "signing_provenance": {
+    "apple_profiles": {
+      "profiles": {
+        "app": {
+          "bundle_id": "uz.ganikhodjaev.weather",
+          "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather",
+          "sha256": "eb248d9edecc50d7b6e4b1a935efeb8be6eca44f1d1a07f7fe5d20e6f042fae9",
+          "uuid": "BF8FBEB9-C6C7-411B-9AA9-F2C909D39643"
+        },
+        "watch": {
+          "bundle_id": "uz.ganikhodjaev.weather.watchkitapp",
+          "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp",
+          "sha256": "59038be7184860800f59cc65e63a5e08a6002006bb96a45fdd897e9580a4810c",
+          "uuid": "12FF3C9B-4CD7-4504-B5C9-3B5507A60847"
+        },
+        "widget": {
+          "bundle_id": "uz.ganikhodjaev.weather.widget",
+          "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget",
+          "sha256": "356c6fde225b0ab844ed4558877a53a5e126011ff93b99239b9851421ec6d667",
+          "uuid": "97AA4DE4-EF16-4744-A767-EB6B9774977D"
+        }
+      },
+      "schema_version": 1
+    }
+  },
+  "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
+  "state": "candidate-bytes-verified-not-manifest-promoted"
+}
