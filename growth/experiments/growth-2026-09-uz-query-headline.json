@@ -42,7 +42,6 @@
   "current_blockers": [
     "ios_crash_gate",
     "ios_physical_smoke",
-    "release_artifact_source_sync",
     "scale_status:hold",
     "public_release_unverified",
     "weekly_traffic_unknown",

@@ -123,12 +123,16 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source fc4b6de9e28fd8956eb64462294b8bcdf405ce7e resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and corrected Apple 1.1.0 (10), but all three current artifact entries are blocked with no signed or byte-verified successor. Google Play Internal delivery is confirmed only for historical-superseded vc11 and vc1000011 from source 052d12c7; production remains 1.0.2. Historical Apple build 9 is failed after two exact TestFlight background-refresh crashes in the main Nimbo process, so its prior signing, delivery, review, Share, and simulator evidence cannot qualify build 10 for release. Release/source, Apple runtime, and crash gates are blocked. Earlier emulator/simulator runtime QA remains evidence only for the paths it exercised. Conclusive post-delivery Vitals, crash close-out, App Store review, production release, public availability, and rank impact remain unproved.",
+      "claim": "Source fc4b6de9e28fd8956eb64462294b8bcdf405ce7e resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and corrected Apple 1.1.0 (10). Protected signing, durable materialization, and manual trusted run 33857134803 establish an atomic 3/3 verified-current signed-byte set, so the release/source gate passes. Google Play Internal delivery is confirmed only for historical-source vc11 and vc1000011; current-source production remains unsubmitted and public production remains 1.0.2. Historical Apple build 9 is failed after two exact TestFlight background-refresh crashes in the main Nimbo process; corrected build 10 is not uploaded or TestFlight-exercised, so prior signing, delivery, review, Share, and simulator evidence cannot qualify its runtime. Apple runtime and crash gates remain blocked. Earlier emulator/simulator runtime QA remains evidence only for the paths it exercised. Conclusive post-delivery Vitals, crash close-out, App Store review, production release, public availability, and rank impact remain unproved.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
+        "growth/quality/signed-candidate-run-33852229166.md",
+        "growth/quality/release-materialization-2026-09-04-run-33855931653.md",
+        "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+        "growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md",
+        "growth/quality/receipts/trusted-release-verification-33857134803.json",
         "growth/quality/emulator-runtime-qa-2026-09-03.md",
         "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md",
-        "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
         "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
         "growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md",
         "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",
@@ -147,12 +151,6 @@
     },
     {
       "id": "ios_physical_smoke",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
-      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

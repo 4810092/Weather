@@ -25,9 +25,13 @@ EXPECTED_INTERNAL_ACTIONS = [
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
+    "growth/quality/signed-candidate-run-33852229166.md",
+    "growth/quality/release-materialization-2026-09-04-run-33855931653.md",
+    "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+    "growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md",
+    "growth/quality/receipts/trusted-release-verification-33857134803.json",
     "growth/quality/emulator-runtime-qa-2026-09-03.md",
     "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md",
-    "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
     "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
     "growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md",
     "growth/quality/testflight-ios-build8-ipad-share-crash-2026-09-02.md",

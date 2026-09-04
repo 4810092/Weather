@@ -135,7 +135,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "no signed, source-bound successor",
+                "3/3 verified-current",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Create a monotonic Apple successor",
+                "recheck the mutable draft",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "all three current entries have no SHA-256",
+                "atomically 3/3 verified-current",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -231,7 +231,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "build-9 bytes are retained only as historical-superseded provenance",
+                "build 9 remains runtime-failed and unreleased",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(

@@ -12,31 +12,25 @@ creative-set references, experiment gates, and marketing/support/privacy URLs.
 Its `product.release` identifies the coordinated candidate described by the
 repository, not the currently public store versions; the validator requires it
 to match the Android, Wear OS, and Apple source versions.
-`upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its exact locale,
-metadata, creative, and artifact source-sync state. It intentionally remains
-`draft-blocked`: current phone vc8, Wear `1000008`, and Apple build 6 are now
-atomically `verified-current` with exact hashes and signing/source-sync
-evidence. The phone entry now binds a bounded exact-AAB-derived physical API 25
-smoke; Wear and Apple physical-QA fields remain null, and the shared Android/
-Wear gate stays blocked. Protected run
-`33381050098` produced and retained the signed set. Hosted materialization run
-`33392732428` additionally stored the
-exact package and receipt as hash-bound assets in unpublished draft release
-`379745439` and rechecked their API sizes and digests. A fresh local macOS run
-then downloaded the exact draft assets, safely extracted the closed tree,
-verified pinned Bundletool 1.18.3, and returned `byte_verified=true` for the
-exact phone, Wear, and Apple bytes. The draft remains mutable. Every successful
-current-`master` CI run must pass the protected hosted chain: a no-checkout
-Ubuntu job stages only the two exact assets, then a separate read-only macOS
-job reopens and verifies every byte before Pages can run.
-Trusted run `33405849102` completed that protected check for evidence head
-`b07192e`; the mutable draft must still be rechecked before every later use.
-Its full `source_revision` is
+`upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its
+exact locale, metadata, creative, and artifact source-sync state. It remains
+top-level `draft-blocked`: current phone vc11, Wear `1000011`, and corrected
+Apple build 10 from source `fc4b6de9` are atomically `verified-current` with
+exact hashes and signing/source-sync evidence, while all three physical-QA
+fields remain null. Protected run `33852229166` produced and
+candidate-byte-verified the signed set. Materialization run `33855931653`
+stored its exact package and receipt as fixed assets in unpublished draft
+release `382592451`. Manual-only trusted run `33857134803` independently
+reopened the draft, safely extracted the closed tree, verified pinned
+Bundletool 1.18.3, and returned `byte_verified=true` for all three artifacts.
+The related Pages run was skipped and no deployment was created. The draft
+remains mutable and must be rechecked before every later use. Its full
+`source_revision` is
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
-drifts. The older signed phone vc7, signed Wear `1000008`, and Apple build 5
-bytes remain historical candidates because their source predates the current
-revision. This is a preflight inventory, not evidence of a console upload.
+drifts. Historical-source artifacts and runtime observations cannot satisfy the
+current physical fields. This is exact signed-byte authority, not evidence of a
+console upload, TestFlight runtime pass, review, rollout, or publication.
 The pinned verification policy is executable rather than documentary. Static
 contract mode can validate the committed manifest without private files, but
 full verification of any `verified-current` claim must reopen the exact external
@@ -52,9 +46,9 @@ directory with this layout (the AAB/IPA names come from the manifest):
 
 ```text
 <artifact-root>/
-├── nimbo-phone-1.1.0-vc8.aab
-├── nimbo-phone-1.1.0-vc8-mapping.txt
-├── nimbo-wear-1.1.0-vc1000008.aab
+├── nimbo-phone-1.1.0-vc11.aab
+├── nimbo-phone-1.1.0-vc11-mapping.txt
+├── nimbo-wear-1.1.0-vc1000011.aab
 ├── Nimbo.ipa
 ├── Nimbo.xcarchive/
 └── ExportOptions.plist
@@ -66,23 +60,23 @@ copies each store artifact into a read-only temporary staging file, verifies
 that copy, and re-hashes both the staged and source bytes before returning.
 Public pull-request CI performs the static manifest contract without private
 signed inputs. Full byte authority remains a protected GitHub-hosted macOS
-verification responsibility, including pinned Bundletool for Android. The
-local full pass authorized the atomic `3/3 verified-current` promotion. The
-protected staging and read-only macOS verifier must pass for each successful
-current-`master` CI run; the top-level manifest and physical gates remain
+verification responsibility, including pinned Bundletool for Android. Trusted
+run `33857134803` authorized the atomic `3/3 verified-current` promotion. The
+protected staging and read-only macOS verifier must pass before every later
+artifact use; the top-level manifest and Apple physical/crash gates remain
 blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
-the tree was clean when they were built. Protected run `33381050098` has now
-supplied that same-clean-checkout build/sign/verify provenance and a retained
-closed package. The protected hosted chain must recheck the exact mutable draft
-assets and reopen those bytes through the complete pinned verifier before later
-use. The local full pass and exact promoted hashes are
+the tree was clean when they were built. Protected run `33852229166` supplied
+same-clean-checkout build/sign/verify provenance and a retained closed package.
+The protected hosted chain must recheck the exact mutable draft assets and
+reopen those bytes through the complete pinned verifier before later use. The
+current hosted pass and exact promoted hashes are
 recorded in
-[`growth/quality/release-artifact-full-verification-2026-08-31-local.md`](../growth/quality/release-artifact-full-verification-2026-08-31-local.md)
+[`growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md`](../growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md)
 and
-[`growth/quality/signed-candidate-run-33381050098.md`](../growth/quality/signed-candidate-run-33381050098.md).
+[`growth/quality/signed-candidate-run-33852229166.md`](../growth/quality/signed-candidate-run-33852229166.md).
 The durable draft locator and its mutable-draft boundary are recorded in
-[`growth/quality/release-materialization-2026-08-31-run-33392732428.md`](../growth/quality/release-materialization-2026-08-31-run-33392732428.md).
+[`growth/quality/release-materialization-2026-09-04-run-33855931653.md`](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

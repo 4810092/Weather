@@ -8,8 +8,10 @@ Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
 the iPad share fix and the background-refresh actor-isolation correction.
 Protected run `33852229166` signed and candidate-byte-verified this exact set,
 and run `33855931653` durably retained it in unpublished draft `382592451`.
-Independent trusted verification is still pending, so the committed manifest
-remains atomically blocked. The prior
+Manual-only trusted run `33857134803` independently verified all three complete
+signed artifacts, so the committed manifest is atomically `3/3
+verified-current`. Physical-QA evidence remains null, and build 10 is not yet
+uploaded or TestFlight-exercised. The prior
 vc11/vc1000011/build-9 set remains historical-superseded provenance; build 9
 has exact TestFlight background-refresh crashes and its signing, delivery,
 review, and QA evidence cannot validate build 10.
@@ -32,11 +34,11 @@ claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:fc4b6de9e28fd8956eb64462294b8bcdf405ce7e -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=817e9dd158a2909eb3bb4894d8ff3a4f5cd528b82edb2e28bb527051ab285ec8 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4450425b2ae30687cb4d66f5a6a1b708db8962de719489f652cedf64c66aa3f3 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
@@ -63,12 +65,16 @@ replacement set; artifact `9929313750` contains Apple build-10 IPA SHA-256
 `20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061`.
 Materialization run `33855931653` retained the exact package and receipt as
 assets `544061853` and `544061890` in unpublished draft `382592451`, with no
-resolving Git tag. Independent trusted verification, upload, and
-TestFlight exercise remain pending. Build 9 is approved as `Pending Developer
+resolving Git tag. Manual-only trusted run `33857134803` independently reopened
+the draft and returned `source_sync=verified-current` plus
+`byte_verified=true` for all three artifacts. Upload and TestFlight exercise
+remain pending. Build 9 is approved as `Pending Developer
 Release` under manual release and must not be released. No upload, review
 withdrawal, production action, or public release was performed. Detailed
 storage evidence is in the
 [materialization record](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
+Trusted evidence is in
+[`growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md`](../growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md).
 Detailed evidence is in
 [`growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md`](../growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md).
 
