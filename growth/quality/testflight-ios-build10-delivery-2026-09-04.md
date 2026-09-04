@@ -92,19 +92,23 @@ the one-hour-earliest refresh request. A separate read-only hourly audit will
 compare later app-group timestamps and system crash inventories without
 launching either app.
 
-A read-only poll at 15:17 Asia/Tashkent confirmed that both devices still had
+A read-only poll at 15:43 Asia/Tashkent confirmed that both devices still had
 exact `1.1.0 (10)` and no additional `Nimbo-*.ips` file. The iPhone and iPad
 `updated_at` values and plist hashes were still identical to the baselines
 above, so this poll does not establish a natural background completion.
 
 ## App Store replacement state
 
-The build-9 App Store release was cancelled after its runtime failure. App Store
-Connect now reports version `1.1.0` as `Developer Rejected`; no public release
-occurred. A fresh read at 15:20 Asia/Tashkent still showed build 9 in the
-editable version's build table. Build 10 is available to internal TestFlight
-testers but is not yet selected for the App Store version. Build 9 must not be
-reattached or released, and App Store replacement remains incomplete.
+The build-9 App Store release was cancelled after its runtime failure. At 15:47
+Asia/Tashkent, the owner-authorized App Store Connect replacement detached build
+9, selected only exact build 10 (`df093ea0-e1c9-4880-ba12-883acee5a7d1`) for
+version `1.1.0`, and saved the change. The version now reports `Prepare for
+Submission`; manual release and the seven-day phased update remain selected.
+Build 9 is detached and unreleased; the former submission ended as `Developer
+Rejected`. It must not be reattached or released, and no public release occurred.
+A fresh authenticated reload at 15:55 showed exactly one build row, build 10,
+with version status `Prepare for Submission`, manual release, and the seven-day
+phased update still selected.
 
 ## Fail-closed boundary
 
@@ -113,4 +117,6 @@ background refresh. Build 10 has been exercised on both affected form factors
 and its iPad widget has been visually observed. It still requires a natural
 OS-scheduled background-refresh completion and fresh post-completion crash-log
 inspection before the runtime gates can change. No App Store review resubmission
-or public release was performed.
+or public release was performed. The owner authorized review submission, but the
+repository's fail-closed policy still prohibits that final click until the
+natural background gate passes.

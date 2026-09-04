@@ -377,9 +377,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Keep build 9 Developer Rejected and unreleased; select build 10 "
-                "for the editable version only after detaching 9, observe a natural "
-                "OS-scheduled refresh on iPhone and iPad, then inspect fresh crash logs"
+                "Keep build 9 detached and unreleased after its Developer Rejected submission; build 10 "
+                "is selected for the editable version, so observe a natural OS-scheduled "
+                "refresh on iPhone and iPad, inspect fresh crash logs, then submit review"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":

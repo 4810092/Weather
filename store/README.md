@@ -35,7 +35,11 @@ connected iPhone and iPad. Bounded build-10 smoke and a visible iPad widget
 render are recorded separately, but the manifest field remains null until the
 natural OS-scheduled background completion and fresh crash-log window are
 proved. That provider state is separate from signed-byte authority and is not
-evidence of completed runtime QA, review replacement, rollout, or publication.
+evidence of completed runtime QA, review submission, rollout, or publication.
+At 15:47 Asia/Tashkent on September 4, failed build 9 was detached from the
+editable App Store version and exact build 10 was selected and saved. Version
+1.1.0 remains `Prepare for Submission` with manual release preserved until the
+natural background gate allows review resubmission.
 The pinned verification policy is executable rather than documentary. Static
 contract mode can validate the committed manifest without private files, but
 full verification of any `verified-current` claim must reopen the exact external

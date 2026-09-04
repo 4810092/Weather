@@ -78,11 +78,13 @@ attached it to the existing two-person internal TestFlight group. The
 connected iPhone and iPad now report installed build 10; bounded smoke produced
 no new crash report and the iPad Home Screen widget visibly rendered. The
 natural OS-scheduled refresh and its post-completion crash-log window remain
-pending. Build 9 is runtime-failed. Its App Store release was cancelled and the
-version is now `Developer Rejected`; no public release occurred. A fresh
-console read still shows build 9 attached to the editable version, so it must
-not be reattached or released and replacement with build 10 is not yet
-complete. Detailed
+pending. Build 9 is runtime-failed. Its App Store release was cancelled, its
+former submission ended as `Developer Rejected`, and no public release occurred. At 15:47
+Asia/Tashkent on September 4, build 9 was detached and exact build 10 was
+selected and saved for version 1.1.0. The version is now `Prepare for
+Submission` with manual release preserved. Review resubmission remains blocked
+until the natural background gate passes; build 9 must not be reattached or
+released. Detailed
 storage evidence is in the
 [materialization record](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
 Trusted evidence is in
