@@ -20,7 +20,7 @@ exact hashes and signing/source-sync evidence, while all three physical-QA
 fields remain null. Protected run `33852229166` produced and
 candidate-byte-verified the signed set. Materialization run `33855931653`
 stored its exact package and receipt as fixed assets in unpublished draft
-release `382592451`. Manual-only trusted run `33857134803` independently
+release `382592451`. Final manual-only trusted run `33859392482` independently
 reopened the draft, safely extracted the closed tree, verified pinned
 Bundletool 1.18.3, and returned `byte_verified=true` for all three artifacts.
 The related Pages run was skipped and no deployment was created. The draft
@@ -29,8 +29,13 @@ remains mutable and must be rechecked before every later use. Its full
 shared with the release/source gate; `check_release_qa_matrix.py` fails if that
 revision differs from the current product/build inputs or if either authority
 drifts. Historical-source artifacts and runtime observations cannot satisfy the
-current physical fields. This is exact signed-byte authority, not evidence of a
-console upload, TestFlight runtime pass, review, rollout, or publication.
+current physical fields. Exact Apple build 10 was subsequently uploaded,
+processed, attached to the internal TestFlight group, and installed on the
+connected iPhone and iPad. Bounded build-10 smoke and a visible iPad widget
+render are recorded separately, but the manifest field remains null until the
+natural OS-scheduled background completion and fresh crash-log window are
+proved. That provider state is separate from signed-byte authority and is not
+evidence of completed runtime QA, review replacement, rollout, or publication.
 The pinned verification policy is executable rather than documentary. Static
 contract mode can validate the committed manifest without private files, but
 full verification of any `verified-current` claim must reopen the exact external
@@ -60,8 +65,9 @@ copies each store artifact into a read-only temporary staging file, verifies
 that copy, and re-hashes both the staged and source bytes before returning.
 Public pull-request CI performs the static manifest contract without private
 signed inputs. Full byte authority remains a protected GitHub-hosted macOS
-verification responsibility, including pinned Bundletool for Android. Trusted
-run `33857134803` authorized the atomic `3/3 verified-current` promotion. The
+verification responsibility, including pinned Bundletool for Android. Final
+trusted run `33859392482` authorized the exact upload authority after the
+atomic `3/3 verified-current` promotion. The
 protected staging and read-only macOS verifier must pass before every later
 artifact use; the top-level manifest, current runtime gates, and Apple crash gate remain
 blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is

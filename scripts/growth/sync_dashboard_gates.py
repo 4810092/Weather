@@ -377,9 +377,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Keep build 9 unreleased; source-bind a monotonically newer Apple "
-                "build, exercise its TestFlight background/widget path on iPhone "
-                "and iPad, then collect post-release crash-free evidence"
+                "Keep build 9 Developer Rejected and unreleased; select build 10 "
+                "for the editable version only after detaching 9, observe a natural "
+                "OS-scheduled refresh on iPhone and iPad, then inspect fresh crash logs"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -425,12 +425,12 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · exact TestFlight build 9 crashes during background "
-                    "refresh and the correction has no TestFlight successor"
+                    "BLOCKED · exact build 10 physical smoke and iPad widget render "
+                    "are clean, but natural background completion is unproved"
                 )
                 new_next = (
-                    "Exercise a corrected, source-bound successor's background/widget "
-                    "path on TestFlight iPhone and iPad"
+                    "Leave exact TestFlight build 10 backgrounded on iPhone and iPad, "
+                    "observe a natural OS-scheduled refresh, then inspect fresh crash logs"
                 )
         if not all(
             isinstance(value, str)

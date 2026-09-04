@@ -8,10 +8,14 @@ Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
 the iPad share fix and the background-refresh actor-isolation correction.
 Protected run `33852229166` signed and candidate-byte-verified this exact set,
 and run `33855931653` durably retained it in unpublished draft `382592451`.
-Manual-only trusted run `33857134803` independently verified all three complete
-signed artifacts, so the committed manifest is atomically `3/3
-verified-current`. Physical-QA evidence remains null, and build 10 is not yet
-uploaded or TestFlight-exercised. The prior
+Final manual-only trusted run `33859392482` independently verified all three
+complete signed artifacts on exact upload authority `d7dbdc3e`, so the
+committed manifest is atomically `3/3 verified-current`. Build 10 is uploaded,
+processed, attached to the internal TestFlight group, and installed on the
+connected iPhone and iPad. Bounded physical smoke and a visible iPad widget
+render are recorded separately; the manifest physical-QA field remains null
+until a natural OS-scheduled refresh and fresh post-completion crash-log window
+are complete. The prior
 vc11/vc1000011/build-9 set remains historical-superseded provenance; build 9
 has exact TestFlight background-refresh crashes and its signing, delivery,
 review, and QA evidence cannot validate build 10.
@@ -37,8 +41,8 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9db20b75357baec7fb8ffc1250a190b98e41afe8f8598e8b7dc5b445bde8d3 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4450425b2ae30687cb4d66f5a6a1b708db8962de719489f652cedf64c66aa3f3 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=89e62052d4c6b33524bdc48065e6bd67215e0b33f76e5fd1ad87dfbc92e6b756 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=08c6bc72471fa419add30834bca51e64079e9d07a472c65e70ed5c121840fb4f -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
@@ -65,16 +69,26 @@ replacement set; artifact `9929313750` contains Apple build-10 IPA SHA-256
 `20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061`.
 Materialization run `33855931653` retained the exact package and receipt as
 assets `544061853` and `544061890` in unpublished draft `382592451`, with no
-resolving Git tag. Manual-only trusted run `33857134803` independently reopened
-the draft and returned `source_sync=verified-current` plus
-`byte_verified=true` for all three artifacts. Upload and TestFlight exercise
-remain pending. Build 9 is approved as `Pending Developer
-Release` under manual release and must not be released. No upload, review
-withdrawal, production action, or public release was performed. Detailed
+resolving Git tag. Final manual-only trusted run `33859392482` independently
+reopened the draft on exact master `d7dbdc3e` and returned
+`source_sync=verified-current` plus `byte_verified=true` for all three
+artifacts. Transporter then delivered the exact IPA at 14:44 Asia/Tashkent;
+App Store Connect confirmed processed binary `1.1.0 (10)` at 14:46 and
+attached it to the existing two-person internal TestFlight group. The
+connected iPhone and iPad now report installed build 10; bounded smoke produced
+no new crash report and the iPad Home Screen widget visibly rendered. The
+natural OS-scheduled refresh and its post-completion crash-log window remain
+pending. Build 9 is runtime-failed. Its App Store release was cancelled and the
+version is now `Developer Rejected`; no public release occurred. A fresh
+console read still shows build 9 attached to the editable version, so it must
+not be reattached or released and replacement with build 10 is not yet
+complete. Detailed
 storage evidence is in the
 [materialization record](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
 Trusted evidence is in
 [`growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md`](../growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md).
+Delivery evidence is in
+[`growth/quality/testflight-ios-build10-delivery-2026-09-04.md`](../growth/quality/testflight-ios-build10-delivery-2026-09-04.md).
 Detailed evidence is in
 [`growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md`](../growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md).
 

@@ -8,6 +8,20 @@ review, production, publication, or ranking gates.
 
 ## Trusted invocation
 
+The final pre-upload verification was
+[run `33859392482`](https://github.com/4810092/Weather/actions/runs/33859392482),
+attempt 1, `workflow_dispatch` on exact master
+`d7dbdc3e42d93d2fe1a15219cfb51aba1ba7dd6e`; it completed successfully from
+`2026-09-04T09:39:05Z` through `2026-09-04T09:40:21Z`. The no-checkout
+`stage` job `100980097865` and separate read-only macOS `verify` job
+`100980159491` both passed, including full signed-byte verification and the
+final live-master/staged-file revalidation. Its retained receipt is GitHub
+artifact `9931523244`; the staged candidate is artifact `9931493836`.
+
+The earlier successful run below was the promotion-authorizing verification;
+the final run repeated the complete boundary after the manifest and gate
+correction was committed:
+
 - Repository: `4810092/Weather`, repository ID `1329018769`.
 - Manual-only trusted workflow:
   [run `33857134803`](https://github.com/4810092/Weather/actions/runs/33857134803),
@@ -65,15 +79,34 @@ The one-day staged-candidate artifact is `9930629026`, named
 `387fefe99e22fab2d87f2457b990e334c58c7d00235e7cb4491b9fedea9e61a1`.
 The durable source remains the unpublished draft asset above.
 
+The final run's non-secret receipt artifact is named
+`trusted-release-verification-d7dbdc3e42d93d2fe1a15219cfb51aba1ba7dd6e`,
+is 1,746 bytes, and has GitHub artifact digest
+`9e1bd6b6a0879a955755699b58bee966457933bc122c1a131884f8a8d2563ec6`.
+Its sole JSON file has SHA-256
+`c6a62a36c3164397134b44cb512a1780567700396df978294452055bd91a9046`;
+a checked-in copy is retained under
+[`receipts/trusted-release-verification-33859392482.json`](receipts/trusted-release-verification-33859392482.json).
+The final staged candidate artifact is 58,228,674 bytes with GitHub artifact
+digest `276070d0bd44ee497c95e0cbc7739a9ddfdaa3c80231e759a4ca39acad08ccc6`.
+
 ## No-deployment and runtime boundary
 
-The related Pages run `33857253805` completed `skipped`; both `build`
+The final related Pages run `33859495781` completed `skipped`; both `build`
+and `deploy` jobs had zero executed steps. The Deployments API returned no
+deployment for exact workflow SHA `d7dbdc3e`. The earlier related Pages run
+`33857253805` also completed `skipped`; both `build`
 (`100973310215`) and `deploy` (`100973310454`) had zero executed steps. The
 Deployments API returned no deployment for workflow SHA `d34a0a8`. Trusted
 verification therefore did not publish the website or a store release.
 
 The upload manifest remains top-level `draft-blocked`. The exact bytes are now
-eligible for atomic `3/3 verified-current` source/byte authority, but Apple
-build 10 is not yet uploaded or exercised through TestFlight. Build 9 remains
-runtime-failed and must not be released. Every later use must repeat the
-protected recheck because the draft storage is mutable.
+atomically `3/3 verified-current`. Apple build 10 was subsequently uploaded,
+processed by App Store Connect, and attached to the internal TestFlight group;
+that later provider state is recorded separately and is not a consequence of
+this verifier. Bounded build-10 smoke and an iPad widget render are recorded
+separately; the natural OS-scheduled background completion and its fresh
+crash-log window remain incomplete. Build 9 remains runtime-failed and must not
+be released. Every
+later use must repeat the protected recheck because the draft storage is
+mutable.

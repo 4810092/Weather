@@ -127,11 +127,11 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "exact TestFlight build 9 crashes",
+                "natural background completion is unproved",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "monotonically newer Apple build",
+                "observe a natural OS-scheduled refresh",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
@@ -231,7 +231,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "build 9 remains runtime-failed and unreleased",
+                "build 9 remains runtime-failed and must not be reattached or released",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(

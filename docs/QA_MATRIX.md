@@ -7,18 +7,22 @@ Status date: September 4, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9db20b75357baec7fb8ffc1250a190b98e41afe8f8598e8b7dc5b445bde8d3 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4450425b2ae30687cb4d66f5a6a1b708db8962de719489f652cedf64c66aa3f3 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=89e62052d4c6b33524bdc48065e6bd67215e0b33f76e5fd1ad87dfbc92e6b756 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=08c6bc72471fa419add30834bca51e64079e9d07a472c65e70ed5c121840fb4f -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds replacement source
 `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e` to vc11, vc1000011, and corrected
 Apple build 10. Protected run `33852229166` signed and
 candidate-byte-verified the exact set, and run `33855931653` durably retained
-it in unpublished draft `382592451`. Manual-only trusted run `33857134803`
-independently verified all three complete signed artifacts, so all current
-entries are atomically `verified-current`. Physical-QA evidence remains null,
-and Apple build 10 is not yet uploaded or TestFlight-exercised. The prior
+it in unpublished draft `382592451`. Final manual-only trusted run
+`33859392482` independently verified all three complete signed artifacts on
+exact upload authority `d7dbdc3e`, so all current entries are atomically
+`verified-current`. Apple build 10 is processed, attached to internal
+TestFlight testers, and installed on the connected iPhone and iPad. Bounded
+physical smoke and a visible iPad widget render are recorded separately; the
+manifest physical-QA field remains null until a natural OS-scheduled refresh
+and fresh post-completion crash-log observation are complete. The prior
 vc11/vc1000011/build-9 bytes are
 historical-superseded; build 9 is explicitly failed after exact TestFlight
 background-refresh crashes in the main Nimbo process.
@@ -61,8 +65,10 @@ also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
 and the exact App Store Connect `ExportOptions.plist`. Current build 10 has an
 exact externally retained distribution archive and IPA that passed trusted
-verification, but neither has been installed through TestFlight. Historical
-build 9 remains byte-verifiable but is
+verification. The exact binary has since been installed through TestFlight on
+the connected iPhone and iPad, and the iPad widget render is visually
+confirmed, but the natural OS-scheduled background completion and its fresh
+crash-log window are not yet proved. Historical build 9 remains byte-verifiable but is
 runtime-failed by two exact TestFlight background-refresh crash reports.
 The protected staged hosted chain is mandatory before every later use. The
 single staged directory layout and action-time command are documented in
@@ -77,9 +83,13 @@ and its explicit external-build provenance boundary are recorded in
   Apple to build 10 while retaining vc11/vc1000011. Swift 6 Debug/Release,
   shared iOS, and native surface tests pass locally. Protected run
   `33852229166` signed and candidate-byte-verified the exact set, and run
-  `33855931653` durably materialized it. Manual-only trusted run `33857134803`
-  independently verified every current signed byte, so the manifest is
-  atomically `3/3 verified-current`; physical-QA evidence remains null.
+  `33855931653` durably materialized it. Final manual-only trusted run
+  `33859392482` independently verified every current signed byte, so the
+  manifest is atomically `3/3 verified-current`. App Store Connect then
+  processed build 10 and attached it to internal testers. Bounded iPhone/iPad
+  smoke and a visible iPad widget render are recorded; the manifest
+  physical-QA field remains null because natural OS-scheduled background
+  completion and its post-completion crash-log window remain unproved.
 - Historical source `052d12c7` produced the protected-signed, materialized, and
   trusted-byte-verified vc11/vc1000011/build-9 set. Its Android artifacts remain
   available only to Internal testers. Its Apple build 9 is failed after two
@@ -147,10 +157,10 @@ and its explicit external-build provenance boundary are recorded in
 
 | Surface | Required current checks | Current result |
 | --- | --- | --- |
-| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current-source vc11 is signed and independently byte-verified by run `33857134803`, but its manifest physical evidence remains null; post-delivery UZ Vitals and production/public proof are also missing |
+| Android phone | Source-synced upload-signed install/update, cold start, live and cached forecast, denied location/search, share, review policy, large text, TalkBack, background retry, and crash/ANR inspection on the required API range | **Blocked** — current-source vc11 is signed and independently byte-verified by final run `33859392482`, but its manifest physical evidence remains null; post-delivery UZ Vitals and production/public proof are also missing |
 | Android tablet and widget | Phone/tablet layouts, widget population/open path, refresh, offline cache, rotation, large text, and TalkBack on the source-synced signed candidate | **Blocked** — current-source vc11 is independently byte-verified, but retained vc11 runtime evidence belongs to the historical atomic source set and cannot fill the current physical-evidence field |
 | Wear OS | Play-compatible signed install, cold start, black launch surface, forecast render, phone handoff, and paired-device behavior | **Blocked** — current-source vc1000011 is independently byte-verified, but current-source runtime evidence, paired behavior, and post-delivery UZ Vitals remain missing |
-| Apple app and widget | Distribution-signed build 10 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — corrected build 10 is independently signed-byte-verified but not uploaded or TestFlight-exercised; historical build 9 crashes on the background-refresh completion and cannot transfer |
+| Apple app and widget | Distribution-signed build 10 on iPhone and iPad, cold/live/cache/search/share/background/widget paths, Dynamic Type, RTL, VoiceOver, and bounded crash inspection | **Blocked** — corrected build 10 is processed and installed through TestFlight on the connected iPhone and iPad; bounded smoke is clean and the iPad widget render is visually confirmed. Remaining matrix paths include cache/search/share, Dynamic Type, RTL, and VoiceOver; critically, the natural OS-scheduled refresh and its fresh crash-log window are unproved. Historical build 9 crashes on that completion and cannot transfer |
 | Apple Watch | Build-10 signed companion install, launch, current forecast, localization, and paired handoff | **Blocked** — the build-10 signed companion is independently byte-verified but not installed or exercised; historical build-9 evidence cannot transfer |
 
 ## Historical evidence — non-transferable

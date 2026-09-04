@@ -22,6 +22,7 @@ EXPECTED_INTERNAL_ACTIONS = [
     "apple_testflight_internal_build8",
     "google_play_internal_phone_vc11",
     "google_play_internal_wear_vc1000011",
+    "apple_testflight_internal_build10",
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
@@ -29,7 +30,8 @@ CURRENT_EVIDENCE = [
     "growth/quality/release-materialization-2026-09-04-run-33855931653.md",
     "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
     "growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md",
-    "growth/quality/receipts/trusted-release-verification-33857134803.json",
+    "growth/quality/receipts/trusted-release-verification-33859392482.json",
+    "growth/quality/testflight-ios-build10-delivery-2026-09-04.md",
     "growth/quality/emulator-runtime-qa-2026-09-03.md",
     "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md",
     "growth/quality/release-artifact-full-verification-2026-09-02-build9-hosted.md",
@@ -184,7 +186,7 @@ def validate_featuring_candidate(
         "growth/quality/google-play-internal-delivery-2026-09-03-052d12c.md"
     ):
         failures.append("public release blocker must preserve the internal-only boundary")
-    if "uploaded, submitted, approved, or public 1.1.0 release" not in manifest.get(
+    if "build 10 App Store review, approval, or public 1.1.0 release" not in manifest.get(
         "prohibited_claims", []
     ):
         failures.append("public-release claim must remain prohibited")
