@@ -59,6 +59,34 @@ private final class BackgroundRefreshState: @unchecked Sendable {
     }
 }
 
+// These factories deliberately live outside the @MainActor AppDelegate.
+// A closure created inside AppDelegate inherits MainActor isolation, but the
+// Kotlin background updater invokes its completion from Dispatchers.Default.
+// The nonisolated outer closures may run on either queue and explicitly hop to
+// MainActor before touching the BGTask lifecycle.
+private func makeBackgroundRefreshExpirationHandler(
+    state: BackgroundRefreshState,
+    task: BGAppRefreshTask
+) -> @Sendable () -> Void {
+    {
+        Task { @MainActor in
+            state.expire(task: task)
+        }
+    }
+}
+
+private func makeBackgroundRefreshCompletion(
+    state: BackgroundRefreshState,
+    task: BGAppRefreshTask
+) -> @Sendable (KotlinBoolean) -> Void {
+    { result in
+        let success = result.boolValue
+        Task { @MainActor in
+            state.finish(task: task, success: success)
+        }
+    }
+}
+
 private func storedInterfaceStyle() -> UIUserInterfaceStyle {
     switch UserDefaults.standard.string(forKey: nimboThemePreferenceKey) {
     case "Light":
@@ -116,12 +144,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     private func handleBackgroundRefresh(_ task: BGAppRefreshTask) {
         scheduleBackgroundRefresh()
         let state = BackgroundRefreshState()
-        task.expirationHandler = { state.expire(task: task) }
-        let handle = backgroundUpdater.startRefresh { result in
-            Task { @MainActor in
-                state.finish(task: task, success: result.boolValue)
-            }
-        }
+        task.expirationHandler = makeBackgroundRefreshExpirationHandler(
+            state: state,
+            task: task
+        )
+        let handle = backgroundUpdater.startRefresh(
+            onComplete: makeBackgroundRefreshCompletion(state: state, task: task)
+        )
         state.install(handle)
     }
 
