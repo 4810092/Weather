@@ -127,15 +127,15 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "owner-approved simulator policy",
+                "exact TestFlight build 9 crashes",
                 rows["ios_physical_smoke"]["decision"],
             )
             self.assertIn(
-                "source-current TestFlight",
+                "monotonically newer Apple build",
                 rows["ios_crash_gate"]["next_action"],
             )
             self.assertIn(
-                "independent full-byte verification passed",
+                "no signed, source-bound successor",
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -154,7 +154,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
             self.assertIn(
-                "Require the protected hosted chain",
+                "Create a monotonic Apple successor",
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -182,7 +182,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "upload manifest is atomically 3/3 verified-current",
+                "all three current entries have no SHA-256",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -231,7 +231,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "Protected run 33616952267 passed signing and candidate-byte verification",
+                "build-9 bytes are retained only as historical-superseded provenance",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(

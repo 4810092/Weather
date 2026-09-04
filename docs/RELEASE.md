@@ -4,13 +4,12 @@ This is a chronological release journal. Statements inside a dated paragraph des
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
 OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
-Wear 1000011, and Apple build 9 from source `052d12c7`. It contains the iPad
-share popover-anchor fix. Protected run `33616952267` signed and candidate-byte-
-verified the exact set, and run `33626711140` durably materialized those exact
-bytes. Trusted run `33629490609` independently reverified them; the committed
-manifest is atomically `3/3 verified-current`. The prior phone vc10, Wear vc1000010, and Apple build-8 set is
-historical internal-delivery evidence. Build 8 passed bounded iPhone QA but
-reproduced two iPad Share crashes, so none of its evidence transfers to build 9.
+Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
+the iPad share fix and the background-refresh actor-isolation correction. No
+artifact is signed from this source, so the committed manifest is atomically
+blocked. The prior vc11/vc1000011/build-9 set remains historical-superseded
+provenance; build 9 has two exact TestFlight background-refresh crashes and its
+signing, delivery, review, and QA evidence cannot validate build 10.
 Exact phone vc11 separately passed a clean upload-signed physical API-25
 cold/live/share/refresh/widget/open/process smoke on September 2. It was not
 Play-delivered and does not close the tablet, Wear, or Vitals requirements.
@@ -29,13 +28,38 @@ review, public availability, or complete delivery-linked physical matrix is
 claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- source_revision:fc4b6de9e28fd8956eb64462294b8bcdf405ce7e -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a5dcba17f63f00dcc7ad959d21b8909f646c054183196c281fc28e2eb5d0cd4 -->
 <!-- release-authority-current:end -->
+
+## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
+
+Two device system reports for exact TestFlight build 9 share one UUID-matched
+Swift 6 failure signature: the main Nimbo process traps in
+`_swift_task_checkIsolatedSwift` when Kotlin completes an OS-scheduled refresh
+on `Dispatchers.Default`. Exact-dSYM symbolication resolves the path through the
+inline completion in `AppDelegate.handleBackgroundRefresh(_:)` to
+`BackgroundWeatherUpdater.kt:90`. The widget extension is not the crashed
+process.
+
+Product source `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e` moves the outer
+completion and expiration callbacks outside `@MainActor AppDelegate`, marks
+them `@Sendable`, and explicitly hops to `MainActor` only for BGTask lifecycle
+work. It advances Apple to build 10. Canonical local Apple CI passes shared iOS
+tests, `18/18` native surface tests, and unsigned Release iOS/widget/watch
+builds.
+
+The upload manifest is now atomically blocked for this source. The prior
+vc11/vc1000011/build-9 bytes are retained only as historical-superseded
+provenance; no signed build-10 artifact exists. No hosted signing, upload,
+withdrawal, review-state change, production action, or public release was
+performed. Build 9 remains under manual release and must not be released.
+Detailed evidence is in
+[`growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md`](../growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md).
 
 ## Nimbo 1.1.0 successor build-9 signing checkpoint — 2026-09-02
 

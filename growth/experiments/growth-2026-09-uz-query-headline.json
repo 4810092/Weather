@@ -5,12 +5,14 @@
   "objective": "Improve organic UZ Weather-category discovery with one title-only query-intent variable.",
   "storefront": "UZ",
   "single_variable": "title",
-  "product_source_revision": "052d12c7dfa6411428d85205d9568462d20ff87d",
+  "product_source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
   "metadata_source": "store/metadata.json",
   "evidence_refs": [
     "growth/data/public-rank/2026-09-01.json",
     "growth/reports/aso-competitor-audit-2026-08-29.md",
     "growth/quality/testflight-ios-build9-delivery-2026-09-02.md",
+    "growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md",
+    "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
     "growth/quality/gates.json"
   ],
   "approved_intent_terms": [
@@ -39,6 +41,8 @@
   },
   "current_blockers": [
     "ios_crash_gate",
+    "ios_physical_smoke",
+    "release_artifact_source_sync",
     "scale_status:hold",
     "public_release_unverified",
     "weekly_traffic_unknown",

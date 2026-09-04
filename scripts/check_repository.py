@@ -493,6 +493,9 @@ if "final class SceneDelegate: UIResponder, UIWindowSceneDelegate" not in app_de
     fail("iOS UI lifecycle must be owned by a UIWindowSceneDelegate")
 if "UIWindow(frame: UIScreen.main.bounds)" in app_delegate:
     fail("iOS must not recreate the legacy application-owned window lifecycle")
+app_delegate_main_index = app_delegate.find("@main")
+if app_delegate_main_index < 0:
+    fail("iOS AppDelegate must retain its @main entry point")
 if not re.search(
     r"BGTaskScheduler\.shared\.register\(\s*"
     r"forTaskWithIdentifier:\s*weatherRefreshTaskIdentifier,\s*"
@@ -500,14 +503,35 @@ if not re.search(
     app_delegate,
 ):
     fail("the @MainActor iOS background-refresh handler must run on the main queue")
-if not re.search(
-    r"backgroundUpdater\.startRefresh\s*\{[^}]*"
+completion_factory = re.search(
+    r"private func makeBackgroundRefreshCompletion\([^}]*"
+    r"\)\s*->\s*@Sendable\s*\(KotlinBoolean\)\s*->\s*Void\s*\{[^}]*"
     r"Task\s*\{\s*@MainActor\s+in[^}]*"
     r"state\.finish",
     app_delegate,
     re.DOTALL,
+)
+if completion_factory is None or completion_factory.start() > app_delegate_main_index:
+    fail("iOS background-refresh completion must use a nonisolated callback factory")
+if not re.search(
+    r"backgroundUpdater\.startRefresh\(\s*"
+    r"onComplete:\s*makeBackgroundRefreshCompletion",
+    app_delegate,
+    re.DOTALL,
 ):
-    fail("iOS background-refresh completion must hop back to MainActor")
+    fail("iOS must not create the Kotlin completion inside @MainActor AppDelegate")
+expiration_factory = re.search(
+    r"private func makeBackgroundRefreshExpirationHandler\([^}]*"
+    r"\)\s*->\s*@Sendable\s*\(\)\s*->\s*Void\s*\{[^}]*"
+    r"Task\s*\{\s*@MainActor\s+in[^}]*"
+    r"state\.expire",
+    app_delegate,
+    re.DOTALL,
+)
+if expiration_factory is None or expiration_factory.start() > app_delegate_main_index:
+    fail("iOS background-refresh expiration must use a nonisolated callback factory")
+if "backgroundUpdater.startRefresh {" in app_delegate:
+    fail("iOS Kotlin completion must not inherit AppDelegate MainActor isolation")
 
 for bundle_id in (f"{identity}.widget", f"{identity}.watchkitapp"):
     if f"PRODUCT_BUNDLE_IDENTIFIER: {bundle_id}" not in ios:

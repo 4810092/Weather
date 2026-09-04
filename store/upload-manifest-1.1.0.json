@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "release": "1.1.0",
-  "source_revision": "052d12c7dfa6411428d85205d9568462d20ff87d",
+  "source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e",
   "prepared_on": "2026-08-30",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
@@ -23,32 +23,53 @@
     "android_phone": {
       "filename": "nimbo-phone-1.1.0-vc11.aab",
       "version_code": 11,
-      "source_sync": "verified-current",
-      "sha256": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
-      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": null
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "nimbo-phone-1.1.0-vc11.aab",
+        "version_code": 11,
+        "sha256": "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+        "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
+        "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md"
+      }
     },
     "wear_os": {
       "filename": "nimbo-wear-1.1.0-vc1000011.aab",
       "version_code": 1000011,
-      "source_sync": "verified-current",
-      "sha256": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
-      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": null
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "nimbo-wear-1.1.0-vc1000011.aab",
+        "version_code": 1000011,
+        "sha256": "48a713d298be12552f08995b7cff3166df0f4ab173c62612854598eb93dcab7a",
+        "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
+        "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md"
+      }
     },
     "apple": {
       "filename": "Nimbo.ipa",
-      "build": 9,
-      "source_sync": "verified-current",
-      "sha256": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
-      "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
-      "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md",
-      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-02-052d12c.md",
-      "historical_candidate": null
+      "build": 10,
+      "source_sync": "blocked",
+      "sha256": null,
+      "signing_evidence": null,
+      "physical_qa_evidence": null,
+      "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+      "historical_candidate": {
+        "status": "historical-superseded",
+        "filename": "Nimbo.ipa",
+        "build": 9,
+        "sha256": "a57674d7d467474a0697fb39c834a9829f53e68ddb9d4480168bf2dcf3f7ac29",
+        "signing_evidence": "growth/quality/signed-candidate-run-33616952267.md",
+        "physical_qa_evidence": "growth/quality/emulator-runtime-qa-2026-09-03.md"
+      }
     }
   },
   "listing_payloads": [
@@ -145,9 +166,9 @@
     }
   ],
   "blocking_gates": [
-    "iOS crash diagnosis",
-    "Play delivery of phone 1.1.0 (11) and Wear OS 1.1.0 (1000011), followed by conclusive post-delivery UZ Vitals",
-    "Apple 1.1.0 (9) attachment, review, public availability, and a conclusive post-release crash-free window",
+    "Protected signing and independent byte verification for corrected Apple 1.1.0 (10)",
+    "Conclusive post-delivery UZ Vitals for Internal phone 1.1.0 (11) and Wear OS 1.1.0 (1000011) before any production decision",
+    "Corrected Apple 1.1.0 (10) TestFlight background/widget validation, review, public availability, and a conclusive post-release crash-free window",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment"
   ],
   "boundary": "This manifest resolves local inputs only. It is not proof of upload, review, publication, or public availability."

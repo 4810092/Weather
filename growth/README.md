@@ -1,21 +1,21 @@
 # Nimbo growth operations
 
 <!-- release-authority-current:start -->
-<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- source_revision:fc4b6de9e28fd8956eb64462294b8bcdf405ce7e -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a5dcba17f63f00dcc7ad959d21b8909f646c054183196c281fc28e2eb5d0cd4 -->
 <!-- release-authority-current:end -->
 
-Current source `052d12c7` resolves to vc11/vc1000011/build 9 and contains the
-iPad share popover-anchor fix. Protected run `33616952267` signed and candidate-
-byte-verified the exact set, and run `33626711140` durably materialized those
-exact bytes. Trusted run `33629490609` independently reverified them, so the
-manifest is atomically `3/3 verified-current`. The prior vc10/vc1000010/build-8 set is historical-only; build 8
-is explicitly failed for the iPad Share path and none of its delivery or QA
-observations transfers to the successor.
+Current source `fc4b6de9` retains vc11/vc1000011 and advances Apple to build 10
+with the background-refresh actor-isolation correction. No artifact has been
+signed from this source, so the manifest is atomically blocked. The previously
+verified vc11/vc1000011/build-9 bytes remain historical-superseded provenance;
+build 9 is explicitly failed after two exact TestFlight background-refresh
+crashes, and none of its signing, delivery, review, or QA evidence transfers to
+build 10.
 
 Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`

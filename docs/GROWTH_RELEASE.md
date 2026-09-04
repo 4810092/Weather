@@ -1,26 +1,26 @@
 # Nimbo Uzbekistan growth implementation
 
-Status date: September 3, 2026
+Status date: September 4, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:052d12c7dfa6411428d85205d9568462d20ff87d -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=growth/quality/emulator-runtime-qa-2026-09-03.md -->
+<!-- source_revision:fc4b6de9e28fd8956eb64462294b8bcdf405ce7e -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=pass;reason_sha256=e659bf91d389d37d962f3820eed623539911b85d9b4e299b69712b87a862bee1 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a5dcba17f63f00dcc7ad959d21b8909f646c054183196c281fc28e2eb5d0cd4 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
-`052d12c7dfa6411428d85205d9568462d20ff87d` to phone vc11, Wear vc1000011,
-and Apple build 9. Protected run `33616952267` signed and candidate-byte-
-verified the exact set, and run `33626711140` durably materialized those exact
-bytes. Final trusted run `33635751765` independently reverified every artifact, and
-all three manifest entries are atomically `verified-current`. The prior vc10/vc1000010/build-8 set is
-historical-only because build 8 crashes on the iPad Share path; none of its
-internal delivery or physical evidence transfers to the successor.
+`fc4b6de9e28fd8956eb64462294b8bcdf405ce7e` to phone vc11, Wear vc1000011,
+and corrected Apple build 10. No artifact is signed from this source, so all
+three manifest entries are atomically blocked. The previously protected-signed
+vc11/vc1000011/build-9 set remains historical-superseded provenance only.
+Build 9 has two exact TestFlight background-refresh crashes and none of its
+signing, delivery, review, simulator, or physical evidence transfers to build
+10.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -40,7 +40,7 @@ UZ-only.
 | --- | --- |
 | App Store | iOS/iPadOS 1.0.1 build 4 is `Ready for Distribution`; Apple Watch is included. The August 31 overview shows 300 impressions, 23 product-page views, 8 first downloads, 1 redownload, 3 updates, and 4.86% reported conversion; the available counts/window do not reproduce that console-reported rate. |
 | iOS quality | A September 3 read-only Analytics refresh reports three consented crashes for public 1.0.1 in both the displayed 30-day and 90-day windows. The seven-day August 26–September 1 window contains two, on August 29 and August 30. No diagnostic, stack, incident/signature ID, crashed-process identity, binary UUID, or source-defined crash-free-session percentage is exposed, so the crash gate remains blocked. |
-| Apple internal delivery | Historical `1.1.0 (8)` completed Transporter processing and TestFlight delivery. It passed bounded iPhone QA but reproduced two iPad Share crashes. Exact successor build 9 is protected-signed, trusted-byte-verified, delivered through Transporter, and processed in App Store Connect. A fresh build-9 bundle path is present on the iPad and remains alive without a new crash log, but CoreDevice still classifies it as developer-built; TestFlight identity, a visible Share-sheet pass, and widget-open evidence remain unproved. |
+| Apple internal delivery | Historical `1.1.0 (8)` failed on iPad Share. Exact TestFlight build 9 is protected-signed, byte-verified, delivered, and currently waiting for App Review under manual release, but two UUID-matched device reports prove its main process crashes during OS-scheduled background refresh. Corrected build 10 exists only as source and unsigned local validation; it has not been uploaded or installed through TestFlight. |
 | Google Play phone/tablet | Nimbo 1.0.2 (6) is active in Production in 177 countries. The version view reports 4 installations. |
 | Google Play Wear OS | Nimbo Wear 1.0.2 (1000007) is active in Production in 177 countries, since August 27 at 19:43 Asia/Tashkent. |
 | Google Play Internal | Exact phone `1.1.0 (11)` and Wear `1.1.0 (1000011)` are available only to Internal testers on their separate tracks as of September 3. Their exact AABs remain protected-signed and trusted-byte-verified, device support did not regress, and production remains `1.0.2`; conclusive post-delivery UZ Vitals are still unavailable. |
@@ -88,15 +88,13 @@ snapshot is immutable in `growth-observations`. A bounded absence means only
   failed attempts. Cooldown/retry state survives cold starts; cross-path
   requests coalesce per process; manual refresh and a first uncached location
   remain immediate.
-- Coordinated current identities are Android phone/tablet `1.1.0 (11)`, Wear OS
-  `1.1.0 (1000011)`, and Apple app/widget/watch `1.1.0 (9)` from source
-  `052d12c7dfa6411428d85205d9568462d20ff87d`. The source anchors the native
-  share controller for iPad popover presentation. Protected run `33616952267`
-  signed and candidate-byte-verified all three exact artifacts. Their manifest
-  entries are atomically `verified-current` after durable materialization and
-  trusted run `33629490609`. Exact vc11 later passed a bounded clean upload-
-  signed physical API-25 live/share/refresh/widget smoke, while Play delivery
-  and the remaining tablet/Wear/vitals matrix stay separate blocked gates.
+- Coordinated current source identities are Android phone/tablet `1.1.0 (11)`,
+  Wear OS `1.1.0 (1000011)`, and Apple app/widget/watch `1.1.0 (10)` from source
+  `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e`. It contains both the iPad share
+  anchor and background-refresh actor-isolation correction. No artifact is
+  signed from this source, so all three current manifest entries are blocked.
+  Prior-source vc11/vc1000011 remain Internal-only historical evidence, and
+  build 9 is failed by two exact TestFlight background-refresh crashes.
 - Historical coordinated checkpoint identities were Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.
@@ -269,20 +267,20 @@ availability; each external state must be recorded separately.
    non-monetized and unpaid-organic scope. Reopen the provider decision before
    any monetization, paid promotion, attribution removal, or material usage
    change. A paid/customer credential must never be embedded in a mobile client.
-3. Run the local full-byte verifier against the exact mutable draft before
-   every later artifact use, then deliver vc11 and vc1000011 through
-   Play Internal and bind build 9 to a provable TestFlight installation. Repeat the
-   physical phone/tablet/widget/Wear and iPhone/iPad/widget/watch matrices,
-   including the exact copied share payload, iOS 15 coverage where available,
-   and post-delivery vitals. Historical build-7 and vc9 results remain
-   regression evidence only.
+3. Protected-sign and independently byte-verify the atomic source
+   `fc4b6de9` set before any artifact is called current. Deliver corrected Apple
+   build 10 to TestFlight and exercise the OS-scheduled background/widget path
+   on iPhone and iPad. Preserve existing Play Internal state; decide separately
+   whether new Android codes/builds are needed before another Play delivery.
+   Historical build-9 and earlier results remain regression evidence only.
 4. Recheck metadata, privacy/data-safety answers, artwork, accessibility
    declarations, policy status, signing, install/upgrade paths, and the public
    build after propagation.
 
-Current vc11, vc1000011, and build 9 are atomically `3/3 verified-current` and
-remain `draft-blocked`. Exact build 9 has completed Transporter delivery and App
-Store Connect processing, while vc11/vc1000011 have not been Play-delivered.
+Current vc11, vc1000011, and build 10 are atomically blocked with no signed
+artifact set. Historical vc11/vc1000011 are available only to Play Internal;
+historical build 9 is waiting for App Review under manual release but is
+runtime-failed and must remain unreleased.
 The [historical build-7 delivery record](../growth/quality/internal-store-delivery-2026-09-01-ba824be.md)
 and its physical evidence document what happened, but cannot close successor
 trusted verification, delivery, or runtime gates. Play Internal and TestFlight remain bounded

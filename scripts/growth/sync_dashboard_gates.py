@@ -377,9 +377,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Obtain and symbolicate any diagnostic Apple exposes, then complete "
-                "the source-current TestFlight iPhone/iPad/widget/watch matrix and "
-                "collect post-rollout evidence"
+                "Keep build 9 unreleased; source-bind a monotonically newer Apple "
+                "build, exercise its TestFlight background/widget path on iPhone "
+                "and iPad, then collect post-release crash-free evidence"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -393,12 +393,12 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · protected signing and durable materialization passed, "
-                    "but the source-current set has not completed trusted macOS verification"
+                    "BLOCKED · exact build 9 is runtime-failed and the corrected "
+                    "source has no signed, source-bound successor"
                 )
                 new_next = (
-                    "Pass trusted macOS verification against the exact unpublished draft, "
-                    "then deliver it to Internal/TestFlight"
+                    "Create a monotonic Apple successor from corrected source, pass "
+                    "protected signing and full-byte verification, then deliver it to TestFlight"
                 )
         elif gate_id == "android_physical_smoke":
             if status == "pass":
@@ -424,8 +424,14 @@ def sync(
                     "and crash-free evidence"
                 )
             else:
-                row["decision"] = "BLOCKED · required Apple runtime QA is incomplete"
-                new_next = "Complete the source-bound Apple runtime QA matrix"
+                row["decision"] = (
+                    "BLOCKED · exact TestFlight build 9 crashes during background "
+                    "refresh and the correction has no TestFlight successor"
+                )
+                new_next = (
+                    "Exercise a corrected, source-bound successor's background/widget "
+                    "path on TestFlight iPhone and iPad"
+                )
         if not all(
             isinstance(value, str)
             for value in (row.get("gate"), old_status, old_reason, old_next, new_next)
