@@ -36,12 +36,16 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         self.assertEqual(validate_trusted_release_workflow(self.trusted), [])
         self.assertEqual(validate_pages_workflow(self.pages), [])
 
-    def test_ci_workflow_identity_and_push_guard_are_immutable(self) -> None:
+    def test_manual_only_trigger_and_inputlessness_are_immutable(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("workflow_id == 330787648", "workflow_id == 1", 1)
+            self.trusted.replace("  workflow_dispatch:\n", "  push:\n", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("workflow_run.event == 'push'", "workflow_run.event == 'pull_request'", 1)
+            self.trusted.replace(
+                "  workflow_dispatch:\n",
+                "  workflow_dispatch:\n    inputs:\n      release_id:\n        required: true\n",
+                1,
+            )
         )
 
     def test_same_repository_and_master_guards_are_immutable(self) -> None:
@@ -49,15 +53,15 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
             self.trusted.replace("github.repository_id == '1329018769' &&\n", "", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("workflow_run.head_branch == 'master'", "workflow_run.head_branch == 'attacker'", 1)
+            self.trusted.replace("github.ref == 'refs/heads/master'", "github.ref == 'refs/heads/attacker'", 1)
         )
 
-    def test_success_guard_and_exact_checkout_are_immutable(self) -> None:
+    def test_manual_guard_and_exact_checkout_are_immutable(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("workflow_run.conclusion == 'success'", "workflow_run.conclusion != 'cancelled'", 1)
+            self.trusted.replace("github.event_name == 'workflow_dispatch' &&\n", "", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("ref: ${{ github.event.workflow_run.head_sha }}\n", "ref: master\n", 1)
+            self.trusted.replace("ref: ${{ github.sha }}\n", "ref: master\n", 1)
         )
 
     def test_permissions_secrets_and_runner_mutations_are_rejected(self) -> None:
@@ -131,13 +135,13 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
 
     def test_fixed_release_and_asset_endpoints_are_immutable(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/381212810", "releases/latest", 1)
+            self.trusted.replace("releases/382592451", "releases/latest", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/541102822", "releases/assets/1", 1)
+            self.trusted.replace("releases/assets/544061853", "releases/assets/1", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/541102876", "releases/assets/2", 1)
+            self.trusted.replace("releases/assets/544061890", "releases/assets/2", 1)
         )
 
     def test_draft_and_exact_asset_set_cannot_be_weakened(self) -> None:
@@ -179,7 +183,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                "034aa0a732e0a671c341e6714162a2d22c95d06435aa327bd17b1d7b3da2f9ac",
+                "52e924d4ce5dba7370007632b9e421aa548af79b6395ba4b6b0ee1645daf6862",
                 "0" * 64,
                 1,
             )
@@ -225,8 +229,9 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                'artifact["physical_qa_evidence"] = runtime_evidence',
-                'artifact["physical_qa_evidence"] = "invented.md"',
+                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33852229166.md"',
+                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-33852229166.md"\n'
+                '              artifact["physical_qa_evidence"] = "invented.md"',
                 1,
             )
         )
@@ -256,6 +261,13 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
             self.pages.replace(
                 "workflow_run.path == '.github/workflows/trusted-release-verification.yml'",
                 "workflow_run.path != ''",
+                1,
+            )
+        )
+        self.assert_pages_rejected(
+            self.pages.replace(
+                "workflow_run.event == 'workflow_run'",
+                "workflow_run.event == 'workflow_dispatch'",
                 1,
             )
         )

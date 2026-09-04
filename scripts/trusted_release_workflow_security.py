@@ -11,28 +11,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "4de3a52ecc53f6020470fbd9c5efc1a096e1ad5b6de3e2c4d3d7ff70bffc2eea"
+TRUSTED_SHA256 = "1d7a58771e3b86ce214ff001528e4d513f2548cd4eaeef594bc0e0c7ae55cc62"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
     "name: Trusted release verification",
-    "  workflow_run:",
-    "      - CI",
-    "      - completed",
+    "  workflow_dispatch:",
     "permissions: {}",
+    "github.event_name == 'workflow_dispatch'",
     "github.repository == '4810092/Weather'",
     "github.repository_id == '1329018769'",
-    "github.event.workflow_run.workflow_id == 330787648",
-    "github.event.workflow_run.path == '.github/workflows/ci.yml'",
-    "github.event.workflow_run.conclusion == 'success'",
-    "github.event.workflow_run.event == 'push'",
-    "github.event.workflow_run.head_branch == 'master'",
-    "github.event.workflow_run.repository.id == 1329018769",
-    "github.event.workflow_run.head_repository.id == 1329018769",
+    "github.ref == 'refs/heads/master'",
+    "NIMBO_WORKFLOW_SHA: ${{ github.sha }}",
     "  stage:",
     "Stage exact unpublished candidate without repository checkout",
     "contents: write",
-    "$GITHUB_EVENT_PATH",
     "live master changed during candidate staging",
     "staged candidate asset inventory mismatch",
     "retention-days: 1",
@@ -43,23 +36,22 @@ TRUSTED_REQUIRED = (
     "actions: read",
     "contents: read",
     "runs-on: macos-26",
-    "ref: ${{ github.event.workflow_run.head_sha }}",
+    "ref: ${{ github.sha }}",
     "persist-credentials: false",
-    "repos/4810092/Weather/actions/runs/$NIMBO_SOURCE_RUN_ID",
     "repos/4810092/Weather/git/ref/heads/master",
-    "source CI commit is stale relative to live master",
+    "manual workflow commit is stale relative to live master",
     "live master changed during trusted verification",
     "draft storage tag unexpectedly resolves before verification",
-    "repos/4810092/Weather/releases/381212810",
-    "repos/4810092/Weather/releases/assets/541102822",
-    "repos/4810092/Weather/releases/assets/541102876",
+    "repos/4810092/Weather/releases/382592451",
+    "repos/4810092/Weather/releases/assets/544061853",
+    "repos/4810092/Weather/releases/assets/544061890",
     '"draft": True',
     '"prerelease": True',
     '"published_at": None',
     '"immutable": False',
     "draft release asset ID set mismatch",
     "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
-    "name: trusted-candidate-stage-${{ github.event.workflow_run.head_sha }}",
+    "name: trusted-candidate-stage-${{ github.sha }}",
     "downloaded staged asset inventory mismatch",
     "post-verification staged asset inventory mismatch",
     "candidate package member inventory mismatch",
@@ -78,7 +70,6 @@ TRUSTED_REQUIRED = (
     "committed upload manifest candidate set mismatch",
     "committed_artifacts not in (expected_blocked, expected_verified)",
     'artifact["source_sync"] = "verified-current"',
-    'artifact["physical_qa_evidence"] = runtime_evidence',
     'artifact["historical_candidate"] = None',
     'verification-manifest.json',
     '--manifest "$verification_manifest"',
@@ -87,6 +78,10 @@ TRUSTED_REQUIRED = (
     'artifact.get("byte_verified") is not True',
     "python3 scripts/check_release_qa_matrix.py",
     "python3 scripts/check_store_metadata.py",
+    '"manual_invocation": {',
+    '"event": "workflow_dispatch"',
+    '"workflow_sha": sys.argv[3]',
+    '"candidate_source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e"',
     "This receipt contains identities only; no signed candidate bytes are included.",
     "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
     "path: ${{ runner.temp }}/nimbo-trusted-receipt/trusted-release-verification.json",
@@ -161,14 +156,8 @@ def _single_job_block(text: str, name: str) -> str | None:
 
 def validate_trusted_release_workflow(text: str) -> list[str]:
     failures: list[str] = []
-    if _single_top_level_block(text, "on") != [
-        "  workflow_run:",
-        "    workflows:",
-        "      - CI",
-        "    types:",
-        "      - completed",
-    ]:
-        failures.append("trigger must be exactly completed workflow_run for CI")
+    if _single_top_level_block(text, "on") != ["  workflow_dispatch:"]:
+        failures.append("trigger must be exactly manual workflow_dispatch without inputs")
     if text.count("permissions: {}\n") != 1 or _single_top_level_block(text, "permissions") is not None:
         failures.append("trusted workflow must deny all permissions at top level")
     stage = _single_job_block(text, "stage")
@@ -179,7 +168,11 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         if marker not in text:
             failures.append(f"trusted workflow marker missing: {marker}")
     forbidden = (
-        "workflow_dispatch",
+        "  workflow_run:",
+        "  push:",
+        "  pull_request:",
+        "  schedule:",
+        "    inputs:",
         "pull_request_target",
         "self-hosted",
         "secrets.",
@@ -240,17 +233,23 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
             failures.append("verification job must download one same-run staged artifact")
         if verify.count("actions/upload-artifact@") != 1:
             failures.append("verification job must upload one non-secret receipt")
-    if text.count("repos/4810092/Weather/releases/381212810") != 2:
+    if text.count("github.event_name == 'workflow_dispatch'") != 2:
+        failures.append("stage and verify must each require a manual invocation")
+    if text.count("github.ref == 'refs/heads/master'") != 2:
+        failures.append("stage and verify must each require the master ref")
+    if text.count("NIMBO_WORKFLOW_SHA: ${{ github.sha }}") != 5:
+        failures.append("all SHA-sensitive trusted steps must bind the manual workflow SHA")
+    if text.count("repos/4810092/Weather/releases/382592451") != 2:
         failures.append("staging job must check draft release exactly before and after")
-    if text.count("repos/4810092/Weather/releases/assets/541102822") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/544061853") != 3:
         failures.append("package asset must use only three fixed API calls")
-    if text.count("repos/4810092/Weather/releases/assets/541102876") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/544061890") != 3:
         failures.append("receipt asset must use only three fixed API calls")
     if text.count("repos/4810092/Weather/git/ref/heads/master") != 4:
         failures.append("stage and verify must each check live master before and after")
     if text.count(
         "repos/4810092/Weather/git/matching-refs/tags/"
-        "nimbo-candidate-v1.1.0-052d12c-run-33616952267"
+        "nimbo-candidate-v1.1.0-fc4b6de-run-33852229166"
     ) != 3:
         failures.append("draft storage Git tag absence must be checked twice in stage and once in verify")
     if text.count("actions/upload-artifact@") != 2:
@@ -265,10 +264,10 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("full verifier must use the exact ephemeral manifest once")
     if text.count('artifact["source_sync"] = "verified-current"') != 2:
         failures.append("exact current state and ephemeral promotion must be pinned")
-    if text.count('artifact["physical_qa_evidence"] = runtime_evidence') != 1:
-        failures.append("verified candidate must pin the reviewed runtime QA evidence")
-    if text.count('artifact["physical_qa_evidence"] = None') != 0:
-        failures.append("ephemeral manifest must preserve committed runtime QA evidence")
+    if text.count('"physical_qa_evidence": None') != 3:
+        failures.append("current candidate must preserve exactly three unknown runtime evidence fields")
+    if 'artifact["physical_qa_evidence"]' in text:
+        failures.append("ephemeral byte verification must not invent runtime QA evidence")
     if text.count('artifact["historical_candidate"] = None') != 2:
         failures.append("ephemeral manifest must clear historical state before verification")
     if text.count("set +x") != 3:

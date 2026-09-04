@@ -7,8 +7,9 @@ OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
 Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
 the iPad share fix and the background-refresh actor-isolation correction.
 Protected run `33852229166` signed and candidate-byte-verified this exact set,
-but the artifact is not yet durably materialized or independently trusted, so
-the committed manifest remains atomically blocked. The prior
+and run `33855931653` durably retained it in unpublished draft `382592451`.
+Independent trusted verification is still pending, so the committed manifest
+remains atomically blocked. The prior
 vc11/vc1000011/build-9 set remains historical-superseded provenance; build 9
 has exact TestFlight background-refresh crashes and its signing, delivery,
 review, and QA evidence cannot validate build 10.
@@ -35,7 +36,7 @@ claimed. Store consoles remain the authority for live status.
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=ce4d35fdf2c9b8868f66706a1262d39666e7353719d5bc0e6650a9160982e8a9 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=817e9dd158a2909eb3bb4894d8ff3a4f5cd528b82edb2e28bb527051ab285ec8 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
@@ -60,10 +61,14 @@ vc11/vc1000011/build-9 bytes are retained only as historical-superseded
 provenance. Protected run `33852229166` signed and candidate-byte-verified the
 replacement set; artifact `9929313750` contains Apple build-10 IPA SHA-256
 `20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061`.
-The bytes are not yet durably materialized, independently trusted, uploaded, or
-TestFlight-exercised. Build 9 is approved as `Pending Developer Release` under
-manual release and must not be released. No upload, review withdrawal,
-production action, or public release was performed.
+Materialization run `33855931653` retained the exact package and receipt as
+assets `544061853` and `544061890` in unpublished draft `382592451`, with no
+resolving Git tag. Independent trusted verification, upload, and
+TestFlight exercise remain pending. Build 9 is approved as `Pending Developer
+Release` under manual release and must not be released. No upload, review
+withdrawal, production action, or public release was performed. Detailed
+storage evidence is in the
+[materialization record](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
 Detailed evidence is in
 [`growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md`](../growth/quality/testflight-ios-build9-background-refresh-crash-2026-09-04.md).
 

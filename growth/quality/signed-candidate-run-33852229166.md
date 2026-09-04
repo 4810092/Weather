@@ -1,7 +1,8 @@
 # Signed candidate run 33852229166 — 2026-09-04
 
 Status: **PASS for protected hosted signing and candidate-byte verification;
-BLOCKED for durable materialization, manifest promotion, TestFlight runtime QA,
+subsequent durable materialization is recorded separately; BLOCKED for
+independent trusted verification, manifest promotion, TestFlight runtime QA,
 App Review replacement, rollout, and publication**.
 
 The exact product/build-input authority is
@@ -72,15 +73,18 @@ The build-10 app Mach-O/dSYM UUID is
 `70EAEF28-EC27-3C2F-9AC9-B9ABDFC7CC3A` (`arm64`).
 
 The downloaded package and receipt independently matched the receipt hashes.
-This local read does not replace durable materialization or the independent
-trusted verifier.
+Subsequent materialization run `33855931653` retained the exact package and
+receipt in unpublished draft `382592451`; see the
+[materialization record](release-materialization-2026-09-04-run-33855931653.md).
+Neither that durable but mutable draft nor this local read replaces the
+independent trusted verifier.
 
 ## Fail-closed boundary
 
 The receipt state is
 `candidate-bytes-verified-not-manifest-promoted`. All three committed current
 manifest entries therefore remain blocked with null hashes until the exact
-artifact is durably materialized and independently verified.
+durable draft assets are independently verified.
 
 No build-10 file has been uploaded to App Store Connect/TestFlight or a Play
 track. Build 9 remains approved only in `Pending Developer Release` under manual

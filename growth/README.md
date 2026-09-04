@@ -6,14 +6,15 @@
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=ce4d35fdf2c9b8868f66706a1262d39666e7353719d5bc0e6650a9160982e8a9 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=817e9dd158a2909eb3bb4894d8ff3a4f5cd528b82edb2e28bb527051ab285ec8 -->
 <!-- release-authority-current:end -->
 
 Current source `fc4b6de9` retains vc11/vc1000011 and advances Apple to build 10
 with the background-refresh actor-isolation correction. Protected run
-`33852229166` signed and candidate-byte-verified the exact set, but the
-transient artifact is not yet durably materialized or independently trusted,
-so the manifest remains atomically blocked. The previously verified
+`33852229166` signed and candidate-byte-verified the exact set, and run
+`33855931653` durably retained it in unpublished draft `382592451`. Independent
+trusted verification remains pending, so the manifest remains atomically
+blocked. The previously verified
 vc11/vc1000011/build-9 bytes remain historical-superseded provenance; build 9
 is explicitly failed after exact TestFlight background-refresh crashes, and
 none of its signing, delivery, review, or QA evidence transfers to build 10.
@@ -54,7 +55,8 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Current protected build-10 candidate | [quality/signed-candidate-run-33852229166.md](quality/signed-candidate-run-33852229166.md) and [receipt](quality/receipts/signed-candidate-33852229166.json) | Exact source/run/artifact/package/tree and three candidate byte identities; protected signing only, with durable materialization, trusted verification, upload, TestFlight, QA, review, and publication still unproven |
+| Current protected build-10 candidate | [quality/signed-candidate-run-33852229166.md](quality/signed-candidate-run-33852229166.md) and [receipt](quality/receipts/signed-candidate-33852229166.json) | Exact source/run/artifact/package/tree and three candidate byte identities; signing and candidate-byte verification only |
+| Current durable build-10 materialization | [quality/release-materialization-2026-09-04-run-33855931653.md](quality/release-materialization-2026-09-04-run-33855931653.md) | Exact unpublished draft `382592451`, fixed asset IDs/sizes/hashes, no-tag boundary, and mandatory independent trusted recheck before use |
 | Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
 | Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share, `font_scale=1.3`, system-UI-proven offline/cache/recovery, active system-TalkBack, natural background-network, and physical widget render/update/open smoke; active Wear tester track; remaining icon/tablet/Wear/vitals boundaries |
 | Android legacy launcher icon | [quality/android-legacy-launcher-icon-2026-09-01.md](quality/android-legacy-launcher-icon-2026-09-01.md) | Physical API-25 template-icon failure, exact legacy resource identity, and replacement-version boundary |

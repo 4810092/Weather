@@ -99,9 +99,9 @@ with an explicit `MainActor` hop.
   builds. No missing signed byte was relabelled as current.
 - The corrected build 10 source is not present in the already signed/uploaded
   build 9. Protected run `33852229166` has since signed and
-  candidate-byte-verified build 10, but that transient artifact is not yet
-  durably materialized, independently trusted, uploaded, or exercised through
-  TestFlight.
+  candidate-byte-verified build 10, and run `33855931653` durably retained the
+  exact package in unpublished draft `382592451`. Independent trusted
+  verification, upload, and TestFlight exercise remain pending.
 
 Apple build 9 is therefore a failed candidate even though its bytes and prior
 source identity remain verifiable. It must remain unreleased. A monotonically
