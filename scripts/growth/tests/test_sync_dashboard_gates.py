@@ -123,7 +123,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 self.assertEqual(rows[gate_id]["status"], gate["status"])
                 self.assertEqual(rows[gate_id]["evidence"], gate["reason"])
             self.assertIn(
-                "owner-approved emulator policy",
+                "required Android runtime QA is incomplete",
                 rows["android_physical_smoke"]["decision"],
             )
             self.assertIn(
@@ -158,7 +158,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
-                "post-delivery UZ Vitals",
+                "Complete the source-bound Android runtime QA matrix",
                 rows["android_physical_smoke"]["next_action"],
             )
             self.assertNotIn(

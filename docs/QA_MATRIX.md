@@ -7,7 +7,7 @@ Status date: September 4, 2026.
 <!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=pass;reason_sha256=296dc6d592f0e643f23a9d4ad9da2381937285711d523970acd10e1238b611e0 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=8a9db20b75357baec7fb8ffc1250a190b98e41afe8f8598e8b7dc5b445bde8d3 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=4450425b2ae30687cb4d66f5a6a1b708db8962de719489f652cedf64c66aa3f3 -->
 <!-- release-authority-current:end -->
 
@@ -40,8 +40,8 @@ remain exact.
 <!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required runtime QA (legacy gate ID) | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (11)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: pass` | **BLOCKED** |
-| Wear OS | `1.1.0 (1000011)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: pass` | **BLOCKED** |
+| Android phone/tablet | `1.1.0 (11)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Wear OS | `1.1.0 (1000011)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
 | Apple app/widget/watch | `1.1.0 (10)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `ios_physical_smoke: blocked` | **BLOCKED** |
 <!-- release-qa-current:end -->
 

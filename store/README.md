@@ -63,7 +63,7 @@ signed inputs. Full byte authority remains a protected GitHub-hosted macOS
 verification responsibility, including pinned Bundletool for Android. Trusted
 run `33857134803` authorized the atomic `3/3 verified-current` promotion. The
 protected staging and read-only macOS verifier must pass before every later
-artifact use; the top-level manifest and Apple physical/crash gates remain
+artifact use; the top-level manifest, current runtime gates, and Apple crash gate remain
 blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
 clean relative to the embedded revision, but external bytes alone cannot prove
 the tree was clean when they were built. Protected run `33852229166` supplied

@@ -169,9 +169,9 @@
       {
         "id": "android_physical_smoke",
         "required": "pass",
-        "actual": "pass",
-        "status": "pass",
-        "reason": "Legacy gate ID retained for compatibility; it now represents required Android runtime QA under the product owner's 2026-09-03 emulator-sufficient policy. Protected run 33616952267 signed and candidate-byte-verified phone vc11 and Wear vc1000011 from authority 052d12c7dfa6411428d85205d9568462d20ff87d, run 33626711140 durably materialized their exact bytes, and trusted verification rechecked them. Exact-AAB-derived upload-key-signed vc11 passed clean General Mobile API-25 launch, live provider, Share, refresh, widget render/open, cleanup, and crash/ANR filters. Current-source hosted run 33653344467 passed API 24 phone, API 36 phone, and API 36 tablet Compose UI jobs. A clean Wear OS API 37 emulator install rendered English, Russian, and Uzbek forecast/AQI surfaces and passed 10/10 cold launches with zero matching fatal/ANR records. The dedicated General Mobile is disposable for QA; the Samsung device was not modified. On 2026-09-03 Google Play made exact phone vc11 and Wear vc1000011 available to their Internal testers on tracks 4700083514281298386 and 4699242452771231163. This runtime pass and Internal delivery do not establish post-delivery Vitals, production rollout, or public availability; those remain separately fail-closed."
+        "actual": "blocked",
+        "status": "fail",
+        "reason": "Legacy gate ID retained for compatibility under the product owner's emulator-sufficient policy. Historical source 052d12c7 produced phone vc11 and Wear vc1000011 that passed bounded physical/emulator runtime checks and remain available only to Google Play Internal testers. Current authority fc4b6de9 embeds a different source revision and produces exact hashes 52e924d4ce5dba7370007632b9e421aa548af79b6395ba4b6b0ee1645daf6862 and 0bb295d2898a0cfcaff018ec43bc0d70663d1529771087cb48a0d7dd1b3c77a8. Trusted run 33857134803 verifies those current bytes, but no current-source runtime evidence contains either digest; historical QA cannot fill their physical_qa_evidence fields. The gate is blocked until current-source AAB-derived phone/tablet/widget and Wear runtime evidence is recorded. Post-delivery UZ Vitals, production rollout, and public availability remain separate blockers."
       },
       {
         "id": "ios_physical_smoke",
