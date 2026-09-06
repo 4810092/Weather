@@ -83,6 +83,8 @@ The UI is shared, but platform conventions are not erased. `expect`/`actual` ada
 - platform share sheets;
 - widget/watch snapshot publication.
 
+On iOS, WidgetKit can also fetch the existing Open-Meteo forecast and optional AQI directly through a native background URLSession. The extension and host use one versioned App Group file protected by a separate file lock and atomic replacement. Kotlin calls the same Swift store through a synchronous bridge, so foreground work, BGAppRefresh and widget downloads share an hourly per-location attempt budget. Config revisions reject late responses for another selection; snapshot timestamps reject older publications. Raw extension responses are imported into SQLDelight before automatic refresh gating, preserving their original fetch times. The extension does not load Kotlin or open the application's database.
+
 This keeps platform code narrow while accepting the cost of parallel implementations and platform testing.
 
 ## Privacy boundary

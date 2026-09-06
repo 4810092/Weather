@@ -1,5 +1,6 @@
 package uz.ganikhodjaev.weather.shared
 
+import kotlin.time.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
@@ -33,7 +34,10 @@ internal actual fun publishWeatherSnapshot(
     displayUnits: DisplayUnits
 ) {
     // A delayed observation must not reconfigure the selected widget city.
-    val airQuality = snapshot.airQuality.minByOrNull {
+    val now = Clock.System.now().epochSeconds
+    val airQuality = snapshot.airQuality.filter {
+        now - it.fetchedAtEpochSeconds in 0..(6 * 60 * 60L)
+    }.minByOrNull {
         kotlin.math.abs(it.epochSeconds - snapshot.current.epochSeconds)
     }
     val today = snapshot.dailyForecast.firstOrNull()

@@ -79,6 +79,15 @@ class WidgetRefreshImportTest {
         )
     }
 
+    @Test
+    fun futureFetchTimestampCannotMakeWeatherFresh() = fixture { repository, database ->
+        assertFalse(repository.importWidgetRefresh(payload(fetchedAt = HOUR + 3_600)))
+        assertEquals(
+            emptyList(),
+            database.weatherQueries.selectTimeline(LOCATION.id, 0, Long.MAX_VALUE).executeAsList()
+        )
+    }
+
     private fun fixture(block: (WeatherRepository, NimboDatabase) -> Unit) {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         try {

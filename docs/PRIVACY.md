@@ -35,7 +35,13 @@ forecast snapshots, unit preferences, and refresh metadata in its local database
 Weather rows are kept for at most eight days in the past and eleven days in the
 future; forecast snapshots are kept for 14 days. A compact copy of current weather
 is stored locally for home-screen widgets and synchronized to a paired watch. This
-watch/widget data contains no account or device identifier. Uninstalling Nimbo
+watch/widget data contains no account or device identifier. On iOS, an App Group
+also stores the currently selected place (including its stored coordinates), units,
+bounded weather responses awaiting database import, and local refresh status. This
+lets the widget request weather without opening Nimbo; it uses the same coarse
+coordinates for device location and does not request background location access.
+Changing the selected place clears pending widget responses for the previous place.
+Uninstalling Nimbo
 removes its data because cloud/device backup is disabled on Android. On iOS,
 system backups can retain app data according to
 the user's iCloud or device-backup settings; removing those backups is controlled

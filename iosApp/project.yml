@@ -27,6 +27,8 @@ targets:
         excludes:
           - Info.plist
       - path: NimboSurfaces/SurfaceWeatherState.swift
+      - path: NimboSurfaces/WidgetRefreshStore.swift
+      - path: NimboSurfaces/WidgetWeatherClient.swift
     info:
       path: Nimbo/Info.plist
       properties:
@@ -123,6 +125,8 @@ targets:
         excludes:
           - Info.plist
       - path: NimboSurfaces/SurfaceWeatherState.swift
+      - path: NimboSurfaces/WidgetRefreshStore.swift
+      - path: NimboSurfaces/WidgetWeatherClient.swift
     info:
       path: NimboSimulator/Info.plist
       properties:
@@ -209,7 +213,10 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - path: NimboSurfaceTests
+      - path: NimboWidget/WidgetBackgroundSession.swift
       - path: NimboSurfaces/SurfaceWeatherState.swift
+      - path: NimboSurfaces/WidgetRefreshStore.swift
+      - path: NimboSurfaces/WidgetWeatherClient.swift
     settings:
       base:
         PRODUCT_NAME: NimboSurfaceTests

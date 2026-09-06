@@ -241,7 +241,9 @@ internal class WeatherRepository(
         val issuedAt = fetchedAt - fetchedAt % SECONDS_PER_HOUR
 
         database.transaction {
-            require(queries.selectActiveLocation().executeAsOneOrNull()?.id == location.id)
+            if (onlyIfNewer) {
+                require(queries.selectActiveLocation().executeAsOneOrNull()?.id == location.id)
+            }
             var wroteWeather = false
             rows.forEach { row ->
                 val existing = queries.selectWeatherFetchedAt(location.id, row.epochSeconds)
@@ -399,7 +401,9 @@ internal class WeatherRepository(
             active.id != payload.locationId ||
             active.latitude != payload.latitude ||
             active.longitude != payload.longitude ||
-            payload.fetchedAtEpochSeconds <= 0
+            payload.fetchedAtEpochSeconds <= 0 ||
+            payload.fetchedAtEpochSeconds >
+            Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS
         ) {
             return false
         }
@@ -411,15 +415,15 @@ internal class WeatherRepository(
         if (forecast.toWeatherRows(payload.fetchedAtEpochSeconds).isEmpty()) return false
         val airRows = payload.airQuality?.let { raw ->
             try {
+                val airQualityFetchedAt =
+                    payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds
+                require(airQualityFetchedAt > 0)
+                require(
+                    airQualityFetchedAt <=
+                        Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS
+                )
                 WIDGET_JSON.decodeFromString(AirQualityResponse.serializer(), raw)
-                    .toAirQualityRows(
-                        (payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds)
-                            .takeIf {
-                                it <=
-                                    Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS
-                            }
-                            ?: payload.fetchedAtEpochSeconds
-                    )
+                    .toAirQualityRows(airQualityFetchedAt)
             } catch (_: Throwable) {
                 // AQI enrichment is optional; a malformed optional response must not discard weather.
                 emptyList()

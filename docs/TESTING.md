@@ -84,7 +84,9 @@ The phone and Wear unit-test tasks both execute the shared Android surface contr
 
 ## Apple gate
 
-Run `bash scripts/test_ios_surfaces.sh` for the deterministic Swift Empty/Fresh/Stale contract. Its 18 XCTest cases cover missing and malformed payloads, strict integer storage types, valid zero values, AQI sentinels, daily-range consistency, the strict six-hour boundary, bounded future clock skew and clock rollback, cache clearing, and WidgetKit's cache-only boundary reload date.
+Run `bash scripts/test_ios_surfaces.sh` for the deterministic Swift surface and widget-refresh suites. They cover Empty/Fresh/Stale rendering, the six-hour boundary, Open-Meteo request/response mapping, original fetch timestamps, legacy migration, cross-instance host/widget claim races, hour-long failure cooldowns, city changes during downloads, manual refresh, optional AQI and recovery with a newly created store instance. The primary forecast is committed without waiting for AQI; a later AQI delivery cannot be accidentally acknowledged by an earlier host import.
+
+WidgetKit now starts its own background URLSession downloads and always requests another timeline, including for stale and empty caches. For natural scheduling QA, install the candidate, open it once to export the selected city, add the widget, then leave Nimbo backgrounded. Inspect `weather-refresh-v1.json` in the App Group: `lastEvent=widget_updated` and an advancing `snapshot.updatedAt` prove an extension-side completion. Check fresh app/extension crash reports and the visible widget; launching Nimbo, debugger-triggered tasks, or existing build-10 observations do not prove this candidate's natural refresh. iOS owns scheduling, so the requested hour is not a deadline.
 
 The unsigned iOS and watchOS commands are documented in [DEVELOPMENT.md](DEVELOPMENT.md).
 `bash scripts/local-ci.sh apple` runs both `:shared:iosSimulatorArm64Test`, the

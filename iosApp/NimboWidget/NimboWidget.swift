@@ -1,8 +1,6 @@
 import SwiftUI
 import WidgetKit
 
-private let appGroup = "group.uz.ganikhodjaev.weather"
-
 private struct WeatherEntry: TimelineEntry {
     let date: Date
     let state: SurfaceWeatherState
@@ -24,24 +22,29 @@ private struct WeatherProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> Void) {
         let now = Date()
+        WidgetBackgroundSession.shared.refreshIfNeeded()
         let entry = readEntry(now: now)
+        var entries = [entry]
         if let boundary = SurfaceWeatherStateReader.freshnessBoundaryRefreshDate(
             for: entry.state,
             now: now
         ) {
-            // The boundary reload reads the app-group cache only. It never calls
-            // the weather provider or starts a network refresh.
-            completion(Timeline(entries: [entry], policy: .after(boundary)))
-        } else {
-            completion(Timeline(entries: [entry], policy: .never))
+            // The cached entry becomes stale even if iOS defers the next fetch.
+            entries.append(WeatherEntry(
+                date: boundary,
+                state: SurfaceWeatherStateReader.state(for: entry.state.snapshot, now: boundary)
+            ))
         }
+        completion(Timeline(
+            entries: entries,
+            policy: .after(WidgetRefreshStore.shared.nextRefreshDate(now: now))
+        ))
     }
 
     private func readEntry(now: Date = Date()) -> WeatherEntry {
-        let defaults = UserDefaults(suiteName: appGroup)
         return WeatherEntry(
             date: now,
-            state: SurfaceWeatherStateReader.read(from: defaults, now: now)
+            state: WidgetRefreshStore.shared.readState(now: now)
         )
     }
 }
@@ -358,6 +361,10 @@ struct NimboWidget: Widget {
         .configurationDisplayName(String(localized: "Nimbo Weather"))
         .description(String(localized: "Weather you can understand at a glance."))
         .supportedFamilies(supportedWidgetFamilies)
+        .onBackgroundURLSessionEvents(
+            matching: WidgetBackgroundSession.identifier,
+            makeWidgetBackgroundEventHandler()
+        )
     }
 
     private var supportedWidgetFamilies: [WidgetFamily] {

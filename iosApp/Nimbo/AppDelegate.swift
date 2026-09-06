@@ -3,6 +3,7 @@ import UIKit
 import Dispatch
 import NimboShared
 import WidgetKit
+import OSLog
 @preconcurrency import WatchConnectivity
 
 private let nimboBackgroundColor = UIColor { traits in
@@ -14,7 +15,6 @@ private let nimboBackgroundColor = UIColor { traits in
 
 private let nimboThemePreferenceKey = "theme_preference"
 private let weatherRefreshTaskIdentifier = "uz.ganikhodjaev.weather.refresh"
-private let nimboAppGroup = "group.uz.ganikhodjaev.weather"
 
 private final class BackgroundRefreshState: @unchecked Sendable {
     private let lock = NSLock()
@@ -102,12 +102,14 @@ private func storedInterfaceStyle() -> UIUserInterfaceStyle {
 @MainActor
 final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     private var weatherObserver: NSObjectProtocol?
-    private let backgroundUpdater = BackgroundWeatherUpdater(platformContext: PlatformContext())
+    private lazy var backgroundUpdater = BackgroundWeatherUpdater(platformContext: PlatformContext())
+    private let refreshLogger = Logger(subsystem: "uz.ganikhodjaev.weather", category: "BackgroundRefresh")
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        WidgetRefreshInterop.shared.install(bridge: WidgetRefreshBridgeAdapter())
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: weatherRefreshTaskIdentifier,
             using: .main
@@ -138,10 +140,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func scheduleBackgroundRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: weatherRefreshTaskIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
-        try? BGTaskScheduler.shared.submit(request)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            refreshLogger.info("Background refresh scheduled")
+        } catch {
+            refreshLogger.error("Background refresh scheduling unavailable")
+        }
     }
 
     private func handleBackgroundRefresh(_ task: BGAppRefreshTask) {
+        refreshLogger.info("Background refresh started")
         scheduleBackgroundRefresh()
         let state = BackgroundRefreshState()
         task.expirationHandler = makeBackgroundRefreshExpirationHandler(
@@ -157,8 +165,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     private func weatherDidUpdate() {
         WidgetCenter.shared.reloadAllTimelines()
         guard WCSession.isSupported() else { return }
-        let defaults = UserDefaults(suiteName: nimboAppGroup)
-        let snapshot = SurfaceWeatherStateReader.snapshot(from: defaults)
+        let snapshot = WidgetRefreshStore.shared.readState().snapshot
         let context = snapshot?.applicationContext ?? [:]
         try? WCSession.default.updateApplicationContext(context)
     }

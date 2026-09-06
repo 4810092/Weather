@@ -49,7 +49,7 @@ final class WidgetBackgroundSession: NSObject, URLSessionDownloadDelegate, @unch
 
     func handleEvents(identifier: String, completion: @escaping () -> Void) {
         guard identifier == Self.identifier else {
-            completion()
+            DispatchQueue.main.async(execute: DispatchWorkItem(block: completion))
             return
         }
         lock.lock()
@@ -132,7 +132,7 @@ final class WidgetBackgroundSession: NSObject, URLSessionDownloadDelegate, @unch
         lock.unlock()
         guard inserted else { return }
         if store.recordDownload(ticket: metadata.ticket, kind: metadata.kind, data: data) {
-            WidgetCenter.shared.reloadTimelines(ofKind: "NimboWidget")
+            WidgetCenter.shared.reloadTimelines(ofKind: "NimboWeather")
         }
     }
 
@@ -160,11 +160,20 @@ final class WidgetBackgroundSession: NSObject, URLSessionDownloadDelegate, @unch
         backgroundEventsFinished = false
         backgroundEventsCompletion = nil
         lock.unlock()
-        completion()
+        DispatchQueue.main.async(execute: DispatchWorkItem(block: completion))
     }
 }
 
 private struct TaskMetadata: Codable, Sendable {
     let ticket: WidgetRefreshTicket
     let kind: WidgetDownloadKind
+}
+
+// Widget.body is MainActor-isolated in Swift 6. Construct the outer callback
+// here so a system background delivery cannot inherit that actor and trap
+// before it reaches the explicit main-queue completion hop.
+func makeWidgetBackgroundEventHandler() -> @Sendable (String, @escaping () -> Void) -> Void {
+    { identifier, completion in
+        WidgetBackgroundSession.shared.handleEvents(identifier: identifier, completion: completion)
+    }
 }

@@ -7,7 +7,7 @@ enum SurfaceWeatherFreshness: Equatable, Sendable {
     case stale
 }
 
-struct SurfaceWeatherSnapshot: Equatable, Sendable {
+struct SurfaceWeatherSnapshot: Codable, Equatable, Sendable {
     let updatedAt: Date
     let location: String
     let temperature: Int
