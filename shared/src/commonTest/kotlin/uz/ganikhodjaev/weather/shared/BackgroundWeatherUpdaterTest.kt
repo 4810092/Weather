@@ -90,6 +90,20 @@ class BackgroundWeatherUpdaterTest {
     }
 
     @Test
+    fun atomicStoreOwnsAutomaticAttemptDecisionAcrossProcessCaches() = runBlocking {
+        val store = AtomicOnlyAttemptStore()
+
+        val claim = AutomaticRefreshCoordinator.claimAutomaticAttempt(
+            locationId = LOCATION.id,
+            nowEpochSeconds = 10_000L,
+            attemptStore = store
+        )
+
+        assertEquals(AutomaticRefreshClaimResult.Granted(42L), claim)
+        assertEquals(1, store.claims)
+    }
+
+    @Test
     fun automaticAttemptFailsClosedWhenDurableWriteFails() = runBlocking {
         val attemptStore = RejectingAutomaticRefreshAttemptStore()
         val nowEpochSeconds = SNAPSHOT.fetchedAtEpochSeconds +
@@ -654,6 +668,42 @@ class BackgroundWeatherUpdaterTest {
         override fun writeBestEffort(locationId: String, state: AutomaticRefreshAttemptState) = Unit
 
         override suspend fun removeDurably(locationId: String): Boolean = false
+    }
+
+    private class AtomicOnlyAttemptStore : AtomicAutomaticRefreshAttemptStore {
+        var claims = 0
+
+        override suspend fun claimAtomically(
+            locationId: String,
+            nowEpochSeconds: Long
+        ): AutomaticRefreshClaimResult {
+            claims += 1
+            return AutomaticRefreshClaimResult.Granted(42L)
+        }
+
+        override suspend fun finishAtomically(
+            locationId: String,
+            token: Long,
+            completion: AutomaticRefreshAttemptCompletion
+        ): Boolean = true
+
+        override suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long) = Unit
+
+        override suspend fun removeAtomically(locationId: String): Boolean = true
+
+        override suspend fun read(locationId: String): AutomaticRefreshAttemptState? =
+            error("atomic stores must not read the process cache")
+
+        override suspend fun writeDurably(
+            locationId: String,
+            state: AutomaticRefreshAttemptState
+        ): Boolean = error("atomic stores must not write the process cache")
+
+        override fun writeBestEffort(locationId: String, state: AutomaticRefreshAttemptState) =
+            error("atomic stores must not write the process cache")
+
+        override suspend fun removeDurably(locationId: String): Boolean =
+            error("atomic stores must not remove the process cache")
     }
 
     private object CancellingAutomaticRefreshAttemptStore : AutomaticRefreshAttemptStore {
