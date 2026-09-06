@@ -10,6 +10,29 @@ internal interface AutomaticRefreshAttemptStore {
     suspend fun removeDurably(locationId: String): Boolean
 }
 
+/**
+ * A store shared with an iOS widget can make the budget decision while holding
+ * its cross-process lock.  The coordinator deliberately does not mirror this
+ * state in its process cache: a widget extension and the app are different
+ * processes.
+ */
+internal interface AtomicAutomaticRefreshAttemptStore : AutomaticRefreshAttemptStore {
+    suspend fun claimAtomically(
+        locationId: String,
+        nowEpochSeconds: Long
+    ): AutomaticRefreshClaimResult
+
+    suspend fun finishAtomically(
+        locationId: String,
+        token: Long,
+        completion: AutomaticRefreshAttemptCompletion
+    ): Boolean
+
+    suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long)
+
+    suspend fun removeAtomically(locationId: String): Boolean
+}
+
 internal expect fun createAutomaticRefreshAttemptStore(
     platformContext: PlatformContext
 ): AutomaticRefreshAttemptStore

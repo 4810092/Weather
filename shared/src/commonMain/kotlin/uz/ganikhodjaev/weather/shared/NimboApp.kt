@@ -78,7 +78,10 @@ fun NimboApp(platformContext: PlatformContext) {
             automaticUnits,
             onboardingStateStore,
             scope,
-            automaticRefreshAttemptStore = container.automaticRefreshAttemptStore
+            automaticRefreshAttemptStore = container.automaticRefreshAttemptStore,
+            onWidgetConfigurationChanged = { location, units ->
+                configureWidgetRefresh(platformContext, location, units)
+            }
         )
     }
     val state by stateHolder.state.collectAsState()

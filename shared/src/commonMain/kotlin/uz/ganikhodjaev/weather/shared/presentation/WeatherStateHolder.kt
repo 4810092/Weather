@@ -90,6 +90,7 @@ internal class WeatherStateHolder(
     private val scope: CoroutineScope,
     private val automaticRefreshAttemptStore: AutomaticRefreshAttemptStore =
         InMemoryAutomaticRefreshAttemptStore(),
+    private val onWidgetConfigurationChanged: (Location?, DisplayUnits?) -> Unit = { _, _ -> },
     private val currentEpochSeconds: () -> Long = {
         kotlin.time.Clock.System.now().epochSeconds
     }
@@ -308,6 +309,9 @@ internal class WeatherStateHolder(
             return
         }
         unitPreference = preference
+        activeLocation?.let { location ->
+            onWidgetConfigurationChanged(location, preference.resolve(automaticUnitSystem))
+        }
         if (current == null) return
         mutableState.value = current.copy(
             unitPreference = preference,
@@ -381,6 +385,7 @@ internal class WeatherStateHolder(
                 if (!isCurrentActivation(generation)) return@withLock false
 
                 activeLocation = location
+                onWidgetConfigurationChanged(location, unitPreference.resolve(automaticUnitSystem))
                 contentBeforeLocationPicker = null
                 mutableState.value = WeatherUiState.Loading
                 true

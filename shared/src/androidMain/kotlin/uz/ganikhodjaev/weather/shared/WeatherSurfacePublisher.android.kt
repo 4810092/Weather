@@ -4,6 +4,7 @@ import android.content.Intent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
+import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 
 internal actual fun publishWeatherSnapshot(
@@ -58,6 +59,12 @@ internal actual fun publishWeatherSnapshot(
         Intent(ACTION_WIDGET_DATA_CHANGED).setPackage(context.packageName)
     )
 }
+
+internal actual fun configureWidgetRefresh(
+    platformContext: PlatformContext,
+    location: Location?,
+    displayUnits: DisplayUnits?
+) = Unit
 
 private const val PREFERENCES_NAME = "nimbo_surface_weather"
 private const val KEY_LOCATION = "location"

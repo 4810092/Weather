@@ -2,6 +2,14 @@ package uz.ganikhodjaev.weather.shared
 
 import platform.Foundation.NSNumber
 import platform.Foundation.NSUserDefaults
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.put
 
 internal actual fun createAutomaticRefreshAttemptStore(
     platformContext: PlatformContext
@@ -10,7 +18,7 @@ internal actual fun createAutomaticRefreshAttemptStore(
 )
 
 private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDefaults) :
-    AutomaticRefreshAttemptStore {
+    AtomicAutomaticRefreshAttemptStore {
     override suspend fun read(locationId: String): AutomaticRefreshAttemptState? {
         val key = automaticRefreshAttemptStorageKey(locationId)
         val stored = preferences.objectForKey(key) ?: return null
@@ -41,4 +49,105 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
         preferences.removeObjectForKey(automaticRefreshAttemptStorageKey(locationId))
         return preferences.synchronize()
     }
+
+    override suspend fun claimAtomically(
+        locationId: String,
+        nowEpochSeconds: Long
+    ): AutomaticRefreshClaimResult {
+        val key = automaticRefreshAttemptStorageKey(locationId)
+        val legacy = legacyValue(key)
+        val response = exchange(
+            buildJsonObject {
+                put("op", "claim")
+                put("key", key)
+                put("now", nowEpochSeconds)
+                if (legacy != null) put("legacy", legacy) else put("legacy", JsonNull)
+            }
+        ) ?: return fallbackClaim(locationId, nowEpochSeconds)
+        return when (response["status"]?.jsonPrimitive?.content) {
+            "granted" -> response["token"]?.jsonPrimitive?.longOrNull
+                ?.let(AutomaticRefreshClaimResult::Granted)
+                ?: AutomaticRefreshClaimResult.StoreUnavailable
+            "cooldown" -> AutomaticRefreshClaimResult.Cooldown
+            "deferred" -> AutomaticRefreshClaimResult.RetryDeferred
+            else -> AutomaticRefreshClaimResult.StoreUnavailable
+        }
+    }
+
+    override suspend fun finishAtomically(
+        locationId: String,
+        token: Long,
+        completion: AutomaticRefreshAttemptCompletion
+    ): Boolean = exchange(
+        buildJsonObject {
+            put("op", "finish")
+            put("key", automaticRefreshAttemptStorageKey(locationId))
+            put("token", token)
+            put("phase", completion.name)
+        }
+    )?.get("ok")?.jsonPrimitive?.booleanOrNull ?: fallbackFinish(locationId, token, completion)
+
+    override suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long) {
+        val key = automaticRefreshAttemptStorageKey(locationId)
+        val response = exchange(buildJsonObject {
+            put("op", "manual")
+            put("key", key)
+            put("now", nowEpochSeconds)
+        })
+        if (response == null) {
+            writeBestEffort(
+                locationId,
+                AutomaticRefreshAttemptState(nowEpochSeconds, nowEpochSeconds, AutomaticRefreshAttemptPhase.Cooldown)
+            )
+        }
+    }
+
+    override suspend fun removeAtomically(locationId: String): Boolean = exchange(buildJsonObject {
+        put("op", "remove")
+        put("key", automaticRefreshAttemptStorageKey(locationId))
+    })?.get("ok")?.jsonPrimitive?.booleanOrNull ?: removeDurably(locationId)
+
+    private fun legacyValue(key: String): String? = when (val stored = preferences.objectForKey(key)) {
+        is NSNumber -> legacyAutomaticRefreshAttemptState(stored.longLongValue)
+            .let(::encodeAutomaticRefreshAttemptState)
+        else -> preferences.stringForKey(key)
+    }
+
+    private fun exchange(request: JsonObject): JsonObject? = try {
+        WidgetRefreshInterop.exchange(RPC_JSON.encodeToString(JsonObject.serializer(), request))
+            ?.let { RPC_JSON.parseToJsonElement(it) as? JsonObject }
+    } catch (_: Throwable) {
+        null
+    }
+
+    private suspend fun fallbackClaim(locationId: String, now: Long): AutomaticRefreshClaimResult {
+        val state = read(locationId)
+        if (!isAutomaticRefreshAttemptDue(state?.attemptedAtEpochSeconds, now)) {
+            return if (state?.phase == AutomaticRefreshAttemptPhase.Cooldown) {
+                AutomaticRefreshClaimResult.Cooldown
+            } else AutomaticRefreshClaimResult.RetryDeferred
+        }
+        val claimed = AutomaticRefreshAttemptState(
+            token = (state?.token ?: 0) + 1,
+            attemptedAtEpochSeconds = now,
+            phase = AutomaticRefreshAttemptPhase.InFlight
+        )
+        return if (writeDurably(locationId, claimed)) AutomaticRefreshClaimResult.Granted(claimed.token)
+        else AutomaticRefreshClaimResult.StoreUnavailable
+    }
+
+    private suspend fun fallbackFinish(
+        locationId: String,
+        token: Long,
+        completion: AutomaticRefreshAttemptCompletion
+    ): Boolean {
+        val current = read(locationId) ?: return false
+        if (current.token != token || current.phase != AutomaticRefreshAttemptPhase.InFlight) return false
+        return writeDurably(locationId, current.copy(phase = when (completion) {
+            AutomaticRefreshAttemptCompletion.Cooldown -> AutomaticRefreshAttemptPhase.Cooldown
+            AutomaticRefreshAttemptCompletion.RetryPending -> AutomaticRefreshAttemptPhase.RetryPending
+        }))
+    }
 }
+
+private val RPC_JSON = Json { ignoreUnknownKeys = true }
