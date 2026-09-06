@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "1d7a58771e3b86ce214ff001528e4d513f2548cd4eaeef594bc0e0c7ae55cc62"
+TRUSTED_SHA256 = "2ec2eb118b7f9f09264860bf1d3e94f7f32fb900409965344a32ce969bf47ba3"
 PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
 
 TRUSTED_REQUIRED = (
@@ -42,9 +42,9 @@ TRUSTED_REQUIRED = (
     "manual workflow commit is stale relative to live master",
     "live master changed during trusted verification",
     "draft storage tag unexpectedly resolves before verification",
-    "repos/4810092/Weather/releases/382592451",
-    "repos/4810092/Weather/releases/assets/544061853",
-    "repos/4810092/Weather/releases/assets/544061890",
+    "repos/4810092/Weather/releases/383662265",
+    "repos/4810092/Weather/releases/assets/547465393",
+    "repos/4810092/Weather/releases/assets/547465445",
     '"draft": True',
     '"prerelease": True',
     '"published_at": None',
@@ -81,7 +81,7 @@ TRUSTED_REQUIRED = (
     '"manual_invocation": {',
     '"event": "workflow_dispatch"',
     '"workflow_sha": sys.argv[3]',
-    '"candidate_source_revision": "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e"',
+    '"candidate_source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444"',
     "This receipt contains identities only; no signed candidate bytes are included.",
     "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
     "path: ${{ runner.temp }}/nimbo-trusted-receipt/trusted-release-verification.json",
@@ -239,17 +239,17 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("stage and verify must each require the master ref")
     if text.count("NIMBO_WORKFLOW_SHA: ${{ github.sha }}") != 5:
         failures.append("all SHA-sensitive trusted steps must bind the manual workflow SHA")
-    if text.count("repos/4810092/Weather/releases/382592451") != 2:
+    if text.count("repos/4810092/Weather/releases/383662265") != 2:
         failures.append("staging job must check draft release exactly before and after")
-    if text.count("repos/4810092/Weather/releases/assets/544061853") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/547465393") != 3:
         failures.append("package asset must use only three fixed API calls")
-    if text.count("repos/4810092/Weather/releases/assets/544061890") != 3:
+    if text.count("repos/4810092/Weather/releases/assets/547465445") != 3:
         failures.append("receipt asset must use only three fixed API calls")
     if text.count("repos/4810092/Weather/git/ref/heads/master") != 4:
         failures.append("stage and verify must each check live master before and after")
     if text.count(
         "repos/4810092/Weather/git/matching-refs/tags/"
-        "nimbo-candidate-v1.1.0-fc4b6de-run-33852229166"
+        "nimbo-candidate-v1.1.0-fcffe13-run-34047427535"
     ) != 3:
         failures.append("draft storage Git tag absence must be checked twice in stage and once in verify")
     if text.count("actions/upload-artifact@") != 2:
@@ -264,8 +264,8 @@ def validate_trusted_release_workflow(text: str) -> list[str]:
         failures.append("full verifier must use the exact ephemeral manifest once")
     if text.count('artifact["source_sync"] = "verified-current"') != 2:
         failures.append("exact current state and ephemeral promotion must be pinned")
-    if text.count('"physical_qa_evidence": None') != 3:
-        failures.append("current candidate must preserve exactly three unknown runtime evidence fields")
+    if text.count('"physical_qa_evidence": None') != 6:
+        failures.append("current and historical candidates must preserve exactly six unknown runtime evidence fields")
     if 'artifact["physical_qa_evidence"]' in text:
         failures.append("ephemeral byte verification must not invent runtime QA evidence")
     if text.count('artifact["historical_candidate"] = None') != 2:
