@@ -1,6 +1,6 @@
 package uz.ganikhodjaev.weather.shared
 
-import kotlin.native.concurrent.ThreadLocal
+import platform.Foundation.NSLock
 
 /** Synchronous JSON RPC implemented by the iOS App Group store. */
 public interface WidgetRefreshBridge {
@@ -12,13 +12,22 @@ public interface WidgetRefreshBridge {
  * bridge in Kotlin makes the widget store the single authority for values that
  * must be atomic across the app and WidgetKit extension.
  */
-@ThreadLocal
 public object WidgetRefreshInterop {
+    private val lock = NSLock()
     private var bridge: WidgetRefreshBridge? = null
 
     public fun install(bridge: WidgetRefreshBridge) {
-        this.bridge = bridge
+        lock.lock()
+        try {
+            this.bridge = bridge
+        } finally {
+            lock.unlock()
+        }
     }
 
-    internal fun exchange(request: String): String? = bridge?.exchange(request)
+    internal fun exchange(request: String): String? {
+        lock.lock()
+        val installed = try { bridge } finally { lock.unlock() }
+        return installed?.exchange(request)
+    }
 }

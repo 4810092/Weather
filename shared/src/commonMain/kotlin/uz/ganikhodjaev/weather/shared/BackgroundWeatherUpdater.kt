@@ -119,6 +119,13 @@ private suspend fun refreshBackgroundWeatherForLocation(
     attemptStore: AutomaticRefreshAttemptStore,
     publishSnapshot: suspend (WeatherSnapshot) -> Unit
 ): BackgroundRefreshOutcome {
+    try {
+        repository.importPendingWidgetRefresh()
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (_: Throwable) {
+        // A pending extension payload is an optimization; retain the normal refresh path.
+    }
     val cachedSnapshot = try {
         repository.observe(location).first()
     } catch (cancelled: CancellationException) {

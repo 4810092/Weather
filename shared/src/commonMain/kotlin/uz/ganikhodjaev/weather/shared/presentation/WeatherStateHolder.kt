@@ -579,6 +579,13 @@ internal class WeatherStateHolder(
         val gate = refreshGate
         if (gate.generation != generation || !gate.mutex.tryLock()) return
         try {
+            try {
+                repository.importPendingWidgetRefresh()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Throwable) {
+                logFailure("widget weather import", error)
+            }
             val automaticAttemptToken = if (!forceRefresh) {
                 val cachedSnapshot = try {
                     repository.observe(location).first()
