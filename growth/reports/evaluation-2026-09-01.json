@@ -150,7 +150,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Exact TestFlight build 9 remains runtime-failed after two UUID-matched iPad crashes during Kotlin-to-Swift background-refresh completion. Its App Store release was cancelled and must remain detached. Build 10 is a separate historical signed artifact: it was uploaded, processed, delivered to the internal TestFlight group, and is now App Store 1.1.0 (10) in Pending Developer Release with manual release selected. The new source authority fcffe13be1cc15e83a0609751f696e48c9301444 advances Apple to 1.1.0 (11) and adds autonomous WidgetKit refresh, but has no signed IPA, TestFlight delivery, natural-refresh observation, or post-completion crash window. No build-10 result transfers to build 11; the gate remains blocked."
+        "reason": "Exact TestFlight build 9 remains runtime-failed after two UUID-matched iPad crashes during Kotlin-to-Swift background-refresh completion. Its App Store release was cancelled and must remain detached. Build 10 is historical and is App Store 1.1.0 (10) in Pending Developer Release with manual release selected. Build 11 is independently signed, byte-verified, processed in App Store Connect, and available to the existing internal TestFlight group; a natural widget-refresh observation and a post-completion crash window are pending. No build-10 result transfers to build 11; the gate remains blocked."
       },
       {
         "id": "open_meteo_promotion_clearance",
@@ -162,23 +162,23 @@
       {
         "id": "release_artifact_source_sync",
         "required": "pass",
-        "actual": "blocked",
-        "status": "fail",
-        "reason": "Product/build-input authority fcffe13be1cc15e83a0609751f696e48c9301444 advances Apple to 1.1.0 (11) for autonomous WidgetKit refresh. The release manifest atomically marks Apple, phone, and Wear artifacts blocked with null hashes and signing evidence. Build-10 and Android signed bytes remain historical-superseded only. Protected signing, durable materialization, and independent full-byte verification are required before any build-11 IPA upload; no TestFlight, review replacement, Android delivery, Pages deployment, production release, or public availability is claimed."
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Product/build-input authority fcffe13be1cc15e83a0609751f696e48c9301444 resolves to independently byte-verified phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (11). Protected signing run 34047427535, materialization run 34048604324, and trusted run 34048714127 verified the atomic 3/3 artifact set from draft 383662265. This passes source, signer, and byte identity only. Apple build 11 is separately processed and available to the existing internal TestFlight group; review replacement, Android delivery, Pages deployment, production release, public availability, and runtime evidence remain separate."
       },
       {
         "id": "android_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Legacy gate ID retained for the owner-approved emulator-sufficient Android policy. The new source fcffe13be1cc15e83a0609751f696e48c9301444 atomically blocks phone and Wear bytes pending protected signing and independent verification. Historical vc11/vc1000011 delivery and runtime observations cannot validate the successor source. The gate remains blocked pending source-bound Android emulator runtime evidence; post-delivery UZ Vitals, production rollout, and public availability remain separate blockers."
+        "reason": "Legacy gate ID retained for the owner-approved emulator-sufficient Android policy. Source fcffe13be1cc15e83a0609751f696e48c9301444 phone and Wear bytes are independently signed and verified, but historical vc11/vc1000011 delivery and runtime observations cannot validate this source. The gate remains blocked pending source-bound Android emulator runtime evidence; post-delivery UZ Vitals, production rollout, and public availability remain separate blockers."
       },
       {
         "id": "ios_physical_smoke",
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Build 10 is historical to the current authority: its bounded iPhone/iPad smoke and iPad widget render do not validate build 11. The source fcffe13be1cc15e83a0609751f696e48c9301444 has no signed IPA or TestFlight installation yet. After protected signing and delivery, it requires a natural iPhone widget refresh without opening Nimbo and a fresh crash-log window. The gate remains blocked."
+        "reason": "Build 10 is historical to the current authority: its bounded iPhone/iPad smoke and iPad widget render do not validate build 11. Source fcffe13be1cc15e83a0609751f696e48c9301444 has a signed, independently verified IPA that is processed and available to the existing internal TestFlight group. It requires a natural iPhone widget refresh without opening Nimbo and a fresh crash-log window. The gate remains blocked."
       },
       {
         "id": "domain_activation",
