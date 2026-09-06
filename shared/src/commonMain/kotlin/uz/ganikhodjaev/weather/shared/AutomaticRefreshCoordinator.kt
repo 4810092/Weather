@@ -45,7 +45,11 @@ internal object AutomaticRefreshCoordinator {
         locationId: String,
         nowEpochSeconds: Long,
         attemptStore: AutomaticRefreshAttemptStore
-    ): AutomaticRefreshClaimResult = withAttemptEntry(locationId) { entry ->
+    ): AutomaticRefreshClaimResult {
+        (attemptStore as? AtomicAutomaticRefreshAttemptStore)?.let { atomicStore ->
+            return atomicStore.claimAtomically(locationId, nowEpochSeconds)
+        }
+        return withAttemptEntry(locationId) { entry ->
         val storedAttempt = try {
             attemptStore.read(locationId)
         } catch (cancelled: CancellationException) {
@@ -89,6 +93,7 @@ internal object AutomaticRefreshCoordinator {
         } else {
             AutomaticRefreshClaimResult.StoreUnavailable
         }
+        }
     }
 
     suspend fun finalizeAutomaticAttempt(
@@ -96,7 +101,11 @@ internal object AutomaticRefreshCoordinator {
         token: Long,
         completion: AutomaticRefreshAttemptCompletion,
         attemptStore: AutomaticRefreshAttemptStore
-    ): Boolean = withAttemptEntry(locationId) { entry ->
+    ): Boolean {
+        (attemptStore as? AtomicAutomaticRefreshAttemptStore)?.let { atomicStore ->
+            return atomicStore.finishAtomically(locationId, token, completion)
+        }
+        return withAttemptEntry(locationId) { entry ->
         val current = entry.state
         if (current?.token != token || current.phase != AutomaticRefreshAttemptPhase.InFlight) {
             return@withAttemptEntry false
@@ -119,6 +128,7 @@ internal object AutomaticRefreshCoordinator {
         } catch (_: Throwable) {
             false
         }
+        }
     }
 
     suspend fun recordManualAttempt(
@@ -126,6 +136,10 @@ internal object AutomaticRefreshCoordinator {
         nowEpochSeconds: Long,
         attemptStore: AutomaticRefreshAttemptStore
     ) {
+        (attemptStore as? AtomicAutomaticRefreshAttemptStore)?.let { atomicStore ->
+            atomicStore.recordManualAttemptAtomically(locationId, nowEpochSeconds)
+            return
+        }
         withAttemptEntry(locationId) { entry ->
             val recorded = AutomaticRefreshAttemptState(
                 token = issueToken(entry.state?.token),
@@ -149,7 +163,11 @@ internal object AutomaticRefreshCoordinator {
     suspend fun removeAttemptState(
         locationId: String,
         attemptStore: AutomaticRefreshAttemptStore
-    ): Boolean = withAttemptEntry(locationId) { entry ->
+    ): Boolean {
+        (attemptStore as? AtomicAutomaticRefreshAttemptStore)?.let { atomicStore ->
+            return atomicStore.removeAtomically(locationId)
+        }
+        return withAttemptEntry(locationId) { entry ->
         val removed = try {
             attemptStore.removeDurably(locationId)
         } catch (cancelled: CancellationException) {
@@ -159,6 +177,7 @@ internal object AutomaticRefreshCoordinator {
         }
         if (removed) entry.state = null
         removed
+        }
     }
 
     internal suspend fun resetAttemptHistoryForTests() {

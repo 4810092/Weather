@@ -1,54 +1,87 @@
 package uz.ganikhodjaev.weather.shared
 
-import platform.Foundation.NSNotificationCenter
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import platform.Foundation.NSNumber
 import platform.Foundation.NSUserDefaults
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
+import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
+
+internal actual fun configureWidgetRefresh(
+    platformContext: PlatformContext,
+    location: Location?,
+    displayUnits: DisplayUnits?
+) {
+    val config = location?.let { configuredLocation(it, displayUnits ?: return) }
+    val legacy = location?.let { legacyAttempt(automaticRefreshAttemptStorageKey(it.id)) }
+    widgetExchange(buildJsonObject {
+        put("op", "configure")
+        put("config", config ?: JsonNull)
+        legacy?.let { put("legacy", it) }
+    })
+}
 
 internal actual fun publishWeatherSnapshot(
     platformContext: PlatformContext,
     snapshot: WeatherSnapshot,
     displayUnits: DisplayUnits
 ) {
-    val defaults = NSUserDefaults(suiteName = APP_GROUP)
+    // A delayed observation must not reconfigure the selected widget city.
     val airQuality = snapshot.airQuality.minByOrNull {
         kotlin.math.abs(it.epochSeconds - snapshot.current.epochSeconds)
     }
     val today = snapshot.dailyForecast.firstOrNull()
-    defaults.setObject(
-        snapshot.location.name.ifBlank { snapshot.location.country },
-        forKey = "location"
-    )
-    defaults.setInteger(
-        displayUnits.temperature(snapshot.current.temperatureC).toLong(),
-        forKey = "temperature_c"
-    )
-    defaults.setObject(displayUnits.temperatureSymbol, forKey = "temperature_unit")
-    defaults.setInteger(snapshot.current.weatherCode.toLong(), forKey = "weather_code")
-    defaults.setInteger(
-        snapshot.current.precipitationProbability.toLong(),
-        forKey = "rain_chance"
-    )
-    defaults.setInteger((airQuality?.usAqi ?: -1).toLong(), forKey = "aqi")
-    defaults.setBool(today != null, forKey = "has_daily_range")
-    if (today != null) {
-        defaults.setInteger(
-            displayUnits.temperature(today.temperatureMaxC).toLong(),
-            forKey = "temperature_max"
-        )
-        defaults.setInteger(
-            displayUnits.temperature(today.temperatureMinC).toLong(),
-            forKey = "temperature_min"
-        )
-    } else {
-        defaults.removeObjectForKey("temperature_max")
-        defaults.removeObjectForKey("temperature_min")
-    }
-    defaults.setInteger(snapshot.fetchedAtEpochSeconds, forKey = "updated_at")
-    NSNotificationCenter.defaultCenter.postNotificationName(
-        aName = "NimboWeatherDidUpdate",
-        `object` = null
-    )
+    widgetExchange(buildJsonObject {
+        put("op", "publish")
+        put("config", configuredLocation(snapshot.location, displayUnits))
+        put("snapshot", buildJsonObject {
+            put("location", snapshot.location.name.ifBlank { snapshot.location.country })
+            put("temperature_c", displayUnits.temperature(snapshot.current.temperatureC))
+            put("temperature_unit", displayUnits.temperatureSymbol)
+            put("weather_code", snapshot.current.weatherCode)
+            put("rain_chance", snapshot.current.precipitationProbability)
+            put("aqi", airQuality?.usAqi ?: -1)
+            put("has_daily_range", today != null)
+            if (today != null) {
+                put("temperature_max", displayUnits.temperature(today.temperatureMaxC))
+                put("temperature_min", displayUnits.temperature(today.temperatureMinC))
+            }
+            put("updated_at", snapshot.fetchedAtEpochSeconds)
+        })
+    })
 }
 
-private const val APP_GROUP = "group.uz.ganikhodjaev.weather"
+private fun configuredLocation(location: Location, displayUnits: DisplayUnits): JsonObject =
+    buildJsonObject {
+        put("id", location.id)
+        put("name", location.name)
+        put("country", location.country)
+        put("latitude", location.latitude)
+        put("longitude", location.longitude)
+        put("timezone", location.timezone)
+        put("temperatureUnit", displayUnits.temperatureSymbol)
+        put("attemptKey", automaticRefreshAttemptStorageKey(location.id))
+    }
+
+private fun widgetExchange(request: JsonObject) {
+    try {
+        WidgetRefreshInterop.exchange(WIDGET_RPC_JSON.encodeToString(JsonObject.serializer(), request))
+    } catch (_: Throwable) {
+        // Widget presentation is best effort; foreground weather remains usable.
+    }
+}
+
+private fun legacyAttempt(key: String): String? = when (val stored =
+    NSUserDefaults.standardUserDefaults.objectForKey(key)
+) {
+    is NSNumber -> encodeAutomaticRefreshAttemptState(
+        legacyAutomaticRefreshAttemptState(stored.longLongValue)
+    )
+    else -> NSUserDefaults.standardUserDefaults.stringForKey(key)
+}
+
+private val WIDGET_RPC_JSON = Json { }
