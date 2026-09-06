@@ -2,11 +2,11 @@ package uz.ganikhodjaev.weather.shared.data
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.put
 import uz.ganikhodjaev.weather.shared.WidgetRefreshInterop
 
@@ -47,12 +47,15 @@ private fun requestPending(): PendingDelivery? = try {
 
 private fun acknowledge(delivery: PendingDelivery): Boolean = try {
     val response = WidgetRefreshInterop.exchange(
-        WIDGET_IMPORT_JSON.encodeToString(JsonObject.serializer(), kotlinx.serialization.json.buildJsonObject {
-            put("op", "acknowledge")
-            put("revision", delivery.revision)
-            put("fetchedAt", delivery.payload.fetchedAtEpochSeconds)
-            put("deliveryId", delivery.payload.deliveryId)
-        })
+        WIDGET_IMPORT_JSON.encodeToString(
+            JsonObject.serializer(),
+            kotlinx.serialization.json.buildJsonObject {
+                put("op", "acknowledge")
+                put("revision", delivery.revision)
+                put("fetchedAt", delivery.payload.fetchedAtEpochSeconds)
+                put("deliveryId", delivery.payload.deliveryId)
+            }
+        )
     )?.let { WIDGET_IMPORT_JSON.parseToJsonElement(it).jsonObject }
     response?.get("ok")?.jsonPrimitive?.content == "true"
 } catch (_: Throwable) {
@@ -61,8 +64,7 @@ private fun acknowledge(delivery: PendingDelivery): Boolean = try {
 
 private data class PendingDelivery(val payload: WidgetRefreshImportPayload, val revision: String)
 
-private fun JsonObject.string(name: String): String? =
-    this[name]?.jsonPrimitive?.contentOrNull
+private fun JsonObject.string(name: String): String? = this[name]?.jsonPrimitive?.contentOrNull
 
 private fun JsonObject.long(name: String): Long? = this[name]?.jsonPrimitive?.longOrNull
 

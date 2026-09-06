@@ -27,12 +27,20 @@ public object WidgetRefreshInterop {
 
     internal fun exchange(request: String): String? {
         lock.lock()
-        val installed = try { bridge } finally { lock.unlock() }
+        val installed = try {
+            bridge
+        } finally {
+            lock.unlock()
+        }
         return installed?.exchange(request)
     }
 
     internal fun isInstalled(): Boolean {
         lock.lock()
-        return try { bridge != null } finally { lock.unlock() }
+        return try {
+            bridge != null
+        } finally {
+            lock.unlock()
+        }
     }
 }

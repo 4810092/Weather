@@ -687,7 +687,10 @@ class BackgroundWeatherUpdaterTest {
             completion: AutomaticRefreshAttemptCompletion
         ): Boolean = true
 
-        override suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long) = Unit
+        override suspend fun recordManualAttemptAtomically(
+            locationId: String,
+            nowEpochSeconds: Long
+        ) = Unit
 
         override suspend fun removeAtomically(locationId: String): Boolean = true
 

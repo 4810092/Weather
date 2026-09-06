@@ -4,13 +4,13 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import kotlin.math.abs
 import kotlin.time.Clock
-import kotlinx.serialization.json.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.Json
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.model.AirQualityHour
@@ -246,7 +246,12 @@ internal class WeatherRepository(
             rows.forEach { row ->
                 val existing = queries.selectWeatherFetchedAt(location.id, row.epochSeconds)
                     .executeAsOneOrNull()
-                if (onlyIfNewer && existing != null && existing > row.fetchedAtEpochSeconds) return@forEach
+                if (onlyIfNewer &&
+                    existing != null &&
+                    existing > row.fetchedAtEpochSeconds
+                ) {
+                    return@forEach
+                }
                 queries.insertOrReplaceWeatherHour(
                     location_id = location.id,
                     epoch_seconds = row.epochSeconds,
@@ -278,13 +283,21 @@ internal class WeatherRepository(
                     )
                 }
             }
-            if (wroteWeather && response.timezone.isNotBlank() && response.timezone != location.timezone) {
+            if (wroteWeather &&
+                response.timezone.isNotBlank() &&
+                response.timezone != location.timezone
+            ) {
                 queries.updateLocationTimezone(response.timezone, location.id)
             }
             response.toDailyRows(fetchedAt).forEach { day ->
                 val existing = queries.selectDailyForecastFetchedAt(location.id, day.epochSeconds)
                     .executeAsOneOrNull()
-                if (onlyIfNewer && existing != null && existing > day.fetchedAtEpochSeconds) return@forEach
+                if (onlyIfNewer &&
+                    existing != null &&
+                    existing > day.fetchedAtEpochSeconds
+                ) {
+                    return@forEach
+                }
                 queries.insertOrReplaceDailyForecast(
                     location_id = location.id,
                     epoch_seconds = day.epochSeconds,
@@ -384,7 +397,9 @@ internal class WeatherRepository(
             active.latitude != payload.latitude ||
             active.longitude != payload.longitude ||
             payload.fetchedAtEpochSeconds <= 0
-        ) return false
+        ) {
+            return false
+        }
         val forecast = try {
             WIDGET_JSON.decodeFromString(ForecastResponse.serializer(), payload.forecast)
         } catch (_: Throwable) {
@@ -396,7 +411,10 @@ internal class WeatherRepository(
                 WIDGET_JSON.decodeFromString(AirQualityResponse.serializer(), raw)
                     .toAirQualityRows(
                         (payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds)
-                            .takeIf { it <= Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS }
+                            .takeIf {
+                                it <=
+                                    Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS
+                            }
                             ?: payload.fetchedAtEpochSeconds
                     )
             } catch (_: Throwable) {
@@ -418,8 +436,11 @@ internal class WeatherRepository(
         database.transaction {
             require(queries.selectActiveLocation().executeAsOneOrNull()?.id == active.id)
             airRows.forEach { row ->
-                if ((queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
-                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= row.fetchedAtEpochSeconds) {
+                if ((
+                        queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
+                            .executeAsOneOrNull() ?: Long.MIN_VALUE
+                        ) <= row.fetchedAtEpochSeconds
+                ) {
                     queries.insertOrReplaceAirQualityHour(
                         active.id, row.epochSeconds, row.usAqi?.toLong(), row.pm25, row.pm10,
                         row.dust, row.ozone, row.nitrogenDioxide, row.fetchedAtEpochSeconds
