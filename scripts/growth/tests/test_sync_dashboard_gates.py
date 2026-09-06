@@ -195,7 +195,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             expected_source_body = (
-                "atomically 3/3 verified-current"
+                "atomic 3/3 artifact set"
                 if source_sync_status == "pass"
                 else "atomically marks Apple, phone, and Wear artifacts blocked"
             )

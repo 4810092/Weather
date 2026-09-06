@@ -6,11 +6,11 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:fcffe13be1cc15e83a0609751f696e48c9301444 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5ed08d9791ba13047cb3c96a3ad62f2ebb905792a6b72abd3f1c183810b3aaa9 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3ac5791643de7342bb8c2cbbca8aa833eb25c82fc645c8e8b565b2da6b0c61c6 -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=7422c08c62f4b462d1a3775fddbd8f782ac57fd2f04a17a95ef52a88f6cf6c53 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=01d239d78bd2c5f0d2828a2535eadcc61c458d0f3289df3d3b508fbbaff22d4a -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
