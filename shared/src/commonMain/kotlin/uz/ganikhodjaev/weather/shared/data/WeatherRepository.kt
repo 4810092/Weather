@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import kotlin.math.abs
 import kotlin.time.Clock
+import kotlinx.serialization.json.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +44,9 @@ internal interface WeatherDataSource {
     fun unitPreference(): UnitPreference
 
     fun setUnitPreference(preference: UnitPreference)
+
+    /** Imports an extension-owned download before the normal cache freshness gate. */
+    suspend fun importPendingWidgetRefresh(): Boolean = false
 }
 
 internal class SavedLocationLimitReachedException :
@@ -359,6 +363,73 @@ internal class WeatherRepository(
         queries.upsertSetting(UNIT_PREFERENCE_KEY, preference.name)
     }
 
+    override suspend fun importPendingWidgetRefresh(): Boolean =
+        importPendingWidgetRefreshFromPlatform(this)
+
+    internal fun importWidgetRefresh(payload: WidgetRefreshImportPayload): Boolean {
+        val active = activeLocation() ?: return false
+        if (
+            active.id != payload.locationId ||
+            active.latitude != payload.latitude ||
+            active.longitude != payload.longitude ||
+            payload.fetchedAtEpochSeconds <= 0
+        ) return false
+        val forecast = try {
+            WIDGET_JSON.decodeFromString(ForecastResponse.serializer(), payload.forecast)
+        } catch (_: Throwable) {
+            return false
+        }
+        val weatherRows = forecast.toWeatherRows(payload.fetchedAtEpochSeconds)
+        if (weatherRows.isEmpty()) return false
+        val airRows = payload.airQuality?.let { raw ->
+            try {
+                WIDGET_JSON.decodeFromString(AirQualityResponse.serializer(), raw)
+                    .toAirQualityRows(payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds)
+            } catch (_: Throwable) {
+                // AQI enrichment is optional; a malformed optional response must not discard weather.
+                emptyList()
+            }
+        }.orEmpty()
+        database.transaction {
+            if (forecast.timezone.isNotBlank() && forecast.timezone != active.timezone) {
+                queries.updateLocationTimezone(forecast.timezone, active.id)
+            }
+            weatherRows.forEach { row ->
+                if ((queries.selectWeatherFetchedAt(active.id, row.epochSeconds)
+                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= row.fetchedAtEpochSeconds) {
+                    queries.insertOrReplaceWeatherHour(
+                        active.id, row.epochSeconds, row.temperatureC, row.apparentTemperatureC,
+                        row.weatherCode.toLong(), row.precipitationProbability.toLong(), row.precipitationMm,
+                        row.windKph, row.gustKph, row.humidityPercent.toLong(), row.uvIndex,
+                        "open-meteo-widget", row.fetchedAtEpochSeconds
+                    )
+                }
+            }
+            forecast.toDailyRows(payload.fetchedAtEpochSeconds).forEach { day ->
+                if ((queries.selectDailyForecastFetchedAt(active.id, day.epochSeconds)
+                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= day.fetchedAtEpochSeconds) {
+                    queries.insertOrReplaceDailyForecast(
+                        active.id, day.epochSeconds, day.weatherCode.toLong(), day.temperatureMaxC,
+                        day.temperatureMinC, day.apparentTemperatureMaxC, day.apparentTemperatureMinC,
+                        day.precipitationProbabilityMax.toLong(), day.precipitationMm, day.windMaxKph,
+                        day.gustMaxKph, day.uvIndexMax, day.sunriseEpochSeconds, day.sunsetEpochSeconds,
+                        day.fetchedAtEpochSeconds
+                    )
+                }
+            }
+            airRows.forEach { row ->
+                if ((queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
+                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= row.fetchedAtEpochSeconds) {
+                    queries.insertOrReplaceAirQualityHour(
+                        active.id, row.epochSeconds, row.usAqi?.toLong(), row.pm25, row.pm10,
+                        row.dust, row.ozone, row.nitrogenDioxide, row.fetchedAtEpochSeconds
+                    )
+                }
+            }
+        }
+        return true
+    }
+
     private companion object {
         const val TIMELINE_SECONDS = 24L * 60L * 60L
         const val HISTORY_SECONDS = 7L * 24L * 60L * 60L
@@ -373,6 +444,23 @@ internal class WeatherRepository(
         const val UNIT_PREFERENCE_KEY = "unit_preference"
     }
 }
+
+internal data class WidgetRefreshImportPayload(
+    val deliveryId: String,
+    val locationId: String,
+    val latitude: Double,
+    val longitude: Double,
+    val fetchedAtEpochSeconds: Long,
+    val forecast: String,
+    val airQuality: String?,
+    val airQualityFetchedAtEpochSeconds: Long?
+)
+
+internal expect suspend fun importPendingWidgetRefreshFromPlatform(
+    repository: WeatherRepository
+): Boolean
+
+private val WIDGET_JSON = Json { ignoreUnknownKeys = true }
 
 internal const val MAX_SAVED_LOCATIONS = 10
 

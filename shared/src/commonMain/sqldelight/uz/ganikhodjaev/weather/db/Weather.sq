@@ -142,6 +142,10 @@ INSERT OR REPLACE INTO weather_hour(
   fetched_at_epoch_seconds
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
+selectWeatherFetchedAt:
+SELECT fetched_at_epoch_seconds FROM weather_hour
+WHERE location_id = ? AND epoch_seconds = ? LIMIT 1;
+
 selectTimeline:
 SELECT * FROM weather_hour
 WHERE location_id = ? AND epoch_seconds BETWEEN ? AND ?
@@ -165,6 +169,10 @@ INSERT OR REPLACE INTO daily_forecast(
   uv_index_max, sunrise_epoch_seconds, sunset_epoch_seconds, fetched_at_epoch_seconds
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
+selectDailyForecastFetchedAt:
+SELECT fetched_at_epoch_seconds FROM daily_forecast
+WHERE location_id = ? AND epoch_seconds = ? LIMIT 1;
+
 selectDailyForecast:
 SELECT * FROM daily_forecast
 WHERE location_id = ? AND epoch_seconds >= ?
@@ -178,6 +186,10 @@ INSERT OR REPLACE INTO air_quality_hour(
   location_id, epoch_seconds, us_aqi, pm25, pm10, dust, ozone, nitrogen_dioxide,
   fetched_at_epoch_seconds
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAirQualityFetchedAt:
+SELECT fetched_at_epoch_seconds FROM air_quality_hour
+WHERE location_id = ? AND epoch_seconds = ? LIMIT 1;
 
 selectAirQuality:
 SELECT * FROM air_quality_hour
