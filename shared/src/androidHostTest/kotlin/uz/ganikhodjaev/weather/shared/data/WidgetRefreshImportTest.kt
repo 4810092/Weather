@@ -6,16 +6,17 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Clock
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.model.Location
 
 class WidgetRefreshImportTest {
     @Test
     fun preservesWidgetOriginalFetchTimestamp() = fixture { repository, database ->
-        assertTrue(repository.importWidgetRefresh(payload(fetchedAt = 100)))
+        assertTrue(repository.importWidgetRefresh(payload(fetchedAt = HOUR)))
 
         assertEquals(
-            100L,
+            HOUR,
             database.weatherQueries.selectWeatherFetchedAt(LOCATION.id, HOUR).executeAsOne()
         )
     }
@@ -23,21 +24,21 @@ class WidgetRefreshImportTest {
     @Test
     fun neverOverwritesNewerCachedRows() = fixture { repository, database ->
         database.weatherQueries.insertOrReplaceWeatherHour(
-            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", 200
+            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100
         )
 
-        assertTrue(repository.importWidgetRefresh(payload(fetchedAt = 100)))
+        assertTrue(repository.importWidgetRefresh(payload(fetchedAt = HOUR)))
 
         val row = database.weatherQueries.selectTimeline(LOCATION.id, HOUR, HOUR)
             .executeAsOne()
         assertEquals(99.0, row.temperature_c)
-        assertEquals(200L, row.fetched_at_epoch_seconds)
+        assertEquals(HOUR + 100, row.fetched_at_epoch_seconds)
     }
 
     @Test
     fun malformedPrimaryPreservesExistingCache() = fixture { repository, database ->
         database.weatherQueries.insertOrReplaceWeatherHour(
-            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", 200
+            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100
         )
 
         assertFalse(repository.importWidgetRefresh(payload(forecast = "{bad")))
@@ -78,7 +79,7 @@ class WidgetRefreshImportTest {
     }
 
     private fun payload(
-        fetchedAt: Long = 100,
+        fetchedAt: Long = HOUR,
         forecast: String = FORECAST,
         airQuality: String? = null
     ) = WidgetRefreshImportPayload(
@@ -93,7 +94,7 @@ class WidgetRefreshImportTest {
     )
 
     private companion object {
-        const val HOUR = 1_767_225_600L
+        val HOUR = Clock.System.now().epochSeconds
         val LOCATION = Location("tashkent", "Tashkent", "Uzbekistan", 41.31, 69.24, "Asia/Tashkent")
         val FORECAST = """
             {"latitude":41.31,"longitude":69.24,"timezone":"Asia/Tashkent","utc_offset_seconds":0,

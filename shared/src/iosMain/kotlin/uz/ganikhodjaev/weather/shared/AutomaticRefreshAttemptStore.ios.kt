@@ -63,7 +63,11 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
                 put("now", nowEpochSeconds)
                 if (legacy != null) put("legacy", legacy) else put("legacy", JsonNull)
             }
-        ) ?: return fallbackClaim(locationId, nowEpochSeconds)
+        ) ?: return if (WidgetRefreshInterop.isInstalled()) {
+            AutomaticRefreshClaimResult.StoreUnavailable
+        } else {
+            fallbackClaim(locationId, nowEpochSeconds)
+        }
         return when (response["status"]?.jsonPrimitive?.content) {
             "granted" -> response["token"]?.jsonPrimitive?.longOrNull
                 ?.let(AutomaticRefreshClaimResult::Granted)
@@ -85,7 +89,9 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
             put("token", token)
             put("phase", completion.name)
         }
-    )?.get("ok")?.jsonPrimitive?.booleanOrNull ?: fallbackFinish(locationId, token, completion)
+    )?.get("ok")?.jsonPrimitive?.booleanOrNull ?: if (WidgetRefreshInterop.isInstalled()) {
+        false
+    } else fallbackFinish(locationId, token, completion)
 
     override suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long) {
         val key = automaticRefreshAttemptStorageKey(locationId)
@@ -94,7 +100,7 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
             put("key", key)
             put("now", nowEpochSeconds)
         })
-        if (response == null) {
+        if (response == null && !WidgetRefreshInterop.isInstalled()) {
             writeBestEffort(
                 locationId,
                 AutomaticRefreshAttemptState(nowEpochSeconds, nowEpochSeconds, AutomaticRefreshAttemptPhase.Cooldown)
@@ -105,7 +111,9 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
     override suspend fun removeAtomically(locationId: String): Boolean = exchange(buildJsonObject {
         put("op", "remove")
         put("key", automaticRefreshAttemptStorageKey(locationId))
-    })?.get("ok")?.jsonPrimitive?.booleanOrNull ?: removeDurably(locationId)
+    })?.get("ok")?.jsonPrimitive?.booleanOrNull ?: if (WidgetRefreshInterop.isInstalled()) {
+        false
+    } else removeDurably(locationId)
 
     private fun legacyValue(key: String): String? = when (val stored = preferences.objectForKey(key)) {
         is NSNumber -> legacyAutomaticRefreshAttemptState(stored.longLongValue)

@@ -126,6 +126,7 @@ internal class WeatherStateHolder(
         }
         started = true
         if (storedLocation == null) {
+            onWidgetConfigurationChanged(null, null)
             mutableState.value = WeatherUiState.ChooseLocation(
                 isOnboarding = !onboardingState.hasCompletedFirstForecast,
                 quickLocations = UzbekistanQuickLocations.all
@@ -538,6 +539,10 @@ internal class WeatherStateHolder(
         }
         if (!isCurrentActivation(generation, location)) return
         activeLocation = resolvedLocation
+        onWidgetConfigurationChanged(
+            resolvedLocation,
+            unitPreference.resolve(automaticUnitSystem)
+        )
         val current = mutableState.value as? WeatherUiState.Content
         if (current?.weather?.location?.id == location.id) {
             mutableState.value = current.copy(
