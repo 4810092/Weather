@@ -134,8 +134,16 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 "observe a natural OS-scheduled refresh",
                 rows["ios_crash_gate"]["next_action"],
             )
+            source_sync_status = canonical_gates[
+                "release_artifact_source_sync"
+            ]["status"]
+            expected_source_decision = (
+                "3/3 verified-current"
+                if source_sync_status == "pass"
+                else "no signed, source-bound successor"
+            )
             self.assertIn(
-                "3/3 verified-current",
+                expected_source_decision,
                 rows["release_artifact_source_sync"]["decision"],
             )
             issues = {
@@ -153,8 +161,13 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 issues["release_artifact_source_sync_missing"],
                 canonical_gates["release_artifact_source_sync"]["reason"],
             )
+            expected_source_next_action = (
+                "recheck the mutable draft"
+                if source_sync_status == "pass"
+                else "Create a monotonic Apple successor"
+            )
             self.assertIn(
-                "recheck the mutable draft",
+                expected_source_next_action,
                 rows["release_artifact_source_sync"]["next_action"],
             )
             self.assertIn(
@@ -181,8 +194,13 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 canonical_gates["release_artifact_source_sync"]["reason"],
                 artifact["manifest"]["blocks"][0]["body"],
             )
+            expected_source_body = (
+                "atomically 3/3 verified-current"
+                if source_sync_status == "pass"
+                else "atomically marks Apple, phone, and Wear artifacts blocked"
+            )
             self.assertIn(
-                "atomically 3/3 verified-current",
+                expected_source_body,
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
@@ -231,7 +249,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertIn(
-                "build 9 remains runtime-failed and must not be reattached or released",
+                "All predecessor artifacts and observations are historical and non-transferable",
                 artifact["manifest"]["blocks"][0]["body"],
             )
             self.assertNotIn(
