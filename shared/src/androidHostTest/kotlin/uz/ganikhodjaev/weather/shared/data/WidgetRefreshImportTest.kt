@@ -5,8 +5,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
 import kotlin.time.Clock
+import kotlinx.coroutines.runBlocking
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.model.Location
 

@@ -1,15 +1,15 @@
 package uz.ganikhodjaev.weather.shared
 
-import platform.Foundation.NSNumber
-import platform.Foundation.NSUserDefaults
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
-import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.put
+import platform.Foundation.NSNumber
+import platform.Foundation.NSUserDefaults
 
 internal actual fun createAutomaticRefreshAttemptStore(
     platformContext: PlatformContext
@@ -91,35 +91,48 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
         }
     )?.get("ok")?.jsonPrimitive?.booleanOrNull ?: if (WidgetRefreshInterop.isInstalled()) {
         false
-    } else fallbackFinish(locationId, token, completion)
+    } else {
+        fallbackFinish(locationId, token, completion)
+    }
 
     override suspend fun recordManualAttemptAtomically(locationId: String, nowEpochSeconds: Long) {
         val key = automaticRefreshAttemptStorageKey(locationId)
-        val response = exchange(buildJsonObject {
-            put("op", "manual")
-            put("key", key)
-            put("now", nowEpochSeconds)
-        })
+        val response = exchange(
+            buildJsonObject {
+                put("op", "manual")
+                put("key", key)
+                put("now", nowEpochSeconds)
+            }
+        )
         if (response == null && !WidgetRefreshInterop.isInstalled()) {
             writeBestEffort(
                 locationId,
-                AutomaticRefreshAttemptState(nowEpochSeconds, nowEpochSeconds, AutomaticRefreshAttemptPhase.Cooldown)
+                AutomaticRefreshAttemptState(
+                    nowEpochSeconds,
+                    nowEpochSeconds,
+                    AutomaticRefreshAttemptPhase.Cooldown
+                )
             )
         }
     }
 
-    override suspend fun removeAtomically(locationId: String): Boolean = exchange(buildJsonObject {
-        put("op", "remove")
-        put("key", automaticRefreshAttemptStorageKey(locationId))
-    })?.get("ok")?.jsonPrimitive?.booleanOrNull ?: if (WidgetRefreshInterop.isInstalled()) {
+    override suspend fun removeAtomically(locationId: String): Boolean = exchange(
+        buildJsonObject {
+            put("op", "remove")
+            put("key", automaticRefreshAttemptStorageKey(locationId))
+        }
+    )?.get("ok")?.jsonPrimitive?.booleanOrNull ?: if (WidgetRefreshInterop.isInstalled()) {
         false
-    } else removeDurably(locationId)
-
-    private fun legacyValue(key: String): String? = when (val stored = preferences.objectForKey(key)) {
-        is NSNumber -> legacyAutomaticRefreshAttemptState(stored.longLongValue)
-            .let(::encodeAutomaticRefreshAttemptState)
-        else -> preferences.stringForKey(key)
+    } else {
+        removeDurably(locationId)
     }
+
+    private fun legacyValue(key: String): String? =
+        when (val stored = preferences.objectForKey(key)) {
+            is NSNumber -> legacyAutomaticRefreshAttemptState(stored.longLongValue)
+                .let(::encodeAutomaticRefreshAttemptState)
+            else -> preferences.stringForKey(key)
+        }
 
     private fun exchange(request: JsonObject): JsonObject? = try {
         WidgetRefreshInterop.exchange(RPC_JSON.encodeToString(JsonObject.serializer(), request))
@@ -133,15 +146,20 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
         if (!isAutomaticRefreshAttemptDue(state?.attemptedAtEpochSeconds, now)) {
             return if (state?.phase == AutomaticRefreshAttemptPhase.Cooldown) {
                 AutomaticRefreshClaimResult.Cooldown
-            } else AutomaticRefreshClaimResult.RetryDeferred
+            } else {
+                AutomaticRefreshClaimResult.RetryDeferred
+            }
         }
         val claimed = AutomaticRefreshAttemptState(
             token = (state?.token ?: 0) + 1,
             attemptedAtEpochSeconds = now,
             phase = AutomaticRefreshAttemptPhase.InFlight
         )
-        return if (writeDurably(locationId, claimed)) AutomaticRefreshClaimResult.Granted(claimed.token)
-        else AutomaticRefreshClaimResult.StoreUnavailable
+        return if (writeDurably(locationId, claimed)) {
+            AutomaticRefreshClaimResult.Granted(claimed.token)
+        } else {
+            AutomaticRefreshClaimResult.StoreUnavailable
+        }
     }
 
     private suspend fun fallbackFinish(
@@ -150,11 +168,22 @@ private class IosAutomaticRefreshAttemptStore(private val preferences: NSUserDef
         completion: AutomaticRefreshAttemptCompletion
     ): Boolean {
         val current = read(locationId) ?: return false
-        if (current.token != token || current.phase != AutomaticRefreshAttemptPhase.InFlight) return false
-        return writeDurably(locationId, current.copy(phase = when (completion) {
-            AutomaticRefreshAttemptCompletion.Cooldown -> AutomaticRefreshAttemptPhase.Cooldown
-            AutomaticRefreshAttemptCompletion.RetryPending -> AutomaticRefreshAttemptPhase.RetryPending
-        }))
+        if (current.token != token ||
+            current.phase != AutomaticRefreshAttemptPhase.InFlight
+        ) {
+            return false
+        }
+        return writeDurably(
+            locationId,
+            current.copy(
+                phase = when (completion) {
+                    AutomaticRefreshAttemptCompletion.Cooldown ->
+                        AutomaticRefreshAttemptPhase.Cooldown
+                    AutomaticRefreshAttemptCompletion.RetryPending ->
+                        AutomaticRefreshAttemptPhase.RetryPending
+                }
+            )
+        )
     }
 }
 

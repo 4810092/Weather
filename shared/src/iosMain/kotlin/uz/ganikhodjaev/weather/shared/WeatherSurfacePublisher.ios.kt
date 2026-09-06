@@ -1,8 +1,8 @@
 package uz.ganikhodjaev.weather.shared
 
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import platform.Foundation.NSNumber
@@ -18,11 +18,13 @@ internal actual fun configureWidgetRefresh(
 ) {
     val config = location?.let { configuredLocation(it, displayUnits ?: return) }
     val legacy = location?.let { legacyAttempt(automaticRefreshAttemptStorageKey(it.id)) }
-    widgetExchange(buildJsonObject {
-        put("op", "configure")
-        put("config", config ?: JsonNull)
-        legacy?.let { put("legacy", it) }
-    })
+    widgetExchange(
+        buildJsonObject {
+            put("op", "configure")
+            put("config", config ?: JsonNull)
+            legacy?.let { put("legacy", it) }
+        }
+    )
 }
 
 internal actual fun publishWeatherSnapshot(
@@ -35,24 +37,29 @@ internal actual fun publishWeatherSnapshot(
         kotlin.math.abs(it.epochSeconds - snapshot.current.epochSeconds)
     }
     val today = snapshot.dailyForecast.firstOrNull()
-    widgetExchange(buildJsonObject {
-        put("op", "publish")
-        put("config", configuredLocation(snapshot.location, displayUnits))
-        put("snapshot", buildJsonObject {
-            put("location", snapshot.location.name.ifBlank { snapshot.location.country })
-            put("temperature_c", displayUnits.temperature(snapshot.current.temperatureC))
-            put("temperature_unit", displayUnits.temperatureSymbol)
-            put("weather_code", snapshot.current.weatherCode)
-            put("rain_chance", snapshot.current.precipitationProbability)
-            put("aqi", airQuality?.usAqi ?: -1)
-            put("has_daily_range", today != null)
-            if (today != null) {
-                put("temperature_max", displayUnits.temperature(today.temperatureMaxC))
-                put("temperature_min", displayUnits.temperature(today.temperatureMinC))
-            }
-            put("updated_at", snapshot.fetchedAtEpochSeconds)
-        })
-    })
+    widgetExchange(
+        buildJsonObject {
+            put("op", "publish")
+            put("config", configuredLocation(snapshot.location, displayUnits))
+            put(
+                "snapshot",
+                buildJsonObject {
+                    put("location", snapshot.location.name.ifBlank { snapshot.location.country })
+                    put("temperature_c", displayUnits.temperature(snapshot.current.temperatureC))
+                    put("temperature_unit", displayUnits.temperatureSymbol)
+                    put("weather_code", snapshot.current.weatherCode)
+                    put("rain_chance", snapshot.current.precipitationProbability)
+                    put("aqi", airQuality?.usAqi ?: -1)
+                    put("has_daily_range", today != null)
+                    if (today != null) {
+                        put("temperature_max", displayUnits.temperature(today.temperatureMaxC))
+                        put("temperature_min", displayUnits.temperature(today.temperatureMinC))
+                    }
+                    put("updated_at", snapshot.fetchedAtEpochSeconds)
+                }
+            )
+        }
+    )
 }
 
 private fun configuredLocation(location: Location, displayUnits: DisplayUnits): JsonObject =
@@ -69,14 +76,17 @@ private fun configuredLocation(location: Location, displayUnits: DisplayUnits): 
 
 private fun widgetExchange(request: JsonObject) {
     try {
-        WidgetRefreshInterop.exchange(WIDGET_RPC_JSON.encodeToString(JsonObject.serializer(), request))
+        WidgetRefreshInterop.exchange(
+            WIDGET_RPC_JSON.encodeToString(JsonObject.serializer(), request)
+        )
     } catch (_: Throwable) {
         // Widget presentation is best effort; foreground weather remains usable.
     }
 }
 
-private fun legacyAttempt(key: String): String? = when (val stored =
-    NSUserDefaults.standardUserDefaults.objectForKey(key)
+private fun legacyAttempt(key: String): String? = when (
+    val stored =
+        NSUserDefaults.standardUserDefaults.objectForKey(key)
 ) {
     is NSNumber -> encodeAutomaticRefreshAttemptState(
         legacyAutomaticRefreshAttemptState(stored.longLongValue)

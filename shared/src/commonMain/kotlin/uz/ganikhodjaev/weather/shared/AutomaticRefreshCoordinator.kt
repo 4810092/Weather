@@ -50,49 +50,49 @@ internal object AutomaticRefreshCoordinator {
             return atomicStore.claimAtomically(locationId, nowEpochSeconds)
         }
         return withAttemptEntry(locationId) { entry ->
-        val storedAttempt = try {
-            attemptStore.read(locationId)
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (_: Throwable) {
-            // Automatic refresh is fail-closed when durable budget state is unavailable.
-            return@withAttemptEntry AutomaticRefreshClaimResult.StoreUnavailable
-        }
-        val lastAttempt = entry.state ?: storedAttempt?.also { entry.state = it }
-        if (!isAutomaticRefreshAttemptDue(
-                lastAttempt?.attemptedAtEpochSeconds,
-                nowEpochSeconds
-            )
-        ) {
-            return@withAttemptEntry when (lastAttempt?.phase) {
-                AutomaticRefreshAttemptPhase.InFlight,
-                AutomaticRefreshAttemptPhase.RetryPending -> {
-                    AutomaticRefreshClaimResult.RetryDeferred
-                }
-                AutomaticRefreshAttemptPhase.Cooldown -> AutomaticRefreshClaimResult.Cooldown
-                null -> error("Missing automatic refresh attempt state")
+            val storedAttempt = try {
+                attemptStore.read(locationId)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Throwable) {
+                // Automatic refresh is fail-closed when durable budget state is unavailable.
+                return@withAttemptEntry AutomaticRefreshClaimResult.StoreUnavailable
             }
-        }
+            val lastAttempt = entry.state ?: storedAttempt?.also { entry.state = it }
+            if (!isAutomaticRefreshAttemptDue(
+                    lastAttempt?.attemptedAtEpochSeconds,
+                    nowEpochSeconds
+                )
+            ) {
+                return@withAttemptEntry when (lastAttempt?.phase) {
+                    AutomaticRefreshAttemptPhase.InFlight,
+                    AutomaticRefreshAttemptPhase.RetryPending -> {
+                        AutomaticRefreshClaimResult.RetryDeferred
+                    }
+                    AutomaticRefreshAttemptPhase.Cooldown -> AutomaticRefreshClaimResult.Cooldown
+                    null -> error("Missing automatic refresh attempt state")
+                }
+            }
 
-        val claimed = AutomaticRefreshAttemptState(
-            token = issueToken(lastAttempt?.token),
-            attemptedAtEpochSeconds = nowEpochSeconds,
-            phase = AutomaticRefreshAttemptPhase.InFlight
-        )
-        // Keep the in-process state conservative even if the strict durable write fails.
-        entry.state = claimed
-        val persisted = try {
-            attemptStore.writeDurably(locationId, claimed)
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (_: Throwable) {
-            false
-        }
-        if (persisted) {
-            AutomaticRefreshClaimResult.Granted(claimed.token)
-        } else {
-            AutomaticRefreshClaimResult.StoreUnavailable
-        }
+            val claimed = AutomaticRefreshAttemptState(
+                token = issueToken(lastAttempt?.token),
+                attemptedAtEpochSeconds = nowEpochSeconds,
+                phase = AutomaticRefreshAttemptPhase.InFlight
+            )
+            // Keep the in-process state conservative even if the strict durable write fails.
+            entry.state = claimed
+            val persisted = try {
+                attemptStore.writeDurably(locationId, claimed)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Throwable) {
+                false
+            }
+            if (persisted) {
+                AutomaticRefreshClaimResult.Granted(claimed.token)
+            } else {
+                AutomaticRefreshClaimResult.StoreUnavailable
+            }
         }
     }
 
@@ -106,28 +106,28 @@ internal object AutomaticRefreshCoordinator {
             return atomicStore.finishAtomically(locationId, token, completion)
         }
         return withAttemptEntry(locationId) { entry ->
-        val current = entry.state
-        if (current?.token != token || current.phase != AutomaticRefreshAttemptPhase.InFlight) {
-            return@withAttemptEntry false
-        }
-        val finalized = current.copy(
-            phase = when (completion) {
-                AutomaticRefreshAttemptCompletion.Cooldown -> {
-                    AutomaticRefreshAttemptPhase.Cooldown
-                }
-                AutomaticRefreshAttemptCompletion.RetryPending -> {
-                    AutomaticRefreshAttemptPhase.RetryPending
-                }
+            val current = entry.state
+            if (current?.token != token || current.phase != AutomaticRefreshAttemptPhase.InFlight) {
+                return@withAttemptEntry false
             }
-        )
-        entry.state = finalized
-        try {
-            attemptStore.writeDurably(locationId, finalized)
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (_: Throwable) {
-            false
-        }
+            val finalized = current.copy(
+                phase = when (completion) {
+                    AutomaticRefreshAttemptCompletion.Cooldown -> {
+                        AutomaticRefreshAttemptPhase.Cooldown
+                    }
+                    AutomaticRefreshAttemptCompletion.RetryPending -> {
+                        AutomaticRefreshAttemptPhase.RetryPending
+                    }
+                }
+            )
+            entry.state = finalized
+            try {
+                attemptStore.writeDurably(locationId, finalized)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Throwable) {
+                false
+            }
         }
     }
 
@@ -168,15 +168,15 @@ internal object AutomaticRefreshCoordinator {
             return atomicStore.removeAtomically(locationId)
         }
         return withAttemptEntry(locationId) { entry ->
-        val removed = try {
-            attemptStore.removeDurably(locationId)
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (_: Throwable) {
-            false
-        }
-        if (removed) entry.state = null
-        removed
+            val removed = try {
+                attemptStore.removeDurably(locationId)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Throwable) {
+                false
+            }
+            if (removed) entry.state = null
+            removed
         }
     }
 
