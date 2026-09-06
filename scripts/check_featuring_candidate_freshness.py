@@ -28,7 +28,7 @@ CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
     "growth/quality/signed-candidate-run-33852229166.md",
     "growth/quality/release-materialization-2026-09-04-run-33855931653.md",
-    "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+    "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
     "growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md",
     "growth/quality/receipts/trusted-release-verification-33859392482.json",
     "growth/quality/testflight-ios-build10-delivery-2026-09-04.md",

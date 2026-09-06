@@ -1,12 +1,12 @@
 # Nimbo growth operations
 
 <!-- release-authority-current:start -->
-<!-- source_revision:fc4b6de9e28fd8956eb64462294b8bcdf405ce7e -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=89e62052d4c6b33524bdc48065e6bd67215e0b33f76e5fd1ad87dfbc92e6b756 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=08c6bc72471fa419add30834bca51e64079e9d07a472c65e70ed5c121840fb4f -->
+<!-- source_revision:fcffe13be1cc15e83a0609751f696e48c9301444 -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5ed08d9791ba13047cb3c96a3ad62f2ebb905792a6b72abd3f1c183810b3aaa9 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=3ac5791643de7342bb8c2cbbca8aa833eb25c82fc645c8e8b565b2da6b0c61c6 -->
 <!-- release-authority-current:end -->
 
 Current source `fc4b6de9` retains vc11/vc1000011 and advances Apple to build 10

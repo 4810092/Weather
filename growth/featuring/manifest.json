@@ -124,12 +124,12 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source fc4b6de9e28fd8956eb64462294b8bcdf405ce7e resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and corrected Apple 1.1.0 (10). Protected signing, durable materialization, and final trusted run 33859392482 establish an atomic 3/3 verified-current signed-byte set, so the release/source gate passes. Google Play Internal delivery is confirmed only for historical-source vc11 and vc1000011; current-source production remains unsubmitted and public production remains 1.0.2. Their current-source runtime evidence is absent, so the Android runtime gate is blocked. Historical Apple build 9 is failed after exact TestFlight background-refresh crashes in the main Nimbo process; its App Store release was cancelled into Developer Rejected and no public release occurred. Corrected build 10 is uploaded, processed, assigned to internal TestFlight testers, installed on the connected iPhone and iPad, and bounded-smoked with a visible iPad widget render. It is the only item in App Store review submission a16af9ec-1946-46be-9af4-7797a15b174d and is Waiting for Review with manual release. A natural OS-scheduled background completion and fresh post-completion crash window are still unproved, so Apple runtime and crash gates remain blocked. Earlier emulator/simulator runtime QA remains evidence only for the paths it exercised. Conclusive post-delivery Vitals, crash close-out, App Store approval, production release, public availability, and rank impact remain unproved.",
+      "claim": "Source fcffe13be1cc15e83a0609751f696e48c9301444 resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (11). The new candidate is atomically blocked pending protected signing and independent byte verification; its predecessor bytes do not validate it. Build 10 remains historical: it was delivered to internal TestFlight and App Store 1.1.0 (10) is Pending Developer Release with manual release selected. No review replacement is claimed. Google Play Internal delivery remains historical and production remains 1.0.2. emulator/simulator runtime QA, Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain unproved for the current source.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/signed-candidate-run-33852229166.md",
         "growth/quality/release-materialization-2026-09-04-run-33855931653.md",
-        "growth/quality/release-artifact-source-sync-2026-09-04-fc4b6de.md",
+        "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
         "growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md",
         "growth/quality/receipts/trusted-release-verification-33859392482.json",
         "growth/quality/testflight-ios-build10-delivery-2026-09-04.md",
