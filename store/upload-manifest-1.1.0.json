@@ -23,53 +23,32 @@
     "android_phone": {
       "filename": "nimbo-phone-1.1.0-vc11.aab",
       "version_code": 11,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "da179a64cc17786684b605d7a1341dd34a8aa4c17df3384bcf0b5aeec8a5df78",
+      "signing_evidence": "growth/quality/signed-candidate-run-34047427535.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-phone-1.1.0-vc11.aab",
-        "version_code": 11,
-        "sha256": "52e924d4ce5dba7370007632b9e421aa548af79b6395ba4b6b0ee1645daf6862",
-        "signing_evidence": "growth/quality/signed-candidate-run-33852229166.md",
-        "physical_qa_evidence": null
-      }
+      "historical_candidate": null
     },
     "wear_os": {
       "filename": "nimbo-wear-1.1.0-vc1000011.aab",
       "version_code": 1000011,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "ac592ced0768efcd750efd2e443fc752b023df5aa7901313538870f1f4f6d019",
+      "signing_evidence": "growth/quality/signed-candidate-run-34047427535.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "nimbo-wear-1.1.0-vc1000011.aab",
-        "version_code": 1000011,
-        "sha256": "0bb295d2898a0cfcaff018ec43bc0d70663d1529771087cb48a0d7dd1b3c77a8",
-        "signing_evidence": "growth/quality/signed-candidate-run-33852229166.md",
-        "physical_qa_evidence": null
-      }
+      "historical_candidate": null
     },
     "apple": {
       "filename": "Nimbo.ipa",
       "build": 11,
-      "source_sync": "blocked",
-      "sha256": null,
-      "signing_evidence": null,
+      "source_sync": "verified-current",
+      "sha256": "4811f81bc0bc0baa70843061cbb03d0ff0d27e7181b7a2019ea23942d9fe6eb1",
+      "signing_evidence": "growth/quality/signed-candidate-run-34047427535.md",
       "physical_qa_evidence": null,
       "source_sync_evidence": "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
-      "historical_candidate": {
-        "status": "historical-superseded",
-        "filename": "Nimbo.ipa",
-        "build": 10,
-        "sha256": "20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061",
-        "signing_evidence": "growth/quality/signed-candidate-run-33852229166.md",
-        "physical_qa_evidence": null
-      }
+      "historical_candidate": null
     }
   },
   "listing_payloads": [
@@ -166,7 +145,6 @@
     }
   ],
   "blocking_gates": [
-    "Protected signing and independent byte verification for widget-refresh Apple 1.1.0 (11)",
     "Conclusive post-delivery UZ Vitals for Internal phone 1.1.0 (11) and Wear OS 1.1.0 (1000011) before any production decision",
     "Apple 1.1.0 (11) TestFlight natural background/widget validation and fresh crash inspection; App Store publication remains separate",
     "App Store base 1.1.0 keyword approval before CPP keyword assignment"

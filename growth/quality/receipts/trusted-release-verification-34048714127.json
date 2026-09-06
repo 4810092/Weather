@@ -1,0 +1,184 @@
+{
+  "boundary": "This receipt contains identities only; no signed candidate bytes are included.",
+  "draft_release": {
+    "id": 383662265,
+    "package_asset_id": 547465393,
+    "package_sha256": "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463",
+    "receipt_asset_id": 547465445,
+    "receipt_sha256": "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b"
+  },
+  "manual_invocation": {
+    "candidate_source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+    "event": "workflow_dispatch",
+    "workflow_sha": "277f829f6003154541324941beffffba4c9df565"
+  },
+  "repository": {
+    "full_name": "4810092/Weather",
+    "id": 1329018769
+  },
+  "schema_version": 1,
+  "state": "trusted-hosted-byte-verification-passed",
+  "trusted_run": {
+    "attempt": 1,
+    "run_id": 34048714127
+  },
+  "verification": {
+    "artifacts": {
+      "android_phone": {
+        "byte_verified": true,
+        "details": {
+          "bundletool_sha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+          "bundletool_version": "1.18.3",
+          "package_id": "uz.ganikhodjaev.weather",
+          "signer_sha256": "431548a4871c9c090eee808ac3a34898f5d78602d9e747dfe81e228415aac252",
+          "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+          "version_code": 11,
+          "version_name": "1.1.0"
+        },
+        "sha256": "da179a64cc17786684b605d7a1341dd34a8aa4c17df3384bcf0b5aeec8a5df78",
+        "source_sync": "verified-current"
+      },
+      "apple": {
+        "byte_verified": true,
+        "details": {
+          "archive_products": [
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather",
+              "macho_uuids": [
+                "6811305B-6704-3E39-AE9A-0109C8A67F9F (arm64)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather",
+                "sha256": "eb248d9edecc50d7b6e4b1a935efeb8be6eca44f1d1a07f7fe5d20e6f042fae9",
+                "uuid": "BF8FBEB9-C6C7-411B-9AA9-F2C909D39643"
+              },
+              "role": "app",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            },
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather.widget",
+              "macho_uuids": [
+                "2D6B6F6C-4A3A-3C2E-9B08-8ADE9E6B5731 (arm64)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.widget",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget",
+                "sha256": "356c6fde225b0ab844ed4558877a53a5e126011ff93b99239b9851421ec6d667",
+                "uuid": "97AA4DE4-EF16-4744-A767-EB6B9774977D"
+              },
+              "role": "widget",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            },
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather.watchkitapp",
+              "macho_uuids": [
+                "6AC4488B-7A06-32A2-B604-3EDEFD0D0206 (arm64)",
+                "B19A5AC3-6349-3E42-8581-B19CA33EFB02 (arm64_32)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.watchkitapp",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp",
+                "sha256": "59038be7184860800f59cc65e63a5e08a6002006bb96a45fdd897e9580a4810c",
+                "uuid": "12FF3C9B-4CD7-4504-B5C9-3B5507A60847"
+              },
+              "role": "watch",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            }
+          ],
+          "build": 11,
+          "products": [
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather",
+              "macho_uuids": [
+                "6811305B-6704-3E39-AE9A-0109C8A67F9F (arm64)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather",
+                "sha256": "eb248d9edecc50d7b6e4b1a935efeb8be6eca44f1d1a07f7fe5d20e6f042fae9",
+                "uuid": "BF8FBEB9-C6C7-411B-9AA9-F2C909D39643"
+              },
+              "role": "app",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            },
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather.widget",
+              "macho_uuids": [
+                "2D6B6F6C-4A3A-3C2E-9B08-8ADE9E6B5731 (arm64)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.widget",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.widget",
+                "sha256": "356c6fde225b0ab844ed4558877a53a5e126011ff93b99239b9851421ec6d667",
+                "uuid": "97AA4DE4-EF16-4744-A767-EB6B9774977D"
+              },
+              "role": "widget",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            },
+            {
+              "build": 11,
+              "bundle_id": "uz.ganikhodjaev.weather.watchkitapp",
+              "macho_uuids": [
+                "6AC4488B-7A06-32A2-B604-3EDEFD0D0206 (arm64)",
+                "B19A5AC3-6349-3E42-8581-B19CA33EFB02 (arm64_32)"
+              ],
+              "provisioning_profile": {
+                "application_identifier": "5SWEZ7HTYP.uz.ganikhodjaev.weather.watchkitapp",
+                "name": "iOS Team Store Provisioning Profile: uz.ganikhodjaev.weather.watchkitapp",
+                "sha256": "59038be7184860800f59cc65e63a5e08a6002006bb96a45fdd897e9580a4810c",
+                "uuid": "12FF3C9B-4CD7-4504-B5C9-3B5507A60847"
+              },
+              "role": "watch",
+              "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+              "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+              "team_id": "5SWEZ7HTYP",
+              "version": "1.1.0"
+            }
+          ],
+          "release": "1.1.0",
+          "signer_sha256": "fd4d8668a7e0f4eb9f64a12b5f0ddec0075ccde31dad50a96e978926e0e743f1",
+          "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+          "team_id": "5SWEZ7HTYP"
+        },
+        "sha256": "4811f81bc0bc0baa70843061cbb03d0ff0d27e7181b7a2019ea23942d9fe6eb1",
+        "source_sync": "verified-current"
+      },
+      "wear_os": {
+        "byte_verified": true,
+        "details": {
+          "bundletool_sha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+          "bundletool_version": "1.18.3",
+          "package_id": "uz.ganikhodjaev.weather",
+          "signer_sha256": "431548a4871c9c090eee808ac3a34898f5d78602d9e747dfe81e228415aac252",
+          "source_revision": "fcffe13be1cc15e83a0609751f696e48c9301444",
+          "version_code": 1000011,
+          "version_name": "1.1.0"
+        },
+        "sha256": "ac592ced0768efcd750efd2e443fc752b023df5aa7901313538870f1f4f6d019",
+        "source_sync": "verified-current"
+      }
+    },
+    "schema_version": 1
+  }
+}
