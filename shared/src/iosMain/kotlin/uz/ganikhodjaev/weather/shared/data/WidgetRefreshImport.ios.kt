@@ -14,7 +14,9 @@ internal actual suspend fun importPendingWidgetRefreshFromPlatform(
     repository: WeatherRepository
 ): Boolean {
     val pending = requestPending() ?: return false
-    val imported = repository.importWidgetRefresh(pending.payload)
+    val imported = repository.importWidgetRefresh(pending.payload) {
+        validate(pending)
+    }
     if (!imported) return false
     return acknowledge(pending)
 }
@@ -51,6 +53,23 @@ private fun acknowledge(delivery: PendingDelivery): Boolean = try {
             JsonObject.serializer(),
             kotlinx.serialization.json.buildJsonObject {
                 put("op", "acknowledge")
+                put("revision", delivery.revision)
+                put("fetchedAt", delivery.payload.fetchedAtEpochSeconds)
+                put("deliveryId", delivery.payload.deliveryId)
+            }
+        )
+    )?.let { WIDGET_IMPORT_JSON.parseToJsonElement(it).jsonObject }
+    response?.get("ok")?.jsonPrimitive?.content == "true"
+} catch (_: Throwable) {
+    false
+}
+
+private fun validate(delivery: PendingDelivery): Boolean = try {
+    val response = WidgetRefreshInterop.exchange(
+        WIDGET_IMPORT_JSON.encodeToString(
+            JsonObject.serializer(),
+            kotlinx.serialization.json.buildJsonObject {
+                put("op", "validate")
                 put("revision", delivery.revision)
                 put("fetchedAt", delivery.payload.fetchedAtEpochSeconds)
                 put("deliveryId", delivery.payload.deliveryId)

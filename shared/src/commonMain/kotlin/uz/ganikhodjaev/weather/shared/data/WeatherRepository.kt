@@ -390,7 +390,10 @@ internal class WeatherRepository(
     override suspend fun importPendingWidgetRefresh(): Boolean =
         importPendingWidgetRefreshFromPlatform(this)
 
-    internal fun importWidgetRefresh(payload: WidgetRefreshImportPayload): Boolean {
+    internal fun importWidgetRefresh(
+        payload: WidgetRefreshImportPayload,
+        isCurrent: () -> Boolean = { true }
+    ): Boolean {
         val active = activeLocation() ?: return false
         if (
             active.id != payload.locationId ||
@@ -422,37 +425,38 @@ internal class WeatherRepository(
                 emptyList()
             }
         }.orEmpty()
-        try {
-            persistResponse(
-                location = active,
-                response = forecast,
-                recordForecast = true,
-                fetchedAt = payload.fetchedAtEpochSeconds,
-                onlyIfNewer = true
-            )
-        } catch (_: Throwable) {
-            return false
-        }
-        database.transaction {
-            require(queries.selectActiveLocation().executeAsOneOrNull()?.id == active.id)
-            airRows.forEach { row ->
-                if ((
-                        queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
-                            .executeAsOneOrNull() ?: Long.MIN_VALUE
-                        ) <= row.fetchedAtEpochSeconds
-                ) {
-                    queries.insertOrReplaceAirQualityHour(
-                        active.id, row.epochSeconds, row.usAqi?.toLong(), row.pm25, row.pm10,
-                        row.dust, row.ozone, row.nitrogenDioxide, row.fetchedAtEpochSeconds
-                    )
+        return try {
+            database.transaction {
+                require(isCurrent())
+                require(queries.selectActiveLocation().executeAsOneOrNull()?.id == active.id)
+                persistResponse(
+                    location = active,
+                    response = forecast,
+                    recordForecast = true,
+                    fetchedAt = payload.fetchedAtEpochSeconds,
+                    onlyIfNewer = true
+                )
+                airRows.forEach { row ->
+                    if ((
+                            queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
+                                .executeAsOneOrNull() ?: Long.MIN_VALUE
+                            ) <= row.fetchedAtEpochSeconds
+                    ) {
+                        queries.insertOrReplaceAirQualityHour(
+                            active.id, row.epochSeconds, row.usAqi?.toLong(), row.pm25, row.pm10,
+                            row.dust, row.ozone, row.nitrogenDioxide, row.fetchedAtEpochSeconds
+                        )
+                    }
                 }
+                queries.deleteAirQualityBefore(
+                    maxOf(payload.fetchedAtEpochSeconds, Clock.System.now().epochSeconds) -
+                        AIR_QUALITY_RETENTION_SECONDS
+                )
             }
-            queries.deleteAirQualityBefore(
-                maxOf(payload.fetchedAtEpochSeconds, Clock.System.now().epochSeconds) -
-                    AIR_QUALITY_RETENTION_SECONDS
-            )
+            true
+        } catch (_: Throwable) {
+            false
         }
-        return true
     }
 
     private companion object {

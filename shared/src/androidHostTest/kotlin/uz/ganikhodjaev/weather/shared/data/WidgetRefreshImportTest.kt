@@ -65,6 +65,20 @@ class WidgetRefreshImportTest {
         )
     }
 
+    @Test
+    fun rejectedCurrentDeliveryWritesNoRows() = fixture { repository, database ->
+        assertFalse(repository.importWidgetRefresh(payload()) { false })
+
+        assertEquals(
+            emptyList(),
+            database.weatherQueries.selectTimeline(LOCATION.id, 0, Long.MAX_VALUE).executeAsList()
+        )
+        assertEquals(
+            emptyList(),
+            database.weatherQueries.selectAirQuality(LOCATION.id, 0).executeAsList()
+        )
+    }
+
     private fun fixture(block: (WeatherRepository, NimboDatabase) -> Unit) {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         try {
