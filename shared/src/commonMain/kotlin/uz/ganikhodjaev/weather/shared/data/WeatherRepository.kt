@@ -232,18 +232,21 @@ internal class WeatherRepository(
     private fun persistResponse(
         location: Location,
         response: ForecastResponse,
-        recordForecast: Boolean
+        recordForecast: Boolean,
+        fetchedAt: Long = Clock.System.now().epochSeconds,
+        onlyIfNewer: Boolean = false
     ): Long {
-        val fetchedAt = Clock.System.now().epochSeconds
         val rows = response.toWeatherRows(fetchedAt)
         require(rows.isNotEmpty()) { "Provider response contained no usable hourly weather rows" }
         val issuedAt = fetchedAt - fetchedAt % SECONDS_PER_HOUR
 
         database.transaction {
-            if (response.timezone.isNotBlank() && response.timezone != location.timezone) {
-                queries.updateLocationTimezone(response.timezone, location.id)
-            }
+            require(queries.selectActiveLocation().executeAsOneOrNull()?.id == location.id)
+            var wroteWeather = false
             rows.forEach { row ->
+                val existing = queries.selectWeatherFetchedAt(location.id, row.epochSeconds)
+                    .executeAsOneOrNull()
+                if (onlyIfNewer && existing != null && existing > row.fetchedAtEpochSeconds) return@forEach
                 queries.insertOrReplaceWeatherHour(
                     location_id = location.id,
                     epoch_seconds = row.epochSeconds,
@@ -259,6 +262,7 @@ internal class WeatherRepository(
                     source = "open-meteo",
                     fetched_at_epoch_seconds = fetchedAt
                 )
+                wroteWeather = true
                 if (
                     recordForecast &&
                     row.epochSeconds >= fetchedAt &&
@@ -274,7 +278,13 @@ internal class WeatherRepository(
                     )
                 }
             }
+            if (wroteWeather && response.timezone.isNotBlank() && response.timezone != location.timezone) {
+                queries.updateLocationTimezone(response.timezone, location.id)
+            }
             response.toDailyRows(fetchedAt).forEach { day ->
+                val existing = queries.selectDailyForecastFetchedAt(location.id, day.epochSeconds)
+                    .executeAsOneOrNull()
+                if (onlyIfNewer && existing != null && existing > day.fetchedAtEpochSeconds) return@forEach
                 queries.insertOrReplaceDailyForecast(
                     location_id = location.id,
                     epoch_seconds = day.epochSeconds,
@@ -293,12 +303,13 @@ internal class WeatherRepository(
                     fetched_at_epoch_seconds = fetchedAt
                 )
             }
+            val retentionAt = maxOf(fetchedAt, Clock.System.now().epochSeconds)
             queries.deleteWeatherOutsideWindow(
                 location_id = location.id,
-                epoch_seconds = fetchedAt - WEATHER_RETENTION_SECONDS,
-                epoch_seconds_ = fetchedAt + WEATHER_FUTURE_RETENTION_SECONDS
+                epoch_seconds = retentionAt - WEATHER_RETENTION_SECONDS,
+                epoch_seconds_ = retentionAt + WEATHER_FUTURE_RETENTION_SECONDS
             )
-            queries.deleteOldForecastSnapshots(fetchedAt - SNAPSHOT_RETENTION_SECONDS)
+            queries.deleteOldForecastSnapshots(retentionAt - SNAPSHOT_RETENTION_SECONDS)
         }
         return fetchedAt
     }
@@ -379,44 +390,33 @@ internal class WeatherRepository(
         } catch (_: Throwable) {
             return false
         }
-        val weatherRows = forecast.toWeatherRows(payload.fetchedAtEpochSeconds)
-        if (weatherRows.isEmpty()) return false
+        if (forecast.toWeatherRows(payload.fetchedAtEpochSeconds).isEmpty()) return false
         val airRows = payload.airQuality?.let { raw ->
             try {
                 WIDGET_JSON.decodeFromString(AirQualityResponse.serializer(), raw)
-                    .toAirQualityRows(payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds)
+                    .toAirQualityRows(
+                        (payload.airQualityFetchedAtEpochSeconds ?: payload.fetchedAtEpochSeconds)
+                            .takeIf { it <= Clock.System.now().epochSeconds + MAX_WIDGET_FUTURE_SECONDS }
+                            ?: payload.fetchedAtEpochSeconds
+                    )
             } catch (_: Throwable) {
                 // AQI enrichment is optional; a malformed optional response must not discard weather.
                 emptyList()
             }
         }.orEmpty()
+        try {
+            persistResponse(
+                location = active,
+                response = forecast,
+                recordForecast = true,
+                fetchedAt = payload.fetchedAtEpochSeconds,
+                onlyIfNewer = true
+            )
+        } catch (_: Throwable) {
+            return false
+        }
         database.transaction {
-            if (forecast.timezone.isNotBlank() && forecast.timezone != active.timezone) {
-                queries.updateLocationTimezone(forecast.timezone, active.id)
-            }
-            weatherRows.forEach { row ->
-                if ((queries.selectWeatherFetchedAt(active.id, row.epochSeconds)
-                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= row.fetchedAtEpochSeconds) {
-                    queries.insertOrReplaceWeatherHour(
-                        active.id, row.epochSeconds, row.temperatureC, row.apparentTemperatureC,
-                        row.weatherCode.toLong(), row.precipitationProbability.toLong(), row.precipitationMm,
-                        row.windKph, row.gustKph, row.humidityPercent.toLong(), row.uvIndex,
-                        "open-meteo-widget", row.fetchedAtEpochSeconds
-                    )
-                }
-            }
-            forecast.toDailyRows(payload.fetchedAtEpochSeconds).forEach { day ->
-                if ((queries.selectDailyForecastFetchedAt(active.id, day.epochSeconds)
-                        .executeAsOneOrNull() ?: Long.MIN_VALUE) <= day.fetchedAtEpochSeconds) {
-                    queries.insertOrReplaceDailyForecast(
-                        active.id, day.epochSeconds, day.weatherCode.toLong(), day.temperatureMaxC,
-                        day.temperatureMinC, day.apparentTemperatureMaxC, day.apparentTemperatureMinC,
-                        day.precipitationProbabilityMax.toLong(), day.precipitationMm, day.windMaxKph,
-                        day.gustMaxKph, day.uvIndexMax, day.sunriseEpochSeconds, day.sunsetEpochSeconds,
-                        day.fetchedAtEpochSeconds
-                    )
-                }
-            }
+            require(queries.selectActiveLocation().executeAsOneOrNull()?.id == active.id)
             airRows.forEach { row ->
                 if ((queries.selectAirQualityFetchedAt(active.id, row.epochSeconds)
                         .executeAsOneOrNull() ?: Long.MIN_VALUE) <= row.fetchedAtEpochSeconds) {
@@ -426,6 +426,10 @@ internal class WeatherRepository(
                     )
                 }
             }
+            queries.deleteAirQualityBefore(
+                maxOf(payload.fetchedAtEpochSeconds, Clock.System.now().epochSeconds) -
+                    AIR_QUALITY_RETENTION_SECONDS
+            )
         }
         return true
     }
@@ -442,6 +446,7 @@ internal class WeatherRepository(
         const val SECONDS_PER_DAY = 24L * SECONDS_PER_HOUR
         const val AIR_QUALITY_RETENTION_SECONDS = 7L * SECONDS_PER_DAY
         const val UNIT_PREFERENCE_KEY = "unit_preference"
+        const val MAX_WIDGET_FUTURE_SECONDS = 5L * 60L
     }
 }
 
