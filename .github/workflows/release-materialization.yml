@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: release-materialization-33852229166
+  group: release-materialization-34047427535
   cancel-in-progress: false
 
 jobs:
@@ -28,15 +28,15 @@ jobs:
           install -d -m 700 "$metadata_root"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/actions/runs/33852229166 \
+            repos/4810092/Weather/actions/runs/34047427535 \
             > "$metadata_root/run.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/4810092/Weather/actions/artifacts/9929313750 \
+            repos/4810092/Weather/actions/artifacts/9993782037 \
             > "$metadata_root/artifact.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            'repos/4810092/Weather/contents/.github/workflows/signed-candidate.yml?ref=9b785e19b52f09e3eca37cf0c00ef961a03bd73b' \
+            'repos/4810092/Weather/contents/.github/workflows/signed-candidate.yml?ref=8f2e0f970b0a70be091f7608bd6051582a1fc6b2' \
             > "$metadata_root/workflow.json"
           python3 -I - "$metadata_root" <<'PY'
           import base64
@@ -51,13 +51,13 @@ jobs:
           workflow = json.loads((root / "workflow.json").read_text())
 
           expected_run = {
-              "id": 33852229166,
+              "id": 34047427535,
               "run_attempt": 1,
               "status": "completed",
               "conclusion": "success",
               "event": "workflow_dispatch",
               "head_branch": "master",
-              "head_sha": "9b785e19b52f09e3eca37cf0c00ef961a03bd73b",
+              "head_sha": "8f2e0f970b0a70be091f7608bd6051582a1fc6b2",
               "path": ".github/workflows/signed-candidate.yml",
               "workflow_id": 345674745,
           }
@@ -66,15 +66,15 @@ jobs:
                   raise SystemExit(f"source run {key} mismatch")
 
           expected_artifact = {
-              "id": 9929313750,
+              "id": 9993782037,
               "name": (
                   "nimbo-signed-candidate-"
-                  "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e"
+                  "fcffe13be1cc15e83a0609751f696e48c9301444"
               ),
-              "size_in_bytes": 57946768,
+              "size_in_bytes": 58793419,
               "digest": (
                   "sha256:"
-                  "d7f848c2b1b32546031fbb5a438d985b7d29d313c10e9f03238f7fd82202cf11"
+                  "9b207ba64075953da19cd81c985e7c3ec89acbc1a033911cb0ba702311f68ced"
               ),
               "expired": False,
           }
@@ -85,11 +85,11 @@ jobs:
           if not isinstance(artifact_run, dict):
               raise SystemExit("source artifact workflow binding is missing")
           expected_artifact_run = {
-              "id": 33852229166,
+              "id": 34047427535,
               "repository_id": 1329018769,
               "head_repository_id": 1329018769,
               "head_branch": "master",
-              "head_sha": "9b785e19b52f09e3eca37cf0c00ef961a03bd73b",
+              "head_sha": "8f2e0f970b0a70be091f7608bd6051582a1fc6b2",
           }
           for key, value in expected_artifact_run.items():
               if artifact_run.get(key) != value:
@@ -115,10 +115,10 @@ jobs:
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          artifact-ids: "9929313750"
+          artifact-ids: "9993782037"
           github-token: ${{ github.token }}
           repository: 4810092/Weather
-          run-id: "33852229166"
+          run-id: "34047427535"
           path: ${{ runner.temp }}/nimbo-materialization-download
           skip-decompress: "true"
           digest-mismatch: error
@@ -144,26 +144,26 @@ jobs:
           source_zip = entries[0]
           if source_zip.is_symlink() or not source_zip.is_file():
               raise SystemExit("downloaded artifact must be one regular file")
-          if source_zip.stat().st_size != 57946768:
+          if source_zip.stat().st_size != 58793419:
               raise SystemExit("downloaded artifact size mismatch")
           if hashlib.sha256(source_zip.read_bytes()).hexdigest() != (
-              "d7f848c2b1b32546031fbb5a438d985b7d29d313c10e9f03238f7fd82202cf11"
+              "9b207ba64075953da19cd81c985e7c3ec89acbc1a033911cb0ba702311f68ced"
           ):
               raise SystemExit("downloaded artifact digest mismatch")
 
           expected = {
               "signed-candidate-bytes.tar.gz": {
-                  "size": 58216629,
-                  "compressed_size": 57943946,
+                  "size": 59062201,
+                  "compressed_size": 58790604,
                   "sha256": (
-                      "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254"
+                      "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463"
                   ),
               },
               "signed-candidate-receipt.json": {
                   "size": 11723,
-                  "compressed_size": 2500,
+                  "compressed_size": 2493,
                   "sha256": (
-                      "f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32"
+                      "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b"
                   ),
               },
           }
@@ -213,7 +213,7 @@ jobs:
               raise SystemExit("candidate package regular-file count mismatch")
           if sum(member.isdir() for member in package_members) != 88:
               raise SystemExit("candidate package directory count mismatch")
-          if sum(member.size for member in package_members if member.isfile()) != 152297678:
+          if sum(member.size for member in package_members if member.isfile()) != 154585534:
               raise SystemExit("candidate package expanded size mismatch")
           for member in package_members:
               path = PurePosixPath(member.name)
@@ -227,9 +227,9 @@ jobs:
                   raise SystemExit(f"unsafe candidate package member: {member.name}")
           expected_package_files = {
               "bytes/ExportOptions.plist": 988,
-              "bytes/Nimbo.ipa": 22749967,
-              "bytes/nimbo-phone-1.1.0-vc11-mapping.txt": 42367345,
-              "bytes/nimbo-phone-1.1.0-vc11.aab": 5591746,
+              "bytes/Nimbo.ipa": 23007065,
+              "bytes/nimbo-phone-1.1.0-vc11-mapping.txt": 42394667,
+              "bytes/nimbo-phone-1.1.0-vc11.aab": 5592065,
               "bytes/nimbo-wear-1.1.0-vc1000011.aab": 2595785,
           }
           package_by_name = {member.name: member for member in package_members}
@@ -242,16 +242,16 @@ jobs:
           if receipt.get("state") != "candidate-bytes-verified-not-manifest-promoted":
               raise SystemExit("candidate receipt state mismatch")
           if receipt.get("source_revision") != (
-              "fc4b6de9e28fd8956eb64462294b8bcdf405ce7e"
+              "fcffe13be1cc15e83a0609751f696e48c9301444"
           ):
               raise SystemExit("candidate receipt source mismatch")
           provenance = receipt.get("provenance", {})
           if provenance.get("provider") != "github-actions":
               raise SystemExit("candidate receipt provider mismatch")
-          if provenance.get("run") != {"attempt": 1, "id": 33852229166}:
+          if provenance.get("run") != {"attempt": 1, "id": 34047427535}:
               raise SystemExit("candidate receipt run mismatch")
           if provenance.get("source") != {
-              "head_sha": "9b785e19b52f09e3eca37cf0c00ef961a03bd73b",
+              "head_sha": "8f2e0f970b0a70be091f7608bd6051582a1fc6b2",
               "ref": "refs/heads/master",
           }:
               raise SystemExit("candidate receipt workflow source mismatch")
@@ -265,24 +265,24 @@ jobs:
           package = receipt.get("package", {})
           if package != {
               "candidate_tree_sha256": (
-                  "d2aaf8caca3e087fb6acc46eb35c9506cc51b1b52be814f1b9a14b5a6aeef9d0"
+                  "15a4e8ebad89be8d8801373d473d287601142da7a3b03991aae8569bf573d207"
               ),
               "filename": "signed-candidate-bytes.tar.gz",
               "format": "tar.gz",
               "sha256": (
-                  "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254"
+                  "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463"
               ),
           }:
               raise SystemExit("candidate receipt package binding mismatch")
           expected_artifact_digests = {
               "android_phone": (
-                  "52e924d4ce5dba7370007632b9e421aa548af79b6395ba4b6b0ee1645daf6862"
+                  "da179a64cc17786684b605d7a1341dd34a8aa4c17df3384bcf0b5aeec8a5df78"
               ),
               "wear_os": (
-                  "0bb295d2898a0cfcaff018ec43bc0d70663d1529771087cb48a0d7dd1b3c77a8"
+                  "ac592ced0768efcd750efd2e443fc752b023df5aa7901313538870f1f4f6d019"
               ),
               "apple": (
-                  "20e8e4ac61c55d856aedcdf88a27a2f11ac4cb036aa2dfa002e729ace1986061"
+                  "4811f81bc0bc0baa70843061cbb03d0ff0d27e7181b7a2019ea23942d9fe6eb1"
               ),
           }
           artifacts = receipt.get("artifacts")
@@ -318,7 +318,7 @@ jobs:
             > "$release_root/release-pages.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            'repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-fc4b6de-run-33852229166' \
+            'repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-fcffe13-run-34047427535' \
             > "$release_root/tags-before.json"
           python3 -I - "$release_root" <<'PY'
           import json
@@ -331,7 +331,7 @@ jobs:
               raise SystemExit("candidate storage tag already exists")
           pages = json.loads((root / "release-pages.json").read_text())
           releases = [release for page in pages for release in page]
-          tag = "nimbo-candidate-v1.1.0-fc4b6de-run-33852229166"
+          tag = "nimbo-candidate-v1.1.0-fcffe13-run-34047427535"
           matches = [release for release in releases if release.get("tag_name") == tag]
           if len(matches) > 1:
               raise SystemExit("duplicate candidate draft releases exist")
@@ -339,18 +339,18 @@ jobs:
 
           This draft is not store submission, review, publication, physical QA, or ranking evidence.
 
-          - Product source: `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e`
-          - Signing run: `33852229166` attempt `1`
-          - Signing workflow head: `9b785e19b52f09e3eca37cf0c00ef961a03bd73b`
-          - Source artifact: `9929313750`
-          - Source artifact SHA-256: `d7f848c2b1b32546031fbb5a438d985b7d29d313c10e9f03238f7fd82202cf11`
-          - Candidate package SHA-256: `76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254`
-          - Candidate receipt SHA-256: `f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32`
+          - Product source: `fcffe13be1cc15e83a0609751f696e48c9301444`
+          - Signing run: `34047427535` attempt `1`
+          - Signing workflow head: `8f2e0f970b0a70be091f7608bd6051582a1fc6b2`
+          - Source artifact: `9993782037`
+          - Source artifact SHA-256: `9b207ba64075953da19cd81c985e7c3ec89acbc1a033911cb0ba702311f68ced`
+          - Candidate package SHA-256: `1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463`
+          - Candidate receipt SHA-256: `1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b`
           """
           expected = {
               "tag_name": tag,
               "target_commitish": os.environ["GITHUB_SHA"],
-              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate fc4b6de",
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate fcffe13",
               "body": body,
               "draft": True,
               "prerelease": True,
@@ -395,18 +395,18 @@ jobs:
 
           This draft is not store submission, review, publication, physical QA, or ranking evidence.
 
-          - Product source: `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e`
-          - Signing run: `33852229166` attempt `1`
-          - Signing workflow head: `9b785e19b52f09e3eca37cf0c00ef961a03bd73b`
-          - Source artifact: `9929313750`
-          - Source artifact SHA-256: `d7f848c2b1b32546031fbb5a438d985b7d29d313c10e9f03238f7fd82202cf11`
-          - Candidate package SHA-256: `76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254`
-          - Candidate receipt SHA-256: `f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32`
+          - Product source: `fcffe13be1cc15e83a0609751f696e48c9301444`
+          - Signing run: `34047427535` attempt `1`
+          - Signing workflow head: `8f2e0f970b0a70be091f7608bd6051582a1fc6b2`
+          - Source artifact: `9993782037`
+          - Source artifact SHA-256: `9b207ba64075953da19cd81c985e7c3ec89acbc1a033911cb0ba702311f68ced`
+          - Candidate package SHA-256: `1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463`
+          - Candidate receipt SHA-256: `1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b`
           """
           expected = {
-              "tag_name": "nimbo-candidate-v1.1.0-fc4b6de-run-33852229166",
+              "tag_name": "nimbo-candidate-v1.1.0-fcffe13-run-34047427535",
               "target_commitish": os.environ["GITHUB_SHA"],
-              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate fc4b6de",
+              "name": "[DRAFT STORAGE] Nimbo 1.1.0 signed candidate fcffe13",
               "body": body,
               "draft": True,
               "prerelease": True,
@@ -448,17 +448,17 @@ jobs:
           assets = [asset for page in pages for asset in page]
           expected = {
               "signed-candidate-bytes.tar.gz": {
-                  "size": 58216629,
+                  "size": 59062201,
                   "digest": (
                       "sha256:"
-                      "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254"
+                      "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463"
                   ),
               },
               "signed-candidate-receipt.json": {
                   "size": 11723,
                   "digest": (
                       "sha256:"
-                      "f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32"
+                      "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b"
                   ),
               },
           }
@@ -553,7 +553,7 @@ jobs:
             > "$release_root/asset-pages-final.json"
           gh api \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            'repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-fc4b6de-run-33852229166' \
+            'repos/4810092/Weather/git/matching-refs/tags/nimbo-candidate-v1.1.0-fcffe13-run-34047427535' \
             > "$release_root/tags-after.json"
           python3 -I - "$release_root" <<'PY'
           import json
@@ -568,7 +568,7 @@ jobs:
               or release.get("prerelease") is not True
               or release.get("published_at") is not None
               or release.get("tag_name")
-              != "nimbo-candidate-v1.1.0-fc4b6de-run-33852229166"
+              != "nimbo-candidate-v1.1.0-fcffe13-run-34047427535"
               or release.get("target_commitish") != os.environ["GITHUB_SHA"]
           ):
               raise SystemExit("candidate release is not the exact unpublished draft")
@@ -578,17 +578,17 @@ jobs:
           assets = [asset for page in pages for asset in page]
           expected = {
               "signed-candidate-bytes.tar.gz": {
-                  "size": 58216629,
+                  "size": 59062201,
                   "digest": (
                       "sha256:"
-                      "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254"
+                      "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463"
                   ),
               },
               "signed-candidate-receipt.json": {
                   "size": 11723,
                   "digest": (
                       "sha256:"
-                      "f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32"
+                      "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b"
                   ),
               },
           }
@@ -637,7 +637,7 @@ jobs:
               "https://api.github.com/repos/4810092/Weather/releases/assets/$asset_id" \
               > "$verification_root/$asset_name"
           done < "$release_root/final-assets.tsv"
-          echo "76883f1cef5838b3ad8c9509f8098821bb1c6665a649cbfddb563f25f0ecb254  $verification_root/signed-candidate-bytes.tar.gz" \
+          echo "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463  $verification_root/signed-candidate-bytes.tar.gz" \
             | sha256sum --check --strict
-          echo "f0f65eed8d4fd502e2d1bcc71836e8d3bb8f737dadf6764824b1575e03965b32  $verification_root/signed-candidate-receipt.json" \
+          echo "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b  $verification_root/signed-candidate-receipt.json" \
             | sha256sum --check --strict
