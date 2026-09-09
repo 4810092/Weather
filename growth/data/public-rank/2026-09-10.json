@@ -1,0 +1,2039 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-10",
+  "captured_at": "2026-09-10T02:32:20+05:00",
+  "timezone": "Asia/Tashkent",
+  "config_fingerprint": "80f1cc45fcba1c08da1e58e1f674f2042add749cc9264dadbfc2b19723af08f6",
+  "app": {
+    "name": "Nimbo Weather",
+    "apple_id": "6799886897",
+    "android_package": "uz.ganikhodjaev.weather"
+  },
+  "market": {
+    "country_code": "UZ",
+    "timezone": "Asia/Tashkent",
+    "apple_genre_id": "6001",
+    "google_category": "WEATHER"
+  },
+  "methodology": {
+    "authenticated": false,
+    "cookie_jar": false,
+    "google_country_parameter": "UZ",
+    "fixed_google_profiles": [
+      "uz-UZ",
+      "ru-UZ",
+      "en-UZ"
+    ],
+    "fixed_query_ids": [
+      "ob-havo",
+      "pogoda",
+      "weather",
+      "toshkent-ob-havo",
+      "prognoz"
+    ],
+    "position_semantics": "first unique app identifier in source response order",
+    "absence_semantics": "greater than observed_count, not globally unranked",
+    "caveats": [
+      "Google Play results can still vary by IP, compatibility, experiments, and server-side personalization.",
+      "Apple Search API order is a fixed public catalog surface and may differ from device UI.",
+      "A source error is unknown and never counts as a passing day."
+    ]
+  },
+  "surfaces": {
+    "apple": {
+      "category": {
+        "surface_id": "apple.uz.top-free.weather",
+        "status": "ok",
+        "source_url": "https://itunes.apple.com/uz/rss/topfreeapplications/limit=100/genre=6001/json",
+        "fetched_at": "2026-09-10T02:32:21+05:00",
+        "response_sha256": "39f1f6e5ce0333c99e6ce96fdc581da746a496f37dd54712ffba9b420c68db4c",
+        "target_identifier": "6799886897",
+        "target_rank": null,
+        "target_rank_bound": ">99",
+        "target_item": null,
+        "raw_observed_count": 99,
+        "observed_count": 99,
+        "unique_observed_count": 99,
+        "minimum_unique_apps": 10,
+        "top_items": [
+          {
+            "rank": 1,
+            "identifier": "6754548876",
+            "name": "Weatherly:Forecast&Radar",
+            "developer": "Magic Snail"
+          },
+          {
+            "rank": 2,
+            "identifier": "1161387262",
+            "name": "Windy.com",
+            "developer": "Windyty, SE"
+          },
+          {
+            "rank": 3,
+            "identifier": "1041008044",
+            "name": "Yandex Weather: Live radar",
+            "developer": "Direct Cursus Computer Systems Trading"
+          },
+          {
+            "rank": 4,
+            "identifier": "1048912974",
+            "name": "IQAir AirVisual | Air Quality",
+            "developer": "IQAir AG"
+          },
+          {
+            "rank": 5,
+            "identifier": "6744247339",
+            "name": "Ob havo Uzbekistan",
+            "developer": "Ergi Berberi"
+          },
+          {
+            "rank": 6,
+            "identifier": "997079492",
+            "name": "Windy.app — Wind, Tides, Radar",
+            "developer": "Windy Weather World Inc"
+          },
+          {
+            "rank": 7,
+            "identifier": "6756997829",
+            "name": "Temperature in Room",
+            "developer": "Sinus Electric Ltd"
+          },
+          {
+            "rank": 8,
+            "identifier": "1073082439",
+            "name": "My Aurora Forecast & Alerts",
+            "developer": "JRustonApps B.V."
+          },
+          {
+            "rank": 9,
+            "identifier": "1566789060",
+            "name": "Shadowmap: Sunlight & Shade",
+            "developer": "Shadowmap Technologies GmbH"
+          },
+          {
+            "rank": 10,
+            "identifier": "1454249438",
+            "name": "MoonX: Moon Phase Calendar",
+            "developer": "Vibes LLC"
+          }
+        ],
+        "rank_kind": "official_apple_hosted_public_chart_order"
+      },
+      "search": {
+        "ob-havo": {
+          "surface_id": "apple.uz.search.ob-havo",
+          "status": "ok",
+          "source_url": "https://itunes.apple.com/search?term=ob+havo&country=uz&media=software&entity=software&limit=200",
+          "fetched_at": "2026-09-10T02:32:22+05:00",
+          "response_sha256": "2484e9c861a30767f264419418ac86bbdca9368b5b5edca72d991969dd9fce7b",
+          "target_identifier": "6799886897",
+          "target_rank": null,
+          "target_rank_bound": ">21",
+          "target_item": null,
+          "raw_observed_count": 21,
+          "observed_count": 21,
+          "unique_observed_count": 21,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "6744247339",
+              "name": "Ob havo Uzbekistan",
+              "developer": "Ergi Berberi"
+            },
+            {
+              "rank": 2,
+              "identifier": "1069513131",
+              "name": "Weather",
+              "developer": "Apple Distribution International"
+            },
+            {
+              "rank": 3,
+              "identifier": "1041008044",
+              "name": "Yandex Weather: Live radar",
+              "developer": "DIRECT CURSUS COMPUTER SYSTEMS TRADING LLC"
+            },
+            {
+              "rank": 4,
+              "identifier": "749083919",
+              "name": "Weather Live° - Local Forecast",
+              "developer": "Mosaic S.r.l."
+            },
+            {
+              "rank": 5,
+              "identifier": "1363846787",
+              "name": "Weather forecast & Radar Live",
+              "developer": "TMEDILAB SOFTWARE JOINT STOCK COMPANY"
+            },
+            {
+              "rank": 6,
+              "identifier": "1137406490",
+              "name": "Weather App Pro: Live Radar",
+              "developer": "BUCKET LIST LABS S.L."
+            },
+            {
+              "rank": 7,
+              "identifier": "525994479",
+              "name": "Foreca Weather",
+              "developer": "Foreca Oy"
+            },
+            {
+              "rank": 8,
+              "identifier": "6788692814",
+              "name": "Kunlik Ob-Havo",
+              "developer": "Islomjon Ikromov"
+            },
+            {
+              "rank": 9,
+              "identifier": "1158929797",
+              "name": "Weather: UK",
+              "developer": "Lucian Baciu"
+            },
+            {
+              "rank": 10,
+              "identifier": "1335982274",
+              "name": "Weather ۬",
+              "developer": "Impala Studios B.V."
+            }
+          ],
+          "query_id": "ob-havo",
+          "query": "ob havo",
+          "rank_kind": "public_search_api_response_order"
+        },
+        "pogoda": {
+          "surface_id": "apple.uz.search.pogoda",
+          "status": "ok",
+          "source_url": "https://itunes.apple.com/search?term=%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0&country=uz&media=software&entity=software&limit=200",
+          "fetched_at": "2026-09-10T02:32:26+05:00",
+          "response_sha256": "d81eb408031073e0747b29c9e43adcf40b5cbd5d697edf78b9b0ee88c6da7bf2",
+          "target_identifier": "6799886897",
+          "target_rank": null,
+          "target_rank_bound": ">177",
+          "target_item": null,
+          "raw_observed_count": 177,
+          "observed_count": 177,
+          "unique_observed_count": 177,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "1069513131",
+              "name": "Weather",
+              "developer": "Apple Distribution International"
+            },
+            {
+              "rank": 2,
+              "identifier": "1041008044",
+              "name": "Yandex Weather: Live radar",
+              "developer": "DIRECT CURSUS COMPUTER SYSTEMS TRADING LLC"
+            },
+            {
+              "rank": 3,
+              "identifier": "749083919",
+              "name": "Weather Live° - Local Forecast",
+              "developer": "Mosaic S.r.l."
+            },
+            {
+              "rank": 4,
+              "identifier": "6744247339",
+              "name": "Ob havo Uzbekistan",
+              "developer": "Ergi Berberi"
+            },
+            {
+              "rank": 5,
+              "identifier": "1137406490",
+              "name": "Weather App Pro: Live Radar",
+              "developer": "BUCKET LIST LABS S.L."
+            },
+            {
+              "rank": 6,
+              "identifier": "6473724440",
+              "name": "Weather Rain Radar & Storm Map",
+              "developer": "BEE LAB JOINT STOCK COMPANY"
+            },
+            {
+              "rank": 7,
+              "identifier": "799653744",
+              "name": "Awesome Weather YoWindow",
+              "developer": "WEATHER VIEW, LLC"
+            },
+            {
+              "rank": 8,
+              "identifier": "419371996",
+              "name": "Gismeteo lite",
+              "developer": "Roman Shmelkin"
+            },
+            {
+              "rank": 9,
+              "identifier": "1542742219",
+              "name": "Weather + Live Forecast Radar",
+              "developer": "Apptico"
+            },
+            {
+              "rank": 10,
+              "identifier": "558059563",
+              "name": "Weather for iPad!",
+              "developer": "Alexandre Morcos"
+            }
+          ],
+          "query_id": "pogoda",
+          "query": "погода",
+          "rank_kind": "public_search_api_response_order"
+        },
+        "weather": {
+          "surface_id": "apple.uz.search.weather",
+          "status": "ok",
+          "source_url": "https://itunes.apple.com/search?term=weather&country=uz&media=software&entity=software&limit=200",
+          "fetched_at": "2026-09-10T02:32:31+05:00",
+          "response_sha256": "c9da59865d6edfb07f43fab7e18101d9408358e180230f9d93292a06a682cebe",
+          "target_identifier": "6799886897",
+          "target_rank": null,
+          "target_rank_bound": ">187",
+          "target_item": null,
+          "raw_observed_count": 187,
+          "observed_count": 187,
+          "unique_observed_count": 187,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "1069513131",
+              "name": "Weather",
+              "developer": "Apple Distribution International"
+            },
+            {
+              "rank": 2,
+              "identifier": "1041008044",
+              "name": "Yandex Weather: Live radar",
+              "developer": "DIRECT CURSUS COMPUTER SYSTEMS TRADING LLC"
+            },
+            {
+              "rank": 3,
+              "identifier": "749083919",
+              "name": "Weather Live° - Local Forecast",
+              "developer": "Mosaic S.r.l."
+            },
+            {
+              "rank": 4,
+              "identifier": "300048137",
+              "name": "AccuWeather Weather Forecast",
+              "developer": "AccuWeather International, Inc."
+            },
+            {
+              "rank": 5,
+              "identifier": "799653744",
+              "name": "Awesome Weather YoWindow",
+              "developer": "WEATHER VIEW, LLC"
+            },
+            {
+              "rank": 6,
+              "identifier": "1531063436",
+              "name": "(Not Boring) Weather",
+              "developer": "Not Boring Software LLC"
+            },
+            {
+              "rank": 7,
+              "identifier": "295646461",
+              "name": "Weather - The Weather Channel",
+              "developer": "The Weather Channel"
+            },
+            {
+              "rank": 8,
+              "identifier": "1137406490",
+              "name": "Weather App Pro: Live Radar",
+              "developer": "BUCKET LIST LABS S.L."
+            },
+            {
+              "rank": 9,
+              "identifier": "749133753",
+              "name": "Clime: Weather Radar Live",
+              "developer": "Mosaic S.r.l."
+            },
+            {
+              "rank": 10,
+              "identifier": "1158929797",
+              "name": "Weather: UK",
+              "developer": "Lucian Baciu"
+            }
+          ],
+          "query_id": "weather",
+          "query": "weather",
+          "rank_kind": "public_search_api_response_order"
+        },
+        "toshkent-ob-havo": {
+          "surface_id": "apple.uz.search.toshkent-ob-havo",
+          "status": "incomplete",
+          "source_url": "https://itunes.apple.com/search?term=Toshkent+ob-havo&country=uz&media=software&entity=software&limit=200",
+          "fetched_at": "2026-09-10T02:32:32+05:00",
+          "response_sha256": "eec07b9789fb18ab8d33029816a46672c127c3f92f9efc4ff085303e1cacdd7b",
+          "target_identifier": "6799886897",
+          "target_rank": null,
+          "target_rank_bound": ">1",
+          "target_item": null,
+          "raw_observed_count": 1,
+          "observed_count": 1,
+          "unique_observed_count": 1,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "6744247339",
+              "name": "Ob havo Uzbekistan",
+              "developer": "Ergi Berberi"
+            }
+          ],
+          "error_type": "InsufficientUniqueApps",
+          "error": "observed 1 unique apps; at least 10 are required",
+          "query_id": "toshkent-ob-havo",
+          "query": "Toshkent ob-havo",
+          "rank_kind": "public_search_api_response_order"
+        },
+        "prognoz": {
+          "surface_id": "apple.uz.search.prognoz",
+          "status": "ok",
+          "source_url": "https://itunes.apple.com/search?term=prognoz&country=uz&media=software&entity=software&limit=200",
+          "fetched_at": "2026-09-10T02:32:33+05:00",
+          "response_sha256": "a9d8bfdbe0d41d98a9d33a76fa6076d371c9eefe389d09bec3c16eb4ca65697b",
+          "target_identifier": "6799886897",
+          "target_rank": null,
+          "target_rank_bound": ">36",
+          "target_item": null,
+          "raw_observed_count": 36,
+          "observed_count": 36,
+          "unique_observed_count": 36,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "1114392009",
+              "name": "Peludna-prognoza",
+              "developer": "PLIVA HRVATSKA d.o.o."
+            },
+            {
+              "rank": 2,
+              "identifier": "1660385444",
+              "name": "Orų Prognozė",
+              "developer": "Tomas Bekisas"
+            },
+            {
+              "rank": 3,
+              "identifier": "6764311048",
+              "name": "Bite Forecast",
+              "developer": "FARMKONSILIUM, CHASTNOE PREDPRIYATIE"
+            },
+            {
+              "rank": 4,
+              "identifier": "518272723",
+              "name": "Blic",
+              "developer": "Makonda"
+            },
+            {
+              "rank": 5,
+              "identifier": "1550518604",
+              "name": "Orai Lietuvoje",
+              "developer": "Povilas Goberis"
+            },
+            {
+              "rank": 6,
+              "identifier": "6782080462",
+              "name": "Kvaliteta zraka i pelud",
+              "developer": "Kvaliteta Zraka j.d.o.o."
+            },
+            {
+              "rank": 7,
+              "identifier": "6770126519",
+              "name": "Tisch Fishing Europe",
+              "developer": "Designer2 jdoo"
+            },
+            {
+              "rank": 8,
+              "identifier": "6754982470",
+              "name": "Vrijeme24",
+              "developer": "OD HDD"
+            },
+            {
+              "rank": 9,
+              "identifier": "1203791693",
+              "name": "Weather in Torun",
+              "developer": "Radoslaw Rudnicki"
+            },
+            {
+              "rank": 10,
+              "identifier": "620017839",
+              "name": "Vesti Srbija - Naslovi.net",
+              "developer": "Netmark d.o.o."
+            }
+          ],
+          "query_id": "prognoz",
+          "query": "prognoz",
+          "rank_kind": "public_search_api_response_order"
+        }
+      }
+    },
+    "google": {
+      "category": {
+        "uz-UZ": {
+          "surface_id": "google.uz.weather.uz-UZ",
+          "status": "ok",
+          "source_url": "https://play.google.com/store/apps/category/WEATHER?hl=uz&gl=UZ",
+          "fetched_at": "2026-09-10T02:32:34+05:00",
+          "response_sha256": "7dec683c641d289141ed6280aa02cd43b617e95cd8c6b66a935dbb32e48adefd",
+          "target_identifier": "uz.ganikhodjaev.weather",
+          "target_rank": null,
+          "target_rank_bound": ">30",
+          "target_item": null,
+          "raw_observed_count": 30,
+          "observed_count": 30,
+          "unique_observed_count": 30,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "ru.yandex.weatherplugin",
+              "name": "Yandex Weather",
+              "developer": null
+            },
+            {
+              "rank": 2,
+              "identifier": "com.accurate.channel.forecast.live.weather",
+              "name": "Live Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 3,
+              "identifier": "com.accurate.live.weather.widget",
+              "name": "Weather Forecast, Live Radar",
+              "developer": null
+            },
+            {
+              "rank": 4,
+              "identifier": "life.channel.accurate.local.weather.forecast",
+              "name": "Local Weather：Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 5,
+              "identifier": "com.weather.nold.forecast",
+              "name": "Live Weather: Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 6,
+              "identifier": "com.forecasts.noaa.live.weather",
+              "name": "Live Weather: Daily Forecast",
+              "developer": null
+            },
+            {
+              "rank": 7,
+              "identifier": "aplicacion.tiempo",
+              "name": "Weather Radar - Meteored News",
+              "developer": null
+            },
+            {
+              "rank": 8,
+              "identifier": "com.accurate.weather.forecast.live",
+              "name": "Weather Radar, Live Radar",
+              "developer": null
+            },
+            {
+              "rank": 9,
+              "identifier": "com.windyty.android",
+              "name": "Windy.com - Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 10,
+              "identifier": "weather.forecast.radar.weatherchannel",
+              "name": "Weather Forecast - Local Radar",
+              "developer": null
+            }
+          ],
+          "profile_id": "uz-UZ",
+          "hl": "uz",
+          "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+          "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+        },
+        "ru-UZ": {
+          "surface_id": "google.uz.weather.ru-UZ",
+          "status": "ok",
+          "source_url": "https://play.google.com/store/apps/category/WEATHER?hl=ru&gl=UZ",
+          "fetched_at": "2026-09-10T02:32:37+05:00",
+          "response_sha256": "49142b643ff7eb99d11774dbe20f4b2f9d5dfcf5670541ded12fbcc28cf34969",
+          "target_identifier": "uz.ganikhodjaev.weather",
+          "target_rank": null,
+          "target_rank_bound": ">30",
+          "target_item": null,
+          "raw_observed_count": 30,
+          "observed_count": 30,
+          "unique_observed_count": 30,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "ru.yandex.weatherplugin",
+              "name": "Яндекс Погода",
+              "developer": null
+            },
+            {
+              "rank": 2,
+              "identifier": "com.accurate.channel.forecast.live.weather",
+              "name": "Прогноз погоды: точная погода",
+              "developer": null
+            },
+            {
+              "rank": 3,
+              "identifier": "com.accurate.live.weather.widget",
+              "name": "Прогноз погоды, Радар онлайн",
+              "developer": null
+            },
+            {
+              "rank": 4,
+              "identifier": "life.channel.accurate.local.weather.forecast",
+              "name": "Местный прогноз погоды: точный",
+              "developer": null
+            },
+            {
+              "rank": 5,
+              "identifier": "com.weather.nold.forecast",
+              "name": "Живая погода: прогноз погоды",
+              "developer": null
+            },
+            {
+              "rank": 6,
+              "identifier": "com.forecasts.noaa.live.weather",
+              "name": "Live Weather: Daily Forecast",
+              "developer": null
+            },
+            {
+              "rank": 7,
+              "identifier": "aplicacion.tiempo",
+              "name": "Погода 14 дней - Метеоред",
+              "developer": null
+            },
+            {
+              "rank": 8,
+              "identifier": "com.accurate.weather.forecast.live",
+              "name": "Метеорадар, прямой эфир",
+              "developer": null
+            },
+            {
+              "rank": 9,
+              "identifier": "com.windyty.android",
+              "name": "Windy.com - Погода и радар",
+              "developer": null
+            },
+            {
+              "rank": 10,
+              "identifier": "weather.forecast.radar.weatherchannel",
+              "name": "Прогноз погоды - Местный радар",
+              "developer": null
+            }
+          ],
+          "profile_id": "ru-UZ",
+          "hl": "ru",
+          "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+          "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+        },
+        "en-UZ": {
+          "surface_id": "google.uz.weather.en-UZ",
+          "status": "ok",
+          "source_url": "https://play.google.com/store/apps/category/WEATHER?hl=en&gl=UZ",
+          "fetched_at": "2026-09-10T02:32:42+05:00",
+          "response_sha256": "433fc00406492e7c83f7863e907af91ff55ccd20d56fea1a6b0bcf32a4c3fd6e",
+          "target_identifier": "uz.ganikhodjaev.weather",
+          "target_rank": null,
+          "target_rank_bound": ">30",
+          "target_item": null,
+          "raw_observed_count": 30,
+          "observed_count": 30,
+          "unique_observed_count": 30,
+          "minimum_unique_apps": 10,
+          "top_items": [
+            {
+              "rank": 1,
+              "identifier": "ru.yandex.weatherplugin",
+              "name": "Yandex Weather",
+              "developer": null
+            },
+            {
+              "rank": 2,
+              "identifier": "com.accurate.channel.forecast.live.weather",
+              "name": "Live Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 3,
+              "identifier": "com.accurate.live.weather.widget",
+              "name": "Weather Forecast, Live Radar",
+              "developer": null
+            },
+            {
+              "rank": 4,
+              "identifier": "life.channel.accurate.local.weather.forecast",
+              "name": "Local Weather：Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 5,
+              "identifier": "com.weather.nold.forecast",
+              "name": "Live Weather: Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 6,
+              "identifier": "com.forecasts.noaa.live.weather",
+              "name": "Live Weather: Daily Forecast",
+              "developer": null
+            },
+            {
+              "rank": 7,
+              "identifier": "aplicacion.tiempo",
+              "name": "Weather Radar - Meteored News",
+              "developer": null
+            },
+            {
+              "rank": 8,
+              "identifier": "com.accurate.weather.forecast.live",
+              "name": "Weather Radar, Live Radar",
+              "developer": null
+            },
+            {
+              "rank": 9,
+              "identifier": "com.windyty.android",
+              "name": "Windy.com - Weather Forecast",
+              "developer": null
+            },
+            {
+              "rank": 10,
+              "identifier": "weather.forecast.radar.weatherchannel",
+              "name": "Weather Forecast - Local Radar",
+              "developer": null
+            }
+          ],
+          "profile_id": "en-UZ",
+          "hl": "en",
+          "accept_language": "en-UZ,en;q=0.9",
+          "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+        }
+      },
+      "search": {
+        "uz-UZ": {
+          "ob-havo": {
+            "surface_id": "google.uz.search.uz-UZ.ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=ob+havo&c=apps&hl=uz&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:34+05:00",
+            "response_sha256": "67004d221ce8f0146992d45a693dd69cbb08b3ddfce1d377426cff9138f4aee5",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Weather Forecast, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accurate.weather.forecast.live",
+                "name": "Weather Radar, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.weather.daily.local.live",
+                "name": "Weather Forecast - Live Alerts",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.weather.forecast.easy",
+                "name": "Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.rainbowmeteo.weather.rainbow.ai",
+                "name": "Rainbow Weather: Storm Radar",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              }
+            ],
+            "profile_id": "uz-UZ",
+            "hl": "uz",
+            "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+            "query_id": "ob-havo",
+            "query": "ob havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "pogoda": {
+            "surface_id": "google.uz.search.uz-UZ.pogoda",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0&c=apps&hl=uz&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:35+05:00",
+            "response_sha256": "30b6215dda52fe7eefc19c982f75cd739ebc84d57dc71dfecfe570e8edaaf404",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather: Weather Radar",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Local Weather：Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "de.wetteronline.wetterapp",
+                "name": "Weather & Radar Forecast",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "aplicacionpago.tiempo",
+                "name": "Weather - Meteored Pro News",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "no.nrk.yr",
+                "name": "Yr",
+                "developer": null
+              }
+            ],
+            "profile_id": "uz-UZ",
+            "hl": "uz",
+            "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+            "query_id": "pogoda",
+            "query": "погода",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "weather": {
+            "surface_id": "google.uz.search.uz-UZ.weather",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=weather&c=apps&hl=uz&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:35+05:00",
+            "response_sha256": "0854aa21bdb7ff24d4e9694a099482a7aaa004a8d5b55d473afcef788f5214ba",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "com.inmobi.weather",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.google.android.apps.weather",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather: Weather Radar",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.bvl.weatherapp",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "aplicacionpago.tiempo",
+                "name": "Weather - Meteored Pro News",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "no.nrk.yr",
+                "name": "Yr",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Weather Forecast",
+                "developer": null
+              }
+            ],
+            "profile_id": "uz-UZ",
+            "hl": "uz",
+            "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+            "query_id": "weather",
+            "query": "weather",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "toshkent-ob-havo": {
+            "surface_id": "google.uz.search.uz-UZ.toshkent-ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=Toshkent+ob-havo&c=apps&hl=uz&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:36+05:00",
+            "response_sha256": "85545a74b443ff40b795544b6aa13acc1550b9ecaca7b6474bb74daefc1c5fa6",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "uz.osmon.osmon_uzbekiston_ob_havosi",
+                "name": "Ob havo uz",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "ovh.sauzanaprod.meteoouzbekistan",
+                "name": "Uzbekistan Weather",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.uzmobdev.weatherapp",
+                "name": "Ob-havo ma'lumoti",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Weather Forecast, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.accurate.weather.forecast.live",
+                "name": "Weather Radar, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.verisky.app",
+                "name": "VeriSky: Weather & Rain Radar",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.weather.daily.local.live",
+                "name": "Weather Forecast - Live Alerts",
+                "developer": null
+              }
+            ],
+            "profile_id": "uz-UZ",
+            "hl": "uz",
+            "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+            "query_id": "toshkent-ob-havo",
+            "query": "Toshkent ob-havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "prognoz": {
+            "surface_id": "google.uz.search.uz-UZ.prognoz",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=prognoz&c=apps&hl=uz&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:37+05:00",
+            "response_sha256": "ca05b1fd553cdd1dc28e64dd026ec8b37bf5bdbe111030a92f1028e17762b3b4",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "live.weather.vitality.studio.forecast.widget",
+                "name": "Local Weather Alerts - Widget",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Local Weather：Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "life.widget.accurate.channel.local.weather.forecast",
+                "name": "Local Weather Forecast& Widget",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.forecasts.noaa.live.weather",
+                "name": "Live Weather: Daily Forecast",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "weather.forecast.radar.channel.platinum",
+                "name": "Weather Forecast Accurate Info",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.accurate.forecast.live.weather.channel",
+                "name": "Weather Forecast & Widget",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.weather.forecast.easy",
+                "name": "Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "live.weather.vitality.local.channel.forecast",
+                "name": "Local Weather Forecast - Radar",
+                "developer": null
+              }
+            ],
+            "profile_id": "uz-UZ",
+            "hl": "uz",
+            "accept_language": "uz-UZ,uz;q=0.9,en;q=0.8",
+            "query_id": "prognoz",
+            "query": "prognoz",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          }
+        },
+        "ru-UZ": {
+          "ob-havo": {
+            "surface_id": "google.uz.search.ru-UZ.ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=ob+havo&c=apps&hl=ru&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:38+05:00",
+            "response_sha256": "c0018ae41ed005e8593960bbf224c67768f51f97673292ac47f73389fefc9ae0",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Яндекс Погода",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "aplicacion.tiempo",
+                "name": "Погода 14 дней - Метеоред",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.weather.daily.local.live",
+                "name": "Weather Forecast - Live Alerts",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Прогноз погоды, Радар онлайн",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.rainbowmeteo.weather.rainbow.ai",
+                "name": "Rainbow Weather: Storm Radar",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "yo.app.free",
+                "name": "Точная погода YoWindow",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Погода и радар",
+                "developer": null
+              }
+            ],
+            "profile_id": "ru-UZ",
+            "hl": "ru",
+            "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+            "query_id": "ob-havo",
+            "query": "ob havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "pogoda": {
+            "surface_id": "google.uz.search.ru-UZ.pogoda",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0&c=apps&hl=ru&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:39+05:00",
+            "response_sha256": "6c6c7c13f5c1d73cc3f187ba442484aaff70cfbcc7ba3a10909754a655087ec2",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Яндекс Погода",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "aplicacion.tiempo",
+                "name": "Погода 14 дней - Метеоред",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Местный прогноз погоды: точный",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "de.wetteronline.wetterapp",
+                "name": "Погода & Радар",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Живая погода: прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Погода и радар",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.yahoo.mobile.client.android.weather",
+                "name": "Yahoo Погода",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "yo.app.free",
+                "name": "Точная погода YoWindow",
+                "developer": null
+              }
+            ],
+            "profile_id": "ru-UZ",
+            "hl": "ru",
+            "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+            "query_id": "pogoda",
+            "query": "погода",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "weather": {
+            "surface_id": "google.uz.search.ru-UZ.weather",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=weather&c=apps&hl=ru&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:40+05:00",
+            "response_sha256": "ec5de2c6dad2743094a3675c6ee65795093945591c558c9f0d0cea7a47cc894d",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "aplicacion.tiempo",
+                "name": "Погода 14 дней - Метеоред",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "com.google.android.apps.weather",
+                "name": "Погода",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "com.inmobi.weather",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.weather.Weather",
+                "name": "The Weather Channel",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.wunderground.android.weather",
+                "name": "Weather Underground",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.bvl.weatherapp",
+                "name": "Погода Россия",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Живая погода: прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "mobi.lockdown.weather",
+                "name": "Today Weather: Радар и Виджеты",
+                "developer": null
+              }
+            ],
+            "profile_id": "ru-UZ",
+            "hl": "ru",
+            "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+            "query_id": "weather",
+            "query": "weather",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "toshkent-ob-havo": {
+            "surface_id": "google.uz.search.ru-UZ.toshkent-ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=Toshkent+ob-havo&c=apps&hl=ru&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:40+05:00",
+            "response_sha256": "64d30b78db873e991a171ed9ca9f1d41777fd887f7066963fa1288d888d91bc6",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "ovh.sauzanaprod.meteoouzbekistan",
+                "name": "Погода В Узбекистане",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "uz.osmon.osmon_uzbekiston_ob_havosi",
+                "name": "Ob havo uz",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.uzmobdev.weatherapp",
+                "name": "Ob-havo ma'lumoti",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Прогноз погоды, Радар онлайн",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Яндекс Погода",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.accurate.weather.forecast.live",
+                "name": "Метеорадар, прямой эфир",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "uz.amindi.app",
+                "name": "Погода В Узбекистане",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "cn.museedu.weatheruzbekistan",
+                "name": "Погода Узбекистан",
+                "developer": null
+              }
+            ],
+            "profile_id": "ru-UZ",
+            "hl": "ru",
+            "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+            "query_id": "toshkent-ob-havo",
+            "query": "Toshkent ob-havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "prognoz": {
+            "surface_id": "google.uz.search.ru-UZ.prognoz",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=prognoz&c=apps&hl=ru&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:41+05:00",
+            "response_sha256": "1610cae8b7189b5b075c208052b9fe85dfa98196752e7ddcdc7d4874d2627a02",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Яндекс Погода",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Местный прогноз погоды: точный",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "aplicacion.tiempo",
+                "name": "Погода 14 дней - Метеоред",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Живая погода: прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "cz.ackee.ventusky",
+                "name": "Ventusky: Прогноз погоды",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "de.wetteronline.wetterapp",
+                "name": "Погода & Радар",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Погода и радар",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "live.weather.vitality.studio.forecast.widget",
+                "name": "Прогноз погоды - Оповещения",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "aplicacionpago.tiempo",
+                "name": "Погода 14 дней - Meteored Pro",
+                "developer": null
+              }
+            ],
+            "profile_id": "ru-UZ",
+            "hl": "ru",
+            "accept_language": "ru-UZ,ru;q=0.9,en;q=0.8",
+            "query_id": "prognoz",
+            "query": "prognoz",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          }
+        },
+        "en-UZ": {
+          "ob-havo": {
+            "surface_id": "google.uz.search.en-UZ.ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=ob+havo&c=apps&hl=en&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:42+05:00",
+            "response_sha256": "b513b585c3b5618f6fdb50a72ea67f67047a9964100431cc7b6bff1f24c6cdeb",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Weather Forecast, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.accurate.weather.forecast.live",
+                "name": "Weather Radar, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.weather.forecast.easy",
+                "name": "Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.rainbowmeteo.weather.rainbow.ai",
+                "name": "Rainbow Weather: Storm Radar",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.weather.daily.local.live",
+                "name": "Weather Forecast - Live Alerts",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              }
+            ],
+            "profile_id": "en-UZ",
+            "hl": "en",
+            "accept_language": "en-UZ,en;q=0.9",
+            "query_id": "ob-havo",
+            "query": "ob havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "pogoda": {
+            "surface_id": "google.uz.search.en-UZ.pogoda",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0&c=apps&hl=en&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:43+05:00",
+            "response_sha256": "fb74cb7a66f9ad1658cfe8f6658bb7202afbbe749121c9c3b1e8902b0ba62863",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Local Weather：Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather: Weather Radar",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.windyty.android",
+                "name": "Windy.com - Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.yahoo.mobile.client.android.weather",
+                "name": "Yahoo Weather: Forecast & Maps",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "de.wetteronline.wetterapp",
+                "name": "Weather & Radar Forecast",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.weawow",
+                "name": "Weather & Widget - Weawow",
+                "developer": null
+              }
+            ],
+            "profile_id": "en-UZ",
+            "hl": "en",
+            "accept_language": "en-UZ,en;q=0.9",
+            "query_id": "pogoda",
+            "query": "погода",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "weather": {
+            "surface_id": "google.uz.search.en-UZ.weather",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=weather&c=apps&hl=en&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:44+05:00",
+            "response_sha256": "2fdff46a6161f2a61cb3e26615925b0bdb4ff1336884ded306dce38be27ad4fc",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">29",
+            "target_item": null,
+            "raw_observed_count": 29,
+            "observed_count": 29,
+            "unique_observed_count": 29,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "com.google.android.apps.weather",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "com.inmobi.weather",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather: Weather Radar",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.weather.Weather",
+                "name": "The Weather Channel - Radar",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "com.miui.weather2",
+                "name": "Weather - By Xiaomi",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.wunderground.android.weather",
+                "name": "Weather data & microclimate :",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.bvl.weatherapp",
+                "name": "Weather",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.yahoo.mobile.client.android.weather",
+                "name": "Yahoo Weather: Forecast & Maps",
+                "developer": null
+              }
+            ],
+            "profile_id": "en-UZ",
+            "hl": "en",
+            "accept_language": "en-UZ,en;q=0.9",
+            "query_id": "weather",
+            "query": "weather",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "toshkent-ob-havo": {
+            "surface_id": "google.uz.search.en-UZ.toshkent-ob-havo",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=Toshkent+ob-havo&c=apps&hl=en&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:44+05:00",
+            "response_sha256": "bdb2f1ddb663dfe29a6f8eead5429b4951d461271b06e9ff472e511764a54e3b",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">50",
+            "target_item": null,
+            "raw_observed_count": 50,
+            "observed_count": 50,
+            "unique_observed_count": 50,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "uz.supremeapp.obhavo",
+                "name": "Ob-havo Uzbekistan 2026",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "ovh.sauzanaprod.meteoouzbekistan",
+                "name": "Uzbekistan Weather",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "uz.ikramov.obhavo",
+                "name": "Kunlik ob-havo",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "uz.osmon.osmon_uzbekiston_ob_havosi",
+                "name": "Ob havo uz",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accurate.live.weather.widget",
+                "name": "Weather Forecast, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "com.accurate.weather.forecast.live",
+                "name": "Weather Radar, Live Radar",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.accurate.channel.forecast.live.weather",
+                "name": "Live Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.uzmobdev.weatherapp",
+                "name": "Ob-havo ma'lumoti",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "com.weather.forecast.easy",
+                "name": "Weather Forecast",
+                "developer": null
+              }
+            ],
+            "profile_id": "en-UZ",
+            "hl": "en",
+            "accept_language": "en-UZ,en;q=0.9",
+            "query_id": "toshkent-ob-havo",
+            "query": "Toshkent ob-havo",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          },
+          "prognoz": {
+            "surface_id": "google.uz.search.en-UZ.prognoz",
+            "status": "ok",
+            "source_url": "https://play.google.com/store/search?q=prognoz&c=apps&hl=en&gl=UZ",
+            "fetched_at": "2026-09-10T02:32:47+05:00",
+            "response_sha256": "536010f40c4b56f053be1161f4aa7b974c5f6c4cce4ef06679ded9f6c7908e11",
+            "target_identifier": "uz.ganikhodjaev.weather",
+            "target_rank": null,
+            "target_rank_bound": ">30",
+            "target_item": null,
+            "raw_observed_count": 30,
+            "observed_count": 30,
+            "unique_observed_count": 30,
+            "minimum_unique_apps": 10,
+            "top_items": [
+              {
+                "rank": 1,
+                "identifier": "ru.yandex.weatherplugin",
+                "name": "Yandex Weather",
+                "developer": null
+              },
+              {
+                "rank": 2,
+                "identifier": "life.channel.accurate.local.weather.forecast",
+                "name": "Local Weather：Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 3,
+                "identifier": "live.weather.vitality.studio.forecast.widget",
+                "name": "Local Weather Alerts - Widget",
+                "developer": null
+              },
+              {
+                "rank": 4,
+                "identifier": "aplicacion.tiempo",
+                "name": "Weather Radar - Meteored News",
+                "developer": null
+              },
+              {
+                "rank": 5,
+                "identifier": "com.accuweather.android",
+                "name": "AccuWeather: Weather Radar",
+                "developer": null
+              },
+              {
+                "rank": 6,
+                "identifier": "cz.ackee.ventusky",
+                "name": "Ventusky: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 7,
+                "identifier": "de.wetteronline.wetterapp",
+                "name": "Weather & Radar Forecast",
+                "developer": null
+              },
+              {
+                "rank": 8,
+                "identifier": "com.weather.nold.forecast",
+                "name": "Live Weather: Weather Forecast",
+                "developer": null
+              },
+              {
+                "rank": 9,
+                "identifier": "com.forecasts.noaa.live.weather",
+                "name": "Live Weather: Daily Forecast",
+                "developer": null
+              },
+              {
+                "rank": 10,
+                "identifier": "ru.gismeteo.gismeteo",
+                "name": "Gismeteo",
+                "developer": null
+              }
+            ],
+            "profile_id": "en-UZ",
+            "hl": "en",
+            "accept_language": "en-UZ,en;q=0.9",
+            "query_id": "prognoz",
+            "query": "prognoz",
+            "rank_kind": "fixed_logged_out_public_html_first_seen_order"
+          }
+        }
+      }
+    }
+  },
+  "capture_complete": false,
+  "diagnostic_capture_complete": false,
+  "source_errors": [
+    {
+      "surface_id": "apple.uz.search.toshkent-ob-havo",
+      "error_type": "InsufficientUniqueApps",
+      "error": "observed 1 unique apps; at least 10 are required"
+    }
+  ],
+  "evaluation": {
+    "status": "fail",
+    "complete": true,
+    "apple_weather_chart_top10": false,
+    "apple_weather_chart_status": "fail",
+    "google_weather_category_top10_all_profiles": false,
+    "google_weather_category_status": "fail",
+    "google_category_top10_by_profile": {
+      "uz-UZ": false,
+      "ru-UZ": false,
+      "en-UZ": false
+    },
+    "google_category_status_by_profile": {
+      "uz-UZ": "fail",
+      "ru-UZ": "fail",
+      "en-UZ": "fail"
+    },
+    "google_generic_top10_queries": [],
+    "google_generic_top10_query_count": 0,
+    "google_generic_query_status": "fail",
+    "google_generic_unresolved_queries": [],
+    "google_generic_rejected_queries": [
+      "ob-havo",
+      "pogoda",
+      "prognoz",
+      "toshkent-ob-havo",
+      "weather"
+    ],
+    "google_query_statuses": {
+      "ob-havo": "fail",
+      "pogoda": "fail",
+      "prognoz": "fail",
+      "toshkent-ob-havo": "fail",
+      "weather": "fail"
+    },
+    "google_query_top10_profile_counts": {
+      "ob-havo": 0,
+      "pogoda": 0,
+      "prognoz": 0,
+      "toshkent-ob-havo": 0,
+      "weather": 0
+    },
+    "google_query_unknown_profile_counts": {
+      "ob-havo": 0,
+      "pogoda": 0,
+      "prognoz": 0,
+      "toshkent-ob-havo": 0,
+      "weather": 0
+    },
+    "requirements_pass": false,
+    "reasons": [
+      "Apple UZ Weather chart is not verified in the top 10",
+      "Google UZ Weather category is not top 10 in all fixed profiles"
+    ]
+  },
+  "goal_evidence_complete": true
+}
