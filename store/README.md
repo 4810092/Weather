@@ -1,6 +1,6 @@
 # Store release material
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 This directory contains version-controlled metadata, declarations, artwork,
 production-UI screenshots, and draft growth creatives for Nimbo. Store consoles
@@ -17,11 +17,11 @@ to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its
 exact locale, metadata, creative, and artifact source-sync state. It remains
 top-level `draft-blocked`: phone 12, Wear 1000012, and Apple build 12 from
-source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` are atomically blocked,
-with null signed hashes and runtime evidence. Protected signing run
-`36361077488` passed for the exact set. Local validation passed, but signing,
-independent byte verification, delivery, runtime QA, review, rollout, and
-public availability remain separate stages. Build-11 hashes are retained only
+source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` are atomically verified-current
+with exact signed hashes. Runtime evidence remains null and blocked. Protected signing run
+`36361077488` passed for the exact set. Local validation and independent byte
+verification passed. Delivery, runtime QA, review, rollout, and public
+availability remain separate, unfinished stages. Build-11 hashes are retained only
 as historical-superseded provenance. The full `source_revision` is shared with
 the release/source gate; `check_release_qa_matrix.py` fails if it differs from
 current product/build inputs or either authority drifts. Historical observations
@@ -67,8 +67,9 @@ No self-hosted Mac runner is required. The byte verifier checks that source is
 clean relative to the embedded revision; protected build/sign provenance supplies
 the separate clean-build-input guarantee. The hosted chain must recheck the
 exact mutable draft assets and reopen them through the complete pinned verifier.
-Build-12 storage and independent-verification evidence are pending; earlier
-records remain historical and do not authorize these new artifacts.
+Build-12 storage and independent verification passed, as recorded in the
+[trusted byte verification](../growth/quality/release-artifact-full-verification-2026-09-28-build12-hosted.md).
+Earlier records remain historical and do not authorize these new artifacts.
 
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,

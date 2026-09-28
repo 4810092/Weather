@@ -1,12 +1,13 @@
 # Release process
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 The current source retains the iPad Share fix, the background-refresh
 actor-isolation correction, and autonomous WidgetKit refresh. All three local
 CI modes passed; see the [local validation record](../growth/quality/release12-local-validation-2026-09-28.md).
 Protected signing run `36361077488` passed for the coordinated build-12 set.
-The manifest remains blocked until exact signed bytes are independently verified.
+The atomic 3/3 artifact set is verified-current after independent trusted run
+`36363527493`; runtime/publication gates remain blocked.
 Store delivery, runtime QA, review, rollout, and public availability are separate.
 
 The latest observed public versions remain Android phone/tablet `1.0.2 (6)`
@@ -19,9 +20,9 @@ for live state. Dated sections below describe historical checkpoints only.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5e383aecf56df66492885408eeae2439dc10fa8ab217ad766f5019396dd09e1d -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->

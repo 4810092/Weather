@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 Release status date: September 28, 2026
 Target checkpoint: February 28, 2027
@@ -8,17 +8,18 @@ Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5e383aecf56df66492885408eeae2439dc10fa8ab217ad766f5019396dd09e1d -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
 `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` to phone 12, Wear 1000012, and
-Apple build 12. All signed hashes and runtime-evidence fields remain null;
-local CI and protected signing run `36361077488` passed for this set.
+Apple build 12. All signed hashes are verified-current after protected signing,
+materialization, and independent trusted run `36363527493`. Runtime-evidence
+fields remain null; local CI passed for this source.
 Build 11 and earlier signing, delivery, review, and runtime observations are
 historical. Build 9 remains runtime-failed and must not be released. Current
 release readiness is recorded in the [QA matrix](QA_MATRIX.md); the dated growth
@@ -94,8 +95,8 @@ snapshot is immutable in `growth-observations`. A bounded absence means only
   `1.1.0 (1000012)`, and Apple app/widget/watch `1.1.0 (12)` from source
   `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. They retain the iPad Share,
   actor-isolation, and autonomous WidgetKit refresh fixes. The manifest is
-  blocked pending signed-byte verification and current runtime evidence;
-  store delivery, review, rollout, and public availability are separate.
+  draft-blocked: signed-byte identity passed, while current runtime evidence
+  remains pending. Store delivery, review, rollout, and public availability are separate.
 - Historical coordinated checkpoint identities were Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.

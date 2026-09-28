@@ -1,22 +1,23 @@
 # Release QA matrix
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 Status date: September 28, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5e383aecf56df66492885408eeae2439dc10fa8ab217ad766f5019396dd09e1d -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
 `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` to phone 12, Wear 1000012, and
-Apple build 12. All three entries remain blocked with null signed hashes and
-runtime evidence. Protected signing run `36361077488` passed; independent verification is pending.
+Apple build 12. All three signed hashes are verified-current after protected
+signing `36361077488`, materialization `36363383305`, and independent trusted
+verification `36363527493`. Runtime-evidence fields remain null and blocked.
 [Local validation](../growth/quality/release12-local-validation-2026-09-28.md)
 passed all three canonical CI modes and bounded iPhone/iPad simulator smoke;
 these results do not promote signed-byte or distribution-runtime gates.
@@ -41,9 +42,9 @@ remain exact.
 <!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required runtime QA (legacy gate ID) | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (12)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Wear OS | `1.1.0 (1000012)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Apple app/widget/watch | `1.1.0 (12)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `ios_physical_smoke: blocked` | **BLOCKED** |
+| Android phone/tablet | `1.1.0 (12)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Wear OS | `1.1.0 (1000012)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Apple app/widget/watch | `1.1.0 (12)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `ios_physical_smoke: blocked` | **BLOCKED** |
 <!-- release-qa-current:end -->
 
 `READY` is permitted only when the corresponding artifact is
@@ -75,12 +76,12 @@ and its explicit external-build provenance boundary are recorded in
 - Current source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` retains the
   actor-isolation and autonomous widget-refresh fixes and advances all three
   artifact identities. Core, Apple, and Android UI CI passed locally. iPhone
-  and iPad simulator forecast/Share/App Group smoke passed. Protected signing,
-  independent byte verification, distribution-candidate runtime coverage,
-  natural widget refresh, and fresh crash inspection remain separate and pending.
+  and iPad simulator forecast/Share/App Group smoke passed. Protected signing and
+  independent byte verification have passed; distribution-candidate runtime
+  coverage, natural widget refresh, and fresh crash inspection remain pending.
 - Historical source `fcffe13b` produced phone 11, Wear 1000011, and Apple build
   11 through signing run `34047427535`, materialization `34048604324`, and
-  trusted verification `34048714127`. Those hashes remain in the manifest as
+  trusted verification `34048714127`. Those hashes remain in their dated receipts as
   historical-superseded only. Earlier Apple build 10 corrected actor isolation;
   its TestFlight and iPad widget observations cannot validate build 12.
 - Historical source `052d12c7` produced the protected-signed, materialized, and

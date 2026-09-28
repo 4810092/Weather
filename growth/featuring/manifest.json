@@ -124,14 +124,14 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada identifies the unsigned successors phone 1.1.0 (12), Wear OS 1.1.0 (1000012), and Apple 1.1.0 (12). Current signed hashes remain null and the old signed build-11 set is historical-superseded. The cited earlier signing/delivery records establish historical provenance only. emulator/simulator runtime QA, Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain unproved for the current source.",
+      "claim": "Source 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada binds the independently verified signed set: phone 1.1.0 (12), Wear OS 1.1.0 (1000012), and Apple 1.1.0 (12). Protected signing, durable materialization, and independent full-byte verification passed. Local CI and bounded simulator smoke passed; complete current emulator/simulator runtime QA, Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain unproved. Earlier delivery/runtime records establish historical provenance only.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
-        "growth/quality/signed-candidate-run-34047427535.md",
-        "growth/quality/release-materialization-2026-09-06-run-34048604324.md",
-        "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
-        "growth/quality/receipts/trusted-release-verification-34048714127.json",
-        "growth/quality/release-artifact-full-verification-2026-09-06-build11-hosted.md",
+        "growth/quality/signed-candidate-run-36361077488.md",
+        "growth/quality/release-materialization-2026-09-28-run-36363383305.md",
+        "growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md",
+        "growth/quality/receipts/trusted-release-verification-36363527493.json",
+        "growth/quality/release-artifact-full-verification-2026-09-28-build12-hosted.md",
         "growth/quality/testflight-ios-build11-delivery-2026-09-06.md",
         "growth/quality/testflight-ios-build10-delivery-2026-09-04.md",
         "growth/quality/emulator-runtime-qa-2026-09-03.md",
@@ -165,12 +165,6 @@
       "evidence": "growth/quality/gates.json"
     },
     {
-      "id": "release_artifact_source_sync",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
       "id": "deliverable.candidate_public_release",
       "blocker_type": "deliverable",
       "status": "blocked",
@@ -188,6 +182,7 @@
     "number one, most accurate, or official weather",
     "medical or emergency-safety guidance",
     "unverified rankings, ratings, reviews, installs, retention, or crash-free performance",
-    "build 10 App Store approval or public 1.1.0 release"
+    "build 10 App Store approval or public 1.1.0 release",
+    "build 12 store approval or public 1.1.0 release"
   ]
 }

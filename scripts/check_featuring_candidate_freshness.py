@@ -26,11 +26,11 @@ EXPECTED_INTERNAL_ACTIONS = [
 ]
 CURRENT_EVIDENCE = [
     "store/upload-manifest-1.1.0.json",
-    "growth/quality/signed-candidate-run-34047427535.md",
-    "growth/quality/release-materialization-2026-09-06-run-34048604324.md",
-    "growth/quality/release-artifact-source-sync-2026-09-06-fcffe13.md",
-    "growth/quality/receipts/trusted-release-verification-34048714127.json",
-    "growth/quality/release-artifact-full-verification-2026-09-06-build11-hosted.md",
+    "growth/quality/signed-candidate-run-36361077488.md",
+    "growth/quality/release-materialization-2026-09-28-run-36363383305.md",
+    "growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md",
+    "growth/quality/receipts/trusted-release-verification-36363527493.json",
+    "growth/quality/release-artifact-full-verification-2026-09-28-build12-hosted.md",
     "growth/quality/testflight-ios-build11-delivery-2026-09-06.md",
     "growth/quality/testflight-ios-build10-delivery-2026-09-04.md",
     "growth/quality/emulator-runtime-qa-2026-09-03.md",
