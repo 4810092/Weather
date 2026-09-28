@@ -1,5 +1,7 @@
 # Release process
 
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+
 This is a chronological release journal. Statements inside a dated paragraph describe
 that checkpoint and may be superseded later in the same document. The latest recorded
 public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
@@ -37,12 +39,12 @@ review, public availability, or complete delivery-linked physical matrix is
 claimed. Store consoles remain the authority for live status.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:fcffe13be1cc15e83a0609751f696e48c9301444 -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=7422c08c62f4b462d1a3775fddbd8f782ac57fd2f04a17a95ef52a88f6cf6c53 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=01d239d78bd2c5f0d2828a2535eadcc61c458d0f3289df3d3b508fbbaff22d4a -->
+<!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5e383aecf56df66492885408eeae2439dc10fa8ab217ad766f5019396dd09e1d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04

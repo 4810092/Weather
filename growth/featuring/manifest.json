@@ -124,7 +124,7 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Source fcffe13be1cc15e83a0609751f696e48c9301444 resolves to phone 1.1.0 (11), Wear OS 1.1.0 (1000011), and Apple 1.1.0 (11). Protected signing run 34047427535, materialization run 34048604324, and trusted run 34048714127 establish an atomic 3/3 verified-current signed-byte set. Build 10 remains historical: it was delivered to internal TestFlight and App Store 1.1.0 (10) is Pending Developer Release with manual release selected. Build 11 is processed in App Store Connect and available to the existing internal TestFlight group; no review replacement is claimed. Google Play Internal delivery remains historical and production remains 1.0.2. emulator/simulator runtime QA, Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain unproved for the current source.",
+      "claim": "Source 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada identifies the unsigned successors phone 1.1.0 (12), Wear OS 1.1.0 (1000012), and Apple 1.1.0 (12). Current signed hashes remain null and the old signed build-11 set is historical-superseded. The cited earlier signing/delivery records establish historical provenance only. emulator/simulator runtime QA, Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain unproved for the current source.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/signed-candidate-run-34047427535.md",
@@ -160,6 +160,12 @@
     },
     {
       "id": "android_physical_smoke",
+      "blocker_type": "operational_gate",
+      "status": "blocked",
+      "evidence": "growth/quality/gates.json"
+    },
+    {
+      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

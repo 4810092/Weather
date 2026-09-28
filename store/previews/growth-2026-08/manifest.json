@@ -7,17 +7,18 @@
   "candidate_identity": {
     "apple": {
       "version": "1.1.0",
-      "build": "11"
+      "build": "12"
     },
     "google": {
       "version": "1.1.0",
-      "version_code": 11
+      "version_code": 12
     }
   },
   "blocking_gates": [
     "ios_crash_gate",
     "android_physical_smoke",
-    "ios_physical_smoke"
+    "ios_physical_smoke",
+    "release_artifact_source_sync"
   ],
   "clips": [
     {

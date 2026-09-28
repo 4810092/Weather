@@ -377,9 +377,9 @@ def sync(
         new_next = old_next
         if gate_id == "ios_crash_gate":
             new_next = (
-                "Keep build 9 detached and unreleased after its Developer Rejected submission; build 10 "
-                "is Waiting for Review with manual release, so observe a natural OS-scheduled "
-                "refresh on iPhone and iPad, inspect fresh crash logs, and do not release"
+                "Keep failed build 9 detached and unreleased; validate the current candidate's "
+                "runtime on iPhone and iPad, observe a natural OS-scheduled refresh, "
+                "inspect fresh crash logs, and preserve the publication gate"
             )
         elif gate_id == "release_artifact_source_sync":
             if status == "pass":
@@ -393,12 +393,12 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · exact build 9 is runtime-failed and the corrected "
-                    "source has no signed, source-bound successor"
+                    "BLOCKED · the current source has no signed, source-bound successor "
+                    "artifact set with independent byte verification"
                 )
                 new_next = (
-                    "Create a monotonic Apple successor from corrected source, pass "
-                    "protected signing and full-byte verification, then deliver it to TestFlight"
+                    "Create a monotonic Apple successor with coordinated phone/Wear builds, pass "
+                    "independent full-byte verification, then deliver the exact artifacts"
                 )
         elif gate_id == "android_physical_smoke":
             if status == "pass":
@@ -425,11 +425,11 @@ def sync(
                 )
             else:
                 row["decision"] = (
-                    "BLOCKED · exact build 10 physical smoke and iPad widget render "
-                    "are clean, but natural background completion is unproved"
+                    "BLOCKED · current-candidate runtime is pending and natural background "
+                    "completion is unproved"
                 )
                 new_next = (
-                    "Leave exact TestFlight build 10 backgrounded on iPhone and iPad, "
+                    "Leave the current TestFlight candidate backgrounded on iPhone and iPad, "
                     "observe a natural OS-scheduled refresh, then inspect fresh crash logs"
                 )
         if not all(

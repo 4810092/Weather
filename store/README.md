@@ -1,5 +1,7 @@
 # Store release material
 
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+
 This directory contains version-controlled metadata, declarations, artwork,
 production-UI screenshots, and draft growth creatives for Nimbo. Store consoles
 remain the final source for submission state; this directory is the reviewable
