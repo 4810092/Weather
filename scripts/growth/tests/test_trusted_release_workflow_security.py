@@ -135,13 +135,13 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
 
     def test_fixed_release_and_asset_endpoints_are_immutable(self) -> None:
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/383662265", "releases/latest", 1)
+            self.trusted.replace("releases/397876280", "releases/latest", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/547465393", "releases/assets/1", 1)
+            self.trusted.replace("releases/assets/594106923", "releases/assets/1", 1)
         )
         self.assert_trusted_rejected(
-            self.trusted.replace("releases/assets/547465445", "releases/assets/2", 1)
+            self.trusted.replace("releases/assets/594106988", "releases/assets/2", 1)
         )
 
     def test_draft_and_exact_asset_set_cannot_be_weakened(self) -> None:
@@ -183,7 +183,7 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                "da179a64cc17786684b605d7a1341dd34a8aa4c17df3384bcf0b5aeec8a5df78",
+                "5fdc866094226d7cde09696e6fd2de27683af0ee6955674b3a1d29a7c203a2cd",
                 "0" * 64,
                 1,
             )
@@ -229,8 +229,8 @@ class TrustedReleaseWorkflowSecurityTests(unittest.TestCase):
         )
         self.assert_trusted_rejected(
             self.trusted.replace(
-                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-34047427535.md"',
-                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-34047427535.md"\n'
+                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-36361077488.md"',
+                'artifact["signing_evidence"] = "growth/quality/signed-candidate-run-36361077488.md"\n'
                 '              artifact["physical_qa_evidence"] = "invented.md"',
                 1,
             )
