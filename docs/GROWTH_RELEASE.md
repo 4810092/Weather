@@ -1,8 +1,8 @@
 # Nimbo Uzbekistan growth implementation
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
-Status date: September 4, 2026
+Release status date: September 28, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
@@ -16,22 +16,13 @@ Current decision: **HOLD ACQUISITION**
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
-`fc4b6de9e28fd8956eb64462294b8bcdf405ce7e` to phone vc11, Wear vc1000011,
-and corrected Apple build 10. Protected run `33852229166` signed and
-candidate-byte-verified this exact set, and run `33855931653` durably retained
-the exact package and receipt in unpublished draft `382592451`. Manual-only
-final trusted run `33859392482` independently verified all three complete
-signed artifacts on exact upload authority `d7dbdc3e`, so the manifest is
-atomically `3/3 verified-current`. Apple build 10 is now uploaded, processed,
-attached to the internal TestFlight group, and installed on the connected
-iPhone and iPad. Bounded physical smoke and a visible iPad widget render are
-recorded separately; the manifest physical-QA field remains null until a
-natural OS-scheduled refresh and fresh post-completion crash-log observation
-are complete. The previously
-protected-signed
-vc11/vc1000011/build-9 set remains historical-superseded provenance only.
-Build 9 has exact TestFlight background-refresh crashes and none of its signing,
-delivery, review, simulator, or physical evidence transfers to build 10.
+`0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` to phone 12, Wear 1000012, and
+Apple build 12. All signed hashes and runtime-evidence fields remain null;
+local CI and protected signing run `36361077488` passed for this set.
+Build 11 and earlier signing, delivery, review, and runtime observations are
+historical. Build 9 remains runtime-failed and must not be released. Current
+release readiness is recorded in the [QA matrix](QA_MATRIX.md); the dated growth
+and store observations below do not imply current-candidate readiness.
 
 This document separates implementation readiness from device QA, store review,
 and public-release readiness. The repository now contains the product changes,
@@ -99,19 +90,12 @@ snapshot is immutable in `growth-observations`. A bounded absence means only
   failed attempts. Cooldown/retry state survives cold starts; cross-path
   requests coalesce per process; manual refresh and a first uncached location
   remain immediate.
-- Coordinated current source identities are Android phone/tablet `1.1.0 (11)`,
-  Wear OS `1.1.0 (1000011)`, and Apple app/widget/watch `1.1.0 (10)` from source
-  `fc4b6de9e28fd8956eb64462294b8bcdf405ce7e`. It contains both the iPad share
-  anchor and background-refresh actor-isolation correction. Protected run
-  `33852229166` signed and candidate-byte-verified the exact set, and
-  materialization run `33855931653` retained it in unpublished draft
-  `382592451`. Final manual-only trusted run `33859392482` independently
-  returned `verified-current` and `byte_verified=true` for all three artifacts
-  on the exact upload authority. The
-  top-level manifest remains draft-blocked because physical/runtime, store, and
-  public-release gates are separate. Prior-source
-  vc11/vc1000011 remain Internal-only historical evidence, and build 9 is
-  failed by exact TestFlight background-refresh crashes.
+- Current coordinated source identities are phone/tablet `1.1.0 (12)`, Wear
+  `1.1.0 (1000012)`, and Apple app/widget/watch `1.1.0 (12)` from source
+  `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. They retain the iPad Share,
+  actor-isolation, and autonomous WidgetKit refresh fixes. The manifest is
+  blocked pending signed-byte verification and current runtime evidence;
+  store delivery, review, rollout, and public availability are separate.
 - Historical coordinated checkpoint identities were Android phone/tablet
   `1.1.0 (8)`, Wear OS `1.1.0 (1000008)`, and Apple app/widget/watch
   `1.1.0 (6)`. Every number is newer than the corresponding live store build.

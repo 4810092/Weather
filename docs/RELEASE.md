@@ -1,42 +1,21 @@
 # Release process
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
-This is a chronological release journal. Statements inside a dated paragraph describe
-that checkpoint and may be superseded later in the same document. The latest recorded
-public state is Android phone/tablet 1.0.2 (6), iOS/iPadOS 1.0.1 (4), and Wear
-OS 1.0.2 (1000007). The current coordinated source candidate is 1.1.0: phone 11,
-Wear 1000011, and corrected Apple build 10 from source `fc4b6de9`. It contains
-the iPad share fix and the background-refresh actor-isolation correction.
-Protected run `33852229166` signed and candidate-byte-verified this exact set,
-and run `33855931653` durably retained it in unpublished draft `382592451`.
-Final manual-only trusted run `33859392482` independently verified all three
-complete signed artifacts on exact upload authority `d7dbdc3e`, so the
-committed manifest is atomically `3/3 verified-current`. Build 10 is uploaded,
-processed, attached to the internal TestFlight group, and installed on the
-connected iPhone and iPad. Bounded physical smoke and a visible iPad widget
-render are recorded separately; the manifest physical-QA field remains null
-until a natural OS-scheduled refresh and fresh post-completion crash-log window
-are complete. The prior
-vc11/vc1000011/build-9 set remains historical-superseded provenance; build 9
-has exact TestFlight background-refresh crashes and its signing, delivery,
-review, and QA evidence cannot validate build 10.
-Exact phone vc11 separately passed a clean upload-signed physical API-25
-cold/live/share/refresh/widget/open/process smoke on September 2. It was not
-Play-delivered and does not close the tablet, Wear, or Vitals requirements.
-On August 31, the earlier
-exact Apple `1.1.0 (6)` IPA completed
-Transporter delivery and App Store Connect processing with build state `VALID`
-and audience `APP_STORE_ELIGIBLE`. The exact phone `1.1.0 (8)` and Wear
-`1.1.0 (1000008)` AABs were published to their separate Google Play Internal
-tracks. On September 1 the phone opt-in was accepted and Google Play installed
-the Play-signed split set on the dedicated API 25 target; bounded
-cold/onboarding/live Tashkent/Best Time/share/process-health checks pass. The
-four-account `License testers` group is also attached to Wear Internal and that
-track is active, but no physical Wear install exists. These results do not
-transfer to the replacement identities. No production submission, rollout,
-review, public availability, or complete delivery-linked physical matrix is
-claimed. Store consoles remain the authority for live status.
+The current source retains the iPad Share fix, the background-refresh
+actor-isolation correction, and autonomous WidgetKit refresh. All three local
+CI modes passed; see the [local validation record](../growth/quality/release12-local-validation-2026-09-28.md).
+Protected signing run `36361077488` passed for the coordinated build-12 set.
+The manifest remains blocked until exact signed bytes are independently verified.
+Store delivery, runtime QA, review, rollout, and public availability are separate.
+
+The latest observed public versions remain Android phone/tablet `1.0.2 (6)`
+and iOS/iPadOS `1.0.1`; the last recorded Wear version is `1.0.2 (1000007)`.
+On September 28, App Store Connect showed Apple build 10 as Pending Developer
+Release and TestFlight build 11 as the newest uploaded binary. Play still held
+a production draft with older phone version code 11. Those candidates must be
+replaced with the latest verified build-12 set. Store consoles are authoritative
+for live state. Dated sections below describe historical checkpoints only.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->

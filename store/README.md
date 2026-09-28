@@ -1,6 +1,6 @@
 # Store release material
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 This directory contains version-controlled metadata, declarations, artwork,
 production-UI screenshots, and draft growth creatives for Nimbo. Store consoles
@@ -16,34 +16,21 @@ repository, not the currently public store versions; the validator requires it
 to match the Android, Wear OS, and Apple source versions.
 `upload-manifest-1.1.0.json` schema version 2 resolves each store surface to its
 exact locale, metadata, creative, and artifact source-sync state. It remains
-top-level `draft-blocked`: current phone vc11, Wear `1000011`, and corrected
-Apple build 10 from source `fc4b6de9` are atomically `verified-current` with
-exact hashes and signing/source-sync evidence, while all three physical-QA
-fields remain null. Protected run `33852229166` produced and
-candidate-byte-verified the signed set. Materialization run `33855931653`
-stored its exact package and receipt as fixed assets in unpublished draft
-release `382592451`. Final manual-only trusted run `33859392482` independently
-reopened the draft, safely extracted the closed tree, verified pinned
-Bundletool 1.18.3, and returned `byte_verified=true` for all three artifacts.
-The related Pages run was skipped and no deployment was created. The draft
-remains mutable and must be rechecked before every later use. Its full
-`source_revision` is
-shared with the release/source gate; `check_release_qa_matrix.py` fails if that
-revision differs from the current product/build inputs or if either authority
-drifts. Historical-source artifacts and runtime observations cannot satisfy the
-current physical fields. Exact Apple build 10 was subsequently uploaded,
-processed, attached to the internal TestFlight group, and installed on the
-connected iPhone and iPad. Bounded build-10 smoke and a visible iPad widget
-render are recorded separately, but the manifest field remains null until the
-natural OS-scheduled background completion and fresh crash-log window are
-proved. That provider state is separate from signed-byte authority and is not
-evidence of completed runtime QA, approval, rollout, or publication.
-At 15:47 Asia/Tashkent on September 4, failed build 9 was detached from the
-editable App Store version and exact build 10 was selected and saved. Version
-1.1.0 build 10 was then submitted as the only item in App Store submission
-`a16af9ec-1946-46be-9af4-7797a15b174d` at 16:03 and is `Waiting for Review`.
-Manual release remains preserved; the natural background and public-release
-gates remain blocked.
+top-level `draft-blocked`: phone 12, Wear 1000012, and Apple build 12 from
+source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` are atomically blocked,
+with null signed hashes and runtime evidence. Protected signing run
+`36361077488` passed for the exact set. Local validation passed, but signing,
+independent byte verification, delivery, runtime QA, review, rollout, and
+public availability remain separate stages. Build-11 hashes are retained only
+as historical-superseded provenance. The full `source_revision` is shared with
+the release/source gate; `check_release_qa_matrix.py` fails if it differs from
+current product/build inputs or either authority drifts. Historical observations
+cannot satisfy current runtime fields.
+
+On September 28, App Store Connect showed older build 10 as Pending Developer
+Release and build 11 as the newest TestFlight binary. Neither is the current
+build-12 candidate. Build 9 remains runtime-failed and must stay detached.
+
 The pinned verification policy is executable rather than documentary. Static
 contract mode can validate the committed manifest without private files, but
 full verification of any `verified-current` claim must reopen the exact external
@@ -59,9 +46,9 @@ directory with this layout (the AAB/IPA names come from the manifest):
 
 ```text
 <artifact-root>/
-├── nimbo-phone-1.1.0-vc11.aab
-├── nimbo-phone-1.1.0-vc11-mapping.txt
-├── nimbo-wear-1.1.0-vc1000011.aab
+├── nimbo-phone-1.1.0-vc12.aab
+├── nimbo-phone-1.1.0-vc12-mapping.txt
+├── nimbo-wear-1.1.0-vc1000012.aab
 ├── Nimbo.ipa
 ├── Nimbo.xcarchive/
 └── ExportOptions.plist
@@ -73,24 +60,16 @@ copies each store artifact into a read-only temporary staging file, verifies
 that copy, and re-hashes both the staged and source bytes before returning.
 Public pull-request CI performs the static manifest contract without private
 signed inputs. Full byte authority remains a protected GitHub-hosted macOS
-verification responsibility, including pinned Bundletool for Android. Final
-trusted run `33859392482` authorized the exact upload authority after the
-atomic `3/3 verified-current` promotion. The
-protected staging and read-only macOS verifier must pass before every later
-artifact use; the top-level manifest, current runtime gates, and Apple crash gate remain
-blocked. No self-hosted Mac runner is required. The byte verifier proves that the checked-out source is
-clean relative to the embedded revision, but external bytes alone cannot prove
-the tree was clean when they were built. Protected run `33852229166` supplied
-same-clean-checkout build/sign/verify provenance and a retained closed package.
-The protected hosted chain must recheck the exact mutable draft assets and
-reopen those bytes through the complete pinned verifier before later use. The
-current hosted pass and exact promoted hashes are
-recorded in
-[`growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md`](../growth/quality/release-artifact-full-verification-2026-09-04-build10-hosted.md)
-and
-[`growth/quality/signed-candidate-run-33852229166.md`](../growth/quality/signed-candidate-run-33852229166.md).
-The durable draft locator and its mutable-draft boundary are recorded in
-[`growth/quality/release-materialization-2026-09-04-run-33855931653.md`](../growth/quality/release-materialization-2026-09-04-run-33855931653.md).
+verification responsibility, including pinned Bundletool for Android. The
+protected staging and read-only macOS verifier must pass before later artifact
+use. The top-level manifest, runtime gates, and Apple crash gate remain blocked.
+No self-hosted Mac runner is required. The byte verifier checks that source is
+clean relative to the embedded revision; protected build/sign provenance supplies
+the separate clean-build-input guarantee. The hosted chain must recheck the
+exact mutable draft assets and reopen them through the complete pinned verifier.
+Build-12 storage and independent-verification evidence are pending; earlier
+records remain historical and do not authorize these new artifacts.
+
 Experiments stay `not-started` until the recorded weekly-visitor gate is met.
 The canonical public URLs are `https://nimbo.uz/`,
 `https://nimbo.uz/support/`, and `https://nimbo.uz/privacy/`.

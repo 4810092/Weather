@@ -1,8 +1,8 @@
 # Release QA matrix
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
-Status date: September 4, 2026.
+Status date: September 28, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
@@ -13,21 +13,16 @@ Status date: September 4, 2026.
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->
 
-The machine-validated block binds replacement source
-`fc4b6de9e28fd8956eb64462294b8bcdf405ce7e` to vc11, vc1000011, and corrected
-Apple build 10. Protected run `33852229166` signed and
-candidate-byte-verified the exact set, and run `33855931653` durably retained
-it in unpublished draft `382592451`. Final manual-only trusted run
-`33859392482` independently verified all three complete signed artifacts on
-exact upload authority `d7dbdc3e`, so all current entries are atomically
-`verified-current`. Apple build 10 is processed, attached to internal
-TestFlight testers, and installed on the connected iPhone and iPad. Bounded
-physical smoke and a visible iPad widget render are recorded separately; the
-manifest physical-QA field remains null until a natural OS-scheduled refresh
-and fresh post-completion crash-log observation are complete. The prior
-vc11/vc1000011/build-9 bytes are
-historical-superseded; build 9 is explicitly failed after exact TestFlight
-background-refresh crashes in the main Nimbo process.
+The machine-validated block binds source
+`0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` to phone 12, Wear 1000012, and
+Apple build 12. All three entries remain blocked with null signed hashes and
+runtime evidence. Protected signing run `36361077488` passed; independent verification is pending.
+[Local validation](../growth/quality/release12-local-validation-2026-09-28.md)
+passed all three canonical CI modes and bounded iPhone/iPad simulator smoke;
+these results do not promote signed-byte or distribution-runtime gates.
+Natural widget/background completion and a fresh crash window remain unproved
+for build 12. Build 11 and earlier observations are historical. Build 9 remains
+runtime-failed after exact TestFlight background-refresh crashes.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -65,12 +60,9 @@ tools, or an unrecognized state fail closed. A successful build, an editable
 JSON/Markdown receipt, or an older artifact cannot establish readiness. Apple
 also requires `NimboSourceRevision` in the signed app, widget, and watch
 Info.plists, a matching retained archive app plus UUID-matching archive dSYMs,
-and the exact App Store Connect `ExportOptions.plist`. Current build 10 has an
-exact externally retained distribution archive and IPA that passed trusted
-verification. The exact binary has since been installed through TestFlight on
-the connected iPhone and iPad, and the iPad widget render is visually
-confirmed, but the natural OS-scheduled background completion and its fresh
-crash-log window are not yet proved. Historical build 9 remains byte-verifiable but is
+and the exact App Store Connect `ExportOptions.plist`. Historical build 10 had an externally retained distribution archive and IPA
+that passed trusted verification and bounded TestFlight smoke. That evidence
+does not validate the current build-12 artifacts or natural background refresh. Historical build 9 remains byte-verifiable but is
 runtime-failed by two exact TestFlight background-refresh crash reports.
 The protected staged hosted chain is mandatory before every later use. The
 single staged directory layout and action-time command are documented in
@@ -80,23 +72,22 @@ and its explicit external-build provenance boundary are recorded in
 
 ### Current evidence boundary
 
-- Current product/build source `fc4b6de9` fixes the Swift actor-isolation trap
-  reached when Kotlin completes an OS-scheduled background refresh and advances
-  Apple to build 10 while retaining vc11/vc1000011. Swift 6 Debug/Release,
-  shared iOS, and native surface tests pass locally. Protected run
-  `33852229166` signed and candidate-byte-verified the exact set, and run
-  `33855931653` durably materialized it. Final manual-only trusted run
-  `33859392482` independently verified every current signed byte, so the
-  manifest is atomically `3/3 verified-current`. App Store Connect then
-  processed build 10 and attached it to internal testers. Bounded iPhone/iPad
-  smoke and a visible iPad widget render are recorded; the manifest
-  physical-QA field remains null because natural OS-scheduled background
-  completion and its post-completion crash-log window remain unproved.
+- Current source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` retains the
+  actor-isolation and autonomous widget-refresh fixes and advances all three
+  artifact identities. Core, Apple, and Android UI CI passed locally. iPhone
+  and iPad simulator forecast/Share/App Group smoke passed. Protected signing,
+  independent byte verification, distribution-candidate runtime coverage,
+  natural widget refresh, and fresh crash inspection remain separate and pending.
+- Historical source `fcffe13b` produced phone 11, Wear 1000011, and Apple build
+  11 through signing run `34047427535`, materialization `34048604324`, and
+  trusted verification `34048714127`. Those hashes remain in the manifest as
+  historical-superseded only. Earlier Apple build 10 corrected actor isolation;
+  its TestFlight and iPad widget observations cannot validate build 12.
 - Historical source `052d12c7` produced the protected-signed, materialized, and
   trusted-byte-verified vc11/vc1000011/build-9 set. Its Android artifacts remain
   available only to Internal testers. Its Apple build 9 is failed after two
   UUID-matched TestFlight background-refresh crashes; none of those bytes or
-  observations is exact-current evidence for `fc4b6de9`.
+  observations is exact-current evidence for build 12.
 - Historical source `ba824be` passed hosted CI, protected signing, independent
   byte verification, and internal delivery for vc9, vc1000009, and build 7.
   Play-delivered vc9 has a bounded API-25 phone/widget pass. TestFlight build 7

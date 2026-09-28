@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-WORKFLOW_SHA256 = "1a5ab9440b0168fe10ef7071b45ba1eb019cde338981dd0a7d8c1582672f86f2"
+WORKFLOW_SHA256 = "278d9d72ad6c995858a63f64d79279e7ebbe3d6ab86e06f937636382a0daca9e"
 REPOSITORY_GUARD = (
     "github.repository == '4810092/Weather' && "
     "github.repository_id == '1329018769' && "
@@ -27,22 +27,22 @@ STEP_INVENTORY = [
     ("name", "Upload only missing exact assets"),
     ("name", "Verify exact unpublished materialization"),
 ]
-ACTION_STEP_SHA256 = "5e4e26b85d06a0e50d3a53f464bf964787f4c7c4896675591896215ee7e0b2ed"
+ACTION_STEP_SHA256 = "5e297e4a9c8562f204300624fd3afffbbaaabb5d9630d40332adbd3fe0e754f6"
 RUN_SHA256 = {
     "Validate immutable source provenance": (
-        "4cb05dcdeed1945ad8e3886e309a9067201a125f581dc075dd1fc089e8dfd015"
+        "34160d7df1b7b33ac7174683bb252bf016963235faa26380ab2f04e99a785112"
     ),
     "Verify and stage exact candidate assets": (
-        "90c4ba22b4330fedcaaa4ad4ffca0ae0367bb840fef0182768f3227ff5e7395b"
+        "cb7d88b7c7ee90ba74c5085630bc2565262440ed857e4e81de0d16456659e99d"
     ),
     "Create or reuse exact unpublished draft": (
-        "89826d9059c701a7d437c61d298186e5f2e03df6947a569a237601d9ded94b19"
+        "6cad09296ef8291edc625a6e180d2bb8f2b8e491acc4e5d84e337316b3f3aa3c"
     ),
     "Upload only missing exact assets": (
-        "8cf9e758b077e4b903a19b9340ac90e200e3fc487cfb75b0cd3da65cadc8d2e0"
+        "42bba34fc071f778788aae03f5715ce7ce8066b58bde15496363a04b137f597a"
     ),
     "Verify exact unpublished materialization": (
-        "4192d7c645928fdf26ea37f368ac1a102defdbf5f0b2cc8ef2572072a5e730d5"
+        "fae4633da90265d10fe185eb2c367b7f8f932d6bbad416b788bd296b32158906"
     ),
 }
 TOKEN_STEP_ENVS = {
@@ -66,21 +66,21 @@ TOKEN_STEP_ENVS = {
     ],
 }
 REQUIRED_MARKERS = (
-    "34047427535",
-    "9993782037",
+    "36361077488",
+    "10946307432",
     "345674745",
     "1329018769",
-    "fcffe13be1cc15e83a0609751f696e48c9301444",
-    "8f2e0f970b0a70be091f7608bd6051582a1fc6b2",
+    "0faf1105cc5da072e4e9ee043c46e2e9de4f4ada",
+    "9d96056de4a3f62f6a33e3528bdd965590a39ad8",
     "877ffa2656f160b4699de88020bb4952e0ffaa3ae00febdf4c1d6e85acf116d7",
-    "9b207ba64075953da19cd81c985e7c3ec89acbc1a033911cb0ba702311f68ced",
-    "1465c62400d2a791ecd82ec14bfc6ff216b7b84ab44382be8161d5d7a05df463",
-    "1ceff60fb22b813b86e27ffcc478848a008740e502767461d501edff9df5729b",
-    "15a4e8ebad89be8d8801373d473d287601142da7a3b03991aae8569bf573d207",
-    "da179a64cc17786684b605d7a1341dd34a8aa4c17df3384bcf0b5aeec8a5df78",
-    "ac592ced0768efcd750efd2e443fc752b023df5aa7901313538870f1f4f6d019",
-    "4811f81bc0bc0baa70843061cbb03d0ff0d27e7181b7a2019ea23942d9fe6eb1",
-    "nimbo-candidate-v1.1.0-fcffe13-run-34047427535",
+    "a170d6a31aad57360ffea1f0b7263b4228bc639b87e8708c9bc0e37912707eb3",
+    "b42ab34cb0a332268d45a16dbb7ebc253c782995dd1ffc0bba27ce128d755fed",
+    "3f1ff98e565e46d65c7f47b01dbbded8b499e78515acc01e7dc80a0ebb7c133e",
+    "5316328a69699e03acb9d149b7b9e77a0480630f0e26c10259de9f3501fa0564",
+    "5fdc866094226d7cde09696e6fd2de27683af0ee6955674b3a1d29a7c203a2cd",
+    "51a1d4f0a8e5b8cfa6cb6d752e1a3aad56de36749eaa6fb551039a1f429b23e4",
+    "b42d0bf6a218ba1b5ed3d607a18611fbf700fadef856b02861f618411585474d",
+    "nimbo-candidate-v1.1.0-0faf110-run-36361077488",
     "Internal artifact storage only. Do not publish.",
     '"draft": True',
     '"prerelease": True',
@@ -213,7 +213,7 @@ def validate_release_materialization_workflow(text: str) -> list[str]:
     ]:
         failures.append("permissions must be exactly actions read and contents write")
     if _top_level_block(lines, "concurrency") != [
-        "  group: release-materialization-34047427535",
+        "  group: release-materialization-36361077488",
         "  cancel-in-progress: false",
         "",
     ]:
@@ -324,7 +324,7 @@ def validate_release_materialization_workflow(text: str) -> list[str]:
         failures.append("downloaded candidate content must never be executed or bulk-extracted")
     if text.count("https://uploads.github.com/repos/4810092/Weather/releases/") != 1:
         failures.append("release upload endpoint inventory differs from policy")
-    if text.count("matching-refs/tags/nimbo-candidate-v1.1.0-fcffe13-run-34047427535") != 2:
+    if text.count("matching-refs/tags/nimbo-candidate-v1.1.0-0faf110-run-36361077488") != 2:
         failures.append("candidate Git-tag absence must be checked before and after")
     for marker in REQUIRED_MARKERS:
         if marker not in text:

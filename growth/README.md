@@ -1,6 +1,6 @@
 # Nimbo growth operations
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Signing, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing passed; independent verification, runtime QA, and store delivery are pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
@@ -11,25 +11,16 @@ Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, an
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
 <!-- release-authority-current:end -->
 
-Current source `fc4b6de9` retains vc11/vc1000011 and advances Apple to build 10
-with the background-refresh actor-isolation correction. Protected run
-`33852229166` signed and candidate-byte-verified the exact set, and run
-`33855931653` durably retained it in unpublished draft `382592451`. Final
-manual-only trusted run `33859392482` independently reopened that draft and
-verified all three complete signed artifacts on exact master `d7dbdc3e`, so
-the manifest is atomically `3/3 verified-current`. Exact Apple build 10 was
-then delivered through Transporter, processed by App Store Connect, and
-attached to the existing internal TestFlight group. It is installed on the
-connected iPhone and iPad; bounded physical smoke and a visible iPad widget
-render are recorded separately. The manifest physical-QA field remains null
-until a natural OS-scheduled refresh and fresh post-completion crash-log window
-are completed. The
-previously verified
-vc11/vc1000011/build-9 bytes remain historical-superseded provenance; build 9
-is explicitly failed after exact TestFlight background-refresh crashes, and
-none of its signing, delivery, review, or QA evidence transfers to build 10.
+Current source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` advances the
+coordinated candidate to phone 12, Wear 1000012, and Apple build 12 while
+retaining the latest widget/background fixes. All canonical local CI modes
+passed. Protected signing run `36361077488` passed;
+current signed hashes and runtime evidence remain null and blocked.
+Build 11 and earlier records below are historical. Build 9 remains runtime-failed.
+See the [local validation record](quality/release12-local-validation-2026-09-28.md)
+and [current QA matrix](../docs/QA_MATRIX.md).
 
-Current verdict (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
+Historical growth checkpoint (2026-08-31): **HOLD ACQUISITION**. The canonical 00:00 +05:00
 snapshot places Nimbo at `#40` in Apple's official UZ Weather chart and `#88`
 for Apple `weather`; all three fixed Google UZ category profiles remain outside
 the first 30; `0/5` generic queries meet the separate diagnostic benchmark.
@@ -42,8 +33,8 @@ independent verification, and internal delivery for phone `1.1.0 (9)`, Wear
 `1.1.0 (1000009)`, and Apple `1.1.0 (7)`. Google Play delivered vc9 to the
 dedicated API-25 phone for a bounded branded-launcher/live/share/refresh/widget
 pass. TestFlight delivered build 7 to the iPhone 14 Pro; cold/live/refresh and
-the share sheet ran, but the copied share text contained `0%%`. Current source
-`8fc43b4` fixes that defect and advances all build identities. Protected CI has
+the share sheet ran, but the copied share text contained `0%%`. Historical successor source
+`8fc43b4` fixed that defect and advances all build identities. Protected CI has
 signed, durably draft-materialized, and trusted-hosted byte-verified all three
 successors; the manifest is atomically current while internal delivery remains
 absent. No production submission, review, rollout, public availability, or rank
@@ -65,10 +56,10 @@ or historical device result does not close those independent gates.
 | KPI contract | [kpi-framework.json](kpi-framework.json) | Targets, guardrails, seven-day goal, and fail-closed 90-day rules |
 | Metric contract | [metric-definitions.md](metric-definitions.md) | Denominators, populations, source caveats, and current official references |
 | Operational gates | [quality/gates.json](quality/gates.json) | Provider, crash, device-smoke, and policy state; unknown is not pass |
-| Current protected build-10 candidate | [quality/signed-candidate-run-33852229166.md](quality/signed-candidate-run-33852229166.md) and [receipt](quality/receipts/signed-candidate-33852229166.json) | Exact source/run/artifact/package/tree and three candidate byte identities; signing and candidate-byte verification only |
-| Current durable build-10 materialization | [quality/release-materialization-2026-09-04-run-33855931653.md](quality/release-materialization-2026-09-04-run-33855931653.md) | Exact unpublished draft `382592451`, fixed asset IDs/sizes/hashes, no-tag boundary, and mandatory trusted recheck before every later use |
-| Current build-10 trusted byte verification | [quality/release-artifact-full-verification-2026-09-04-build10-hosted.md](quality/release-artifact-full-verification-2026-09-04-build10-hosted.md) and [final receipt](quality/receipts/trusted-release-verification-33859392482.json) | Final manual-only run `33859392482` independently verified exact 3/3 signed bytes on the upload authority; no runtime QA, review, publication, or Pages deployment |
-| Current build-10 TestFlight delivery | [quality/testflight-ios-build10-delivery-2026-09-04.md](quality/testflight-ios-build10-delivery-2026-09-04.md) | Exact IPA delivered and processed, internal group attached, and initial iPhone/iPad install state; runtime/crash gates remain blocked |
+| Historical protected build-10 candidate | [quality/signed-candidate-run-33852229166.md](quality/signed-candidate-run-33852229166.md) and [receipt](quality/receipts/signed-candidate-33852229166.json) | Exact source/run/artifact/package/tree and three candidate byte identities; signing and candidate-byte verification only |
+| Historical durable build-10 materialization | [quality/release-materialization-2026-09-04-run-33855931653.md](quality/release-materialization-2026-09-04-run-33855931653.md) | Exact unpublished draft `382592451`, fixed asset IDs/sizes/hashes, no-tag boundary, and mandatory trusted recheck before every later use |
+| Historical build-10 trusted byte verification | [quality/release-artifact-full-verification-2026-09-04-build10-hosted.md](quality/release-artifact-full-verification-2026-09-04-build10-hosted.md) and [final receipt](quality/receipts/trusted-release-verification-33859392482.json) | Final manual-only run `33859392482` independently verified exact 3/3 signed bytes on the upload authority; no runtime QA, review, publication, or Pages deployment |
+| Historical build-10 TestFlight delivery | [quality/testflight-ios-build10-delivery-2026-09-04.md](quality/testflight-ios-build10-delivery-2026-09-04.md) | Exact IPA delivered and processed, internal group attached, and initial iPhone/iPad install state; runtime/crash gates remain blocked |
 | Internal store delivery | [quality/internal-store-delivery-2026-08-31.md](quality/internal-store-delivery-2026-08-31.md) | Exact Apple Transporter delivery and completed App Store Connect processing plus phone/Wear Play Internal track, tester, and no-install states; production unchanged |
 | Play-delivered Android follow-up | [quality/play-delivered-android-smoke-2026-09-01.md](quality/play-delivered-android-smoke-2026-09-01.md) | Phone Internal opt-in, Google Play signing/split/install evidence, bounded API 25 cold/live/share, `font_scale=1.3`, system-UI-proven offline/cache/recovery, active system-TalkBack, natural background-network, and physical widget render/update/open smoke; active Wear tester track; remaining icon/tablet/Wear/vitals boundaries |
 | Android legacy launcher icon | [quality/android-legacy-launcher-icon-2026-09-01.md](quality/android-legacy-launcher-icon-2026-09-01.md) | Physical API-25 template-icon failure, exact legacy resource identity, and replacement-version boundary |
@@ -77,7 +68,7 @@ or historical device result does not close those independent gates.
 | Google Play September 1 checkpoint | [quality/google-play-console-2026-09-01.md](quality/google-play-console-2026-09-01.md) | Pending UZ Custom Store Listing review, unchanged rolling dashboard aggregates, fail-closed unavailable Android Vitals rates, and old-production technical recommendations reconciled against the accepted 1.1.0 source |
 | Signed artifact byte gate | [quality/release-artifact-full-verification-2026-08-31-local.md](quality/release-artifact-full-verification-2026-08-31-local.md) | Fresh local macOS full-byte pass and atomic 3/3 manifest promotion; protected staged hosted verification is mandatory before later artifact use |
 | Trusted hosted artifact recheck | [quality/release-artifact-full-verification-2026-08-31-hosted.md](quality/release-artifact-full-verification-2026-08-31-hosted.md) | Protected run `33405849102` revalidated the mutable draft and all exact bytes; every later use must repeat the same check |
-| Exact-current Android phone physical smoke | [quality/android-phone-vc11-physical-smoke-2026-09-02.md](quality/android-phone-vc11-physical-smoke-2026-09-02.md) | Exact vc11 AAB-derived upload-key-signed APK passed clean API 25 install/live/share/refresh/widget/open/process/cleanup; it is not Play delivery or the full Android/Wear matrix |
+| Historical Android phone vc11 physical smoke | [quality/android-phone-vc11-physical-smoke-2026-09-02.md](quality/android-phone-vc11-physical-smoke-2026-09-02.md) | Exact vc11 AAB-derived upload-key-signed APK passed clean API 25 install/live/share/refresh/widget/open/process/cleanup; it is not Play delivery or the full Android/Wear matrix |
 | Historical Android phone physical smoke | [quality/android-phone-vc8-physical-smoke-2026-08-31.md](quality/android-phone-vc8-physical-smoke-2026-08-31.md) | Historical vc8 AAB-derived upload-key-signed APK passed clean API 25 install/live/cache/share/recovery; it cannot transfer to vc11 |
 | Successful signed candidate | [quality/signed-candidate-run-33381050098.md](quality/signed-candidate-run-33381050098.md) and [receipt](quality/receipts/signed-candidate-33381050098.json) | Protected run, exact artifact/package/tree hashes, Apple profile bindings, independent verification, durable private retention, and no-upload/no-physical boundary |
 | Durable hosted draft materialization | [quality/release-materialization-2026-08-31-run-33392732428.md](quality/release-materialization-2026-08-31-run-33392732428.md) | Exact draft release/asset locator, API sizes and hashes, archive/receipt binding checks, mutable-draft boundary, and mandatory recheck before every later use |
@@ -101,7 +92,7 @@ or historical device result does not close those independent gates.
 | Android exact-product API 24 QA | [quality/android-api24-current-product-smoke-2026-08-29.md](quality/android-api24-current-product-smoke-2026-08-29.md) | Exact `9c2dce4` no-snapshot API 24 live, activation-tip, cold-start, cached-offline, recovery, byte-identity, and explicit unsigned/emulator boundary |
 | Android exact-product physical QA | [quality/android-current-product-physical-smoke-2026-08-29.md](quality/android-current-product-physical-smoke-2026-08-29.md) | Exact `9c2dce4` debug-certificate API 25 onboarding/live/late-day Best Time/tip/offline/recovery/process-health pass; explicitly not upload-signed, tablet/widget, or Wear evidence |
 | Android current-authority physical QA | [quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md](quality/android-current-product-physical-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` debug-certificate physical API 25 denied-location/search/live/cache/recovery/widget/process-health pass; explicitly not upload-signed, physical-tablet, or Wear evidence |
-| Exact-current Apple/Wear simulator/emulator QA | [quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md](quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` iPhone live-provider EN/RU/UZ plus 40-loop evidence, watchOS retained preview-like stale fixture plus 30-loop evidence, and Wear OS cached stale Data Layer plus 10-loop evidence; explicitly unsigned/debug, unpaired, and non-physical |
+| Historical Apple/Wear simulator/emulator QA | [quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md](quality/apple-wear-current-product-simulator-smoke-2026-08-30-2cdd438.md) | Exact `2cdd438` iPhone live-provider EN/RU/UZ plus 40-loop evidence, watchOS retained preview-like stale fixture plus 30-loop evidence, and Wear OS cached stale Data Layer plus 10-loop evidence; explicitly unsigned/debug, unpaired, and non-physical |
 | Android exact-product tablet/widget QA | [quality/android-current-product-tablet-widget-smoke-2026-08-29.md](quality/android-current-product-tablet-widget-smoke-2026-08-29.md) | Byte-identical exact `9c2dce4` debug APK on an API 36 tablet emulator: Uzbek layout, live forecast, Best Time, durable tip, widget render/tap, large text, rotation, process health, and explicit non-physical/non-upload boundary |
 | Historical signed Android physical QA | [quality/android-physical-smoke-2026-08-28.md](quality/android-physical-smoke-2026-08-28.md) | Historical phone vc7 clean API 25 live/search/cold-start evidence and uninstall boundary |
 | Trust and feedback QA | [quality/android-trust-feedback-smoke-2026-08-29.md](quality/android-trust-feedback-smoke-2026-08-29.md) | Exact-commit API 25 fresh-install plus API 36 preserved-data update, support/rate destinations, byte identity, and cleanup boundary |
