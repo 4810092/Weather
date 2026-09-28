@@ -1,6 +1,6 @@
 # Release process
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing, independent byte verification, and store delivery passed. All three candidates have been submitted for review; runtime QA and public release remain pending. Build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
 
 The current source retains the iPad Share fix, the background-refresh
 actor-isolation correction, and autonomous WidgetKit refresh. All three local
@@ -12,11 +12,35 @@ Store delivery, runtime QA, review, rollout, and public availability are separat
 
 The latest observed public versions remain Android phone/tablet `1.0.2 (6)`
 and iOS/iPadOS `1.0.1`; the last recorded Wear version is `1.0.2 (1000007)`.
-On September 28, App Store Connect showed Apple build 10 as Pending Developer
-Release and TestFlight build 11 as the newest uploaded binary. Play still held
-a production draft with older phone version code 11. Those candidates must be
-replaced with the latest verified build-12 set. Store consoles are authoritative
-for live state. Dated sections below describe historical checkpoints only.
+On September 28, the older Apple build 10 and Play production candidates were
+replaced with the verified build-12 set. Store consoles are authoritative for
+live state. Dated sections below describe historical checkpoints only.
+
+At 08:29 Asia/Tashkent, Transporter delivered the exact build-12 IPA.
+TestFlight processed build `08eb6588-59eb-4838-8f7d-881fbc1a265a` and attached
+the existing internal testers group. At 08:34, App Store Connect confirmed
+submission `03e8ed61-7c59-4c10-ba7e-12758c122261` as **Waiting for Review**,
+containing only `1.1.0 (12)`. Manual release and seven-day phased release remain
+configured. Build 10 was cancelled and detached; it must not be released.
+
+Google Play made phone `12` and Wear `1000012` available on their separate
+Internal tracks at 08:33 and 08:35 respectively. Both production candidates
+were submitted together at approximately 08:40; the publishing overview showed
+exactly these two changes under review with prechecks still running. **Managed
+Publishing is enabled**, so review approval does not publish them automatically.
+The full-rollout configuration is saved, but no production rollout was started.
+
+The Play-generated universal APKs independently pass signature verification
+with app-signing certificate SHA-256
+`99b8761f7efb2f0290e4a198e9465436c73bcad0dd619114126ff567ff80bf63`.
+Both have package `uz.ganikhodjaev.weather` and version name `1.1.0`:
+phone `12` has SHA-256
+`d3f063121815da547f166126ff3125830fb35356be0c320de13c28dd67a063b8`;
+Wear `1000012` has SHA-256
+`680f0a2ce7d21e569c2986b3a35dc5f094468a92b514a556b1f388171ed2f11e`.
+These checks prove delivered package identity, not runtime health or public
+availability. Natural iPhone widget completion and a fresh crash window remain
+required before public release.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
