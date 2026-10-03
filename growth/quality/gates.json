@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "as_of": "2026-09-28",
+  "as_of": "2026-10-03",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Build 9 remains runtime-failed and must stay detached. The actor-isolation and autonomous WidgetKit fixes are retained in candidate build 12. Natural widget/background completion and a fresh build-12 crash window remain pending; historical TestFlight observations do not prove the new release."
+      "reason": "Build9 remains runtime-failed and detached. Liquid Glass candidate13 retains the actor-isolation and WidgetKit fixes. Natural widget/background completion and a fresh build13 crash window remain pending; historical TestFlight observations cannot satisfy this gate."
     },
     "open_meteo_promotion_clearance": {
       "status": "pass",
@@ -15,18 +15,18 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada requires current phone 1.1.0 (12) and Wear OS 1.1.0 (1000012) runtime evidence. Historical vc11/vc1000011 delivery cannot validate these bytes. Post-delivery UZ Vitals and production availability remain separate."
+      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires current phone13/Wear1000013 runtime evidence. Instrumented UI checks of shared code do not prove signed distribution bytes; prior build12 store evidence is historical."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Apple 1.1.0 (12) from 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada retains the autonomous WidgetKit refresh fix and requires current runtime validation, including a natural iPhone widget refresh and fresh crash window. Installed build 11 is a historical diagnostic reference, not build-12 evidence."
+      "reason": "Apple1.1.0(13) from 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
     },
     "release_artifact_source_sync": {
-      "status": "pass",
+      "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "0faf1105cc5da072e4e9ee043c46e2e9de4f4ada",
-      "reason": "Source 0faf1105cc5da072e4e9ee043c46e2e9de4f4ada is bound to the atomic 3/3 artifact set: phone 1.1.0 (12), Wear OS 1.1.0 (1000012), and Apple 1.1.0 (12). Protected signing 36361077488, durable materialization 36363383305, and independent trusted verification 36363527493 passed. Current signed hashes are verified-current; historical build-11 evidence is not transferred. This pass establishes signed-byte identity only. Current runtime QA, delivery, review, rollout, and public availability remain separate."
+      "source_revision": "2ea72821fd16d508b85702b911cb452be2a3b2c3",
+      "reason": "Liquid Glass source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Build12 hashes remain historical and cannot validate this source. User authorized Internal/TestFlight delivery after tests, not production publication."
     },
     "domain_activation": {
       "status": "pass",
@@ -40,5 +40,5 @@
     }
   },
   "scale_status": "hold",
-  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. The owner requested publication of the latest fixes on September 28; coordinated build 12 passed local CI, protected signing, durable materialization, and independent byte verification. Current runtime QA, TestFlight/Internal delivery, review, rollout, public availability, and post-delivery metrics remain separate. Open-Meteo clearance remains limited to the recorded unpaid scope."
+  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. Liquid Glass candidate13 is prepared for user-requested Internal/TestFlight testing only. Signing, signed-runtime evidence, delivery, review, production rollout and public availability remain separate. Existing build12 store submissions are not modified by this local source transition."
 }
