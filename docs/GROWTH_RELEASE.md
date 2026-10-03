@@ -1,18 +1,20 @@
 # Nimbo Uzbekistan growth implementation
 
-Current candidate (September 28): phone `1.1.0 (12)`, Wear `1.1.0 (1000012)`, and Apple `1.1.0 (12)` from `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada`. Protected signing and independent byte verification passed; runtime QA and store delivery remain pending; build-11 and earlier records below are historical. See [source transition](../growth/quality/release-artifact-source-sync-2026-09-28-0faf110.md).
+Current development/test candidate (October 3): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `2ea72821fd16d508b85702b911cb452be2a3b2c3`. Liquid Glass local validation is in progress; signing and Internal/TestFlight delivery are pending. Production publication is not part of this request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+
+The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
 Release status date: September 28, 2026
 Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:0faf1105cc5da072e4e9ee043c46e2e9de4f4ada -->
-<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=5e383aecf56df66492885408eeae2439dc10fa8ab217ad766f5019396dd09e1d -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=a606f0ac340fc9f205f2b8228a21a8e6f09bb3d16bf377cdc517f5b1e3626747 -->
+<!-- source_revision:2ea72821fd16d508b85702b911cb452be2a3b2c3 -->
+<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=7b190278ca64a06de502034e75129ec79c147cc46f9db0e5ba026e3293229788 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=369b9c29da8c8d5ebea155c9bfe4c763af86dc03f20040ae0c941a90841cad19 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
