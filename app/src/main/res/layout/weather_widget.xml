@@ -46,8 +46,7 @@
         android:id="@+id/widget_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="3"
         android:textColor="@color/widget_tertiary"
-        android:textSize="11sp" />
+        android:textSize="12sp" />
 </LinearLayout>

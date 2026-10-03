@@ -5,7 +5,8 @@ CREATE TABLE location (
   latitude REAL NOT NULL,
   longitude REAL NOT NULL,
   timezone TEXT NOT NULL,
-  is_active INTEGER NOT NULL DEFAULT 0
+  is_active INTEGER NOT NULL DEFAULT 0,
+  region TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE weather_hour (
@@ -50,11 +51,11 @@ CREATE TABLE daily_forecast (
   temperature_min_c REAL NOT NULL,
   apparent_temperature_max_c REAL NOT NULL,
   apparent_temperature_min_c REAL NOT NULL,
-  precipitation_probability_max INTEGER NOT NULL,
-  precipitation_mm REAL NOT NULL,
+  precipitation_probability_max INTEGER,
+  precipitation_mm REAL,
   wind_max_kph REAL NOT NULL,
-  gust_max_kph REAL NOT NULL,
-  uv_index_max REAL NOT NULL,
+  gust_max_kph REAL,
+  uv_index_max REAL,
   sunrise_epoch_seconds INTEGER NOT NULL,
   sunset_epoch_seconds INTEGER NOT NULL,
   fetched_at_epoch_seconds INTEGER NOT NULL,
@@ -78,12 +79,12 @@ CREATE TABLE air_quality_hour (
 
 insertOrReplaceLocation:
 INSERT OR REPLACE INTO location(
-  id, name, country, latitude, longitude, timezone, is_active
-) VALUES (?, ?, ?, ?, ?, ?, ?);
+  id, name, country, latitude, longitude, timezone, is_active, region
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 updateLocation:
 UPDATE location SET
-  name = ?, country = ?, latitude = ?, longitude = ?, timezone = ?, is_active = ?
+  name = ?, country = ?, latitude = ?, longitude = ?, timezone = ?, is_active = ?, region = ?
 WHERE id = ?;
 
 deactivateLocations:
@@ -123,7 +124,7 @@ updateLocationTimezone:
 UPDATE location SET timezone = ? WHERE id = ?;
 
 updateLocationDetails:
-UPDATE location SET name = ?, country = ? WHERE id = ?;
+UPDATE location SET name = ?, country = ?, region = ? WHERE id = ?;
 
 insertOrReplaceWeatherHour:
 INSERT OR REPLACE INTO weather_hour(

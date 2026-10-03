@@ -6,4 +6,6 @@
     <string name="widget_rain">Yog‘in %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">Saqlangan ob-havo · yangilash kerak</string>
+    <string name="last_updated">Yangilandi: %1$s</string>
+    <string name="saved_weather_short">Saqlangan</string>
 </resources>

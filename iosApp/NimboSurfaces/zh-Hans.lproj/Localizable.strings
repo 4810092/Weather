@@ -7,3 +7,5 @@
 "Low" = "最低";
 "Saved" = "已保存";
 "Saved weather · update needed" = "已保存天气 · 需要更新";
+
+"Updated %@" = "更新时间：%@";

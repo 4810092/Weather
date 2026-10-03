@@ -31,10 +31,10 @@ class OpenMeteoServiceTest {
         assertEquals(0.0, hourlyRows.last().gustKph)
         assertEquals(0.0, hourlyRows.last().uvIndex)
         assertEquals(1, dailyRows.size)
-        assertEquals(0, dailyRows.single().precipitationProbabilityMax)
-        assertEquals(0.0, dailyRows.single().precipitationMm)
-        assertEquals(0.0, dailyRows.single().gustMaxKph)
-        assertEquals(0.0, dailyRows.single().uvIndexMax)
+        assertEquals(null, dailyRows.single().precipitationProbabilityMax)
+        assertEquals(null, dailyRows.single().precipitationMm)
+        assertEquals(null, dailyRows.single().gustMaxKph)
+        assertEquals(null, dailyRows.single().uvIndexMax)
     }
 
     @Test
@@ -74,6 +74,7 @@ class OpenMeteoServiceTest {
         assertEquals(listOf(SearchRequest("Москва", "ru")), requests)
         assertEquals("Москва", results.single().name)
         assertEquals("Россия", results.single().country)
+        assertEquals("Moscow", results.single().region)
     }
 
     @Test
@@ -159,6 +160,7 @@ class OpenMeteoServiceTest {
               "longitude": 37.61781,
               "timezone": "Europe/Moscow",
               "country_code": "RU",
+              "admin1": "Moscow",
               "country": "$country"
             }
           ]

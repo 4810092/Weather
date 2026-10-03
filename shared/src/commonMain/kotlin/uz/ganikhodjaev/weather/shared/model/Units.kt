@@ -29,6 +29,11 @@ internal data class DisplayUnits(val system: UnitSystem) {
         UnitSystem.Imperial -> millimetres / 25.4
     }
 
+    val precipitationSymbol: String get() = when (system) {
+        UnitSystem.Metric -> "mm"
+        UnitSystem.Imperial -> "in"
+    }
+
     val temperatureSymbol: String get() = when (system) {
         UnitSystem.Metric -> "°C"
         UnitSystem.Imperial -> "°F"

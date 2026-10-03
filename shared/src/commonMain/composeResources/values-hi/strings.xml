@@ -123,4 +123,25 @@
   <string name="refresh_failed_saved">अपडेट नहीं हो सका। सहेजा गया मौसम दिखाया जा रहा है।</string>
   <string name="weather_unavailable">मौसम उपलब्ध नहीं है। कनेक्शन जाँचें और फिर कोशिश करें।</string>
   <string name="app_start_unavailable">Nimbo सहेजा गया मौसम डेटा नहीं खोल सका। फिर से कोशिश करें।</string>
+    <string name="settings">सेटिंग</string>
+    <string name="back">वापस</string>
+    <string name="close_details">विवरण बंद करें</string>
+    <string name="clear_search">खोज साफ़ करें</string>
+    <string name="searching">खोज जारी…</string>
+    <string name="active_place">चुना हुआ शहर</string>
+    <string name="last_updated">अपडेट: %1$s</string>
+    <string name="forecast_current">पूर्वानुमान अद्यतन है</string>
+    <string name="return_current_hour">वर्तमान घंटा</string>
+    <string name="average_label">औसत</string>
+    <string name="aqi_scale_description">US AQI: 0–50 अच्छा, 51–100 मध्यम, 100 से ऊपर स्वास्थ्य पर बढ़ता खतरा। अधिक अंक का अर्थ अधिक प्रदूषण है।</string>
+    <string name="aqi_time">डेटा का समय: %1$s</string>
+    <string name="aqi_unavailable">वायु गुणवत्ता उपलब्ध नहीं</string>
+    <string name="aqi_stale">सहेजी गई वायु गुणवत्ता · अपडेट ज़रूरी</string>
+    <string name="detail_precipitation">वर्षा</string>
+    <string name="detail_gust">तेज़ झोंके</string>
+    <string name="detail_uv">UV सूचकांक</string>
+    <string name="detail_sunrise">सूर्योदय</string>
+    <string name="detail_sunset">सूर्यास्त</string>
+    <string name="selected_units_description">%1$s और %2$s का उपयोग।</string>
+    <string name="detail_humidity">नमी</string>
 </resources>

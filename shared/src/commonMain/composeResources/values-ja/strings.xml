@@ -122,4 +122,25 @@
   <string name="refresh_failed_saved">更新できませんでした。保存済みの天気を表示しています。</string>
   <string name="weather_unavailable">天気を取得できません。接続を確認して再試行してください。</string>
   <string name="app_start_unavailable">保存済みの天気データを開けませんでした。もう一度お試しください。</string>
+    <string name="settings">設定</string>
+    <string name="back">戻る</string>
+    <string name="close_details">詳細を閉じる</string>
+    <string name="clear_search">検索をクリア</string>
+    <string name="searching">検索中…</string>
+    <string name="active_place">選択中の都市</string>
+    <string name="last_updated">更新：%1$s</string>
+    <string name="forecast_current">最新の予報</string>
+    <string name="return_current_hour">現在の時間</string>
+    <string name="average_label">平均</string>
+    <string name="aqi_scale_description">US AQI：0〜50は良好、51〜100は普通、100を超えると健康への影響が増します。数値が高いほど大気汚染が深刻です。</string>
+    <string name="aqi_time">対象時刻：%1$s</string>
+    <string name="aqi_unavailable">大気質データなし</string>
+    <string name="aqi_stale">保存された大気質・更新が必要</string>
+    <string name="detail_precipitation">降水量</string>
+    <string name="detail_gust">突風</string>
+    <string name="detail_uv">UV指数</string>
+    <string name="detail_sunrise">日の出</string>
+    <string name="detail_sunset">日の入り</string>
+    <string name="selected_units_description">%1$s と %2$s を使用。</string>
+    <string name="detail_humidity">湿度</string>
 </resources>

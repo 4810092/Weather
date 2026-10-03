@@ -124,4 +124,25 @@
   <string name="refresh_failed_saved">Não foi possível atualizar. A mostrar o tempo guardado.</string>
   <string name="weather_unavailable">O tempo está indisponível. Verifique a ligação e tente novamente.</string>
   <string name="app_start_unavailable">O Nimbo não conseguiu abrir os dados meteorológicos guardados. Tente novamente.</string>
+    <string name="settings">Definições</string>
+    <string name="back">Voltar</string>
+    <string name="close_details">Fechar detalhes</string>
+    <string name="clear_search">Limpar pesquisa</string>
+    <string name="searching">A pesquisar…</string>
+    <string name="active_place">Cidade selecionada</string>
+    <string name="last_updated">Atualizado: %1$s</string>
+    <string name="forecast_current">Previsão atualizada</string>
+    <string name="return_current_hour">Hora atual</string>
+    <string name="average_label">Média</string>
+    <string name="aqi_scale_description">US AQI: 0–50 bom, 51–100 moderado, acima de 100 cada vez mais prejudicial. Valores maiores indicam mais poluição.</string>
+    <string name="aqi_time">Dados para %1$s</string>
+    <string name="aqi_unavailable">Qualidade do ar indisponível</string>
+    <string name="aqi_stale">Qualidade do ar guardada · atualizar</string>
+    <string name="detail_precipitation">Precipitação</string>
+    <string name="detail_gust">Rajadas</string>
+    <string name="detail_uv">Índice UV</string>
+    <string name="detail_sunrise">Nascer do sol</string>
+    <string name="detail_sunset">Pôr do sol</string>
+    <string name="selected_units_description">A usar %1$s e %2$s.</string>
+    <string name="detail_humidity">Humidade</string>
 </resources>

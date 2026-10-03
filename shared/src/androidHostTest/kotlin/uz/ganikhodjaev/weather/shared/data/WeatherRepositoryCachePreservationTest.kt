@@ -10,6 +10,10 @@ import io.ktor.http.headersOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.time.Clock
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import uz.ganikhodjaev.weather.db.NimboDatabase
 import uz.ganikhodjaev.weather.shared.model.Location
@@ -23,6 +27,58 @@ class WeatherRepositoryCachePreservationTest {
     @Test
     fun emptyRequiredProviderArrayPreservesCachedWeather() {
         assertFailedRefreshPreservesCache(FORECAST_WITH_EMPTY_TIME)
+    }
+
+    @Test
+    fun historyAndFailurePreserveTimestampAndRegion() = runBlocking {
+        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        NimboDatabase.Schema.create(driver)
+        val db = NimboDatabase(driver)
+        val now = Clock.System.now().epochSeconds
+        var broken = false
+        val client = HttpClient(
+            MockEngine {
+                respond(
+                    if (broken) {
+                        FORECAST_WITH_EMPTY_TIME
+                    } else {
+                        forecastResponse(
+                            "[${now - 7200},$now]"
+                        )
+                    },
+                    headers = headersOf(
+                        HttpHeaders.ContentType,
+                        ContentType.Application.Json.toString()
+                    )
+                )
+            }
+        )
+        val repository = WeatherRepository(db, OpenMeteoService(client), flowOf(now))
+        try {
+            val place = LOCATION.copy(region = "Tashkent Region")
+            repository.setActiveLocation(place)
+            assertEquals(place, repository.activeLocation())
+            assertEquals(place, repository.savedLocations().single())
+            val successful = repository.refreshPrimary(place)
+            // The fixture contains one complete historical row; preserve the exact
+            // successful timestamp separately from every enrichment request.
+            repository.refreshHistory(place)
+            val afterHistory = repository.observe(place).filterNotNull().first()
+            assertEquals(successful, afterHistory.fetchedAtEpochSeconds)
+            broken = true
+            assertFails { repository.refreshPrimary(place) }
+            assertEquals(
+                successful,
+                repository.observe(place).filterNotNull().first().fetchedAtEpochSeconds
+            )
+            assertEquals(
+                successful.toString(),
+                db.weatherQueries.selectSetting("primary_updated:${place.id}").executeAsOne()
+            )
+        } finally {
+            client.close()
+            driver.close()
+        }
     }
 
     private fun assertFailedRefreshPreservesCache(response: String) = runBlocking {

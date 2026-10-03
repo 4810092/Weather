@@ -1,0 +1,27 @@
+-- Legacy optional zeros cannot be distinguished from provider omissions.
+-- Preserve forecasts; show unavailable until the next successful refresh.
+ALTER TABLE location ADD COLUMN region TEXT NOT NULL DEFAULT '';
+
+ALTER TABLE daily_forecast RENAME TO daily_forecast_legacy;
+CREATE TABLE daily_forecast (
+  location_id TEXT NOT NULL,
+  epoch_seconds INTEGER NOT NULL,
+  weather_code INTEGER NOT NULL,
+  temperature_max_c REAL NOT NULL,
+  temperature_min_c REAL NOT NULL,
+  apparent_temperature_max_c REAL NOT NULL,
+  apparent_temperature_min_c REAL NOT NULL,
+  precipitation_probability_max INTEGER,
+  precipitation_mm REAL,
+  wind_max_kph REAL NOT NULL,
+  gust_max_kph REAL,
+  uv_index_max REAL,
+  sunrise_epoch_seconds INTEGER NOT NULL,
+  sunset_epoch_seconds INTEGER NOT NULL,
+  fetched_at_epoch_seconds INTEGER NOT NULL,
+  PRIMARY KEY (location_id, epoch_seconds),
+  FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
+);
+
+INSERT INTO daily_forecast SELECT location_id, epoch_seconds, weather_code, temperature_max_c, temperature_min_c, apparent_temperature_max_c, apparent_temperature_min_c, NULLIF(precipitation_probability_max, 0), NULLIF(precipitation_mm, 0), wind_max_kph, NULLIF(gust_max_kph, 0), NULLIF(uv_index_max, 0), sunrise_epoch_seconds, sunset_epoch_seconds, fetched_at_epoch_seconds FROM daily_forecast_legacy;
+DROP TABLE daily_forecast_legacy;

@@ -6,4 +6,6 @@
     <string name="widget_rain">बारिश %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">सहेजा गया मौसम · अपडेट ज़रूरी</string>
+    <string name="last_updated">अपडेट: %1$s</string>
+    <string name="saved_weather_short">सहेजा गया</string>
 </resources>

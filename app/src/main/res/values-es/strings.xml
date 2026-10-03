@@ -6,4 +6,6 @@
     <string name="widget_rain">Lluvia %1$d%%</string>
     <string name="widget_aqi">ICA %1$d</string>
     <string name="saved_weather">Tiempo guardado · actualización necesaria</string>
+    <string name="last_updated">Actualizado: %1$s</string>
+    <string name="saved_weather_short">Guardado</string>
 </resources>

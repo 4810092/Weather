@@ -6,6 +6,9 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.LocaleList
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,25 +16,39 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.test.v2.runAndroidComposeUiTest
 import androidx.compose.ui.text.intl.Locale as ComposeLocale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
 import java.util.Locale as JavaLocale
@@ -39,6 +56,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import uz.ganikhodjaev.weather.shared.layoutDirectionForLanguage
+import uz.ganikhodjaev.weather.shared.model.DailyForecast
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
 import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.ThemePreference
@@ -98,9 +116,11 @@ class WeatherScreenAndroidUiTest {
                     null
                 }
             )
+            onNodeWithContentDescription("Settings").performClick()
             onNodeWithText("Dark", useUnmergedTree = true).performScrollTo().performClick()
             onNodeWithText("Dark").assertIsSelected()
             runOnIdle { assertEquals(ThemePreference.Dark, theme) }
+            onNodeWithText("Back").performScrollTo().performClick()
             onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
             onNodeWithContentDescription("Refresh").assertHasClickAction()
             waitForIdle()
@@ -132,7 +152,9 @@ class WeatherScreenAndroidUiTest {
                 }
                 onNodeWithContentDescription("Refreshing…").performClick()
                 runOnIdle { assertEquals(0, refreshes) }
+                onNodeWithContentDescription("Settings").performClick()
                 onNodeWithText("Dark").performScrollTo().assertIsDisplayed().assertIsSelected()
+                onNodeWithText("Back").performScrollTo().performClick()
                 onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
             }
         }
@@ -183,7 +205,7 @@ class WeatherScreenAndroidUiTest {
                 runOnIdle { assertEquals(1, locationRequests) }
 
                 onNode(hasSetTextAction()).performScrollTo().performClick().performTextInput("Bu")
-                onNodeWithContentDescription("Bukhara, Uzbekistan")
+                onNode(hasText("Bukhara") and hasText("Uzbekistan") and hasClickAction())
                     .performScrollTo()
                     .assertIsDisplayed()
                     .assertHasClickAction()
@@ -336,6 +358,215 @@ class WeatherScreenAndroidUiTest {
                 .assertIsDisplayed()
         }
     }
+
+    @Test
+    fun settingsAndOfflineLicensesSupportVisibleAndAndroidBackNavigation() =
+        withTestLocale("en-US") {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
+                setContent { TestWeatherScreen(state = contentState()) }
+                onNodeWithContentDescription("Settings").performClick()
+                onNodeWithText("Open-source licenses").performScrollTo().performClick()
+                waitUntil(timeoutMillis = 5_000) {
+                    onAllNodes(hasText("Runtime library licenses", substring = true))
+                        .fetchSemanticsNodes().isNotEmpty()
+                }
+                onNodeWithText("Runtime library licenses", substring = true).assertIsDisplayed()
+                onNodeWithText("Back").performClick()
+                onNodeWithText("Settings").assertIsDisplayed()
+                onNodeWithText("Open-source licenses").performScrollTo().performClick()
+                runOnUiThread { activity?.onBackPressedDispatcher?.onBackPressed() }
+                onNodeWithText("Settings").assertIsDisplayed()
+                runOnUiThread { activity?.onBackPressedDispatcher?.onBackPressed() }
+                onNodeWithText("Tashkent").assertIsDisplayed()
+            }
+        }
+
+    @Test
+    fun errorRecoveryControlsAreReachableWithLargeText() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            var state: WeatherUiState by mutableStateOf(
+                WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
+            )
+            var changes = 0
+            var retries = 0
+            setContent {
+                Box(Modifier.height(240.dp).fillMaxWidth()) {
+                    TestWeatherScreen(
+                        state = state,
+                        fontScale = 2f,
+                        onRetry = {
+                            retries++
+                            state = contentState()
+                        },
+                        onChangeLocation = { changes++ }
+                    )
+                }
+            }
+            onNodeWithText("Change place").performScrollTo().assertIsDisplayed().performClick()
+            runOnIdle { assertEquals(1, changes) }
+            onNodeWithText("Try again").performScrollTo().assertIsDisplayed().performClick()
+            runOnIdle { assertEquals(1, retries) }
+            onNodeWithText("Tashkent").assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun searchHidesStaleRowsDuringProgressAndFailureAndClearRemainsOperable() =
+        withTestLocale("en-US") {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
+                var state by mutableStateOf(
+                    WeatherUiState.ChooseLocation(
+                        query = "Bu",
+                        results = listOf(BUKHARA),
+                        isSearching = true
+                    )
+                )
+                var cancellations = 0
+                setContent {
+                    TestWeatherScreen(
+                        state = state,
+                        onSearchQueryChanged = {
+                            state =
+                                state.copy(query = it, results = emptyList(), message = null)
+                        },
+                        onCancelLocationChange = { cancellations++ }
+                    )
+                }
+                onNodeWithText("Searching…").performScrollTo().assertIsDisplayed()
+                onNodeWithText("Bukhara").assertDoesNotExist()
+                runOnIdle {
+                    state =
+                        state.copy(isSearching = false, message = UiMessage.CitySearchUnavailable)
+                }
+                onNodeWithText("City search is unavailable. Check your connection and try again.")
+                    .performScrollTo().assertIsDisplayed()
+                onNodeWithText("Bukhara").assertDoesNotExist()
+                onNodeWithContentDescription("Clear search").performScrollTo().performClick()
+                runOnIdle {
+                    assertEquals("", state.query)
+                    assertTrue(state.results.isEmpty())
+                    state = state.copy(canCancel = true)
+                }
+                onNodeWithContentDescription("Clear search").assertDoesNotExist()
+                runOnUiThread { activity?.onBackPressedDispatcher?.onBackPressed() }
+                runOnIdle { assertEquals(1, cancellations) }
+            }
+        }
+
+    @Test
+    fun oldDailyFixtureUsesActualDateAndDetailsDoNotInventMissingValues() =
+        withTestLocale("en-US") {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
+                val base = contentState()
+                setContent {
+                    TestWeatherScreen(
+                        state = base.copy(
+                            weather = base.weather.copy(dailyForecast = listOf(testDay()))
+                        )
+                    )
+                }
+                val date = formatLocalDay(TEST_EPOCH_SECONDS, TASHKENT.timezone)
+                val card = hasText(date) and hasClickAction()
+                scrollForecastCardIntoView(card).performClick()
+                onNode(card).assertIsSelected()
+                onNodeWithText("Today").assertDoesNotExist()
+                onNodeWithText("Tomorrow").assertDoesNotExist()
+                onNodeWithText("Precipitation").assertDoesNotExist()
+                onNodeWithText("Gusts").assertDoesNotExist()
+                onNodeWithText("UV index").assertDoesNotExist()
+                onNodeWithText("Close details").performScrollTo().assertIsDisplayed()
+                waitForIdle()
+                saveGlassScreenshot(
+                    "daily-details",
+                    if (Build.VERSION.SDK_INT >=
+                        26
+                    ) {
+                        onRoot().captureToImage().asAndroidBitmap()
+                    } else {
+                        null
+                    }
+                )
+                onNodeWithText("Close details").performClick()
+                onNodeWithText("Close details").assertDoesNotExist()
+                scrollForecastCardIntoView(card).performClick()
+                runOnUiThread { activity?.onBackPressedDispatcher?.onBackPressed() }
+                onNodeWithText("Close details").assertDoesNotExist()
+            }
+        }
+
+    @Test
+    fun selectedHourSurvivesRefreshAndSettingsRoundTrip() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            val base = contentState()
+            val hours = (0 until 24).map { index ->
+                base.weather.current.copy(
+                    epochSeconds = TEST_EPOCH_SECONDS + index * 3_600,
+                    temperatureC = when (index) {
+                        1 -> 47.0
+                        20 -> 70.0
+                        else -> 20.0 + index
+                    }
+                )
+            }
+            var state by mutableStateOf(base.copy(weather = base.weather.copy(timeline = hours)))
+            setContent { TestWeatherScreen(state = state) }
+            val selectedCard = hasContentDescription("47", substring = true) and hasClickAction()
+            scrollForecastCardIntoView(selectedCard).performClick().assertIsSelected()
+            runOnIdle {
+                state = state.copy(
+                    weather = state.weather.copy(fetchedAtEpochSeconds = TEST_EPOCH_SECONDS + 100)
+                )
+            }
+            onNode(selectedCard).assertIsSelected()
+            // Browse without selecting: this scroll position is independent of the selected hour.
+            onNode(
+                hasScrollToIndexAction() and hasAnyDescendant(selectedCard)
+            ).performScrollToIndex(20)
+            waitForIdle()
+            val browsedCard = hasContentDescription("70", substring = true) and hasClickAction()
+            onNode(browsedCard).assertIsDisplayed()
+            val browsedX = onNode(browsedCard).fetchSemanticsNode().positionInRoot.x
+            onNodeWithContentDescription("Settings").performScrollTo().performClick()
+            onNodeWithText("Back").performClick()
+            waitForIdle()
+            // Check before any helper can scroll horizontally. Header navigation changes only Y.
+            val restoredX = onNode(browsedCard).fetchSemanticsNode().positionInRoot.x
+            assertTrue(
+                kotlin.math.abs(restoredX - browsedX) <= 1f,
+                "Browsing position must survive settings: before=$browsedX after=$restoredX"
+            )
+            // Scroll back without clicking; the independently selected hour must still be selected.
+            onNode(
+                hasScrollToIndexAction() and hasAnyDescendant(browsedCard)
+            ).performScrollToIndex(1)
+            scrollForecastCardIntoView(selectedCard).assertIsSelected()
+        }
+    }
+
+    @Test
+    fun russianSettingsRemainOperableAtTwoHundredPercentText() = withTestLocale("ru-RU") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            setContent { TestWeatherScreen(state = contentState(), fontScale = 2f) }
+            onNodeWithContentDescription("Настройки").performClick()
+            onNodeWithText("Назад").assertIsDisplayed()
+            waitForIdle()
+            saveGlassScreenshot(
+                "ru-settings-font-200",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+            onNodeWithText(
+                "Лицензии открытого ПО"
+            ).performScrollTo().assertIsDisplayed().assertHasClickAction()
+            onNodeWithText("Назад").performScrollTo().performClick()
+            onNodeWithText("Tashkent").assertIsDisplayed()
+        }
+    }
 }
 
 @Composable
@@ -350,6 +581,7 @@ private fun TestWeatherScreen(
     onLocationDeleted: (Location) -> Unit = {},
     onUseDeviceLocation: () -> Unit = {},
     onChangeLocation: () -> Unit = {},
+    onCancelLocationChange: () -> Unit = {},
     onShareText: (String) -> Unit = {},
     onAddLocationFromFirstForecastTip: () -> Unit = {},
     onDismissFirstForecastTip: () -> Unit = {}
@@ -391,7 +623,7 @@ private fun TestWeatherScreen(
                 onLocationDeleted = onLocationDeleted,
                 onUseDeviceLocation = onUseDeviceLocation,
                 onChangeLocation = onChangeLocation,
-                onCancelLocationChange = {},
+                onCancelLocationChange = onCancelLocationChange,
                 onUnitPreferenceChanged = {},
                 onShareText = onShareText,
                 storeUrl = "https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather",
@@ -404,6 +636,42 @@ private fun TestWeatherScreen(
             )
         }
     }
+}
+
+/** Nested LazyRow scroll semantics do not bring the row into the vertical viewport. */
+@OptIn(ExperimentalTestApi::class)
+private fun ComposeUiTest.scrollForecastCardIntoView(
+    matcher: SemanticsMatcher
+): SemanticsNodeInteraction {
+    val card = onNode(matcher)
+    card.performScrollTo()
+    repeat(8) {
+        waitForIdle()
+        val node = card.fetchSemanticsNode()
+        val top = node.positionInRoot.y
+        val bottom = top + node.size.height
+        val viewport = onRoot().fetchSemanticsNode().boundsInRoot
+        val margin = 32f
+        if (top >= viewport.top + margin && bottom <= viewport.bottom - margin) {
+            return card.assertIsDisplayed()
+        }
+        onRoot().performTouchInput {
+            if (top < viewport.top + margin) {
+                swipeDown(startY = height * 0.3f, endY = height * 0.7f)
+            } else {
+                swipeUp(startY = height * 0.8f, endY = height * 0.4f)
+            }
+        }
+    }
+    val node = card.fetchSemanticsNode()
+    val top = node.positionInRoot.y
+    val bottom = top + node.size.height
+    val viewport = onRoot().fetchSemanticsNode().boundsInRoot
+    assertTrue(
+        top >= viewport.top + 32f && bottom <= viewport.bottom - 32f,
+        "Forecast card must fit in viewport before clicking: top=$top bottom=$bottom viewport=$viewport"
+    )
+    return card.assertIsDisplayed()
 }
 
 private fun saveGlassScreenshot(name: String, captured: Bitmap?) {
@@ -517,3 +785,20 @@ private val BUKHARA = Location(
 )
 
 private const val TEST_EPOCH_SECONDS = 1_725_000_000L
+
+private fun testDay() = DailyForecast(
+    epochSeconds = TEST_EPOCH_SECONDS,
+    weatherCode = 0,
+    temperatureMaxC = 28.0,
+    temperatureMinC = 18.0,
+    apparentTemperatureMaxC = 27.0,
+    apparentTemperatureMinC = 17.0,
+    precipitationProbabilityMax = null,
+    precipitationMm = null,
+    windMaxKph = 12.0,
+    gustMaxKph = null,
+    uvIndexMax = null,
+    sunriseEpochSeconds = TEST_EPOCH_SECONDS - 3_600,
+    sunsetEpochSeconds = TEST_EPOCH_SECONDS + 3_600,
+    fetchedAtEpochSeconds = TEST_EPOCH_SECONDS
+)

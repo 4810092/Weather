@@ -6,4 +6,6 @@
     <string name="widget_rain">هطول %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">طقس محفوظ · يلزم التحديث</string>
+    <string name="last_updated">آخر تحديث: %1$s</string>
+    <string name="saved_weather_short">محفوظ</string>
 </resources>

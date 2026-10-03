@@ -115,7 +115,8 @@ internal class OpenMeteoService(engineClient: HttpClient = createPlatformHttpCli
                 country = result.country ?: result.countryCode,
                 latitude = result.latitude,
                 longitude = result.longitude,
-                timezone = result.timezone
+                timezone = result.timezone,
+                region = result.admin1.orEmpty()
             )
         }
     }

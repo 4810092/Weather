@@ -6,4 +6,6 @@
     <string name="widget_rain">강수 %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">저장된 날씨 · 업데이트 필요</string>
+    <string name="last_updated">업데이트: %1$s</string>
+    <string name="saved_weather_short">저장됨</string>
 </resources>

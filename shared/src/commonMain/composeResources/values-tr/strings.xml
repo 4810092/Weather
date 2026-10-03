@@ -123,4 +123,25 @@
   <string name="refresh_failed_saved">Yenilenemedi. Kayıtlı hava durumu gösteriliyor.</string>
   <string name="weather_unavailable">Hava durumu kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.</string>
   <string name="app_start_unavailable">Nimbo kayıtlı hava durumu verilerini açamadı. Tekrar deneyin.</string>
+    <string name="settings">Ayarlar</string>
+    <string name="back">Geri</string>
+    <string name="close_details">Ayrıntıları kapat</string>
+    <string name="clear_search">Aramayı temizle</string>
+    <string name="searching">Aranıyor…</string>
+    <string name="active_place">Seçili şehir</string>
+    <string name="last_updated">Güncellendi: %1$s</string>
+    <string name="forecast_current">Tahmin güncel</string>
+    <string name="return_current_hour">Geçerli saat</string>
+    <string name="average_label">Ortalama</string>
+    <string name="aqi_scale_description">US AQI: 0–50 iyi, 51–100 orta, 100 üzeri giderek sağlıksız. Daha yüksek değer daha fazla kirlilik demektir.</string>
+    <string name="aqi_time">Veri zamanı: %1$s</string>
+    <string name="aqi_unavailable">Hava kalitesi mevcut değil</string>
+    <string name="aqi_stale">Kayıtlı hava kalitesi · güncelleme gerekli</string>
+    <string name="detail_precipitation">Yağış</string>
+    <string name="detail_gust">Rüzgâr hamlesi</string>
+    <string name="detail_uv">UV indeksi</string>
+    <string name="detail_sunrise">Gün doğumu</string>
+    <string name="detail_sunset">Gün batımı</string>
+    <string name="selected_units_description">%1$s ve %2$s kullanılıyor.</string>
+    <string name="detail_humidity">Nem</string>
 </resources>

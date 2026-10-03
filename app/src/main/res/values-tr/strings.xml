@@ -6,4 +6,6 @@
     <string name="widget_rain">Yağış %1$d%%</string>
     <string name="widget_aqi">HKA %1$d</string>
     <string name="saved_weather">Kayıtlı hava durumu · güncelleme gerekli</string>
+    <string name="last_updated">Güncellendi: %1$s</string>
+    <string name="saved_weather_short">Kayıtlı</string>
 </resources>

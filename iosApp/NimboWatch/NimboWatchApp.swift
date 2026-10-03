@@ -48,34 +48,39 @@ private struct WatchWeatherContent: View {
         _ snapshot: SurfaceWeatherSnapshot,
         isStale: Bool
     ) -> some View {
-        VStack(spacing: isStale ? 2 : 4) {
-            Text(snapshot.location)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-            Text("\(snapshot.temperature)\(snapshot.temperatureUnit)")
-                .font(.system(size: 42, weight: .light, design: .rounded))
-                .monospacedDigit()
-            if snapshot.hasDailyRange {
-                Text("↑\(snapshot.maximum ?? 0)°   ↓\(snapshot.minimum ?? 0)°")
+        ScrollView {
+            VStack(spacing: 4) {
+                Text(snapshot.location)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Text("\(snapshot.temperature)\(snapshot.temperatureUnit)")
+                    .font(.system(size: 42, weight: .light, design: .rounded))
                     .monospacedDigit()
-                    .accessibilityLabel(dailyRangeAccessibilityLabel(snapshot))
-            }
-            Text("\(symbol(snapshot.weatherCode))  ·  \(rainLabel(snapshot))")
-                .font(.caption2)
-            if let airQuality = snapshot.airQuality {
-                Text("AQI \(airQuality)")
+                if snapshot.hasDailyRange {
+                    Text("↑\(snapshot.maximum ?? 0)°   ↓\(snapshot.minimum ?? 0)°")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                        .accessibilityLabel(dailyRangeAccessibilityLabel(snapshot))
+                }
+                Text("\(symbol(snapshot.weatherCode))  ·  \(rainLabel(snapshot))")
+                    .font(.caption2)
+                if let airQuality = snapshot.airQuality {
+                    Text("AQI \(airQuality)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Text(updateLabel(snapshot.updatedAt))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-            }
-            if isStale {
-                Text(String(localized: "Saved weather · update needed"))
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                if isStale {
+                    Text(String(localized: "Saved weather · update needed"))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }
@@ -200,3 +205,10 @@ private struct WatchWeatherContentPreviews: PreviewProvider {
     }
 }
 #endif
+
+private func updateLabel(_ date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .short
+    return String(format: String(localized: "Updated %@"), formatter.string(from: date))
+}

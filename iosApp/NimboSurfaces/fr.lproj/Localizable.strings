@@ -7,3 +7,5 @@
 "Low" = "Minimale";
 "Saved" = "Enregistrée";
 "Saved weather · update needed" = "Météo enregistrée · mise à jour requise";
+
+"Updated %@" = "Mis à jour : %@";

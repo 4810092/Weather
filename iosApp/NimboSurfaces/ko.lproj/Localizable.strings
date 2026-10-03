@@ -7,3 +7,5 @@
 "Low" = "최저";
 "Saved" = "저장됨";
 "Saved weather · update needed" = "저장된 날씨 · 업데이트 필요";
+
+"Updated %@" = "업데이트: %@";

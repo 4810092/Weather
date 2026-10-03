@@ -6,4 +6,6 @@
     <string name="widget_rain">降水 %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">已保存的天气 · 需要更新</string>
+    <string name="last_updated">更新时间：%1$s</string>
+    <string name="saved_weather_short">已保存</string>
 </resources>

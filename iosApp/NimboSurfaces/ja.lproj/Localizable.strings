@@ -7,3 +7,5 @@
 "Low" = "最低";
 "Saved" = "保存済み";
 "Saved weather · update needed" = "保存した天気・更新が必要";
+
+"Updated %@" = "更新：%@";

@@ -7,3 +7,5 @@
 "Low" = "Tiefstwert";
 "Saved" = "Gespeichert";
 "Saved weather · update needed" = "Gespeichertes Wetter · Update nötig";
+
+"Updated %@" = "Aktualisiert: %@";

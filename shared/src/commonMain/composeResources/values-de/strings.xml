@@ -123,4 +123,25 @@
   <string name="refresh_failed_saved">Aktualisierung fehlgeschlagen. Gespeichertes Wetter wird angezeigt.</string>
   <string name="weather_unavailable">Wetter ist nicht verfügbar. Prüfe die Verbindung und versuche es erneut.</string>
   <string name="app_start_unavailable">Nimbo konnte die gespeicherten Wetterdaten nicht öffnen. Versuche es erneut.</string>
+    <string name="settings">Einstellungen</string>
+    <string name="back">Zurück</string>
+    <string name="close_details">Details schließen</string>
+    <string name="clear_search">Suche löschen</string>
+    <string name="searching">Suche läuft…</string>
+    <string name="active_place">Ausgewählte Stadt</string>
+    <string name="last_updated">Aktualisiert: %1$s</string>
+    <string name="forecast_current">Vorhersage aktuell</string>
+    <string name="return_current_hour">Aktuelle Stunde</string>
+    <string name="average_label">Durchschnitt</string>
+    <string name="aqi_scale_description">US AQI: 0–50 gut, 51–100 mäßig, über 100 zunehmend ungesund. Höhere Werte bedeuten mehr Luftverschmutzung.</string>
+    <string name="aqi_time">Gültig für %1$s</string>
+    <string name="aqi_unavailable">Luftqualität nicht verfügbar</string>
+    <string name="aqi_stale">Gespeicherte Luftqualität · Aktualisierung nötig</string>
+    <string name="detail_precipitation">Niederschlag</string>
+    <string name="detail_gust">Böen</string>
+    <string name="detail_uv">UV-Index</string>
+    <string name="detail_sunrise">Sonnenaufgang</string>
+    <string name="detail_sunset">Sonnenuntergang</string>
+    <string name="selected_units_description">Verwendet %1$s und %2$s.</string>
+    <string name="detail_humidity">Luftfeuchtigkeit</string>
 </resources>

@@ -7,3 +7,5 @@
 "Low" = "Mínima";
 "Saved" = "Guardado";
 "Saved weather · update needed" = "Tiempo guardado · actualización necesaria";
+
+"Updated %@" = "Actualizado: %@";

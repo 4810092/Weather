@@ -73,9 +73,9 @@ class WeatherRepositoryObservationWindowTest {
             }
             try {
                 val initial = withTimeout(OBSERVATION_TIMEOUT_MILLIS) { emissions.receive() }
-                assertEquals(START - SECONDS_PER_DAY, initial.dailyForecast.first().epochSeconds)
+                assertEquals(START, initial.dailyForecast.first().epochSeconds)
                 assertEquals(
-                    START + 8L * SECONDS_PER_DAY,
+                    START + 9L * SECONDS_PER_DAY,
                     initial.dailyForecast.last().epochSeconds
                 )
                 assertEquals(
@@ -128,7 +128,8 @@ class WeatherRepositoryObservationWindowTest {
                 latitude = location.latitude,
                 longitude = location.longitude,
                 timezone = location.timezone,
-                is_active = 1
+                is_active = 1,
+                region = ""
             )
         }
 

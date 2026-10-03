@@ -122,4 +122,25 @@
     <string name="refresh_failed_saved">Couldn’t refresh. Showing saved weather.</string>
     <string name="weather_unavailable">Weather is unavailable. Check your connection and try again.</string>
     <string name="app_start_unavailable">Nimbo couldn’t open its saved weather. Try again.</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="close_details">Close details</string>
+    <string name="clear_search">Clear search</string>
+    <string name="searching">Searching…</string>
+    <string name="active_place">Selected city</string>
+    <string name="last_updated">Updated %1$s</string>
+    <string name="forecast_current">Forecast up to date</string>
+    <string name="return_current_hour">Current hour</string>
+    <string name="average_label">Average</string>
+    <string name="aqi_scale_description">US AQI: 0–50 good, 51–100 moderate, above 100 increasingly unhealthy. Higher means more pollution.</string>
+    <string name="aqi_time">Valid at %1$s</string>
+    <string name="aqi_unavailable">Air quality unavailable</string>
+    <string name="aqi_stale">Saved air quality · update needed</string>
+    <string name="detail_precipitation">Precipitation</string>
+    <string name="detail_gust">Gusts</string>
+    <string name="detail_uv">UV index</string>
+    <string name="detail_sunrise">Sunrise</string>
+    <string name="detail_sunset">Sunset</string>
+    <string name="selected_units_description">Using %1$s and %2$s.</string>
+    <string name="detail_humidity">Humidity</string>
 </resources>

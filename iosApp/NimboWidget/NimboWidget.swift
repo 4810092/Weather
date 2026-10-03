@@ -125,26 +125,16 @@ private struct NimboWidgetView: View {
         VStack(spacing: 0) {
             Text(symbol(snapshot.weatherCode))
             Text(temperature(snapshot)).font(.caption.bold())
-            if snapshot.hasDailyRange {
-                Text(
-                    isStale
-                        ? "\(rangeText(snapshot)) · \(String(localized: "Saved"))"
-                        : rangeText(snapshot)
-                )
-                .font(.system(size: isStale ? 6 : 8, weight: .semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-                .accessibilityLabel(
-                    isStale
-                        ? "\(dailyRangeAccessibilityLabel(snapshot)), \(String(localized: "Saved weather · update needed"))"
-                        : dailyRangeAccessibilityLabel(snapshot)
-                )
-            } else if isStale {
+            if isStale {
                 Text(String(localized: "Saved"))
-                    .font(.system(size: 7, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(2)
                     .accessibilityLabel(String(localized: "Saved weather · update needed"))
+            } else if snapshot.hasDailyRange {
+                Text(rangeText(snapshot))
+                    .font(.system(size: 10, weight: .semibold))
+                    .lineLimit(1)
+                    .accessibilityLabel(dailyRangeAccessibilityLabel(snapshot))
             }
         }
     }
@@ -170,7 +160,8 @@ private struct NimboWidgetView: View {
         _ snapshot: SurfaceWeatherSnapshot,
         isStale: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let compact = family == .systemSmall
+        return VStack(alignment: .leading, spacing: compact ? 2 : 4) {
             Text(snapshot.location)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
@@ -178,7 +169,7 @@ private struct NimboWidgetView: View {
             Spacer(minLength: 2)
             HStack(alignment: .firstTextBaseline) {
                 Text(temperature(snapshot))
-                    .font(.system(size: 40, weight: .light, design: .rounded))
+                    .font(.system(size: compact ? 34 : 40, weight: .light, design: .rounded))
                     .monospacedDigit()
                 Spacer()
                 Text(symbol(snapshot.weatherCode)).font(.title)
@@ -189,14 +180,20 @@ private struct NimboWidgetView: View {
                     .monospacedDigit()
                     .accessibilityLabel(dailyRangeAccessibilityLabel(snapshot))
             }
-            HStack(spacing: 6) {
-                Label("\(snapshot.rainChance)%", systemImage: "drop.fill")
-                if let airQuality = snapshot.airQuality {
-                    Text("· AQI \(airQuality)")
+            if !compact {
+                HStack(spacing: 6) {
+                    Label("\(snapshot.rainChance)%", systemImage: "drop.fill")
+                    if let airQuality = snapshot.airQuality {
+                        Text("· AQI \(airQuality)")
+                    }
                 }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            Text(updateLabel(snapshot.updatedAt, compact: compact))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
             if isStale {
                 staleStatus
             }
@@ -205,11 +202,11 @@ private struct NimboWidgetView: View {
     }
 
     private var staleStatus: some View {
-        Text(String(localized: "Saved weather · update needed"))
-            .font(.system(size: 9, weight: .semibold))
+        Text(String(localized: "Saved"))
+            .font(.caption2.weight(.semibold))
             .foregroundStyle(.secondary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.65)
+            .lineLimit(2)
+            .accessibilityLabel(String(localized: "Saved weather · update needed"))
     }
 
     private func rangeText(_ snapshot: SurfaceWeatherSnapshot) -> String {
@@ -378,4 +375,12 @@ struct NimboWidget: Widget {
         }
         return families
     }
+}
+
+private func updateLabel(_ date: Date, compact: Bool = false) -> String {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .short
+    let formatted = formatter.string(from: date)
+    return compact ? formatted : String(format: String(localized: "Updated %@"), formatted)
 }

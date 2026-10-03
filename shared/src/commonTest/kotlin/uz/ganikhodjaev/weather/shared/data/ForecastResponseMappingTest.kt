@@ -41,7 +41,7 @@ class ForecastResponseMappingTest {
     }
 
     @Test
-    fun dailyForecastUsesSafeDefaultsForOptionalProviderValues() {
+    fun dailyForecastKeepsMissingOptionalValuesAbsent() {
         val response = response(times = emptyList(), temperatures = emptyList()).copy(
             daily = DailyResponse(
                 time = listOf(86_400L),
@@ -58,9 +58,9 @@ class ForecastResponseMappingTest {
 
         val day = response.toDailyRows(fetchedAt = 99L).single()
 
-        assertEquals(0, day.precipitationProbabilityMax)
-        assertEquals(0.0, day.precipitationMm)
-        assertEquals(0.0, day.uvIndexMax)
+        assertEquals(null, day.precipitationProbabilityMax)
+        assertEquals(null, day.precipitationMm)
+        assertEquals(null, day.uvIndexMax)
     }
 
     @Test

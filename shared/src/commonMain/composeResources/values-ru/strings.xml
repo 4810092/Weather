@@ -125,4 +125,25 @@
   <string name="refresh_failed_saved">Не удалось обновить. Показана сохранённая погода.</string>
   <string name="weather_unavailable">Погода недоступна. Проверьте подключение и повторите попытку.</string>
   <string name="app_start_unavailable">Nimbo не удалось открыть сохранённые данные о погоде. Попробуйте снова.</string>
+    <string name="settings">Настройки</string>
+    <string name="back">Назад</string>
+    <string name="close_details">Закрыть подробности</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="searching">Поиск…</string>
+    <string name="active_place">Текущий город</string>
+    <string name="last_updated">Обновлено: %1$s</string>
+    <string name="forecast_current">Прогноз актуален</string>
+    <string name="return_current_hour">К текущему часу</string>
+    <string name="average_label">В среднем</string>
+    <string name="aqi_scale_description">US AQI: 0–50 — хорошо, 51–100 — умеренно, выше 100 — всё вреднее для здоровья. Чем выше индекс, тем сильнее загрязнение.</string>
+    <string name="aqi_time">Данные на %1$s</string>
+    <string name="aqi_unavailable">Нет данных о качестве воздуха</string>
+    <string name="aqi_stale">Сохранённые данные о воздухе · нужно обновление</string>
+    <string name="detail_precipitation">Осадки</string>
+    <string name="detail_gust">Порывы</string>
+    <string name="detail_uv">УФ-индекс</string>
+    <string name="detail_sunrise">Восход</string>
+    <string name="detail_sunset">Закат</string>
+    <string name="selected_units_description">Используются %1$s и %2$s.</string>
+    <string name="detail_humidity">Влажность</string>
 </resources>

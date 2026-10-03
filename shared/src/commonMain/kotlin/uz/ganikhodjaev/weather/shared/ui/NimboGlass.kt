@@ -140,7 +140,7 @@ internal fun Modifier.nimboGlass(
             if (isRuntimeShaderSupported()) {
                 lens(
                     refractionHeight = minOf(style.lensDepth.dp.toPx(), size.minDimension / 4f),
-                    refractionAmount = (if (interactive) 18.dp else 10.dp).toPx(),
+                    refractionAmount = (if (interactive || selected) 18.dp else 4.dp).toPx(),
                     depthEffect = true,
                     chromaticAberration = interactive
                 )
@@ -150,12 +150,32 @@ internal fun Modifier.nimboGlass(
             Highlight(
                 width = 1.dp,
                 style = HighlightStyle.Default(
-                    color = style.highlight,
+                    color = if (interactive ||
+                        selected
+                    ) {
+                        style.highlight
+                    } else {
+                        style.highlight.copy(
+                            alpha =
+                            style.highlight.alpha * 0.4f
+                        )
+                    },
                     angle = 40f + pressProgress() * 35f
                 )
             )
         },
-        shadow = { Shadow(radius = 8.dp, color = style.shadow) },
+        shadow = {
+            Shadow(
+                radius = if (interactive ||
+                    selected
+                ) {
+                    8.dp
+                } else {
+                    3.dp
+                },
+                color = style.shadow
+            )
+        },
         onDrawSurface = { drawRect(tint) }
     )
 }

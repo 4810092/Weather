@@ -127,4 +127,25 @@
   <string name="refresh_failed_saved">تعذّر التحديث. يتم عرض الطقس المحفوظ.</string>
   <string name="weather_unavailable">الطقس غير متاح. تحقق من الاتصال وحاول مجددًا.</string>
   <string name="app_start_unavailable">تعذر على Nimbo فتح بيانات الطقس المحفوظة. حاول مرة أخرى.</string>
+    <string name="settings">الإعدادات</string>
+    <string name="back">رجوع</string>
+    <string name="close_details">إغلاق التفاصيل</string>
+    <string name="clear_search">مسح البحث</string>
+    <string name="searching">جارٍ البحث…</string>
+    <string name="active_place">المدينة المحددة</string>
+    <string name="last_updated">آخر تحديث: %1$s</string>
+    <string name="forecast_current">التوقعات محدّثة</string>
+    <string name="return_current_hour">الساعة الحالية</string>
+    <string name="average_label">المتوسط</string>
+    <string name="aqi_scale_description">US AQI: من 0 إلى 50 جيد، ومن 51 إلى 100 متوسط، وفوق 100 تزداد الأضرار الصحية. الرقم الأعلى يعني تلوثًا أكثر.</string>
+    <string name="aqi_time">البيانات للوقت %1$s</string>
+    <string name="aqi_unavailable">جودة الهواء غير متاحة</string>
+    <string name="aqi_stale">جودة هواء محفوظة · يلزم التحديث</string>
+    <string name="detail_precipitation">الهطول</string>
+    <string name="detail_gust">هبّات الرياح</string>
+    <string name="detail_uv">مؤشر الأشعة فوق البنفسجية</string>
+    <string name="detail_sunrise">الشروق</string>
+    <string name="detail_sunset">الغروب</string>
+    <string name="selected_units_description">الوحدات المستخدمة: %1$s و%2$s.</string>
+    <string name="detail_humidity">الرطوبة</string>
 </resources>

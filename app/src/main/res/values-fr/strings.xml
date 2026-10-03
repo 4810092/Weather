@@ -6,4 +6,6 @@
     <string name="widget_rain">Pluie %1$d%%</string>
     <string name="widget_aqi">IQA %1$d</string>
     <string name="saved_weather">Météo enregistrée · mise à jour nécessaire</string>
+    <string name="last_updated">Mis à jour : %1$s</string>
+    <string name="saved_weather_short">Enregistrée</string>
 </resources>

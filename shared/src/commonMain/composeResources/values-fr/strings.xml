@@ -124,4 +124,25 @@
   <string name="refresh_failed_saved">Actualisation impossible. Affichage de la météo enregistrée.</string>
   <string name="weather_unavailable">La météo est indisponible. Vérifiez la connexion et réessayez.</string>
   <string name="app_start_unavailable">Nimbo n’a pas pu ouvrir les données météo enregistrées. Réessayez.</string>
+    <string name="settings">Réglages</string>
+    <string name="back">Retour</string>
+    <string name="close_details">Fermer les détails</string>
+    <string name="clear_search">Effacer la recherche</string>
+    <string name="searching">Recherche…</string>
+    <string name="active_place">Ville sélectionnée</string>
+    <string name="last_updated">Mis à jour : %1$s</string>
+    <string name="forecast_current">Prévisions à jour</string>
+    <string name="return_current_hour">Heure actuelle</string>
+    <string name="average_label">Moyenne</string>
+    <string name="aqi_scale_description">US AQI : 0–50 bon, 51–100 modéré, au-delà de 100 de plus en plus nocif. Plus le nombre est élevé, plus l’air est pollué.</string>
+    <string name="aqi_time">Données pour %1$s</string>
+    <string name="aqi_unavailable">Qualité de l’air indisponible</string>
+    <string name="aqi_stale">Qualité de l’air enregistrée · à actualiser</string>
+    <string name="detail_precipitation">Précipitations</string>
+    <string name="detail_gust">Rafales</string>
+    <string name="detail_uv">Indice UV</string>
+    <string name="detail_sunrise">Lever du soleil</string>
+    <string name="detail_sunset">Coucher du soleil</string>
+    <string name="selected_units_description">Unités utilisées : %1$s et %2$s.</string>
+    <string name="detail_humidity">Humidité</string>
 </resources>

@@ -123,4 +123,25 @@
   <string name="refresh_failed_saved">Yangilab bo‘lmadi. Saqlangan ob-havo ko‘rsatilmoqda.</string>
   <string name="weather_unavailable">Ob-havo mavjud emas. Internetni tekshirib, qayta urining.</string>
   <string name="app_start_unavailable">Nimbo saqlangan ob-havo ma’lumotlarini ocha olmadi. Qayta urinib ko‘ring.</string>
+    <string name="settings">Sozlamalar</string>
+    <string name="back">Orqaga</string>
+    <string name="close_details">Tafsilotlarni yopish</string>
+    <string name="clear_search">Qidiruvni tozalash</string>
+    <string name="searching">Qidirilmoqda…</string>
+    <string name="active_place">Tanlangan shahar</string>
+    <string name="last_updated">Yangilandi: %1$s</string>
+    <string name="forecast_current">Prognoz dolzarb</string>
+    <string name="return_current_hour">Joriy soat</string>
+    <string name="average_label">O‘rtacha</string>
+    <string name="aqi_scale_description">US AQI: 0–50 yaxshi, 51–100 o‘rtacha, 100 dan yuqori sog‘liqqa tobora zararli. Yuqori indeks ko‘proq ifloslanishni bildiradi.</string>
+    <string name="aqi_time">Ma’lumot vaqti: %1$s</string>
+    <string name="aqi_unavailable">Havo sifati ma’lumoti yo‘q</string>
+    <string name="aqi_stale">Saqlangan havo sifati · yangilash kerak</string>
+    <string name="detail_precipitation">Yog‘in</string>
+    <string name="detail_gust">Shamol kuchayishi</string>
+    <string name="detail_uv">UV indeksi</string>
+    <string name="detail_sunrise">Quyosh chiqishi</string>
+    <string name="detail_sunset">Quyosh botishi</string>
+    <string name="selected_units_description">%1$s va %2$s ishlatilmoqda.</string>
+    <string name="detail_humidity">Namlik</string>
 </resources>

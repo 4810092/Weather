@@ -100,6 +100,7 @@ internal class WeatherStateHolder(
 
     private var started = false
     private var searchJob: Job? = null
+    private var searchGeneration = 0L
     private var placeResolutionJob: Job? = null
     private var deviceLocationJob: Job? = null
     private var activationJob: Job? = null
@@ -139,10 +140,11 @@ internal class WeatherStateHolder(
     fun updateSearchQuery(query: String, language: String) {
         val current = mutableState.value as? WeatherUiState.ChooseLocation ?: return
         searchJob?.cancel()
+        val generation = ++searchGeneration
         val normalized = query.trimStart().take(80)
         mutableState.value = current.copy(
             query = normalized,
-            results = if (normalized.length < 2) emptyList() else current.results,
+            results = emptyList(),
             isSearching = normalized.length >= 2,
             message = null
         )
@@ -150,11 +152,10 @@ internal class WeatherStateHolder(
 
         searchJob = scope.launch {
             delay(350)
-            val before = mutableState.value as? WeatherUiState.ChooseLocation ?: return@launch
             try {
                 val results = repository.searchCities(normalized, language)
                 val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return@launch
-                if (latest.query == normalized) {
+                if (generation == searchGeneration && latest.query == normalized) {
                     mutableState.value = latest.copy(
                         results = results,
                         isSearching = false,
@@ -166,9 +167,10 @@ internal class WeatherStateHolder(
             } catch (error: Throwable) {
                 logFailure("city search", error)
                 val latest = mutableState.value as? WeatherUiState.ChooseLocation ?: return@launch
-                if (latest.query == before.query) {
+                if (generation == searchGeneration && latest.query == normalized) {
                     mutableState.value = latest.copy(
                         isSearching = false,
+                        results = emptyList(),
                         message = UiMessage.CitySearchUnavailable
                     )
                 }
@@ -177,7 +179,7 @@ internal class WeatherStateHolder(
     }
 
     fun chooseLocation(location: Location) {
-        searchJob?.cancel()
+        cancelSearch()
         placeResolutionJob?.cancel()
         cancelDeviceLocationRequest()
         launchActivation(location, persist = true)
@@ -213,11 +215,19 @@ internal class WeatherStateHolder(
     fun showLocationPicker() {
         val current = mutableState.value
         val picker = createLocationPicker(current) ?: return
+        cancelSearch()
         contentBeforeLocationPicker = current as? WeatherUiState.Content
         mutableState.value = picker
     }
 
+    private fun cancelSearch() {
+        searchGeneration++
+        searchJob?.cancel()
+        searchJob = null
+    }
+
     fun cancelLocationPicker() {
+        cancelSearch()
         cancelDeviceLocationRequest()
         contentBeforeLocationPicker?.let { mutableState.value = it }
         contentBeforeLocationPicker = null

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,10 +14,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -25,6 +28,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState as rememberVerticalScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,23 +40,37 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -60,10 +79,10 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Instant
+import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import uz.ganikhodjaev.weather.shared.domain.BestTimeOutsideEngine
 import uz.ganikhodjaev.weather.shared.domain.OutsideHazard
@@ -92,6 +111,7 @@ import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 import uz.ganikhodjaev.weather.shared.resources.*
 import uz.ganikhodjaev.weather.shared.resources.Res
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun WeatherScreen(
     state: WeatherUiState,
@@ -112,6 +132,20 @@ internal fun WeatherScreen(
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
+    var page by rememberSaveable { mutableStateOf("forecast") }
+    val savedScreens = rememberSaveableStateHolder()
+    NimboBackHandler(
+        enabled =
+        page != "forecast" || (state as? WeatherUiState.ChooseLocation)?.canCancel == true
+    ) {
+        if (page == "licenses") {
+            page = "settings"
+        } else if (page == "settings") {
+            page = "forecast"
+        } else {
+            onCancelLocationChange()
+        }
+    }
     val condition = (state as? WeatherUiState.Content)?.weather?.current?.weatherCode
         ?.let(::weatherCondition) ?: WeatherCondition.Cloudy
     NimboGlassScene(condition) {
@@ -130,20 +164,30 @@ internal fun WeatherScreen(
                 onRetry = onRetry,
                 onChangeLocation = onChangeLocation
             )
-            is WeatherUiState.Content -> WeatherContent(
-                state,
-                onRetry,
-                onChangeLocation,
-                onUnitPreferenceChanged,
-                onShareText,
-                storeUrl,
-                reviewUrl,
-                supportUrl,
-                onAddLocationFromFirstForecastTip,
-                onDismissFirstForecastTip,
-                themePreference,
-                onThemePreferenceChanged
-            )
+            is WeatherUiState.Content -> when (page) {
+                "settings" -> SettingsScreen(
+                    state,
+                    themePreference,
+                    onUnitPreferenceChanged,
+                    onThemePreferenceChanged,
+                    reviewUrl,
+                    { page = "forecast" },
+                    { page = "licenses" }
+                )
+                "licenses" -> LibraryLicenses { page = "settings" }
+                else -> savedScreens.SaveableStateProvider("forecast") {
+                    WeatherContent(
+                        state,
+                        onRetry,
+                        onChangeLocation,
+                        onShareText,
+                        storeUrl,
+                        onAddLocationFromFirstForecastTip,
+                        onDismissFirstForecastTip,
+                        onSettings = { page = "settings" }
+                    )
+                }
+            }
         }
     }
 }
@@ -157,6 +201,13 @@ private fun ChooseLocationScreen(
     onUseDeviceLocation: () -> Unit,
     onCancel: () -> Unit
 ) {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focus = LocalFocusManager.current
+    val selectLocation: (Location) -> Unit = { location ->
+        keyboard?.hide()
+        focus.clearFocus()
+        onLocationSelected(location)
+    }
     var pendingDeletion by remember { mutableStateOf<Location?>(null) }
     pendingDeletion?.let { location ->
         // Dialogs have their own window; do not sample the main window's graphics layer.
@@ -197,7 +248,7 @@ private fun ChooseLocationScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .safeContentPadding()
+                .safeContentPadding().imePadding()
         ) {
             Column(
                 modifier = Modifier
@@ -243,6 +294,87 @@ private fun ChooseLocationScreen(
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(Modifier.height(28.dp))
+                OutlinedTextField(
+                    value = state.query,
+                    onValueChange = onQueryChanged,
+                    modifier = Modifier.fillMaxWidth().nimboGlass(
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                    singleLine = true,
+                    label = { Text(stringResource(Res.string.search_city)) },
+                    supportingText = { Text(stringResource(Res.string.change_later)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = {
+                        keyboard?.hide()
+                        focus.clearFocus()
+                    }),
+                    trailingIcon = {
+                        if (state.query.isNotEmpty()) {
+                            GlassIconButton(onClick = { onQueryChanged("") }) {
+                                Icon(
+                                    painterResource(Res.drawable.ic_weather_clear_search),
+                                    stringResource(Res.string.clear_search)
+                                )
+                            }
+                        }
+                    }
+                )
+
+                if (state.isSearching) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            stringResource(Res.string.searching),
+                            Modifier.semantics {
+                                liveRegion =
+                                    LiveRegionMode.Polite
+                            }
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp).clearAndSetSemantics {},
+                            strokeWidth = 2.dp
+                        )
+                    }
+                }
+
+                state.results.takeIf {
+                    !state.isSearching && state.message == null
+                }.orEmpty().forEach { location ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .nimboGlass(shape = RoundedCornerShape(18.dp))
+                            .clickable { selectLocation(location) }
+                            .padding(horizontal = 12.dp, vertical = 14.dp)
+                            .semantics(mergeDescendants = true) { role = Role.Button }
+                    ) {
+                        Text(location.name, fontWeight = FontWeight.SemiBold)
+                        if (location.regionAndCountry().isNotBlank()) {
+                            Text(
+                                location.regionAndCountry(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
+                }
+
+                state.message?.let { message ->
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = message.localized(),
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
+                    )
+                }
+
+                Spacer(Modifier.height(20.dp))
                 if (state.quickLocations.isNotEmpty()) {
                     Text(
                         text = stringResource(Res.string.quick_places),
@@ -259,7 +391,7 @@ private fun ChooseLocationScreen(
                             key = { state.quickLocations[it].id }
                         ) { index ->
                             val location = state.quickLocations[index].localized()
-                            GlassButton(onClick = { onLocationSelected(location) }) {
+                            GlassButton(onClick = { selectLocation(location) }) {
                                 Text(location.name)
                             }
                         }
@@ -283,8 +415,18 @@ private fun ChooseLocationScreen(
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .nimboGlass(shape = RoundedCornerShape(18.dp))
-                                    .clickable { onLocationSelected(location) }
+                                    .nimboGlass(
+                                        shape = RoundedCornerShape(18.dp),
+                                        selected =
+                                        location.id == state.activeLocationId
+                                    )
+                                    .sizeIn(minHeight = 48.dp)
+                                    .semantics(mergeDescendants = true) {
+                                        selected =
+                                            location.id == state.activeLocationId
+                                        role = Role.Button
+                                    }
+                                    .clickable { selectLocation(location) }
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 Text(
@@ -292,9 +434,16 @@ private fun ChooseLocationScreen(
                                         stringResource(Res.string.current_location)
                                     }
                                 )
-                                if (location.country.isNotBlank()) {
+                                if (location.id == state.activeLocationId) {
                                     Text(
-                                        location.country,
+                                        stringResource(Res.string.active_place),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                                if (location.regionAndCountry().isNotBlank()) {
+                                    Text(
+                                        location.regionAndCountry(),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.secondary
                                     )
@@ -317,62 +466,6 @@ private fun ChooseLocationScreen(
                     }
                     Spacer(Modifier.height(16.dp))
                 }
-                OutlinedTextField(
-                    value = state.query,
-                    onValueChange = onQueryChanged,
-                    modifier = Modifier.fillMaxWidth().nimboGlass(
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                    singleLine = true,
-                    label = { Text(stringResource(Res.string.search_city)) },
-                    supportingText = { Text(stringResource(Res.string.change_later)) }
-                )
-
-                if (state.isSearching) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp
-                        )
-                    }
-                }
-
-                state.results.forEach { location ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                            .nimboGlass(shape = RoundedCornerShape(18.dp))
-                            .clickable { onLocationSelected(location) }
-                            .padding(horizontal = 12.dp, vertical = 14.dp)
-                            .semantics {
-                                contentDescription = "${location.name}, ${location.country}"
-                            }
-                    ) {
-                        Text(location.name, fontWeight = FontWeight.SemiBold)
-                        if (location.country.isNotBlank()) {
-                            Text(
-                                location.country,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                        }
-                    }
-                    HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
-                }
-
-                state.message?.let { message ->
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = message.localized(),
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-
                 Spacer(Modifier.height(24.dp))
                 GlassButton(
                     onClick = onUseDeviceLocation,
@@ -428,7 +521,11 @@ private fun LoadingScreen() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier.nimboGlass(shape = RoundedCornerShape(50)).padding(20.dp)
-                .semantics { contentDescription = loadingDescription }
+                .semantics {
+                    contentDescription = loadingDescription
+                    liveRegion =
+                        LiveRegionMode.Polite
+                }
         )
     }
 }
@@ -446,7 +543,9 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: 
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().widthIn(max = 560.dp).padding(24.dp)
+                modifier = Modifier.widthIn(
+                    max = 560.dp
+                ).fillMaxWidth().verticalScroll(rememberVerticalScrollState()).padding(24.dp)
                     .nimboGlass().padding(24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -458,6 +557,7 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: 
                 Spacer(Modifier.height(12.dp))
                 Text(
                     message,
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -477,18 +577,16 @@ private fun WeatherContent(
     state: WeatherUiState.Content,
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
-    onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
     storeUrl: String,
-    reviewUrl: String,
-    supportUrl: String,
     onAddLocationFromFirstForecastTip: () -> Unit,
     onDismissFirstForecastTip: () -> Unit,
-    themePreference: ThemePreference,
-    onThemePreferenceChanged: (ThemePreference) -> Unit
+    onSettings: () -> Unit
 ) {
     val weather = state.weather
-    var selected by remember(weather.fetchedAtEpochSeconds) { mutableStateOf(weather.current) }
+    var selectedEpoch by rememberSaveable(weather.location.id) { mutableStateOf<Long?>(null) }
+    val now = rememberWeatherNow()
+    val selected = selectedForecastHour(weather.timeline, selectedEpoch, now) ?: weather.current
     val condition = weatherCondition(weather.current.weatherCode)
     val insights = remember(weather) { WeatherInsightEngine().evaluate(weather) }
     val weatherShareSummary = stringResource(
@@ -522,7 +620,7 @@ private fun WeatherContent(
             val wideLayout = maxWidth >= 840.dp
             val horizontalPadding = if (wideLayout) 36.dp else 24.dp
             val recentDays = remember(weather) { recentDaySummaries(weather) }
-            val uriHandler = LocalUriHandler.current
+            val openPage = rememberWebPageOpener()
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -535,7 +633,8 @@ private fun WeatherContent(
                         state = state,
                         onRefresh = onRefresh,
                         onChangeLocation = onChangeLocation,
-                        onShare = { onShareText(shareMessage) }
+                        onShare = { onShareText(shareMessage) },
+                        onSettings = onSettings
                     )
                 }
 
@@ -562,10 +661,9 @@ private fun WeatherContent(
                     selected = selected,
                     recentDays = recentDays,
                     horizontalPadding = horizontalPadding,
-                    onSelected = { selected = it },
-                    onUnitPreferenceChanged = onUnitPreferenceChanged,
-                    themePreference = themePreference,
-                    onThemePreferenceChanged = onThemePreferenceChanged
+                    onSelected = { selectedEpoch = it.epochSeconds },
+                    onCurrent = { selectedEpoch = null },
+                    now = now
                 )
 
                 Spacer(Modifier.height(24.dp))
@@ -579,48 +677,9 @@ private fun WeatherContent(
                             color = MaterialTheme.colorScheme.secondary,
                             style = MaterialTheme.typography.labelSmall,
                             modifier = Modifier
-                                .clickable { uriHandler.openUri("https://open-meteo.com/") }
+                                .clickable { openPage("https://open-meteo.com/") }
                                 .padding(vertical = 12.dp)
                         )
-                        GlassButton(
-                            onClick = {
-                                uriHandler.openUri("https://nimbo.uz/")
-                            }
-                        ) {
-                            Text(stringResource(Res.string.about_nimbo))
-                        }
-                        GlassButton(
-                            onClick = {
-                                uriHandler.openUri(supportUrl)
-                            }
-                        ) {
-                            Text(stringResource(Res.string.help_and_feedback))
-                        }
-                        GlassButton(
-                            onClick = {
-                                uriHandler.openUri(reviewUrl)
-                            }
-                        ) {
-                            Text(stringResource(Res.string.rate_nimbo))
-                        }
-                        GlassButton(
-                            onClick = {
-                                uriHandler.openUri(
-                                    "https://nimbo.uz/privacy/"
-                                )
-                            }
-                        ) {
-                            Text(stringResource(Res.string.privacy_policy))
-                        }
-                        GlassButton(
-                            onClick = {
-                                uriHandler.openUri(
-                                    "https://github.com/4810092/Weather/blob/master/LICENSE"
-                                )
-                            }
-                        ) {
-                            Text(stringResource(Res.string.open_source_licenses))
-                        }
                     }
                 }
             }
@@ -684,7 +743,8 @@ private fun WeatherHeader(
     state: WeatherUiState.Content,
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onSettings: () -> Unit
 ) {
     val weather = state.weather
     val location: @Composable (Modifier) -> Unit = { modifier ->
@@ -694,12 +754,11 @@ private fun WeatherHeader(
                     stringResource(Res.string.current_location)
                 },
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 2
+                fontWeight = FontWeight.SemiBold
             )
-            if (weather.location.country.isNotBlank()) {
+            if (weather.location.regionAndCountry().isNotBlank()) {
                 Text(
-                    text = weather.location.country,
+                    text = weather.location.regionAndCountry(),
                     color = MaterialTheme.colorScheme.secondary
                 )
             }
@@ -710,6 +769,12 @@ private fun WeatherHeader(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            GlassIconButton(onClick = onSettings) {
+                Icon(
+                    painterResource(Res.drawable.ic_weather_settings),
+                    stringResource(Res.string.settings)
+                )
+            }
             GlassIconButton(onClick = onShare) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
@@ -735,13 +800,18 @@ private fun WeatherHeader(
             }
         }
     }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
-    ) {
-        location(Modifier.weight(1f).padding(end = 12.dp))
-        actions()
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        if (maxWidth < 600.dp || LocalDensity.current.fontScale > 1.3f) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                location(Modifier.fillMaxWidth())
+                actions()
+            }
+        } else {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                location(Modifier.weight(1f).padding(end = 12.dp))
+                actions()
+            }
+        }
     }
 }
 
@@ -754,6 +824,7 @@ private fun CurrentSummary(
     val weather = state.weather
     val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
     val heroSize = 88f * minOf(fontScale, 1.25f) / fontScale
+    WeatherIcon(condition, Modifier.size(48.dp))
     Text(
         text = "${state.displayUnits.temperature(weather.current.temperatureC)}°",
         fontSize = heroSize.sp,
@@ -788,17 +859,37 @@ private fun CurrentSummary(
             color = MaterialTheme.colorScheme.secondary
         )
     }
-    if (weather.isStale || state.refreshMessage != null) {
-        Spacer(Modifier.height(12.dp))
+    Spacer(Modifier.height(12.dp))
+    val status = when {
+        state.isRefreshing -> stringResource(Res.string.refreshing)
+        state.refreshMessage != null -> state.refreshMessage.localized()
+        weather.isStale -> stringResource(Res.string.saved_weather)
+        else -> stringResource(Res.string.forecast_current)
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        if (state.isRefreshing) {
+            CircularProgressIndicator(
+                Modifier.size(20.dp).clearAndSetSemantics {},
+                strokeWidth = 2.dp
+            )
+        }
         Text(
-            text = state.refreshMessage?.localized() ?: stringResource(Res.string.saved_weather),
-            modifier = Modifier
-                .nimboGlass(shape = RoundedCornerShape(12.dp))
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.bodyMedium
+            status,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
         )
     }
+    Text(
+        stringResource(
+            Res.string.last_updated,
+            localDateTime(weather.fetchedAtEpochSeconds, weather.location.timezone)
+        ),
+        color = MaterialTheme.colorScheme.secondary,
+        style = MaterialTheme.typography.bodySmall
+    )
 }
 
 @Composable
@@ -808,9 +899,8 @@ private fun WeatherDetails(
     recentDays: List<RecentDaySummary>,
     horizontalPadding: Dp,
     onSelected: (WeatherHour) -> Unit,
-    onUnitPreferenceChanged: (UnitPreference) -> Unit,
-    themePreference: ThemePreference,
-    onThemePreferenceChanged: (ThemePreference) -> Unit
+    onCurrent: () -> Unit,
+    now: Long
 ) {
     val weather = state.weather
     CenteredSection(horizontalPadding) {
@@ -825,19 +915,21 @@ private fun WeatherDetails(
         selected = selected,
         units = state.displayUnits,
         contentPadding = horizontalPadding,
-        onSelected = onSelected
+        onSelected = onSelected,
+        onCurrent = onCurrent,
+        now = now
     )
     Spacer(Modifier.height(18.dp))
     CenteredSection(horizontalPadding) {
         SelectedHour(selected, weather.location.timezone, state.displayUnits)
     }
-    if (weather.airQuality.isNotEmpty()) {
-        Spacer(Modifier.height(18.dp))
-        CenteredSection(horizontalPadding) {
-            AirQualityCard(
-                weather.airQuality.minBy { abs(it.epochSeconds - weather.current.epochSeconds) }
-            )
-        }
+    Spacer(Modifier.height(18.dp))
+    CenteredSection(horizontalPadding) {
+        AirQualityCard(
+            weather.airQuality.minByOrNull { abs(it.epochSeconds - now) },
+            weather.location.timezone,
+            now
+        )
     }
     if (weather.dailyForecast.isNotEmpty()) {
         Spacer(Modifier.height(18.dp))
@@ -852,21 +944,13 @@ private fun WeatherDetails(
         Spacer(Modifier.height(18.dp))
         RecentDays(recentDays, state.displayUnits, horizontalPadding)
     }
-    Spacer(Modifier.height(18.dp))
-    CenteredSection(horizontalPadding) {
-        UnitsCard(state.unitPreference, state.displayUnits, onUnitPreferenceChanged)
-    }
-    Spacer(Modifier.height(18.dp))
-    CenteredSection(horizontalPadding) {
-        ThemeCard(themePreference, onThemePreferenceChanged)
-    }
 }
 
 @Composable
-private fun AirQualityCard(air: AirQualityHour) {
-    val aqi = air.usAqi
+private fun AirQualityCard(air: AirQualityHour?, timezone: String, now: Long) {
+    val aqi = air?.usAqi
     val label = when {
-        aqi == null -> stringResource(Res.string.not_enough_data)
+        aqi == null || aqi < 0 -> stringResource(Res.string.aqi_unavailable)
         aqi <= 50 -> stringResource(Res.string.aqi_good)
         aqi <= 100 -> stringResource(Res.string.aqi_moderate)
         aqi <= 150 -> stringResource(Res.string.aqi_unhealthy_sensitive)
@@ -875,30 +959,40 @@ private fun AirQualityCard(air: AirQualityHour) {
         else -> stringResource(Res.string.aqi_hazardous)
     }
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .nimboGlass(shape = RoundedCornerShape(22.dp))
-            .padding(20.dp)
+        Modifier.fillMaxWidth().nimboGlass().padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(stringResource(Res.string.air_quality), fontWeight = FontWeight.SemiBold)
-        Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(aqi?.toString() ?: "—", style = MaterialTheme.typography.headlineLarge)
-            Spacer(Modifier.width(10.dp))
-            Text(label, color = MaterialTheme.colorScheme.secondary)
+        Text("${stringResource(Res.string.air_quality)} · US AQI", fontWeight = FontWeight.SemiBold)
+        if (aqi != null &&
+            aqi >= 0
+        ) {
+            Text(aqi.toString(), style = MaterialTheme.typography.headlineLarge)
         }
-        if (air.pm25 != null || air.pm10 != null) {
-            Spacer(Modifier.height(8.dp))
+        Text(label, color = MaterialTheme.colorScheme.secondary)
+        if (air != null) {
             Text(
-                listOfNotNull(
-                    air.pm25?.let { "PM2.5 ${it.toInt()} μg/m³" },
-                    air.pm10?.let { "PM10 ${it.toInt()} μg/m³" }
-                ).joinToString(" · "),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary
+                stringResource(Res.string.aqi_time, localDateTime(air.epochSeconds, timezone)),
+                style = MaterialTheme.typography.bodySmall
             )
+            if (isAirQualityStale(
+                    air,
+                    now
+                )
+            ) {
+                Text(
+                    stringResource(Res.string.aqi_stale),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            listOfNotNull(
+                air.pm25?.let { "PM2.5 ${it.toInt()} μg/m³" },
+                air.pm10?.let { "PM10 ${it.toInt()} μg/m³" }
+            ).forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
         }
-        Spacer(Modifier.height(4.dp))
+        Text(
+            stringResource(Res.string.aqi_scale_description),
+            style = MaterialTheme.typography.bodySmall
+        )
         Text(
             stringResource(Res.string.air_quality_attribution),
             style = MaterialTheme.typography.labelSmall,
@@ -907,6 +1001,7 @@ private fun AirQualityCard(air: AirQualityHour) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun TenDayForecast(
     days: List<DailyForecast>,
@@ -914,6 +1009,9 @@ private fun TenDayForecast(
     units: DisplayUnits,
     contentPadding: Dp
 ) {
+    var selectedDay by rememberSaveable { mutableStateOf<Long?>(null) }
+    val selected = days.firstOrNull { it.epochSeconds == selectedDay }
+    NimboBackHandler(enabled = selected != null) { selectedDay = null }
     Column {
         CenteredSection(contentPadding) {
             Text(stringResource(Res.string.ten_day_forecast), fontWeight = FontWeight.SemiBold)
@@ -925,36 +1023,114 @@ private fun TenDayForecast(
         ) {
             items(days.size, key = { days[it].epochSeconds }) { index ->
                 val day = days[index]
-                val title = when (index) {
-                    0 -> stringResource(Res.string.today)
-                    1 -> stringResource(Res.string.tomorrow)
-                    else -> formatLocalDay(day.epochSeconds, timezone)
-                }
+                val title = formatLocalDay(day.epochSeconds, timezone)
+                val condition = weatherCondition(day.weatherCode).label()
+                val range =
+                    stringResource(
+                        Res.string.temperature_range,
+                        units.temperature(day.temperatureMinC),
+                        units.temperature(day.temperatureMaxC)
+                    )
                 Column(
-                    modifier = Modifier
-                        .width(138.dp)
-                        .nimboGlass(shape = RoundedCornerShape(18.dp))
-                        .padding(14.dp)
+                    Modifier.width((152 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
+                        .nimboGlass(
+                            shape = RoundedCornerShape(18.dp),
+                            selected =
+                            selectedDay == day.epochSeconds
+                        )
+                        .clickable {
+                            selectedDay =
+                                if (selectedDay == day.epochSeconds) null else day.epochSeconds
+                        }
+                        .semantics(mergeDescendants = true) {
+                            this.selected =
+                                selectedDay == day.epochSeconds
+                            role = Role.Button
+                        }
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(title, style = MaterialTheme.typography.labelMedium)
-                    Spacer(Modifier.height(8.dp))
+                    WeatherIcon(weatherCondition(day.weatherCode), Modifier.size(28.dp))
+                    Text(condition, style = MaterialTheme.typography.bodySmall)
+                    Text(range, fontWeight = FontWeight.SemiBold)
+                    day.precipitationProbabilityMax?.let {
+                        Text("$it%", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
+        if (selected != null) {
+            Spacer(Modifier.height(12.dp))
+            CenteredSection(contentPadding) {
+                Column(
+                    Modifier.fillMaxWidth().nimboGlass().padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Text(
-                        weatherCondition(day.weatherCode).symbol(),
-                        style = MaterialTheme.typography.headlineMedium
+                        formatLocalDay(selected.epochSeconds, timezone),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.semantics {
+                            heading()
+                        }
                     )
-                    Text(
-                        stringResource(
-                            Res.string.temperature_range,
-                            units.temperature(day.temperatureMinC),
-                            units.temperature(day.temperatureMaxC)
-                        ),
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        "${day.precipitationProbabilityMax}% · UV ${day.uvIndexMax.toInt()}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
+                    Text(weatherCondition(selected.weatherCode).label())
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Detail(
+                            stringResource(Res.string.detail_feels_like),
+                            stringResource(
+                                Res.string.temperature_range,
+                                units.temperature(selected.apparentTemperatureMinC),
+                                units.temperature(selected.apparentTemperatureMaxC)
+                            )
+                        )
+                        selected.precipitationProbabilityMax?.let {
+                            Detail(stringResource(Res.string.detail_rain), "$it%")
+                        }
+                        selected.precipitationMm?.let {
+                            Detail(
+                                stringResource(Res.string.detail_precipitation),
+                                "${kotlin.math.round(
+                                    units.precipitation(it) * 100
+                                ) / 100} ${units.precipitationSymbol}"
+                            )
+                        }
+                        Detail(
+                            stringResource(Res.string.detail_wind),
+                            "${units.wind(selected.windMaxKph)} ${units.windSymbol}"
+                        )
+                        selected.gustMaxKph?.let {
+                            Detail(
+                                stringResource(Res.string.detail_gust),
+                                "${units.wind(it)} ${units.windSymbol}"
+                            )
+                        }
+                        selected.uvIndexMax?.let {
+                            Detail(stringResource(Res.string.detail_uv), it.toString())
+                        }
+                        selected.sunriseEpochSeconds.takeIf {
+                            it > 0
+                        }?.let {
+                            Detail(
+                                stringResource(Res.string.detail_sunrise),
+                                isolatedLocalHour(it, timezone)
+                            )
+                        }
+                        selected.sunsetEpochSeconds.takeIf {
+                            it > 0
+                        }?.let {
+                            Detail(
+                                stringResource(Res.string.detail_sunset),
+                                isolatedLocalHour(it, timezone)
+                            )
+                        }
+                    }
+                    GlassButton(onClick = {
+                        selectedDay = null
+                    }) { Text(stringResource(Res.string.close_details)) }
                 }
             }
         }
@@ -962,7 +1138,8 @@ private fun TenDayForecast(
 }
 
 private data class RecentDaySummary(
-    val daysAgo: Int,
+    val epochSeconds: Long,
+    val timezone: String,
     val averageC: Double,
     val lowC: Double,
     val highC: Double
@@ -970,9 +1147,7 @@ private data class RecentDaySummary(
 
 @Composable
 private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, contentPadding: Dp) {
-    val recentDaysScroll = rememberLazyListState(
-        initialFirstVisibleItemIndex = days.lastIndex
-    )
+    val recentDaysScroll = rememberLazyListState()
     Column {
         CenteredSection(contentPadding) {
             Text(
@@ -989,32 +1164,30 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
         ) {
             items(
                 count = days.size,
-                key = { index -> days[days.lastIndex - index].daysAgo }
+                key = { index -> days[index].epochSeconds }
             ) { index ->
-                val day = days[days.lastIndex - index]
+                val day = days[index]
                 Column(
                     modifier = Modifier
-                        .width(116.dp)
+                        .width((156 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
                         .nimboGlass(shape = RoundedCornerShape(18.dp))
                         .padding(14.dp)
                 ) {
                     Text(
-                        if (day.daysAgo == 1) {
-                            stringResource(Res.string.yesterday)
-                        } else {
-                            pluralStringResource(Res.plurals.days_ago, day.daysAgo, day.daysAgo)
-                        },
+                        formatLocalDay(day.epochSeconds, day.timezone),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        stringResource(
-                            Res.string.average_temperature,
-                            units.temperature(day.averageC)
-                        ),
+                        stringResource(Res.string.average_label),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        "${units.temperature(day.averageC)}°",
                         fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Text(
                         stringResource(
@@ -1044,7 +1217,8 @@ private fun recentDaySummaries(weather: WeatherSnapshot): List<RecentDaySummary>
         }
         if (hours.isEmpty()) return@mapNotNull null
         RecentDaySummary(
-            daysAgo = daysAgo,
+            epochSeconds = hours.first().epochSeconds,
+            timezone = weather.location.timezone,
             averageC = hours.map { it.temperatureC }.average(),
             lowC = hours.minOf { it.temperatureC },
             highC = hours.maxOf { it.temperatureC }
@@ -1058,7 +1232,6 @@ private fun UnitsCard(
     units: DisplayUnits,
     onPreferenceChanged: (UnitPreference) -> Unit
 ) {
-    val accessibilityLayout = LocalDensity.current.fontScale >= 1.5f
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1068,7 +1241,13 @@ private fun UnitsCard(
         Text(stringResource(Res.string.units), fontWeight = FontWeight.SemiBold)
         Text(
             stringResource(
-                Res.string.automatic_units_description,
+                if (preference ==
+                    UnitPreference.Automatic
+                ) {
+                    Res.string.automatic_units_description
+                } else {
+                    Res.string.selected_units_description
+                },
                 units.temperatureSymbol,
                 units.windSymbol
             ),
@@ -1076,20 +1255,13 @@ private fun UnitsCard(
             style = MaterialTheme.typography.bodySmall
         )
         Spacer(Modifier.height(12.dp))
-        if (accessibilityLayout) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                UnitPreference.entries.forEach { option ->
-                    UnitButton(option, preference, onPreferenceChanged, Modifier.fillMaxWidth())
-                }
-            }
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                UnitPreference.entries.forEach { option ->
-                    UnitButton(option, preference, onPreferenceChanged, Modifier.weight(1f))
-                }
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            UnitPreference.entries.forEach { option ->
+                UnitButton(option, preference, onPreferenceChanged, Modifier.widthIn(min = 100.dp))
             }
         }
     }
@@ -1097,7 +1269,6 @@ private fun UnitsCard(
 
 @Composable
 private fun ThemeCard(preference: ThemePreference, onPreferenceChanged: (ThemePreference) -> Unit) {
-    val accessibilityLayout = LocalDensity.current.fontScale >= 1.5f
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1111,20 +1282,13 @@ private fun ThemeCard(preference: ThemePreference, onPreferenceChanged: (ThemePr
             style = MaterialTheme.typography.bodySmall
         )
         Spacer(Modifier.height(12.dp))
-        if (accessibilityLayout) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                ThemePreference.entries.forEach { option ->
-                    ThemeButton(option, preference, onPreferenceChanged, Modifier.fillMaxWidth())
-                }
-            }
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ThemePreference.entries.forEach { option ->
-                    ThemeButton(option, preference, onPreferenceChanged, Modifier.weight(1f))
-                }
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ThemePreference.entries.forEach { option ->
+                ThemeButton(option, preference, onPreferenceChanged, Modifier.widthIn(min = 100.dp))
             }
         }
     }
@@ -1149,7 +1313,6 @@ private fun ThemeButton(
                 ThemePreference.Light -> stringResource(Res.string.theme_light)
                 ThemePreference.Dark -> stringResource(Res.string.theme_dark)
             },
-            maxLines = 1,
             style = MaterialTheme.typography.labelLarge
         )
     }
@@ -1158,14 +1321,14 @@ private fun ThemeButton(
             onClick = {},
             selected = true,
             modifier = buttonModifier,
-            contentPadding = PaddingValues(horizontal = 6.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             content = { content() }
         )
     } else {
         GlassButton(
             onClick = { onPreferenceChanged(option) },
             modifier = buttonModifier,
-            contentPadding = PaddingValues(horizontal = 6.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             content = { content() }
         )
     }
@@ -1187,10 +1350,9 @@ private fun UnitButton(
         Text(
             when (option) {
                 UnitPreference.Automatic -> stringResource(Res.string.unit_auto)
-                UnitPreference.Metric -> stringResource(Res.string.unit_metric)
-                UnitPreference.Imperial -> stringResource(Res.string.unit_imperial)
+                UnitPreference.Metric -> "°C · km/h"
+                UnitPreference.Imperial -> "°F · mph"
             },
-            maxLines = 1,
             style = MaterialTheme.typography.labelLarge
         )
     }
@@ -1199,14 +1361,14 @@ private fun UnitButton(
             onClick = {},
             selected = true,
             modifier = buttonModifier,
-            contentPadding = PaddingValues(horizontal = 6.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             content = { content() }
         )
     } else {
         GlassButton(
             onClick = { onPreferenceChanged(option) },
             modifier = buttonModifier,
-            contentPadding = PaddingValues(horizontal = 6.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             content = { content() }
         )
     }
@@ -1279,95 +1441,112 @@ private fun Timeline(
     selected: WeatherHour,
     units: DisplayUnits,
     contentPadding: Dp,
-    onSelected: (WeatherHour) -> Unit
+    onSelected: (WeatherHour) -> Unit,
+    onCurrent: () -> Unit,
+    now: Long
 ) {
-    val now = Clock.System.now().epochSeconds
-    val nowIndex = weather.timeline.indices.minByOrNull { index ->
-        abs(weather.timeline[index].epochSeconds - now)
-    } ?: 0
-    val timelineScroll = rememberLazyListState(
-        initialFirstVisibleItemIndex = (nowIndex - 2).coerceAtLeast(0)
-    )
+    val nowIndex = currentHourIndex(weather.timeline, now)
+    val selectedIndex = weather.timeline.indexOfFirst {
+        it.epochSeconds == selected.epochSeconds
+    }.coerceAtLeast(0)
+    val timelineScroll = rememberLazyListState(initialFirstVisibleItemIndex = selectedIndex)
+    var scrolledSelection by rememberSaveable(weather.location.id) { mutableStateOf<Long?>(null) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(weather.location.id, selected.epochSeconds) {
+        if (scrolledSelection != selected.epochSeconds) {
+            timelineScroll.scrollToItem(selectedIndex)
+            scrolledSelection = selected.epochSeconds
+        }
+    }
+    if (nowIndex != null) {
+        CenteredSection(contentPadding) {
+            GlassButton(onClick = {
+                onCurrent()
+                scope.launch { timelineScroll.scrollToItem(nowIndex) }
+            }) { Text(stringResource(Res.string.return_current_hour)) }
+        }
+    }
+    Spacer(Modifier.height(8.dp))
+    val appDirection = LocalLayoutDirection.current
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             state = timelineScroll,
             contentPadding = PaddingValues(horizontal = contentPadding),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(
-                count = weather.timeline.size,
-                key = { index -> weather.timeline[index].epochSeconds }
-            ) { index ->
+            items(weather.timeline.size, key = { weather.timeline[it].epochSeconds }) { index ->
                 val hour = weather.timeline[index]
-                val past = hour.epochSeconds < now - 1_800
-                val isNow = abs(hour.epochSeconds - now) < 1_800
+                val isNow = index == nowIndex
                 val isSelected = hour.epochSeconds == selected.epochSeconds
-                val hourLabel = isolatedLocalHour(hour.epochSeconds, weather.location.timezone)
-                val hourDescription = stringResource(
+                val timezone = weather.location.timezone
+                val dayStart =
+                    index == 0 ||
+                        weatherDate(hour.epochSeconds, timezone) !=
+                        weatherDate(weather.timeline[index - 1].epochSeconds, timezone)
+                val date = formatLocalDay(hour.epochSeconds, timezone)
+                val hourLabel = isolatedLocalHour(hour.epochSeconds, timezone)
+                val description = stringResource(
                     Res.string.hour_accessibility_full,
-                    hourLabel,
+                    "$date, $hourLabel",
                     units.temperature(hour.temperatureC),
                     weatherCondition(hour.weatherCode).label(),
                     units.temperature(hour.apparentTemperatureC),
                     hour.precipitationProbability,
                     units.wind(hour.windKph),
                     units.windSymbol
-                )
-                Column(
-                    modifier = Modifier
-                        .width(64.dp)
-                        .alpha(
-                            if (past) {
-                                LocalNimboThemeTokens.current.pastContentAlpha
-                            } else {
-                                1f
+                ) + if (isNow) ", ${stringResource(Res.string.now)}" else ""
+                CompositionLocalProvider(LocalLayoutDirection provides appDirection) {
+                    Column(
+                        Modifier.width((108 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
+                            .nimboGlass(shape = RoundedCornerShape(18.dp), selected = isSelected)
+                            .clickable { onSelected(hour) }
+                            .clearAndSetSemantics {
+                                contentDescription = description
+                                this.selected =
+                                    isSelected
+                                role = Role.Button
+                                onClick {
+                                    onSelected(hour)
+                                    true
+                                }
                             }
+                            .padding(horizontal = 10.dp, vertical = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            date,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (dayStart) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.secondary
+                            },
+                            fontWeight = if (dayStart) FontWeight.Bold else FontWeight.Normal
                         )
-                        .nimboGlass(shape = RoundedCornerShape(18.dp), selected = isSelected)
-                        .clickable { onSelected(hour) }
-                        .semantics {
-                            contentDescription = hourDescription
-                            this.selected = isSelected
-                            role = Role.Button
-                        }
-                        .padding(vertical = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        if (isNow) stringResource(Res.string.now) else hourLabel,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        weatherCondition(hour.weatherCode).symbol(),
-                        fontSize = 20.sp
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "${units.temperature(hour.temperatureC)}°",
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        if (hour.precipitationProbability > 0) {
-                            "${hour.precipitationProbability}%"
-                        } else {
-                            " "
-                        },
-                        color = if (hour.precipitationProbability > 0) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            Color.Transparent
-                        },
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                    Spacer(Modifier.height(6.dp))
-                    Box(
-                        Modifier.size(6.dp).background(
-                            if (isNow) MaterialTheme.colorScheme.primary else Color.Transparent,
-                            CircleShape
+                        Text(
+                            if (isNow) stringResource(Res.string.now) else hourLabel,
+                            style = MaterialTheme.typography.labelMedium
                         )
-                    )
+                        WeatherIcon(weatherCondition(hour.weatherCode), Modifier.size(28.dp))
+                        Text(
+                            "${units.temperature(hour.temperatureC)}°",
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            "${hour.precipitationProbability}%",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Box(
+                            Modifier.size(
+                                6.dp
+                            ).background(
+                                if (isNow) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                CircleShape
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -1376,25 +1555,22 @@ private fun Timeline(
 
 @Composable
 private fun SelectedHour(hour: WeatherHour, timezone: String, units: DisplayUnits) {
-    val accessibilityLayout = LocalDensity.current.fontScale >= 1.5f
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .nimboGlass(shape = RoundedCornerShape(24.dp))
             .padding(18.dp)
     ) {
-        Text(isolatedLocalHour(hour.epochSeconds, timezone), fontWeight = FontWeight.SemiBold)
+        Text(localDateTime(hour.epochSeconds, timezone), fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(10.dp))
         HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
         Spacer(Modifier.height(12.dp))
-        if (accessibilityLayout) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                HourDetails(hour, units)
-            }
-        } else {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                HourDetails(hour, units)
-            }
+        FlowRow(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            HourDetails(hour, units)
         }
     }
 }
@@ -1482,14 +1658,83 @@ private fun WeatherCondition.label(): String = when (this) {
     WeatherCondition.Unknown -> stringResource(Res.string.condition_unknown)
 }
 
-private fun WeatherCondition.symbol(): String = when (this) {
-    WeatherCondition.Clear -> "☀"
-    WeatherCondition.MainlyClear -> "◒"
-    WeatherCondition.Cloudy -> "●"
-    WeatherCondition.Fog -> "≋"
-    WeatherCondition.Drizzle -> "⋮"
-    WeatherCondition.Rain, WeatherCondition.Showers -> "☂"
-    WeatherCondition.Snow -> "✣"
-    WeatherCondition.Thunderstorm -> "ϟ"
-    WeatherCondition.Unknown -> "·"
+@Composable
+private fun WeatherIcon(condition: WeatherCondition, modifier: Modifier = Modifier) {
+    val drawable = when (condition) {
+        WeatherCondition.Clear -> Res.drawable.ic_weather_clear
+        WeatherCondition.MainlyClear -> Res.drawable.ic_weather_mainly_clear
+        WeatherCondition.Cloudy -> Res.drawable.ic_weather_cloudy
+        WeatherCondition.Fog -> Res.drawable.ic_weather_fog
+        WeatherCondition.Drizzle -> Res.drawable.ic_weather_drizzle
+        WeatherCondition.Rain -> Res.drawable.ic_weather_rain
+        WeatherCondition.Snow -> Res.drawable.ic_weather_snow
+        WeatherCondition.Showers -> Res.drawable.ic_weather_showers
+        WeatherCondition.Thunderstorm -> Res.drawable.ic_weather_storm
+        WeatherCondition.Unknown -> Res.drawable.ic_weather_unknown
+    }
+    Icon(painterResource(drawable), contentDescription = null, modifier = modifier)
+}
+
+private fun Location.regionAndCountry(): String =
+    listOf(region, country).filter(String::isNotBlank).distinct().joinToString(", ")
+
+private fun localDateTime(epoch: Long, timezone: String): String =
+    "${formatLocalDay(epoch, timezone)}, ${isolatedLocalHour(epoch, timezone)}"
+
+@Composable
+private fun rememberWeatherNow(): Long {
+    var now by remember { mutableStateOf(Clock.System.now().epochSeconds) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            now = Clock.System.now().epochSeconds
+            kotlinx.coroutines.delay(30_000)
+        }
+    }
+    return now
+}
+
+@Composable
+private fun SettingsScreen(
+    state: WeatherUiState.Content,
+    theme: ThemePreference,
+    onUnits: (UnitPreference) -> Unit,
+    onTheme: (ThemePreference) -> Unit,
+    reviewUrl: String,
+    onBack: () -> Unit,
+    onLicenses: () -> Unit
+) {
+    val uri = LocalUriHandler.current
+    val openPage = rememberWebPageOpener()
+    val language = Locale.current.language
+    val title = stringResource(Res.string.settings)
+    Column(
+        Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)
+            .semantics { paneTitle = title }
+            .verticalScroll(rememberVerticalScrollState()).padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        GlassButton(onClick = onBack) { Text(stringResource(Res.string.back)) }
+        Text(
+            title,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.semantics {
+                heading()
+            }
+        )
+        UnitsCard(state.unitPreference, state.displayUnits, onUnits)
+        ThemeCard(theme, onTheme)
+        listOf(
+            Res.string.about_nimbo to servicePageUrl(language),
+            Res.string.help_and_feedback to servicePageUrl(language, "support"),
+            Res.string.privacy_policy to servicePageUrl(language, "privacy"),
+            Res.string.rate_nimbo to reviewUrl
+        ).forEach { (label, url) ->
+            GlassButton(onClick = {
+                if (label == Res.string.rate_nimbo) uri.openUri(url) else openPage(url)
+            }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(label)) }
+        }
+        GlassButton(onClick = onLicenses, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(Res.string.open_source_licenses))
+        }
+    }
 }

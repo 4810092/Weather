@@ -22,6 +22,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Install local QA builds without replacing store-signed user data.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-dev"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

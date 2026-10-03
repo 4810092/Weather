@@ -6,7 +6,8 @@ data class Location(
     val country: String,
     val latitude: Double,
     val longitude: Double,
-    val timezone: String
+    val timezone: String,
+    val region: String = ""
 )
 
 data class WeatherHour(
@@ -30,11 +31,11 @@ data class DailyForecast(
     val temperatureMinC: Double,
     val apparentTemperatureMaxC: Double,
     val apparentTemperatureMinC: Double,
-    val precipitationProbabilityMax: Int,
-    val precipitationMm: Double,
+    val precipitationProbabilityMax: Int?,
+    val precipitationMm: Double?,
     val windMaxKph: Double,
-    val gustMaxKph: Double,
-    val uvIndexMax: Double,
+    val gustMaxKph: Double?,
+    val uvIndexMax: Double?,
     val sunriseEpochSeconds: Long,
     val sunsetEpochSeconds: Long,
     val fetchedAtEpochSeconds: Long

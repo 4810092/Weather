@@ -21,8 +21,7 @@ internal actual fun formatLocalHour(epochSeconds: Long, timezone: String): Strin
 internal actual fun formatLocalDay(epochSeconds: Long, timezone: String): String {
     val formatter = NSDateFormatter().apply {
         locale = NSLocale.currentLocale
-        dateStyle = 2u
-        timeStyle = 0u
+        setLocalizedDateFormatFromTemplate("EEE d MMM")
         NSTimeZone.timeZoneWithName(timezone)?.let { timeZone = it }
     }
     return formatter.stringFromDate(NSDate.dateWithTimeIntervalSince1970(epochSeconds.toDouble()))

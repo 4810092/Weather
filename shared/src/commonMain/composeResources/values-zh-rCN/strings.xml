@@ -122,4 +122,25 @@
   <string name="refresh_failed_saved">无法刷新。正在显示已保存的天气。</string>
   <string name="weather_unavailable">天气暂不可用。请检查网络后重试。</string>
   <string name="app_start_unavailable">Nimbo 无法打开已保存的天气数据。请重试。</string>
+    <string name="settings">设置</string>
+    <string name="back">返回</string>
+    <string name="close_details">关闭详情</string>
+    <string name="clear_search">清除搜索</string>
+    <string name="searching">搜索中…</string>
+    <string name="active_place">当前城市</string>
+    <string name="last_updated">更新时间：%1$s</string>
+    <string name="forecast_current">预报已更新</string>
+    <string name="return_current_hour">当前小时</string>
+    <string name="average_label">平均</string>
+    <string name="aqi_scale_description">US AQI：0–50良好，51–100中等，超过100对健康的危害逐渐增加。数值越高，污染越严重。</string>
+    <string name="aqi_time">数据时间：%1$s</string>
+    <string name="aqi_unavailable">暂无空气质量数据</string>
+    <string name="aqi_stale">已保存的空气质量·需要更新</string>
+    <string name="detail_precipitation">降水量</string>
+    <string name="detail_gust">阵风</string>
+    <string name="detail_uv">紫外线指数</string>
+    <string name="detail_sunrise">日出</string>
+    <string name="detail_sunset">日落</string>
+    <string name="selected_units_description">使用%1$s和%2$s。</string>
+    <string name="detail_humidity">湿度</string>
 </resources>

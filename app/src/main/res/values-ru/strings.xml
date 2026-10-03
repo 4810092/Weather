@@ -6,4 +6,6 @@
     <string name="widget_rain">Осадки %1$d%%</string>
     <string name="widget_aqi">AQI %1$d</string>
     <string name="saved_weather">Сохранённая погода · нужно обновить</string>
+    <string name="last_updated">Обновлено: %1$s</string>
+    <string name="saved_weather_short">Сохранено</string>
 </resources>

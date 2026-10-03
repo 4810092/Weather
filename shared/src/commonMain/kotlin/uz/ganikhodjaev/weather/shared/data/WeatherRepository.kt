@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.serialization.json.Json
 import uz.ganikhodjaev.weather.db.NimboDatabase
+import uz.ganikhodjaev.weather.shared.domain.localDateDaysAgo
 import uz.ganikhodjaev.weather.shared.domain.timelineWithinHours
 import uz.ganikhodjaev.weather.shared.model.AirQualityHour
 import uz.ganikhodjaev.weather.shared.model.DailyForecast
@@ -68,7 +71,8 @@ internal class WeatherRepository(
                 country = stored.country,
                 latitude = stored.latitude,
                 longitude = stored.longitude,
-                timezone = stored.timezone
+                timezone = stored.timezone,
+                region = stored.region
             )
         }
     }
@@ -80,9 +84,10 @@ internal class WeatherRepository(
             latitude,
             longitude,
             timezone,
-            _
+            _,
+            region
         ->
-        Location(id, name, country, latitude, longitude, timezone)
+        Location(id, name, country, latitude, longitude, timezone, region)
     }.executeAsList()
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -121,7 +126,13 @@ internal class WeatherRepository(
                     fetchedAtEpochSeconds = fetchedAt
                 )
             }.asFlow().mapToList(Dispatchers.Default)
-            val dailyFlow = queries.selectDailyForecast(location.id, now - SECONDS_PER_DAY) {
+            val zone = runCatching { TimeZone.of(location.timezone) }.getOrElse { TimeZone.UTC }
+            val dayStart = localDateDaysAgo(
+                now,
+                location.timezone,
+                0
+            ).atStartOfDayIn(zone).epochSeconds
+            val dailyFlow = queries.selectDailyForecast(location.id, dayStart) {
                     _,
                     epoch,
                     code,
@@ -145,7 +156,7 @@ internal class WeatherRepository(
                     min,
                     apparentMax,
                     apparentMin,
-                    rainChance.toInt(),
+                    rainChance?.toInt(),
                     rain,
                     wind,
                     gust,
@@ -182,7 +193,8 @@ internal class WeatherRepository(
                 if (allHours.isEmpty()) return@combine null
                 val resolvedLocation = activeLocation()?.takeIf { it.id == location.id } ?: location
                 val current = allHours.minBy { abs(it.epochSeconds - now) }
-                val fetchedAt = allHours.maxOf { it.fetchedAtEpochSeconds }
+                val fetchedAt = queries.selectSetting("primary_updated:${location.id}")
+                    .executeAsOneOrNull()?.toLongOrNull() ?: current.fetchedAtEpochSeconds
                 WeatherSnapshot(
                     location = resolvedLocation,
                     current = current,
@@ -246,6 +258,10 @@ internal class WeatherRepository(
             }
             var wroteWeather = false
             rows.forEach { row ->
+                // History enrichment must never restamp the current/future forecast.
+                if (!recordForecast && row.epochSeconds >= fetchedAt - SECONDS_PER_HOUR) {
+                    return@forEach
+                }
                 val existing = queries.selectWeatherFetchedAt(location.id, row.epochSeconds)
                     .executeAsOneOrNull()
                 if (onlyIfNewer &&
@@ -291,7 +307,15 @@ internal class WeatherRepository(
             ) {
                 queries.updateLocationTimezone(response.timezone, location.id)
             }
-            response.toDailyRows(fetchedAt).forEach { day ->
+            if (wroteWeather && recordForecast) {
+                val previous = queries.selectSetting("primary_updated:${location.id}")
+                    .executeAsOneOrNull()?.toLongOrNull() ?: 0L
+                queries.upsertSetting(
+                    "primary_updated:${location.id}",
+                    maxOf(previous, fetchedAt).toString()
+                )
+            }
+            (if (recordForecast) response.toDailyRows(fetchedAt) else emptyList()).forEach { day ->
                 val existing = queries.selectDailyForecastFetchedAt(location.id, day.epochSeconds)
                     .executeAsOneOrNull()
                 if (onlyIfNewer &&
@@ -308,7 +332,7 @@ internal class WeatherRepository(
                     temperature_min_c = day.temperatureMinC,
                     apparent_temperature_max_c = day.apparentTemperatureMaxC,
                     apparent_temperature_min_c = day.apparentTemperatureMinC,
-                    precipitation_probability_max = day.precipitationProbabilityMax.toLong(),
+                    precipitation_probability_max = day.precipitationProbabilityMax?.toLong(),
                     precipitation_mm = day.precipitationMm,
                     wind_max_kph = day.windMaxKph,
                     gust_max_kph = day.gustMaxKph,
@@ -344,6 +368,7 @@ internal class WeatherRepository(
                     longitude = location.longitude,
                     timezone = location.timezone,
                     is_active = 1,
+                    region = location.region,
                     id = location.id
                 )
             } else {
@@ -357,7 +382,8 @@ internal class WeatherRepository(
                     latitude = location.latitude,
                     longitude = location.longitude,
                     timezone = location.timezone,
-                    is_active = 1
+                    is_active = 1,
+                    region = location.region
                 )
             }
         }
@@ -376,6 +402,7 @@ internal class WeatherRepository(
         queries.updateLocationDetails(
             name = location.name,
             country = location.country,
+            region = location.region,
             id = location.id
         )
     }
@@ -530,11 +557,11 @@ internal fun ForecastResponse.toDailyRows(fetchedAt: Long): List<DailyForecast> 
             temperatureMinC = daily.temperatureMin[index],
             apparentTemperatureMaxC = daily.apparentTemperatureMax[index],
             apparentTemperatureMinC = daily.apparentTemperatureMin[index],
-            precipitationProbabilityMax = daily.precipitationProbabilityMax.getOrNull(index) ?: 0,
-            precipitationMm = daily.precipitationSum.getOrNull(index) ?: 0.0,
+            precipitationProbabilityMax = daily.precipitationProbabilityMax.getOrNull(index),
+            precipitationMm = daily.precipitationSum.getOrNull(index),
             windMaxKph = daily.windSpeedMax[index],
-            gustMaxKph = daily.windGustsMax.getOrNull(index) ?: 0.0,
-            uvIndexMax = daily.uvIndexMax.getOrNull(index) ?: 0.0,
+            gustMaxKph = daily.windGustsMax.getOrNull(index),
+            uvIndexMax = daily.uvIndexMax.getOrNull(index),
             sunriseEpochSeconds = daily.sunrise[index],
             sunsetEpochSeconds = daily.sunset[index],
             fetchedAtEpochSeconds = fetchedAt

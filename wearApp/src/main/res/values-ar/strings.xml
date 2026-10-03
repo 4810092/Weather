@@ -5,4 +5,5 @@
     <string name="details">هطول %1$d%%</string>
     <string name="details_with_aqi">هطول %1$d%% · AQI %2$d</string>
     <string name="saved_weather">طقس محفوظ · يلزم التحديث</string>
+    <string name="last_updated">آخر تحديث: %1$s</string>
 </resources>

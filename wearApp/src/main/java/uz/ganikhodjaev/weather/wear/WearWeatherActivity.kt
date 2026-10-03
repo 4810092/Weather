@@ -11,6 +11,8 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMap
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
+import java.text.DateFormat
+import java.util.Date
 import uz.ganikhodjaev.weather.surface.SurfaceWeatherKeys
 import uz.ganikhodjaev.weather.surface.SurfaceWeatherRenderModel
 import uz.ganikhodjaev.weather.surface.SurfaceWeatherState
@@ -183,8 +185,13 @@ class WearWeatherActivity :
             visibility = View.VISIBLE
         }
         findViewById<TextView>(R.id.status).apply {
-            text = getString(R.string.saved_weather)
-            visibility = if (model.showsStaleStatus) View.VISIBLE else View.GONE
+            val updated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                .format(Date(requireNotNull(model.updatedAtEpochSeconds) * 1_000))
+            text = listOfNotNull(
+                getString(R.string.last_updated, updated),
+                getString(R.string.saved_weather).takeIf { model.showsStaleStatus }
+            ).joinToString("\n")
+            visibility = View.VISIBLE
         }
     }
 
