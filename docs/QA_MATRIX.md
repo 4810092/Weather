@@ -1,6 +1,6 @@
 # Release QA matrix
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf`. UI completion local validation is in progress. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf`. UI completion local CI passed; the complete manual UI walkthrough remains blocked by locked Mac/iPhone access. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 Status date: October 3, 2026.
 
