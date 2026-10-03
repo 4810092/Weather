@@ -26,7 +26,7 @@
       "status": "blocked",
       "blocks_publication": true,
       "source_revision": "2ea72821fd16d508b85702b911cb452be2a3b2c3",
-      "reason": "Liquid Glass source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Build12 hashes remain historical and cannot validate this source. User authorized Internal/TestFlight delivery after tests, not production publication."
+      "reason": "Liquid Glass source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Build12 hashes remain historical and cannot validate this source. User authorized Internal/TestFlight delivery after tests, not production publication. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
     },
     "domain_activation": {
       "status": "pass",
