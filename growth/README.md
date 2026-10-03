@@ -1,16 +1,16 @@
 # Nimbo growth operations
 
-Current development/test candidate (October 3): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `2ea72821fd16d508b85702b911cb452be2a3b2c3`. Liquid Glass local validation is in progress; signing and Internal/TestFlight delivery are pending. Production publication is not part of this request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf`. UI completion local validation is in progress. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:2ea72821fd16d508b85702b911cb452be2a3b2c3 -->
+<!-- source_revision:7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=7b190278ca64a06de502034e75129ec79c147cc46f9db0e5ba026e3293229788 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=369b9c29da8c8d5ebea155c9bfe4c763af86dc03f20040ae0c941a90841cad19 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=83711254c896bd5eaee99d6369cf52752ca8f14b4326dfbfd92d372bf6a9e451 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=31d6a8cb336c73860c4be414c71d20302b1c31e012d161c37e79473e92796c9f -->
 <!-- release-authority-current:end -->
 
 Current source `0faf1105cc5da072e4e9ee043c46e2e9de4f4ada` advances the

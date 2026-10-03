@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
@@ -15,30 +15,30 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires current phone13/Wear1000013 runtime evidence. Instrumented UI checks of shared code do not prove signed distribution bytes; prior build12 store evidence is historical."
+      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source 7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf requires current phone13/Wear1000013 runtime evidence. Instrumented UI checks of shared code do not prove signed distribution bytes; prior build12 store evidence is historical."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Apple1.1.0(13) from 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
+      "reason": "Apple1.1.0(13) from 7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
     },
     "release_artifact_source_sync": {
       "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "2ea72821fd16d508b85702b911cb452be2a3b2c3",
-      "reason": "Liquid Glass source 2ea72821fd16d508b85702b911cb452be2a3b2c3 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Build12 hashes remain historical and cannot validate this source. User authorized Internal/TestFlight delivery after tests, not production publication. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
+      "source_revision": "7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf",
+      "reason": "UI completion source 7ce879a3dc395dbe5546b723e7e9e5adfe07d5bf requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Earlier build13 and build12 results cannot validate changed source. The October4 request authorizes local implementation and checks only; upload and publication are separate. The canonical registry keeps all three artifacts blocked until signed-byte verification passes."
     },
     "domain_activation": {
       "status": "pass",
       "blocks_publication": true,
-      "reason": "At 2026-08-29 10:40\u201310:41 +05:00, authenticated GitHub Pages settings showed DNS check successful and Enforce HTTPS enabled. The Let's Encrypt certificate has CN nimbo.uz, SANs nimbo.uz/www.nimbo.uz, and validates for both hosts. WHOIS, .uz delegation, authoritative Cloudflare records, and independent 1.1.1.1/8.8.8.8 resolution pass. HTTPS returns 200 with verification result 0 for all 12 published UZ-root/RU/EN landing, press, privacy, and support routes plus growth, robots, sitemap, and the valid metadata schema. HTTP apex redirects to HTTPS; HTTP www reaches HTTPS apex in two redirects; HTTPS www redirects directly to HTTPS apex. All 12 localized HTML routes have the expected HTTPS canonical and language. Uzbek intentionally uses / rather than a separate /uz/ route."
+      "reason": "At 2026-08-29 10:40–10:41 +05:00, authenticated GitHub Pages settings showed DNS check successful and Enforce HTTPS enabled. The Let's Encrypt certificate has CN nimbo.uz, SANs nimbo.uz/www.nimbo.uz, and validates for both hosts. WHOIS, .uz delegation, authoritative Cloudflare records, and independent 1.1.1.1/8.8.8.8 resolution pass. HTTPS returns 200 with verification result 0 for all 12 published UZ-root/RU/EN landing, press, privacy, and support routes plus growth, robots, sitemap, and the valid metadata schema. HTTP apex redirects to HTTPS; HTTP www reaches HTTPS apex in two redirects; HTTPS www redirects directly to HTTPS apex. All 12 localized HTML routes have the expected HTTPS canonical and language. Uzbek intentionally uses / rather than a separate /uz/ route."
     },
     "store_policy_console_clearance": {
       "status": "pass",
       "blocks_publication": true,
-      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. Authenticated read-only checks through 2026-09-01 05:05 Asia/Tashkent confirm that review request 14 contains only the Uzbekistan Custom Store Listing en-US and ru-RU store data and remains \u041d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438. Managed publishing is off and the latest verified publication remains 2026-08-27. A fresh logged-out gl=UZ&hl=uz page still renders the old public title Nimbo, so approval and propagation are not claimed. This proves review submission, not approval, publication, propagation, or a later policy guarantee. See growth/quality/store-policy-console-2026-08-28.md, growth/quality/google-play-console-2026-08-29.md, growth/quality/google-play-console-2026-08-31.md, and growth/quality/store-release-recheck-2026-09-01.md."
+      "reason": "The 2026-08-28 App Store read-only check found no open review/compliance action. Google Play reported no policy issues at 2026-08-29 13:12 +05:00; production remained active at 1.0.2 (6), 100%. Authenticated read-only checks through 2026-09-01 05:05 Asia/Tashkent confirm that review request 14 contains only the Uzbekistan Custom Store Listing en-US and ru-RU store data and remains На рассмотрении. Managed publishing is off and the latest verified publication remains 2026-08-27. A fresh logged-out gl=UZ&hl=uz page still renders the old public title Nimbo, so approval and propagation are not claimed. This proves review submission, not approval, publication, propagation, or a later policy guarantee. See growth/quality/store-policy-console-2026-08-28.md, growth/quality/google-play-console-2026-08-29.md, growth/quality/google-play-console-2026-08-31.md, and growth/quality/store-release-recheck-2026-09-01.md."
     }
   },
   "scale_status": "hold",
-  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. Liquid Glass candidate13 is prepared for user-requested Internal/TestFlight testing only. Signing, signed-runtime evidence, delivery, review, production rollout and public availability remain separate. Existing build12 store submissions are not modified by this local source transition."
+  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. Candidate13 UI changes are being validated locally. Signing, signed-runtime evidence, delivery, review, production rollout and public availability remain separate. Existing build12 store submissions are unchanged."
 }
