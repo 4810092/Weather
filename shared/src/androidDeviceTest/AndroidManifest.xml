@@ -3,6 +3,7 @@
     <application>
         <activity
             android:name="uz.ganikhodjaev.weather.shared.ui.NimboLocaleTestActivity"
+            android:theme="@android:style/Theme.Material.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

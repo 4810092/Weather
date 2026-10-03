@@ -18,7 +18,7 @@ internal val LightColors = lightColorScheme(
     primaryContainer = Color(0xFFD2EAF6),
     onPrimaryContainer = Color(0xFF153F54),
     inversePrimary = Color(0xFFA8D8F0),
-    secondary = Color(0xFF5B7282),
+    secondary = Color(0xFF465D6C),
     onSecondary = Color.White,
     secondaryContainer = Color(0xFFDDE8EE),
     onSecondaryContainer = Color(0xFF263B47),
@@ -126,7 +126,7 @@ internal val LightThemeTokens = NimboThemeTokens(
     selectedSurface = Color(0xE6F8FBFF),
     statusSurface = Color(0xB8F8FBFF),
     divider = Color(0x3D8796A0),
-    pastContentAlpha = 0.55f
+    pastContentAlpha = 0.72f
 )
 
 internal val DarkThemeTokens = NimboThemeTokens(

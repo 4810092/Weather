@@ -1,6 +1,7 @@
 package uz.ganikhodjaev.weather.shared.ui
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -8,6 +9,44 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class NimboThemeContrastTest {
+    @Test
+    fun glassKeepsTextReadableAcrossWeatherThemesAndTransparencyModes() {
+        listOf(
+            Triple(LightThemeTokens, LightGlassStyle, LightColors),
+            Triple(DarkThemeTokens, DarkGlassStyle, DarkColors)
+        ).forEach { (tokens, glass, colors) ->
+            val stops = listOf(
+                tokens.clearBackground,
+                tokens.rainBackground,
+                tokens.snowBackground,
+                tokens.defaultBackground
+            ).flatten()
+            stops.forEach { stop ->
+                // The brightest possible overlapping light spots, plus unlit background.
+                val glow = glass.glow.copy(alpha = glass.glow.alpha * 0.5f)
+                    .compositeOver(glass.glow.compositeOver(stop))
+                listOf(stop, glow).forEach { background ->
+                    assertContrastAtLeast(colors.onBackground, background, 4.5)
+                    assertContrastAtLeast(colors.secondary, background, 4.5)
+                    val pastText = colors.onSurface.copy(alpha = tokens.pastContentAlpha)
+                        .compositeOver(background)
+                    val pastSurface = glass.tint.compositeOver(background)
+                        .copy(alpha = tokens.pastContentAlpha).compositeOver(background)
+                    assertContrastAtLeast(pastText, pastSurface, 4.5)
+                    listOf(glass.tint, glass.controlTint, glass.selectedTint).forEach { tint ->
+                        listOf(
+                            tint.compositeOver(background),
+                            tint.copy(alpha = 1f)
+                        ).forEach { surface ->
+                            assertContrastAtLeast(colors.onSurface, surface, 4.5)
+                            assertContrastAtLeast(colors.secondary, surface, 4.5)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Test
     fun darkWeatherBackgroundsKeepTextReadable() {
         val backgroundStops = listOf(

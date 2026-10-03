@@ -65,4 +65,21 @@ fi
 
 python3 scripts/verify_android_ui_results.py \
   --root shared/build/outputs/androidTest-results \
-  --expected-tests 5
+  --expected-tests 8
+
+# Gradle collects additional test output before uninstalling the test APK.
+python3 - "$matrix_name" <<'PY_CAPTURE'
+import shutil
+import sys
+from pathlib import Path
+
+root = Path("shared/build/outputs/connected_android_test_additional_output")
+destination = Path("build/android-ui-diagnostics") / f"{sys.argv[1]}-glass"
+destination.mkdir(parents=True, exist_ok=True)
+for name in ("light.png", "dark.png"):
+    matches = list(root.rglob(name))
+    if len(matches) != 1:
+        raise SystemExit(f"Expected one current {name} screenshot under {root}, found {len(matches)}")
+    shutil.copy2(matches[0], destination / name)
+print(f"Glass screenshots saved to {destination}")
+PY_CAPTURE

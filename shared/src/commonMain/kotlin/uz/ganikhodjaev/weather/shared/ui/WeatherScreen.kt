@@ -27,18 +27,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -48,7 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -119,35 +112,39 @@ internal fun WeatherScreen(
     themePreference: ThemePreference,
     onThemePreferenceChanged: (ThemePreference) -> Unit
 ) {
-    when (state) {
-        WeatherUiState.Loading -> LoadingScreen()
-        is WeatherUiState.ChooseLocation -> ChooseLocationScreen(
-            state = state,
-            onQueryChanged = onSearchQueryChanged,
-            onLocationSelected = onLocationSelected,
-            onLocationDeleted = onLocationDeleted,
-            onUseDeviceLocation = onUseDeviceLocation,
-            onCancel = onCancelLocationChange
-        )
-        is WeatherUiState.EmptyError -> ErrorScreen(
-            message = state.message.localized(),
-            onRetry = onRetry,
-            onChangeLocation = onChangeLocation
-        )
-        is WeatherUiState.Content -> WeatherContent(
-            state,
-            onRetry,
-            onChangeLocation,
-            onUnitPreferenceChanged,
-            onShareText,
-            storeUrl,
-            reviewUrl,
-            supportUrl,
-            onAddLocationFromFirstForecastTip,
-            onDismissFirstForecastTip,
-            themePreference,
-            onThemePreferenceChanged
-        )
+    val condition = (state as? WeatherUiState.Content)?.weather?.current?.weatherCode
+        ?.let(::weatherCondition) ?: WeatherCondition.Cloudy
+    NimboGlassScene(condition) {
+        when (state) {
+            WeatherUiState.Loading -> LoadingScreen()
+            is WeatherUiState.ChooseLocation -> ChooseLocationScreen(
+                state = state,
+                onQueryChanged = onSearchQueryChanged,
+                onLocationSelected = onLocationSelected,
+                onLocationDeleted = onLocationDeleted,
+                onUseDeviceLocation = onUseDeviceLocation,
+                onCancel = onCancelLocationChange
+            )
+            is WeatherUiState.EmptyError -> ErrorScreen(
+                message = state.message.localized(),
+                onRetry = onRetry,
+                onChangeLocation = onChangeLocation
+            )
+            is WeatherUiState.Content -> WeatherContent(
+                state,
+                onRetry,
+                onChangeLocation,
+                onUnitPreferenceChanged,
+                onShareText,
+                storeUrl,
+                reviewUrl,
+                supportUrl,
+                onAddLocationFromFirstForecastTip,
+                onDismissFirstForecastTip,
+                themePreference,
+                onThemePreferenceChanged
+            )
+        }
     }
 }
 
@@ -162,38 +159,40 @@ private fun ChooseLocationScreen(
 ) {
     var pendingDeletion by remember { mutableStateOf<Location?>(null) }
     pendingDeletion?.let { location ->
-        AlertDialog(
-            onDismissRequest = { pendingDeletion = null },
-            title = { Text(stringResource(Res.string.remove_saved_place)) },
-            text = {
-                Text(
-                    stringResource(
-                        Res.string.remove_saved_place_message,
-                        location.name.ifBlank { stringResource(Res.string.current_location) }
+        // Dialogs have their own window; do not sample the main window's graphics layer.
+        CompositionLocalProvider(LocalGlassBackdrop provides null) {
+            AlertDialog(
+                onDismissRequest = { pendingDeletion = null },
+                title = { Text(stringResource(Res.string.remove_saved_place)) },
+                text = {
+                    Text(
+                        stringResource(
+                            Res.string.remove_saved_place_message,
+                            location.name.ifBlank { stringResource(Res.string.current_location) }
+                        )
                     )
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onLocationDeleted(location)
-                        pendingDeletion = null
+                },
+                confirmButton = {
+                    GlassButton(
+                        onClick = {
+                            onLocationDeleted(location)
+                            pendingDeletion = null
+                        }
+                    ) {
+                        Text(stringResource(Res.string.remove))
                     }
-                ) {
-                    Text(stringResource(Res.string.remove))
+                },
+                dismissButton = {
+                    GlassButton(onClick = { pendingDeletion = null }) {
+                        Text(stringResource(Res.string.cancel))
+                    }
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { pendingDeletion = null }) {
-                    Text(stringResource(Res.string.cancel))
-                }
-            }
-        )
+            )
+        }
     }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
@@ -220,7 +219,7 @@ private fun ChooseLocationScreen(
                         fontWeight = FontWeight.SemiBold
                     )
                     if (state.canCancel) {
-                        TextButton(onClick = onCancel) {
+                        GlassButton(onClick = onCancel) {
                             Text(stringResource(Res.string.cancel), fontWeight = FontWeight.Medium)
                         }
                     }
@@ -260,7 +259,7 @@ private fun ChooseLocationScreen(
                             key = { state.quickLocations[it].id }
                         ) { index ->
                             val location = state.quickLocations[index].localized()
-                            OutlinedButton(onClick = { onLocationSelected(location) }) {
+                            GlassButton(onClick = { onLocationSelected(location) }) {
                                 Text(location.name)
                             }
                         }
@@ -284,8 +283,9 @@ private fun ChooseLocationScreen(
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
+                                    .nimboGlass(shape = RoundedCornerShape(18.dp))
                                     .clickable { onLocationSelected(location) }
-                                    .padding(vertical = 8.dp)
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 Text(
                                     location.name.ifBlank {
@@ -303,7 +303,7 @@ private fun ChooseLocationScreen(
                             if (location.id != state.activeLocationId) {
                                 val removeDescription = "${location.name}, " +
                                     stringResource(Res.string.remove_saved_place)
-                                IconButton(
+                                GlassIconButton(
                                     onClick = { pendingDeletion = location }
                                 ) {
                                     Icon(
@@ -320,7 +320,9 @@ private fun ChooseLocationScreen(
                 OutlinedTextField(
                     value = state.query,
                     onValueChange = onQueryChanged,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().nimboGlass(
+                        shape = RoundedCornerShape(12.dp)
+                    ),
                     singleLine = true,
                     label = { Text(stringResource(Res.string.search_city)) },
                     supportingText = { Text(stringResource(Res.string.change_later)) }
@@ -342,8 +344,10 @@ private fun ChooseLocationScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .nimboGlass(shape = RoundedCornerShape(18.dp))
                             .clickable { onLocationSelected(location) }
-                            .padding(vertical = 14.dp)
+                            .padding(horizontal = 12.dp, vertical = 14.dp)
                             .semantics {
                                 contentDescription = "${location.name}, ${location.country}"
                             }
@@ -370,7 +374,7 @@ private fun ChooseLocationScreen(
                 }
 
                 Spacer(Modifier.height(24.dp))
-                OutlinedButton(
+                GlassButton(
                     onClick = onUseDeviceLocation,
                     enabled = !state.isLocating,
                     modifier = Modifier.fillMaxWidth()
@@ -419,11 +423,12 @@ private fun UzbekistanQuickLocation.localized(): Location {
 private fun LoadingScreen() {
     val loadingDescription = stringResource(Res.string.loading_weather)
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.semantics { contentDescription = loadingDescription }
+            modifier = Modifier.nimboGlass(shape = RoundedCornerShape(50)).padding(20.dp)
+                .semantics { contentDescription = loadingDescription }
         )
     }
 }
@@ -433,7 +438,6 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(
             modifier = Modifier
@@ -442,7 +446,8 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: 
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().widthIn(max = 560.dp).padding(32.dp),
+                modifier = Modifier.fillMaxWidth().widthIn(max = 560.dp).padding(24.dp)
+                    .nimboGlass().padding(24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -457,9 +462,9 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit, onChangeLocation: 
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(Modifier.height(24.dp))
-                Button(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
+                GlassButton(onClick = onRetry) { Text(stringResource(Res.string.try_again)) }
                 Spacer(Modifier.height(8.dp))
-                OutlinedButton(onClick = onChangeLocation) {
+                GlassButton(onClick = onChangeLocation) {
                     Text(stringResource(Res.string.change_place))
                 }
             }
@@ -485,7 +490,6 @@ private fun WeatherContent(
     val weather = state.weather
     var selected by remember(weather.fetchedAtEpochSeconds) { mutableStateOf(weather.current) }
     val condition = weatherCondition(weather.current.weatherCode)
-    val background = LocalNimboThemeTokens.current.ambience(condition)
     val insights = remember(weather) { WeatherInsightEngine().evaluate(weather) }
     val weatherShareSummary = stringResource(
         Res.string.share_weather_text,
@@ -509,7 +513,6 @@ private fun WeatherContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(background)
     ) {
         BoxWithConstraints(
             modifier = Modifier
@@ -579,28 +582,28 @@ private fun WeatherContent(
                                 .clickable { uriHandler.openUri("https://open-meteo.com/") }
                                 .padding(vertical = 12.dp)
                         )
-                        TextButton(
+                        GlassButton(
                             onClick = {
                                 uriHandler.openUri("https://nimbo.uz/")
                             }
                         ) {
                             Text(stringResource(Res.string.about_nimbo))
                         }
-                        TextButton(
+                        GlassButton(
                             onClick = {
                                 uriHandler.openUri(supportUrl)
                             }
                         ) {
                             Text(stringResource(Res.string.help_and_feedback))
                         }
-                        TextButton(
+                        GlassButton(
                             onClick = {
                                 uriHandler.openUri(reviewUrl)
                             }
                         ) {
                             Text(stringResource(Res.string.rate_nimbo))
                         }
-                        TextButton(
+                        GlassButton(
                             onClick = {
                                 uriHandler.openUri(
                                     "https://nimbo.uz/privacy/"
@@ -609,7 +612,7 @@ private fun WeatherContent(
                         ) {
                             Text(stringResource(Res.string.privacy_policy))
                         }
-                        TextButton(
+                        GlassButton(
                             onClick = {
                                 uriHandler.openUri(
                                     "https://github.com/4810092/Weather/blob/master/LICENSE"
@@ -630,8 +633,7 @@ private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.88f))
+            .nimboGlass(shape = RoundedCornerShape(20.dp))
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Text(
@@ -646,13 +648,13 @@ private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit) {
             color = MaterialTheme.colorScheme.secondary
         )
         Spacer(Modifier.height(12.dp))
-        Button(
+        GlassButton(
             onClick = onAddLocation,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(Res.string.first_forecast_tip_add_city))
         }
-        TextButton(
+        GlassButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.End)
         ) {
@@ -708,13 +710,13 @@ private fun WeatherHeader(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedIconButton(onClick = onShare) {
+            GlassIconButton(onClick = onShare) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
                     contentDescription = stringResource(Res.string.share_weather)
                 )
             }
-            OutlinedIconButton(
+            GlassIconButton(
                 onClick = onRefresh,
                 enabled = !state.isRefreshing
             ) {
@@ -725,7 +727,7 @@ private fun WeatherHeader(
                     )
                 )
             }
-            FilledIconButton(onClick = onChangeLocation) {
+            GlassIconButton(onClick = onChangeLocation, selected = true) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_location),
                     contentDescription = stringResource(Res.string.change_place)
@@ -791,10 +793,7 @@ private fun CurrentSummary(
         Text(
             text = state.refreshMessage?.localized() ?: stringResource(Res.string.saved_weather),
             modifier = Modifier
-                .background(
-                    LocalNimboThemeTokens.current.statusSurface,
-                    RoundedCornerShape(12.dp)
-                )
+                .nimboGlass(shape = RoundedCornerShape(12.dp))
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodyMedium
@@ -878,7 +877,7 @@ private fun AirQualityCard(air: AirQualityHour) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(LocalNimboThemeTokens.current.subtleSurface, RoundedCornerShape(22.dp))
+            .nimboGlass(shape = RoundedCornerShape(22.dp))
             .padding(20.dp)
     ) {
         Text(stringResource(Res.string.air_quality), fontWeight = FontWeight.SemiBold)
@@ -934,10 +933,7 @@ private fun TenDayForecast(
                 Column(
                     modifier = Modifier
                         .width(138.dp)
-                        .background(
-                            LocalNimboThemeTokens.current.subtleSurface,
-                            RoundedCornerShape(18.dp)
-                        )
+                        .nimboGlass(shape = RoundedCornerShape(18.dp))
                         .padding(14.dp)
                 ) {
                     Text(title, style = MaterialTheme.typography.labelMedium)
@@ -999,10 +995,7 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
                 Column(
                     modifier = Modifier
                         .width(116.dp)
-                        .background(
-                            LocalNimboThemeTokens.current.subtleSurface,
-                            RoundedCornerShape(18.dp)
-                        )
+                        .nimboGlass(shape = RoundedCornerShape(18.dp))
                         .padding(14.dp)
                 ) {
                     Text(
@@ -1069,10 +1062,7 @@ private fun UnitsCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                LocalNimboThemeTokens.current.subtleSurface,
-                RoundedCornerShape(24.dp)
-            )
+            .nimboGlass(shape = RoundedCornerShape(24.dp))
             .padding(18.dp)
     ) {
         Text(stringResource(Res.string.units), fontWeight = FontWeight.SemiBold)
@@ -1111,10 +1101,7 @@ private fun ThemeCard(preference: ThemePreference, onPreferenceChanged: (ThemePr
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                LocalNimboThemeTokens.current.subtleSurface,
-                RoundedCornerShape(24.dp)
-            )
+            .nimboGlass(shape = RoundedCornerShape(24.dp))
             .padding(18.dp)
     ) {
         Text(stringResource(Res.string.theme), fontWeight = FontWeight.SemiBold)
@@ -1167,14 +1154,15 @@ private fun ThemeButton(
         )
     }
     if (selectedOption) {
-        Button(
+        GlassButton(
             onClick = {},
+            selected = true,
             modifier = buttonModifier,
             contentPadding = PaddingValues(horizontal = 6.dp),
             content = { content() }
         )
     } else {
-        OutlinedButton(
+        GlassButton(
             onClick = { onPreferenceChanged(option) },
             modifier = buttonModifier,
             contentPadding = PaddingValues(horizontal = 6.dp),
@@ -1207,14 +1195,15 @@ private fun UnitButton(
         )
     }
     if (selectedOption) {
-        Button(
+        GlassButton(
             onClick = {},
+            selected = true,
             modifier = buttonModifier,
             contentPadding = PaddingValues(horizontal = 6.dp),
             content = { content() }
         )
     } else {
-        OutlinedButton(
+        GlassButton(
             onClick = { onPreferenceChanged(option) },
             modifier = buttonModifier,
             contentPadding = PaddingValues(horizontal = 6.dp),
@@ -1242,10 +1231,7 @@ private fun OutsideCard(recommendation: OutsideRecommendation, timezone: String)
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                LocalNimboThemeTokens.current.cardSurface,
-                RoundedCornerShape(24.dp)
-            )
+            .nimboGlass(shape = RoundedCornerShape(24.dp))
             .padding(18.dp)
     ) {
         Text(stringResource(Res.string.best_time_outside), fontWeight = FontWeight.SemiBold)
@@ -1338,14 +1324,7 @@ private fun Timeline(
                                 1f
                             }
                         )
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(
-                            if (isSelected) {
-                                LocalNimboThemeTokens.current.selectedSurface
-                            } else {
-                                Color.Transparent
-                            }
-                        )
+                        .nimboGlass(shape = RoundedCornerShape(18.dp), selected = isSelected)
                         .clickable { onSelected(hour) }
                         .semantics {
                             contentDescription = hourDescription
@@ -1401,10 +1380,7 @@ private fun SelectedHour(hour: WeatherHour, timezone: String, units: DisplayUnit
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                LocalNimboThemeTokens.current.cardSurface,
-                RoundedCornerShape(24.dp)
-            )
+            .nimboGlass(shape = RoundedCornerShape(24.dp))
             .padding(18.dp)
     ) {
         Text(isolatedLocalHour(hour.epochSeconds, timezone), fontWeight = FontWeight.SemiBold)

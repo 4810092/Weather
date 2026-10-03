@@ -13,7 +13,7 @@ plugins {
 kotlin {
     android {
         namespace = "uz.ganikhodjaev.weather.shared"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 24
         enableCoreLibraryDesugaring = true
         experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
@@ -23,6 +23,8 @@ kotlin {
         withHostTestBuilder {}.configure {}
         withDeviceTest {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            instrumentationRunnerArguments["additionalTestOutputDir"] =
+                "/sdcard/Android/media/uz.ganikhodjaev.weather.shared.test/additional_test_output"
             execution = "HOST"
         }
     }
@@ -41,6 +43,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(libs.backdrop)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)

@@ -2,22 +2,29 @@ package uz.ganikhodjaev.weather.shared.ui
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.os.Build
 import android.os.LocaleList
 import androidx.activity.ComponentActivity
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
@@ -25,6 +32,8 @@ import androidx.compose.ui.test.v2.runAndroidComposeUiTest
 import androidx.compose.ui.text.intl.Locale as ComposeLocale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.test.platform.app.InstrumentationRegistry
+import java.io.File
 import java.util.Locale as JavaLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,6 +52,91 @@ import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 
 @OptIn(ExperimentalTestApi::class)
 class WeatherScreenAndroidUiTest {
+    @Test
+    fun savedLocationDialogRemainsOperableOverGlass() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            var removed: Location? = null
+            setContent {
+                TestWeatherScreen(
+                    state = WeatherUiState.ChooseLocation(
+                        savedLocations = listOf(TASHKENT, BUKHARA),
+                        activeLocationId = TASHKENT.id
+                    ),
+                    theme = ThemePreference.Dark,
+                    onLocationDeleted = { removed = it }
+                )
+            }
+            onNodeWithContentDescription("Bukhara, Remove saved place").performClick()
+            onNodeWithText("Cancel").assertIsDisplayed().performClick()
+            runOnIdle { assertEquals(null, removed) }
+            onNodeWithContentDescription("Bukhara, Remove saved place").performClick()
+            onNodeWithText("Remove", useUnmergedTree = true).assertIsDisplayed().performClick()
+            runOnIdle { assertEquals(BUKHARA, removed) }
+        }
+    }
+
+    @Test
+    fun glassThemeSwitchKeepsControlsSelectedAndForecastReadable() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            var theme by mutableStateOf(ThemePreference.Light)
+            setContent {
+                TestWeatherScreen(
+                    state = contentState(),
+                    theme = theme,
+                    onThemePreferenceChanged = { theme = it }
+                )
+            }
+            onNodeWithText("Tashkent").assertIsDisplayed()
+            waitForIdle()
+            saveGlassScreenshot(
+                "light",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+            onNodeWithText("Dark", useUnmergedTree = true).performScrollTo().performClick()
+            onNodeWithText("Dark").assertIsSelected()
+            runOnIdle { assertEquals(ThemePreference.Dark, theme) }
+            onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
+            onNodeWithContentDescription("Refresh").assertHasClickAction()
+            waitForIdle()
+            saveGlassScreenshot(
+                "dark",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+        }
+    }
+
+    @Test
+    fun darkGlassForecastRemainsOperableWithLargeTextAndDisabledRefresh() =
+        withTestLocale("en-US") {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
+                var refreshes = 0
+                setContent {
+                    TestWeatherScreen(
+                        state = contentState().copy(isRefreshing = true),
+                        theme = ThemePreference.Dark,
+                        fontScale = 2f,
+                        onRetry = { refreshes++ }
+                    )
+                }
+                onNodeWithContentDescription("Refreshing…").performClick()
+                runOnIdle { assertEquals(0, refreshes) }
+                onNodeWithText("Dark").performScrollTo().assertIsDisplayed().assertIsSelected()
+                onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
+            }
+        }
+
     @Test
     fun onboardingDoesNotRequestLocationUntilTapAndOffersPermissionFreeSearch() =
         withTestLocale("en-US") {
@@ -248,9 +342,12 @@ class WeatherScreenAndroidUiTest {
 private fun TestWeatherScreen(
     state: WeatherUiState,
     fontScale: Float = 1f,
+    theme: ThemePreference = ThemePreference.Light,
+    onThemePreferenceChanged: (ThemePreference) -> Unit = {},
     onRetry: () -> Unit = {},
     onSearchQueryChanged: (String) -> Unit = {},
     onLocationSelected: (Location) -> Unit = {},
+    onLocationDeleted: (Location) -> Unit = {},
     onUseDeviceLocation: () -> Unit = {},
     onChangeLocation: () -> Unit = {},
     onShareText: (String) -> Unit = {},
@@ -264,17 +361,34 @@ private fun TestWeatherScreen(
         "Compose locale $composeLanguage does not match injected locale $injectedLanguage"
     }
     CompositionLocalProvider(
+        LocalContentColor provides
+            if (theme ==
+                ThemePreference.Dark
+            ) {
+                DarkColors.onBackground
+            } else {
+                LightColors.onBackground
+            },
         LocalDensity provides Density(currentDensity.density, fontScale),
         LocalLayoutDirection provides layoutDirectionForLanguage(injectedLanguage),
-        LocalNimboThemeTokens provides LightThemeTokens
+        LocalNimboThemeTokens provides
+            if (theme == ThemePreference.Dark) DarkThemeTokens else LightThemeTokens
     ) {
-        MaterialTheme(colorScheme = LightColors) {
+        MaterialTheme(
+            colorScheme = if (theme ==
+                ThemePreference.Dark
+            ) {
+                DarkColors
+            } else {
+                LightColors
+            }
+        ) {
             WeatherScreen(
                 state = state,
                 onRetry = onRetry,
                 onSearchQueryChanged = onSearchQueryChanged,
                 onLocationSelected = onLocationSelected,
-                onLocationDeleted = {},
+                onLocationDeleted = onLocationDeleted,
                 onUseDeviceLocation = onUseDeviceLocation,
                 onChangeLocation = onChangeLocation,
                 onCancelLocationChange = {},
@@ -285,10 +399,32 @@ private fun TestWeatherScreen(
                 supportUrl = "https://nimbo.uz/support/",
                 onAddLocationFromFirstForecastTip = onAddLocationFromFirstForecastTip,
                 onDismissFirstForecastTip = onDismissFirstForecastTip,
-                themePreference = ThemePreference.Light,
-                onThemePreferenceChanged = {}
+                themePreference = theme,
+                onThemePreferenceChanged = onThemePreferenceChanged
             )
         }
+    }
+}
+
+private fun saveGlassScreenshot(name: String, captured: Bitmap?) {
+    val bitmap =
+        captured
+            ?: requireNotNull(
+                InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
+            )
+    val sampledColors = (1..16).flatMap { x ->
+        (1..16).map { y -> bitmap.getPixel(bitmap.width * x / 17, bitmap.height * y / 17) }
+    }.toSet()
+    assertTrue(
+        sampledColors.size > 16,
+        "Screenshot must contain rendered content, not a blank window"
+    )
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val directory = File(context.externalMediaDirs.first(), "additional_test_output").apply {
+        mkdirs()
+    }
+    File(directory, "$name.png").outputStream().use {
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
     }
 }
 

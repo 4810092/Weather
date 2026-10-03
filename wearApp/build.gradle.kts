@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "uz.ganikhodjaev.weather.wear"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "uz.ganikhodjaev.weather"
@@ -13,7 +13,7 @@ android {
         targetSdk = 36
         // Play requires a version code that is unique across every form factor.
         // Keep Wear OS in a separate range so phone and watch releases can evolve independently.
-        versionCode = 1_000_012
+        versionCode = 1_000_013
         versionName = "1.1.0"
     }
 

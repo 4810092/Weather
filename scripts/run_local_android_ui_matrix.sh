@@ -152,6 +152,12 @@ phone_api24_avd="$(resolve_avd "${NIMBO_AVD_PHONE_API24:-}" 24 phone NIMBO_AVD_P
 phone_api36_avd="$(resolve_avd "${NIMBO_AVD_PHONE_API36:-}" 36 phone NIMBO_AVD_PHONE_API36)"
 tablet_api36_avd="$(resolve_avd "${NIMBO_AVD_TABLET_API36:-}" 36 tablet NIMBO_AVD_TABLET_API36)"
 
-run_matrix_entry phone-api24 24 "$phone_api24_avd" 5580
-run_matrix_entry phone-api36 36 "$phone_api36_avd" 5582
-run_matrix_entry tablet-api36 36 "$tablet_api36_avd" 5584
+base_port="${NIMBO_ANDROID_UI_BASE_PORT:-5580}"
+if [[ ! "$base_port" =~ ^[0-9]{4}$ ]] || (( base_port < 5554 || base_port > 5678 || base_port % 2 != 0 )); then
+  echo "NIMBO_ANDROID_UI_BASE_PORT must be an even port between 5554 and 5678." >&2
+  exit 64
+fi
+
+run_matrix_entry phone-api24 24 "$phone_api24_avd" "$base_port"
+run_matrix_entry phone-api36 36 "$phone_api36_avd" "$((base_port + 2))"
+run_matrix_entry tablet-api36 36 "$tablet_api36_avd" "$((base_port + 4))"

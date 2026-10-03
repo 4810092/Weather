@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace = "uz.ganikhodjaev.weather"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "uz.ganikhodjaev.weather"
         minSdk = 24
         targetSdk = 36
-        versionCode = 12
+        versionCode = 13
         versionName = "1.1.0"
     }
 
