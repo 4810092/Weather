@@ -132,7 +132,7 @@ def main():
         documents[source] = fetch(source).strip()
     for source, document in documents.items():
         sections.append(f"License document\nSource: {source}\n\n{document}")
-    DEST.write_text("\n\n\f\n\n".join(sections) + "\n")
+    DEST.write_text(("\n\n\f\n\n".join(sections) + "\n").replace("\r\n", "\n"))
     print(f"Bundled {len(coordinates)} resolved components, {len(documents)} license documents, {len(original_notices)} original notices")
 
 
