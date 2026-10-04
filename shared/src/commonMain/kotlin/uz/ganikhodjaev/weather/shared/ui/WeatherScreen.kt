@@ -88,10 +88,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.abs
 import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import uz.ganikhodjaev.weather.shared.domain.BestTimeOutsideEngine
@@ -102,7 +99,6 @@ import uz.ganikhodjaev.weather.shared.domain.TemperatureComparison
 import uz.ganikhodjaev.weather.shared.domain.UpcomingInsight
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsightEngine
 import uz.ganikhodjaev.weather.shared.domain.WeatherInsights
-import uz.ganikhodjaev.weather.shared.domain.localDateDaysAgo
 import uz.ganikhodjaev.weather.shared.formatShareMessage
 import uz.ganikhodjaev.weather.shared.model.AirQualityHour
 import uz.ganikhodjaev.weather.shared.model.DailyForecast
@@ -1064,7 +1060,7 @@ private fun WeatherDetails(
     }
     if (recentDays.isNotEmpty()) {
         Spacer(Modifier.height(18.dp))
-        RecentDays(recentDays, state.displayUnits, horizontalPadding)
+        RecentDays(recentDays, weather.location.id, state.displayUnits, horizontalPadding)
     }
 }
 
@@ -1283,17 +1279,24 @@ private fun TenDayForecast(
     }
 }
 
-private data class RecentDaySummary(
-    val epochSeconds: Long,
-    val timezone: String,
-    val averageC: Double,
-    val lowC: Double,
-    val highC: Double
-)
-
 @Composable
-private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, contentPadding: Dp) {
-    val recentDaysScroll = rememberLazyListState()
+private fun RecentDays(
+    days: List<RecentDaySummary>,
+    locationId: String,
+    units: DisplayUnits,
+    contentPadding: Dp
+) {
+    val recentDaysScroll = rememberLazyListState(initialFirstVisibleItemIndex = days.lastIndex)
+    val dayKeys = days.map { weatherDate(it.epochSeconds, it.timezone).toString() }
+    val latestDay = dayKeys.last()
+    var positionedDay by rememberSaveable(locationId) { mutableStateOf<String?>(null) }
+    LaunchedEffect(locationId, latestDay) {
+        // Reopen a city or advance to a new day at the end; ordinary refreshes preserve browsing.
+        if (positionedDay != latestDay) {
+            recentDaysScroll.scrollToItem(days.lastIndex)
+            positionedDay = latestDay
+        }
+    }
     val cardWidth = (156 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp
     val cardText = days.map { day ->
         listOf(
@@ -1340,12 +1343,13 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
         ) {
             items(
                 count = days.size,
-                key = { index -> days[index].epochSeconds }
+                key = { index -> dayKeys[index] }
             ) { index ->
                 val texts = cardText[index]
                 Column(
                     modifier = Modifier
                         .width(cardWidth).height(cardHeight)
+                        .testTag("recent-day-${dayKeys[index]}")
                         .nimboGlass(shape = RoundedCornerShape(18.dp))
                         .semantics(mergeDescendants = true) { }
                         .padding(14.dp)
@@ -1373,28 +1377,6 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
                 }
             }
         }
-    }
-}
-
-private fun recentDaySummaries(weather: WeatherSnapshot): List<RecentDaySummary> {
-    val zone = runCatching { TimeZone.of(weather.location.timezone) }.getOrElse { TimeZone.UTC }
-    return (1..7).mapNotNull { daysAgo ->
-        val targetDate = localDateDaysAgo(
-            epochSeconds = weather.current.epochSeconds,
-            timezone = weather.location.timezone,
-            daysAgo = daysAgo
-        )
-        val hours = weather.recentHistory.filter { hour ->
-            Instant.fromEpochSeconds(hour.epochSeconds).toLocalDateTime(zone).date == targetDate
-        }
-        if (hours.isEmpty()) return@mapNotNull null
-        RecentDaySummary(
-            epochSeconds = hours.first().epochSeconds,
-            timezone = weather.location.timezone,
-            averageC = hours.map { it.temperatureC }.average(),
-            lowC = hours.minOf { it.temperatureC },
-            highC = hours.maxOf { it.temperatureC }
-        )
     }
 }
 

@@ -68,6 +68,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Clock
+import kotlin.time.Instant
 import uz.ganikhodjaev.weather.shared.layoutDirectionForLanguage
 import uz.ganikhodjaev.weather.shared.model.DailyForecast
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
@@ -456,6 +457,71 @@ class WeatherScreenAndroidUiTest {
     }
 
     @Test
+    fun recentDaysAreChronologicalStartAtTodayAndPreserveBrowsingUntilCityOrDayChanges() =
+        withTestLocale("ru") {
+            runAndroidComposeUiTest<NimboLocaleTestActivity> {
+                val base = contentState()
+                val current = base.weather.current.copy(
+                    epochSeconds = Instant.parse("2026-10-04T08:00:00Z").epochSeconds
+                )
+                var state by mutableStateOf(
+                    base.copy(
+                        weather = base.weather.copy(
+                            current = current,
+                            timeline = listOf(current),
+                            recentHistory = (1..7).map {
+                                current.copy(
+                                    epochSeconds =
+                                    current.epochSeconds - it * 86_400
+                                )
+                            }
+                        )
+                    )
+                )
+                setContent { TestWeatherScreen(state = state) }
+                val row = onNodeWithTag("recent-forecast")
+                row.performScrollTo()
+                onNodeWithTag("recent-day-2026-10-04").assertIsDisplayed()
+                captureFeedbackScreenshot("recent-days-at-today")
+
+                row.performScrollToIndex(0)
+                val first = onNodeWithTag("recent-day-2026-09-27").assertIsDisplayed()
+                val second = onNodeWithTag("recent-day-2026-09-28")
+                val firstX = first.fetchSemanticsNode().boundsInRoot.center.x
+                assertTrue(firstX < second.fetchSemanticsNode().boundsInRoot.center.x)
+                runOnIdle {
+                    state = state.copy(
+                        weather = state.weather.copy(
+                            current = current.copy(epochSeconds = current.epochSeconds + 3_600),
+                            fetchedAtEpochSeconds = current.epochSeconds + 3_600
+                        )
+                    )
+                }
+                waitForIdle()
+                assertEquals(firstX, first.fetchSemanticsNode().boundsInRoot.center.x)
+                onNodeWithContentDescription("Настройки").performScrollTo().performClick()
+                onNodeWithText("Назад").performClick()
+                row.performScrollTo()
+                assertEquals(firstX, first.fetchSemanticsNode().boundsInRoot.center.x)
+
+                runOnIdle { state = state.copy(weather = state.weather.copy(location = BUKHARA)) }
+                waitForIdle()
+                onNodeWithTag("recent-day-2026-10-04").assertIsDisplayed()
+                row.performScrollToIndex(0)
+                runOnIdle {
+                    state = state.copy(
+                        weather = state.weather.copy(
+                            current = current.copy(epochSeconds = current.epochSeconds + 86_400),
+                            recentHistory = state.weather.recentHistory + current
+                        )
+                    )
+                }
+                waitForIdle()
+                onNodeWithTag("recent-day-2026-10-05").assertIsDisplayed()
+            }
+        }
+
+    @Test
     fun horizontalForecastCardsKeepUniformHeightWithLargeRussianText() = withTestLocale("ru") {
         runAndroidComposeUiTest<NimboLocaleTestActivity> {
             val base = contentState()
@@ -492,7 +558,7 @@ class WeatherScreenAndroidUiTest {
             for ((tag, indices) in listOf(
                 "hourly-forecast" to listOf(0, 24, 48),
                 "daily-forecast" to listOf(0, 1, 3),
-                "recent-forecast" to listOf(0, 3, 6)
+                "recent-forecast" to listOf(0, 3, 6, 7)
             )) {
                 val heights = mutableListOf<Float>()
                 for (index in indices) {
