@@ -124,7 +124,7 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Current UI completion source c7f87e4bd9d16860507bf7331c592a3e60d3911c identifies phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). The current upload manifest is blocked pending new signing and byte verification. The listed build12 signing/materialization records and earlier delivery records are historical only. Fresh emulator/simulator runtime QA, Google Play Internal delivery, TestFlight delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact are separate and unproved for this candidate. The user requested testing only; no featuring or production action is authorized.",
+      "claim": "Current UI completion source 59a0ad381aeee892dfac51a85ccd15c2fb294773 identifies phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). The current upload manifest is blocked pending new signing and byte verification. The listed build12 signing/materialization records and earlier delivery records are historical only. Fresh emulator/simulator runtime QA, Google Play Internal delivery, TestFlight delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact are separate and unproved for this candidate. The user requested testing only; no featuring or production action is authorized.",
       "evidence": [
         "store/upload-manifest-1.1.0.json",
         "growth/quality/signed-candidate-run-36361077488.md",
