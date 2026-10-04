@@ -22,11 +22,11 @@ internal object NimboPublicLinks {
 internal fun formatShareMessage(
     weatherSummary: String,
     storeCallToAction: String,
-    storeUrl: String
+    websiteUrl: String
 ): String = listOf(
     weatherSummary.replace("%%", "%").trim(),
     storeCallToAction.trim(),
-    storeUrl.trim()
+    websiteUrl.trim()
 )
     .filter(String::isNotBlank)
     .joinToString("\n")

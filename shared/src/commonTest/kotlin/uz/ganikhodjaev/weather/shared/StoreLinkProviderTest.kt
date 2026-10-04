@@ -4,6 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import uz.ganikhodjaev.weather.shared.ui.servicePageUrl
 
 class StoreLinkProviderTest {
     @Test
@@ -55,15 +56,15 @@ class StoreLinkProviderTest {
     }
 
     @Test
-    fun shareMessageAddsLocalizedCallToActionAndPlatformLinkOnSeparateLines() {
+    fun shareMessageAddsLocalizedCallToActionAndCrossPlatformWebsiteOnSeparateLines() {
         val message = formatShareMessage(
             weatherSummary = "Toshkent: 28°, 10% chance of rain — Nimbo",
             storeCallToAction = "Get Nimbo for your next walk:",
-            storeUrl = NimboStoreLinks.GOOGLE_PLAY
+            websiteUrl = servicePageUrl("en")
         )
 
         assertEquals(3, message.lines().size)
-        assertEquals(NimboStoreLinks.GOOGLE_PLAY, message.lines().last())
+        assertEquals("https://nimbo.uz/en/", message.lines().last())
         assertFalse("41.2995" in message)
         assertFalse("69.2401" in message)
     }
@@ -73,13 +74,13 @@ class StoreLinkProviderTest {
         val message = formatShareMessage(
             weatherSummary = "Ташкент: 29°, вероятность дождя 0%% — Nimbo",
             storeCallToAction = "Скачайте Nimbo для следующей прогулки:",
-            storeUrl = NimboStoreLinks.APP_STORE
+            websiteUrl = servicePageUrl("ru")
         )
 
         assertEquals(
             "Ташкент: 29°, вероятность дождя 0% — Nimbo\n" +
                 "Скачайте Nimbo для следующей прогулки:\n" +
-                NimboStoreLinks.APP_STORE,
+                "https://nimbo.uz/ru/",
             message
         )
         assertFalse("%%" in message)

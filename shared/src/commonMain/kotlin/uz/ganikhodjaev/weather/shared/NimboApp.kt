@@ -44,6 +44,7 @@ import uz.ganikhodjaev.weather.shared.review.considerReviewPrompt
 import uz.ganikhodjaev.weather.shared.ui.NimboTheme
 import uz.ganikhodjaev.weather.shared.ui.WeatherScreen
 import uz.ganikhodjaev.weather.shared.ui.createThemePreferenceStore
+import uz.ganikhodjaev.weather.shared.ui.servicePageUrl
 import uz.ganikhodjaev.weather.shared.units.automaticUnitSystem
 
 @Composable
@@ -145,7 +146,7 @@ fun NimboApp(platformContext: PlatformContext) {
                         onCancelLocationChange = stateHolder::cancelLocationPicker,
                         onUnitPreferenceChanged = stateHolder::setUnitPreference,
                         onShareText = { text -> shareText(platformContext, text) },
-                        storeUrl = storeLinkProvider.storeUrl,
+                        shareUrl = servicePageUrl(Locale.current.language),
                         reviewUrl = storeLinkProvider.reviewUrl,
                         supportUrl = NimboPublicLinks.SUPPORT,
                         onAddLocationFromFirstForecastTip = {

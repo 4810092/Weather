@@ -41,7 +41,9 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -65,6 +67,7 @@ import java.util.Locale as JavaLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Clock
 import uz.ganikhodjaev.weather.shared.layoutDirectionForLanguage
 import uz.ganikhodjaev.weather.shared.model.DailyForecast
 import uz.ganikhodjaev.weather.shared.model.DisplayUnits
@@ -325,11 +328,19 @@ class WeatherScreenAndroidUiTest {
                     .assertHasClickAction()
                 runOnIdle { assertEquals(0, locationRequests) }
 
+                // The explanatory lower half is part of the same location button.
+                onNodeWithText(
+                    "After you tap, Nimbo sends",
+                    substring = true,
+                    useUnmergedTree = true
+                )
+                    .performScrollTo().performTouchInput { click(center) }
+                runOnIdle { assertEquals(1, locationRequests) }
                 onNodeWithText("Use my approximate location").performClick()
                 onNodeWithText("Location access wasn’t granted. Search for a city instead.")
                     .performScrollTo()
                     .assertIsDisplayed()
-                runOnIdle { assertEquals(1, locationRequests) }
+                runOnIdle { assertEquals(2, locationRequests) }
 
                 onNode(hasSetTextAction()).performScrollTo().performClick().performTextInput("Bu")
                 onNode(hasText("Bukhara") and hasText("Uzbekistan") and hasClickAction())
@@ -349,13 +360,19 @@ class WeatherScreenAndroidUiTest {
             var shares = 0
             var addLocationTips = 0
             var dismissedTips = 0
+            var sharedText = ""
+            var density = 1f
 
             setContent {
+                density = LocalDensity.current.density
                 TestWeatherScreen(
                     state = contentState(showFirstForecastTip = true),
                     onRetry = { refreshes += 1 },
                     onChangeLocation = { changes += 1 },
-                    onShareText = { shares += 1 },
+                    onShareText = {
+                        shares += 1
+                        sharedText = it
+                    },
                     onAddLocationFromFirstForecastTip = { addLocationTips += 1 },
                     onDismissFirstForecastTip = { dismissedTips += 1 }
                 )
@@ -381,13 +398,115 @@ class WeatherScreenAndroidUiTest {
                 .assertHasClickAction()
                 .performClick()
             onNodeWithText("Got it").performScrollTo().assertHasClickAction().performClick()
+            val addBounds = onNodeWithText("Add another city").fetchSemanticsNode().boundsInRoot
+            val dismissBounds = onNodeWithText("Got it").fetchSemanticsNode().boundsInRoot
+            assertTrue(dismissBounds.top - addBounds.bottom >= 8 * density)
+            captureFeedbackScreenshot("first-forecast-spacing")
 
             runOnIdle {
                 assertEquals(1, refreshes)
                 assertEquals(1, changes)
                 assertEquals(1, shares)
+                assertEquals("https://nimbo.uz/en/", sharedText.lines().last())
                 assertEquals(1, addLocationTips)
                 assertEquals(1, dismissedTips)
+            }
+        }
+    }
+
+    @Test
+    fun currentHourReturnsToScreenCenterIncludingTimelineEdges() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            val base = contentState()
+            val epoch = Clock.System.now().epochSeconds / 3_600 * 3_600
+            fun weatherAt(index: Int) = base.weather.copy(
+                current = base.weather.current.copy(epochSeconds = epoch),
+                timeline = (0..48).map {
+                    base.weather.current.copy(epochSeconds = epoch + (it - index) * 3_600)
+                }
+            )
+            var state by mutableStateOf(base.copy(weather = weatherAt(24)))
+            setContent { TestWeatherScreen(state = state) }
+            for (index in listOf(24, 0, 48)) {
+                runOnIdle { state = state.copy(weather = weatherAt(index)) }
+                onNodeWithTag("hourly-forecast").performScrollTo().performScrollToIndex(
+                    if (index ==
+                        48
+                    ) {
+                        0
+                    } else {
+                        48
+                    }
+                )
+                onNodeWithText("Current hour").performScrollTo().performClick()
+                onNodeWithTag("hourly-forecast").performScrollTo()
+                waitForIdle()
+                val current = onNode(
+                    hasContentDescription(", NOW", substring = true) and hasClickAction()
+                )
+                    .assertIsSelected().assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+                val viewport = onNodeWithTag("hourly-forecast").fetchSemanticsNode().boundsInRoot
+                assertTrue(
+                    kotlin.math.abs(current.center.x - viewport.center.x) <= 1f,
+                    "Current hour index $index must be centered: $current in $viewport"
+                )
+            }
+            captureFeedbackScreenshot("current-hour-centered")
+        }
+    }
+
+    @Test
+    fun horizontalForecastCardsKeepUniformHeightWithLargeRussianText() = withTestLocale("ru") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            val base = contentState()
+            val hours = (0..48).map {
+                base.weather.current.copy(epochSeconds = TEST_EPOCH_SECONDS + it * 3_600)
+            }
+            val days = (0..3).map {
+                testDay().copy(
+                    epochSeconds = TEST_EPOCH_SECONDS + it * 86_400,
+                    weatherCode = if (it % 2 == 0) 0 else 2,
+                    temperatureMinC = if (it == 1) -42.0 else 18.0,
+                    precipitationProbabilityMax = if (it % 2 == 0) null else 100
+                )
+            }
+            val history = (1..7).map {
+                base.weather.current.copy(
+                    epochSeconds = TEST_EPOCH_SECONDS - it * 86_400,
+                    temperatureC =
+                    -5.0 * it
+                )
+            }
+            setContent {
+                TestWeatherScreen(
+                    state = base.copy(
+                        weather = base.weather.copy(
+                            timeline = hours,
+                            dailyForecast = days,
+                            recentHistory = history
+                        )
+                    ),
+                    fontScale = 1.6f
+                )
+            }
+            for ((tag, indices) in listOf(
+                "hourly-forecast" to listOf(0, 24, 48),
+                "daily-forecast" to listOf(0, 1, 3),
+                "recent-forecast" to listOf(0, 3, 6)
+            )) {
+                val heights = mutableListOf<Float>()
+                for (index in indices) {
+                    onNodeWithTag(tag).performScrollTo().performScrollToIndex(index)
+                    waitForIdle()
+                    heights += onNodeWithTag(tag).onChildren().fetchSemanticsNodes()
+                        .map { it.boundsInRoot.height }.filter { it > 0f }
+                }
+                assertTrue(heights.isNotEmpty(), "$tag must expose its cards")
+                assertTrue(
+                    heights.max() - heights.min() <= 1f,
+                    "$tag unequal card heights: $heights"
+                )
+                captureFeedbackScreenshot("uniform-$tag")
             }
         }
     }
@@ -806,7 +925,7 @@ private fun TestWeatherScreen(
                 onCancelLocationChange = onCancelLocationChange,
                 onUnitPreferenceChanged = {},
                 onShareText = onShareText,
-                storeUrl = "https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather",
+                shareUrl = servicePageUrl(composeLanguage),
                 reviewUrl = "https://play.google.com/store/apps/details?id=uz.ganikhodjaev.weather",
                 supportUrl = "https://nimbo.uz/support/",
                 onAddLocationFromFirstForecastTip = onAddLocationFromFirstForecastTip,
@@ -816,6 +935,15 @@ private fun TestWeatherScreen(
             )
         }
     }
+}
+
+@OptIn(ExperimentalTestApi::class)
+private fun ComposeUiTest.captureFeedbackScreenshot(name: String) {
+    waitForIdle()
+    saveGlassScreenshot(
+        name,
+        if (Build.VERSION.SDK_INT >= 26) onRoot().captureToImage().asAndroidBitmap() else null
+    )
 }
 
 /** Nested LazyRow scroll semantics do not bring the row into the vertical viewport. */

@@ -65,7 +65,7 @@ fi
 
 python3 scripts/verify_android_ui_results.py \
   --root shared/build/outputs/androidTest-results \
-  --expected-tests 17
+  --expected-tests 19
 
 # Gradle collects additional test output before uninstalling the test APK.
 python3 - "$matrix_name" <<'PY_CAPTURE'
@@ -79,6 +79,8 @@ destination.mkdir(parents=True, exist_ok=True)
 for name in (
     "light.png", "dark.png", "daily-details.png", "ru-settings-font-200.png",
     "city-picker-light.png", "city-picker-dark.png", "city-picker-ru-font-200.png",
+    "first-forecast-spacing.png", "current-hour-centered.png",
+    "uniform-hourly-forecast.png", "uniform-daily-forecast.png", "uniform-recent-forecast.png",
 ):
     matches = list(root.rglob(name))
     if len(matches) != 1:

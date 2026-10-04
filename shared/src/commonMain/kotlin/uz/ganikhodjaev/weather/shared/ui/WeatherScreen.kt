@@ -38,6 +38,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -63,6 +64,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -132,7 +134,7 @@ internal fun WeatherScreen(
     onCancelLocationChange: () -> Unit,
     onUnitPreferenceChanged: (UnitPreference) -> Unit,
     onShareText: (String) -> Unit,
-    storeUrl: String,
+    shareUrl: String,
     reviewUrl: String,
     supportUrl: String,
     onAddLocationFromFirstForecastTip: () -> Unit,
@@ -189,7 +191,7 @@ internal fun WeatherScreen(
                         onRetry,
                         onChangeLocation,
                         onShareText,
-                        storeUrl,
+                        shareUrl,
                         onAddLocationFromFirstForecastTip,
                         onDismissFirstForecastTip,
                         onSettings = { page = "settings" }
@@ -440,16 +442,17 @@ private fun ChooseLocationScreen(
                             }
                         }
                     }
-                    Column(Modifier.fillMaxWidth().nimboGlass()) {
+                    Column(
+                        Modifier.fillMaxWidth().nimboGlass(interactive = true)
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable(enabled = !state.isLocating, role = Role.Button) {
+                                keyboard?.hide()
+                                focus.clearFocus()
+                                onUseDeviceLocation()
+                            }
+                    ) {
                         Row(
-                            Modifier.fillMaxWidth().sizeIn(minHeight = 56.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                                .clickable(enabled = !state.isLocating, role = Role.Button) {
-                                    keyboard?.hide()
-                                    focus.clearFocus()
-                                    onUseDeviceLocation()
-                                }
-                                .padding(16.dp),
+                            Modifier.fillMaxWidth().sizeIn(minHeight = 56.dp).padding(16.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -696,7 +699,7 @@ private fun WeatherContent(
     onRefresh: () -> Unit,
     onChangeLocation: () -> Unit,
     onShareText: (String) -> Unit,
-    storeUrl: String,
+    shareUrl: String,
     onAddLocationFromFirstForecastTip: () -> Unit,
     onDismissFirstForecastTip: () -> Unit,
     onSettings: () -> Unit
@@ -716,7 +719,7 @@ private fun WeatherContent(
     val shareMessage = formatShareMessage(
         weatherSummary = weatherShareSummary,
         storeCallToAction = stringResource(Res.string.share_store_cta),
-        storeUrl = storeUrl
+        websiteUrl = shareUrl
     )
     val outside = remember(weather) {
         BestTimeOutsideEngine().evaluate(
@@ -831,6 +834,7 @@ private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit) {
         ) {
             Text(stringResource(Res.string.first_forecast_tip_add_city))
         }
+        Spacer(Modifier.height(12.dp))
         GlassButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.End)
@@ -1129,6 +1133,36 @@ private fun TenDayForecast(
 ) {
     var selectedDay by rememberSaveable { mutableStateOf<Long?>(null) }
     val selected = days.firstOrNull { it.epochSeconds == selectedDay }
+    val cardWidth = (152 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp
+    val cardText = days.map { day ->
+        listOf(
+            ForecastCardText(
+                formatLocalDay(day.epochSeconds, timezone),
+                MaterialTheme.typography.labelMedium
+            ),
+            ForecastCardText(
+                weatherCondition(day.weatherCode).label(),
+                MaterialTheme.typography.bodySmall
+            ),
+            ForecastCardText(
+                stringResource(
+                    Res.string.temperature_range,
+                    units.temperature(day.temperatureMinC),
+                    units.temperature(day.temperatureMaxC)
+                ),
+                LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold)
+            ),
+            ForecastCardText(
+                day.precipitationProbabilityMax?.let { "$it%" }.orEmpty(),
+                MaterialTheme.typography.bodySmall
+            )
+        )
+    }
+    val cardHeight = uniformForecastCardHeight(
+        cardText,
+        cardWidth - 32.dp,
+        listOf(16.dp, 16.dp, 28.dp) + List(4) { 8.dp }
+    )
     NimboBackHandler(enabled = selected != null) { selectedDay = null }
     Column {
         CenteredSection(contentPadding) {
@@ -1136,21 +1170,15 @@ private fun TenDayForecast(
         }
         Spacer(Modifier.height(10.dp))
         LazyRow(
+            modifier = Modifier.fillMaxWidth().testTag("daily-forecast"),
             contentPadding = PaddingValues(horizontal = contentPadding),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(days.size, key = { days[it].epochSeconds }) { index ->
                 val day = days[index]
-                val title = formatLocalDay(day.epochSeconds, timezone)
-                val condition = weatherCondition(day.weatherCode).label()
-                val range =
-                    stringResource(
-                        Res.string.temperature_range,
-                        units.temperature(day.temperatureMinC),
-                        units.temperature(day.temperatureMaxC)
-                    )
+                val texts = cardText[index]
                 Column(
-                    Modifier.width((152 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
+                    Modifier.width(cardWidth).height(cardHeight)
                         .nimboGlass(
                             shape = RoundedCornerShape(18.dp),
                             selected =
@@ -1168,12 +1196,12 @@ private fun TenDayForecast(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(title, style = MaterialTheme.typography.labelMedium)
+                    Text(texts[0].text, style = texts[0].style)
                     WeatherIcon(weatherCondition(day.weatherCode), Modifier.size(28.dp))
-                    Text(condition, style = MaterialTheme.typography.bodySmall)
-                    Text(range, fontWeight = FontWeight.SemiBold)
+                    Text(texts[1].text, style = texts[1].style)
+                    Text(texts[2].text, style = texts[2].style)
                     day.precipitationProbabilityMax?.let {
-                        Text("$it%", style = MaterialTheme.typography.bodySmall)
+                        Text(texts[3].text, style = texts[3].style)
                     }
                 }
             }
@@ -1266,6 +1294,36 @@ private data class RecentDaySummary(
 @Composable
 private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, contentPadding: Dp) {
     val recentDaysScroll = rememberLazyListState()
+    val cardWidth = (156 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp
+    val cardText = days.map { day ->
+        listOf(
+            ForecastCardText(
+                formatLocalDay(day.epochSeconds, day.timezone),
+                MaterialTheme.typography.labelMedium
+            ),
+            ForecastCardText(
+                stringResource(Res.string.average_label),
+                MaterialTheme.typography.labelMedium
+            ),
+            ForecastCardText(
+                "${units.temperature(day.averageC)}°",
+                MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+            ),
+            ForecastCardText(
+                stringResource(
+                    Res.string.temperature_range,
+                    units.temperature(day.lowC),
+                    units.temperature(day.highC)
+                ),
+                MaterialTheme.typography.bodySmall
+            )
+        )
+    }
+    val cardHeight = uniformForecastCardHeight(
+        cardText,
+        cardWidth - 28.dp,
+        listOf(14.dp, 14.dp, 6.dp)
+    )
     Column {
         CenteredSection(contentPadding) {
             Text(
@@ -1275,7 +1333,7 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
         }
         Spacer(Modifier.height(10.dp))
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("recent-forecast"),
             state = recentDaysScroll,
             contentPadding = PaddingValues(horizontal = contentPadding),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1284,37 +1342,33 @@ private fun RecentDays(days: List<RecentDaySummary>, units: DisplayUnits, conten
                 count = days.size,
                 key = { index -> days[index].epochSeconds }
             ) { index ->
-                val day = days[index]
+                val texts = cardText[index]
                 Column(
                     modifier = Modifier
-                        .width((156 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
+                        .width(cardWidth).height(cardHeight)
                         .nimboGlass(shape = RoundedCornerShape(18.dp))
+                        .semantics(mergeDescendants = true) { }
                         .padding(14.dp)
                 ) {
                     Text(
-                        formatLocalDay(day.epochSeconds, day.timezone),
-                        style = MaterialTheme.typography.labelMedium,
+                        texts[0].text,
+                        style = texts[0].style,
                         color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        stringResource(Res.string.average_label),
-                        style = MaterialTheme.typography.labelMedium,
+                        texts[1].text,
+                        style = texts[1].style,
                         color = MaterialTheme.colorScheme.secondary
                     )
                     Text(
-                        "${units.temperature(day.averageC)}°",
-                        fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.titleLarge
+                        texts[2].text,
+                        style = texts[2].style
                     )
                     Text(
-                        stringResource(
-                            Res.string.temperature_range,
-                            units.temperature(day.lowC),
-                            units.temperature(day.highC)
-                        ),
+                        texts[3].text,
                         color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodySmall
+                        style = texts[3].style
                     )
                 }
             }
@@ -1574,6 +1628,43 @@ private fun Timeline(
     now: Long
 ) {
     val nowIndex = currentHourIndex(weather.timeline, now)
+    val cardWidth = (108 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp
+    val cardText = weather.timeline.mapIndexed { index, hour ->
+        val dayStart = index == 0 ||
+            weatherDate(hour.epochSeconds, weather.location.timezone) !=
+            weatherDate(weather.timeline[index - 1].epochSeconds, weather.location.timezone)
+        listOf(
+            ForecastCardText(
+                formatLocalDay(hour.epochSeconds, weather.location.timezone),
+                MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = if (dayStart) FontWeight.Bold else FontWeight.Normal
+                )
+            ),
+            ForecastCardText(
+                if (index ==
+                    nowIndex
+                ) {
+                    stringResource(Res.string.now)
+                } else {
+                    isolatedLocalHour(hour.epochSeconds, weather.location.timezone)
+                },
+                MaterialTheme.typography.labelMedium
+            ),
+            ForecastCardText(
+                "${units.temperature(hour.temperatureC)}°",
+                LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold)
+            ),
+            ForecastCardText(
+                "${hour.precipitationProbability}%",
+                MaterialTheme.typography.labelSmall
+            )
+        )
+    }
+    val cardHeight = uniformForecastCardHeight(
+        cardText,
+        cardWidth - 20.dp,
+        listOf(12.dp, 12.dp, 28.dp, 6.dp) + List(5) { 8.dp }
+    )
     val selectedIndex = weather.timeline.indexOfFirst {
         it.epochSeconds == selected.epochSeconds
     }.coerceAtLeast(0)
@@ -1597,83 +1688,94 @@ private fun Timeline(
     Spacer(Modifier.height(8.dp))
     val appDirection = LocalLayoutDirection.current
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            state = timelineScroll,
-            contentPadding = PaddingValues(horizontal = contentPadding),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(weather.timeline.size, key = { weather.timeline[it].epochSeconds }) { index ->
-                val hour = weather.timeline[index]
-                val isNow = index == nowIndex
-                val isSelected = hour.epochSeconds == selected.epochSeconds
-                val timezone = weather.location.timezone
-                val dayStart =
-                    index == 0 ||
-                        weatherDate(hour.epochSeconds, timezone) !=
-                        weatherDate(weather.timeline[index - 1].epochSeconds, timezone)
-                val date = formatLocalDay(hour.epochSeconds, timezone)
-                val hourLabel = isolatedLocalHour(hour.epochSeconds, timezone)
-                val description = stringResource(
-                    Res.string.hour_accessibility_full,
-                    "$date, $hourLabel",
-                    units.temperature(hour.temperatureC),
-                    weatherCondition(hour.weatherCode).label(),
-                    units.temperature(hour.apparentTemperatureC),
-                    hour.precipitationProbability,
-                    units.wind(hour.windKph),
-                    units.windSymbol
-                ) + if (isNow) ", ${stringResource(Res.string.now)}" else ""
-                CompositionLocalProvider(LocalLayoutDirection provides appDirection) {
-                    Column(
-                        Modifier.width((108 * LocalDensity.current.fontScale.coerceAtMost(2f)).dp)
-                            .nimboGlass(shape = RoundedCornerShape(18.dp), selected = isSelected)
-                            .clickable { onSelected(hour) }
-                            .clearAndSetSemantics {
-                                contentDescription = description
-                                this.selected =
-                                    isSelected
-                                role = Role.Button
-                                onClick {
-                                    onSelected(hour)
-                                    true
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            // Symmetric edge space lets even the first and last hour sit at screen center.
+            val edgePadding = maxOf(contentPadding, (maxWidth - cardWidth) / 2)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().testTag("hourly-forecast"),
+                state = timelineScroll,
+                contentPadding = PaddingValues(horizontal = edgePadding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(weather.timeline.size, key = { weather.timeline[it].epochSeconds }) { index ->
+                    val hour = weather.timeline[index]
+                    val texts = cardText[index]
+                    val isNow = index == nowIndex
+                    val isSelected = hour.epochSeconds == selected.epochSeconds
+                    val timezone = weather.location.timezone
+                    val dayStart =
+                        index == 0 ||
+                            weatherDate(hour.epochSeconds, timezone) !=
+                            weatherDate(weather.timeline[index - 1].epochSeconds, timezone)
+                    val date = formatLocalDay(hour.epochSeconds, timezone)
+                    val hourLabel = isolatedLocalHour(hour.epochSeconds, timezone)
+                    val description = stringResource(
+                        Res.string.hour_accessibility_full,
+                        "$date, $hourLabel",
+                        units.temperature(hour.temperatureC),
+                        weatherCondition(hour.weatherCode).label(),
+                        units.temperature(hour.apparentTemperatureC),
+                        hour.precipitationProbability,
+                        units.wind(hour.windKph),
+                        units.windSymbol
+                    ) + if (isNow) ", ${stringResource(Res.string.now)}" else ""
+                    CompositionLocalProvider(LocalLayoutDirection provides appDirection) {
+                        Column(
+                            Modifier.width(cardWidth).height(cardHeight)
+                                .nimboGlass(
+                                    shape = RoundedCornerShape(18.dp),
+                                    selected = isSelected
+                                )
+                                .clickable { onSelected(hour) }
+                                .clearAndSetSemantics {
+                                    contentDescription = description
+                                    this.selected =
+                                        isSelected
+                                    role = Role.Button
+                                    onClick {
+                                        onSelected(hour)
+                                        true
+                                    }
                                 }
-                            }
-                            .padding(horizontal = 10.dp, vertical = 12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            date,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (dayStart) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.secondary
-                            },
-                            fontWeight = if (dayStart) FontWeight.Bold else FontWeight.Normal
-                        )
-                        Text(
-                            if (isNow) stringResource(Res.string.now) else hourLabel,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        WeatherIcon(weatherCondition(hour.weatherCode), Modifier.size(28.dp))
-                        Text(
-                            "${units.temperature(hour.temperatureC)}°",
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            "${hour.precipitationProbability}%",
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                        Box(
-                            Modifier.size(
-                                6.dp
-                            ).background(
-                                if (isNow) MaterialTheme.colorScheme.primary else Color.Transparent,
-                                CircleShape
+                                .padding(horizontal = 10.dp, vertical = 12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                date,
+                                style = texts[0].style,
+                                color = if (dayStart) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.secondary
+                                }
                             )
-                        )
+                            Text(
+                                texts[1].text,
+                                style = texts[1].style
+                            )
+                            WeatherIcon(weatherCondition(hour.weatherCode), Modifier.size(28.dp))
+                            Text(
+                                texts[2].text,
+                                style = texts[2].style
+                            )
+                            Text(
+                                texts[3].text,
+                                style = texts[3].style
+                            )
+                            Box(
+                                Modifier.size(
+                                    6.dp
+                                ).background(
+                                    if (isNow) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        Color.Transparent
+                                    },
+                                    CircleShape
+                                )
+                            )
+                        }
                     }
                 }
             }
