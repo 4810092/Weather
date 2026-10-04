@@ -1,11 +1,11 @@
 # Nimbo growth operations
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `3155d62f7c41742ad9caaa6903766229fa9dad11`. UI completion local CI passed; the complete manual UI walkthrough remains blocked by locked Mac/iPhone access. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `100d7e42c02ebe7697ea4380d7e5ddfc1af3add1`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:3155d62f7c41742ad9caaa6903766229fa9dad11 -->
+<!-- source_revision:100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

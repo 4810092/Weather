@@ -1,11 +1,11 @@
 # Release QA matrix
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `3155d62f7c41742ad9caaa6903766229fa9dad11`. UI completion local CI passed; the complete manual UI walkthrough remains blocked by locked Mac/iPhone access. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `100d7e42c02ebe7697ea4380d7e5ddfc1af3add1`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 Status date: October 3, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:3155d62f7c41742ad9caaa6903766229fa9dad11 -->
+<!-- source_revision:100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
@@ -13,7 +13,7 @@ Status date: October 3, 2026.
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dac3e2fc288d7468f4e7248722c9a34e107dc7abb91603a3aebef11f3ec0d366 -->
 <!-- release-authority-current:end -->
 
-The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-ui-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
+The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-city-picker-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against

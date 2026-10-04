@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "release": "1.1.0",
-  "source_revision": "3155d62f7c41742ad9caaa6903766229fa9dad11",
+  "source_revision": "100d7e42c02ebe7697ea4380d7e5ddfc1af3add1",
   "prepared_on": "2026-10-04",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
@@ -27,7 +27,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release13-ui-source-sync-2026-10-04.md",
+      "source_sync_evidence": "growth/quality/release13-city-picker-source-sync-2026-10-04.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-phone-1.1.0-vc12.aab",
@@ -44,7 +44,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release13-ui-source-sync-2026-10-04.md",
+      "source_sync_evidence": "growth/quality/release13-city-picker-source-sync-2026-10-04.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "nimbo-wear-1.1.0-vc1000012.aab",
@@ -61,7 +61,7 @@
       "sha256": null,
       "signing_evidence": null,
       "physical_qa_evidence": null,
-      "source_sync_evidence": "growth/quality/release13-ui-source-sync-2026-10-04.md",
+      "source_sync_evidence": "growth/quality/release13-city-picker-source-sync-2026-10-04.md",
       "historical_candidate": {
         "status": "historical-superseded",
         "filename": "Nimbo.ipa",
