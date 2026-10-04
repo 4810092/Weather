@@ -1,6 +1,7 @@
 package uz.ganikhodjaev.weather.shared.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,9 +39,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -77,6 +79,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -247,6 +250,9 @@ private fun ChooseLocationScreen(
         }
     }
     val browsing = state.query.isBlank()
+    val searchLabel = stringResource(Res.string.search_city)
+    var searchFocused by remember { mutableStateOf(false) }
+    val searchShape = RoundedCornerShape(28.dp)
     BoxWithConstraints(Modifier.fillMaxSize().safeContentPadding().imePadding()) {
         val compactHeader = maxHeight < 320.dp
         Column(
@@ -308,21 +314,48 @@ private fun ChooseLocationScreen(
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                    OutlinedTextField(
+                    TextField(
                         value = state.query,
                         onValueChange = onQueryChanged,
-                        modifier = Modifier.fillMaxWidth().nimboGlass(
-                            shape = RoundedCornerShape(20.dp)
-                        ),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                        modifier = Modifier.fillMaxWidth()
+                            .onFocusChanged { searchFocused = it.isFocused }
+                            .semantics { contentDescription = searchLabel }
+                            .nimboGlass(shape = searchShape)
+                            .border(
+                                1.dp,
+                                if (searchFocused) {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
+                                } else {
+                                    Color.Transparent
+                                },
+                                searchShape
+                            ),
+                        shape = searchShape,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.secondary
                         ),
                         singleLine = true,
-                        label = { Text(stringResource(Res.string.search_city)) },
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        placeholder = {
+                            Text(
+                                searchLabel,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.clearAndSetSemantics { }
+                            )
+                        },
                         leadingIcon = {
-                            Icon(painterResource(Res.drawable.ic_city_search), null)
+                            Icon(
+                                painterResource(Res.drawable.ic_city_search),
+                                null,
+                                Modifier.size(22.dp),
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
                         },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(onSearch = {
@@ -334,7 +367,9 @@ private fun ChooseLocationScreen(
                                 IconButton(onClick = { onQueryChanged("") }) {
                                     Icon(
                                         painterResource(Res.drawable.ic_weather_clear_search),
-                                        stringResource(Res.string.clear_search)
+                                        stringResource(Res.string.clear_search),
+                                        Modifier.size(20.dp),
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
                                 }
                             }

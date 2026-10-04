@@ -28,6 +28,7 @@ import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
@@ -192,7 +193,8 @@ class WeatherScreenAndroidUiTest {
                     )
                 }
             }
-            onNode(hasSetTextAction()).performScrollTo().performTouchInput { click() }
+            onNode(hasSetTextAction()).assertContentDescriptionEquals("Search for a city")
+                .performScrollTo().performTouchInput { click() }
             onNode(hasSetTextAction()).performTextInput("B")
             onNodeWithText(
                 "Enter at least 2 characters to search."
@@ -207,8 +209,10 @@ class WeatherScreenAndroidUiTest {
             onNode(hasSetTextAction()).performScrollTo().performImeAction()
             waitForIdle()
             onNode(hasSetTextAction()).assertTextContains("Bu")
+                .assertContentDescriptionEquals("Search for a city")
             onNodeWithContentDescription("Cancel").assertIsDisplayed()
             onNodeWithContentDescription("Clear search").performScrollTo().performClick()
+            onNode(hasSetTextAction()).assertContentDescriptionEquals("Search for a city")
             onNodeWithText("Search results").assertDoesNotExist()
             onNodeWithText("Saved places").performScrollTo().assertIsDisplayed()
             onNodeWithContentDescription("Cancel").performClick()
