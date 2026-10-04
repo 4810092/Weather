@@ -9,6 +9,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -17,6 +18,29 @@ import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 
 class WeatherRepositoryObservationWindowTest {
+    @Test
+    fun currentForecastWaitsForTheHourBoundary() = runBlocking {
+        val fixture = ObservationFixture(START + 37L * 60L)
+        try {
+            fixture.insertWeatherHour(START)
+            fixture.insertWeatherHour(START + SECONDS_PER_HOUR)
+            val withinHour = withTimeout(OBSERVATION_TIMEOUT_MILLIS) {
+                fixture.repository.observe(fixture.location).filterNotNull().first()
+            }
+            assertEquals(START, withinHour.current.epochSeconds)
+            assertTrue(withinHour.recentHistory.none { it.epochSeconds == START })
+
+            fixture.clock.value = START + SECONDS_PER_HOUR
+            val nextHour = withTimeout(OBSERVATION_TIMEOUT_MILLIS) {
+                fixture.repository.observe(fixture.location).filterNotNull().first()
+            }
+            assertEquals(START + SECONDS_PER_HOUR, nextHour.current.epochSeconds)
+            assertEquals(START, nextHour.recentHistory.last().epochSeconds)
+        } finally {
+            fixture.close()
+        }
+    }
+
     @Test
     fun longLivedObservationRebindsTimelineAfterClockCrossesItsWindow() = runBlocking {
         val fixture = ObservationFixture(START)

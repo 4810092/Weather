@@ -63,6 +63,11 @@ data class WeatherSnapshot(
     val isStale: Boolean
 )
 
+/** Hourly values apply from their timestamp, including across midnight and DST. */
+internal fun List<WeatherHour>.weatherHourAt(epochSeconds: Long): WeatherHour? =
+    filter { it.epochSeconds <= epochSeconds }.maxByOrNull { it.epochSeconds }
+        ?: minByOrNull { it.epochSeconds }
+
 enum class WeatherCondition {
     Clear,
     MainlyClear,

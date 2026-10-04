@@ -2,7 +2,6 @@ package uz.ganikhodjaev.weather.shared.data
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import kotlin.math.abs
 import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -22,6 +21,7 @@ import uz.ganikhodjaev.weather.shared.model.Location
 import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
+import uz.ganikhodjaev.weather.shared.model.weatherHourAt
 
 internal interface WeatherDataSource {
     fun activeLocation(): Location?
@@ -192,7 +192,7 @@ internal class WeatherRepository(
             combine(timelineFlow, dailyFlow, airFlow) { allHours, daily, airQuality ->
                 if (allHours.isEmpty()) return@combine null
                 val resolvedLocation = activeLocation()?.takeIf { it.id == location.id } ?: location
-                val current = allHours.minBy { abs(it.epochSeconds - now) }
+                val current = allHours.weatherHourAt(now) ?: return@combine null
                 val fetchedAt = queries.selectSetting("primary_updated:${location.id}")
                     .executeAsOneOrNull()?.toLongOrNull() ?: current.fetchedAtEpochSeconds
                 WeatherSnapshot(

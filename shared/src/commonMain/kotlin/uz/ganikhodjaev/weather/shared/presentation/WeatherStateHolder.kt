@@ -35,6 +35,7 @@ import uz.ganikhodjaev.weather.shared.model.UnitPreference
 import uz.ganikhodjaev.weather.shared.model.UnitSystem
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
 import uz.ganikhodjaev.weather.shared.model.resolve
+import uz.ganikhodjaev.weather.shared.model.weatherHourAt
 import uz.ganikhodjaev.weather.shared.onboarding.OnboardingState
 import uz.ganikhodjaev.weather.shared.onboarding.OnboardingStateStore
 import uz.ganikhodjaev.weather.shared.onboarding.UzbekistanQuickLocation
@@ -643,7 +644,7 @@ internal class WeatherStateHolder(
             }
             updateContentPreservingLocationPicker { current ->
                 current.copy(
-                    weather = current.weather.advancedToNow(),
+                    weather = current.weather.advancedToNow(nowEpochSeconds),
                     isRefreshing = true,
                     refreshMessage = null,
                     reviewEligibleForecastId = null
@@ -858,11 +859,9 @@ internal fun WeatherUiState.toLocationPicker(
     is WeatherUiState.ChooseLocation -> null
 }
 
-private fun WeatherSnapshot.advancedToNow(): WeatherSnapshot {
+private fun WeatherSnapshot.advancedToNow(nowEpochSeconds: Long): WeatherSnapshot {
     val hours = (recentHistory + timeline).distinctBy { it.epochSeconds }
-    if (hours.isEmpty()) return this
-    val now = kotlin.time.Clock.System.now().epochSeconds
-    val currentHour = hours.minBy { kotlin.math.abs(it.epochSeconds - now) }
+    val currentHour = hours.weatherHourAt(nowEpochSeconds) ?: return this
     return copy(
         current = currentHour,
         timeline = timelineWithinHours(hours, currentHour.epochSeconds, hours = 24) {
