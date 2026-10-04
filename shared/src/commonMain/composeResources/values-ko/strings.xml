@@ -143,4 +143,7 @@
     <string name="detail_sunset">일몰</string>
     <string name="selected_units_description">%1$s 및 %2$s 사용 중.</string>
     <string name="detail_humidity">습도</string>
+    <string name="choose_city">도시 선택</string>
+    <string name="search_results">검색 결과</string>
+    <string name="search_minimum">검색하려면 2자 이상 입력하세요.</string>
 </resources>

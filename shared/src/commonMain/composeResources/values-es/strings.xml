@@ -144,4 +144,7 @@
     <string name="detail_sunset">Atardecer</string>
     <string name="selected_units_description">Se usan %1$s y %2$s.</string>
     <string name="detail_humidity">Humedad</string>
+    <string name="choose_city">Elige una ciudad</string>
+    <string name="search_results">Resultados de búsqueda</string>
+    <string name="search_minimum">Escribe al menos 2 caracteres para buscar.</string>
 </resources>

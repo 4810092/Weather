@@ -143,4 +143,7 @@
     <string name="detail_sunset">日落</string>
     <string name="selected_units_description">使用%1$s和%2$s。</string>
     <string name="detail_humidity">湿度</string>
+    <string name="choose_city">选择城市</string>
+    <string name="search_results">搜索结果</string>
+    <string name="search_minimum">请输入至少2个字符进行搜索。</string>
 </resources>

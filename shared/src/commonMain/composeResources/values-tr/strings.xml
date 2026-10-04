@@ -144,4 +144,7 @@
     <string name="detail_sunset">Gün batımı</string>
     <string name="selected_units_description">%1$s ve %2$s kullanılıyor.</string>
     <string name="detail_humidity">Nem</string>
+    <string name="choose_city">Şehir seçin</string>
+    <string name="search_results">Arama sonuçları</string>
+    <string name="search_minimum">Aramak için en az 2 karakter girin.</string>
 </resources>

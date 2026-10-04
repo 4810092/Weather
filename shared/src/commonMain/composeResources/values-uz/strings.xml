@@ -144,4 +144,7 @@
     <string name="detail_sunset">Quyosh botishi</string>
     <string name="selected_units_description">%1$s va %2$s ishlatilmoqda.</string>
     <string name="detail_humidity">Namlik</string>
+    <string name="choose_city">Shaharni tanlang</string>
+    <string name="search_results">Qidiruv natijalari</string>
+    <string name="search_minimum">Qidirish uchun kamida 2 ta belgi kiriting.</string>
 </resources>

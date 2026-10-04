@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,8 +36,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -51,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -242,257 +246,325 @@ private fun ChooseLocationScreen(
             )
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .safeContentPadding().imePadding()
+    val browsing = state.query.isBlank()
+    Box(Modifier.fillMaxSize().safeContentPadding().imePadding()) {
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter)
+                .widthIn(max = 640.dp).fillMaxWidth().fillMaxHeight()
         ) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth()
-                    .widthIn(max = 680.dp)
-                    .verticalScroll(rememberVerticalScrollState())
-                    .padding(horizontal = 24.dp, vertical = 28.dp)
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Column(Modifier.weight(1f)) {
                     Text(
-                        text = stringResource(Res.string.brand),
+                        stringResource(Res.string.brand),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
-                    if (state.canCancel) {
-                        GlassButton(onClick = onCancel) {
-                            Text(stringResource(Res.string.cancel), fontWeight = FontWeight.Medium)
-                        }
-                    }
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(Res.string.choose_city),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.semantics { heading() }
+                    )
                 }
-                Spacer(Modifier.height(18.dp))
-                Text(
-                    text = stringResource(
-                        if (state.isOnboarding) {
-                            Res.string.onboarding_title
-                        } else {
-                            Res.string.change_place
-                        }
-                    ),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(Res.string.onboarding_body),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                Spacer(Modifier.height(28.dp))
-                OutlinedTextField(
-                    value = state.query,
-                    onValueChange = onQueryChanged,
-                    modifier = Modifier.fillMaxWidth().nimboGlass(
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                    singleLine = true,
-                    label = { Text(stringResource(Res.string.search_city)) },
-                    supportingText = { Text(stringResource(Res.string.change_later)) },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = {
+                if (state.canCancel) {
+                    GlassIconButton(onClick = {
                         keyboard?.hide()
                         focus.clearFocus()
-                    }),
-                    trailingIcon = {
-                        if (state.query.isNotEmpty()) {
-                            GlassIconButton(onClick = { onQueryChanged("") }) {
-                                Icon(
-                                    painterResource(Res.drawable.ic_weather_clear_search),
-                                    stringResource(Res.string.clear_search)
+                        onCancel()
+                    }) {
+                        Icon(
+                            painterResource(Res.drawable.ic_weather_clear_search),
+                            stringResource(Res.string.cancel)
+                        )
+                    }
+                }
+            }
+            Column(
+                Modifier.weight(1f).verticalScroll(rememberVerticalScrollState())
+                    .padding(horizontal = 24.dp).padding(top = 8.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    if (state.isOnboarding && browsing) {
+                        Text(
+                            stringResource(Res.string.onboarding_title),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    OutlinedTextField(
+                        value = state.query,
+                        onValueChange = onQueryChanged,
+                        modifier = Modifier.fillMaxWidth().nimboGlass(
+                            shape = RoundedCornerShape(20.dp)
+                        ),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                        ),
+                        singleLine = true,
+                        label = { Text(stringResource(Res.string.search_city)) },
+                        leadingIcon = {
+                            Icon(painterResource(Res.drawable.ic_city_search), null)
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = {
+                            keyboard?.hide()
+                            focus.clearFocus()
+                        }),
+                        trailingIcon = {
+                            if (state.query.isNotEmpty()) {
+                                IconButton(onClick = { onQueryChanged("") }) {
+                                    Icon(
+                                        painterResource(Res.drawable.ic_weather_clear_search),
+                                        stringResource(Res.string.clear_search)
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+                when {
+                    state.isSearching -> CitySearchStatus(
+                        stringResource(Res.string.searching),
+                        true
+                    )
+                    state.message != null -> CitySearchStatus(state.message.localized())
+                    !browsing && state.query.length < 2 ->
+                        CitySearchStatus(stringResource(Res.string.search_minimum))
+                }
+                val results = state.results.takeIf {
+                    !state.isSearching && state.message == null
+                }.orEmpty()
+                if (!browsing && results.isNotEmpty()) {
+                    CitySection(title = stringResource(Res.string.search_results)) {
+                        CityList {
+                            results.forEachIndexed { index, location ->
+                                if (index > 0) CityDivider()
+                                CityRow(
+                                    location = location,
+                                    isSelected = location.id == state.activeLocationId,
+                                    onClick = { selectLocation(location) }
                                 )
                             }
                         }
                     }
-                )
-
-                if (state.isSearching) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            stringResource(Res.string.searching),
-                            Modifier.semantics {
-                                liveRegion =
-                                    LiveRegionMode.Polite
-                            }
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp).clearAndSetSemantics {},
-                            strokeWidth = 2.dp
-                        )
-                    }
                 }
-
-                state.results.takeIf {
-                    !state.isSearching && state.message == null
-                }.orEmpty().forEach { location ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                            .nimboGlass(shape = RoundedCornerShape(18.dp))
-                            .clickable { selectLocation(location) }
-                            .padding(horizontal = 12.dp, vertical = 14.dp)
-                            .semantics(mergeDescendants = true) { role = Role.Button }
-                    ) {
-                        Text(location.name, fontWeight = FontWeight.SemiBold)
-                        if (location.regionAndCountry().isNotBlank()) {
-                            Text(
-                                location.regionAndCountry(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                        }
-                    }
-                    HorizontalDivider(color = LocalNimboThemeTokens.current.divider)
-                }
-
-                state.message?.let { message ->
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = message.localized(),
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
-                    )
-                }
-
-                Spacer(Modifier.height(20.dp))
-                if (state.quickLocations.isNotEmpty()) {
-                    Text(
-                        text = stringResource(Res.string.quick_places),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(vertical = 2.dp)
-                    ) {
-                        items(
-                            count = state.quickLocations.size,
-                            key = { state.quickLocations[it].id }
-                        ) { index ->
-                            val location = state.quickLocations[index].localized()
-                            GlassButton(onClick = { selectLocation(location) }) {
-                                Text(location.name)
+                if (browsing) {
+                    if (state.savedLocations.isNotEmpty()) {
+                        CitySection(title = stringResource(Res.string.saved_places)) {
+                            CityList {
+                                state.savedLocations.forEachIndexed { index, location ->
+                                    if (index > 0) CityDivider()
+                                    CityRow(
+                                        location = location,
+                                        isSelected = location.id == state.activeLocationId,
+                                        onClick = { selectLocation(location) },
+                                        onDelete = if (location.id == state.activeLocationId) {
+                                            null
+                                        } else {
+                                            { pendingDeletion = location }
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
-                    Spacer(Modifier.height(20.dp))
-                }
-                if (state.savedLocations.isNotEmpty()) {
-                    Text(
-                        text = stringResource(Res.string.saved_places),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    state.savedLocations.forEach { location ->
+                    if (state.quickLocations.isNotEmpty()) {
+                        CitySection(title = stringResource(Res.string.quick_places)) {
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                state.quickLocations.forEach { quickLocation ->
+                                    val location = quickLocation.localized()
+                                    GlassButton(onClick = { selectLocation(location) }) {
+                                        Text(
+                                            location.name,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Column(Modifier.fillMaxWidth().nimboGlass()) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                            Modifier.fillMaxWidth().sizeIn(minHeight = 56.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .clickable(enabled = !state.isLocating, role = Role.Button) {
+                                    keyboard?.hide()
+                                    focus.clearFocus()
+                                    onUseDeviceLocation()
+                                }
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .nimboGlass(
-                                        shape = RoundedCornerShape(18.dp),
-                                        selected =
-                                        location.id == state.activeLocationId
-                                    )
-                                    .sizeIn(minHeight = 48.dp)
-                                    .semantics(mergeDescendants = true) {
-                                        selected =
-                                            location.id == state.activeLocationId
-                                        role = Role.Button
+                            Icon(
+                                painterResource(Res.drawable.ic_location),
+                                null,
+                                Modifier.size(22.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                stringResource(
+                                    if (state.isLocating) {
+                                        Res.string.finding_area
+                                    } else {
+                                        Res.string.use_location
                                     }
-                                    .clickable { selectLocation(location) }
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    location.name.ifBlank {
-                                        stringResource(Res.string.current_location)
-                                    }
-                                )
-                                if (location.id == state.activeLocationId) {
-                                    Text(
-                                        stringResource(Res.string.active_place),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
-                                if (location.regionAndCountry().isNotBlank()) {
-                                    Text(
-                                        location.regionAndCountry(),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.secondary
-                                    )
-                                }
-                            }
-                            if (location.id != state.activeLocationId) {
-                                val removeDescription = "${location.name}, " +
-                                    stringResource(Res.string.remove_saved_place)
-                                GlassIconButton(
-                                    onClick = { pendingDeletion = location }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.ic_delete),
-                                        contentDescription = removeDescription,
-                                        tint = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            }
+                                ),
+                                modifier = Modifier.weight(1f).semantics {
+                                    if (state.isLocating) liveRegion = LiveRegionMode.Polite
+                                },
+                                style = MaterialTheme.typography.labelLarge
+                            )
                         }
-                    }
-                    Spacer(Modifier.height(16.dp))
-                }
-                Spacer(Modifier.height(24.dp))
-                GlassButton(
-                    onClick = onUseDeviceLocation,
-                    enabled = !state.isLocating,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        stringResource(
-                            if (state.isLocating) {
-                                Res.string.finding_area
-                            } else {
-                                Res.string.use_location
-                            }
+                        Text(
+                            stringResource(Res.string.location_privacy),
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CitySection(title: String, content: @Composable () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.semantics { heading() }
+        )
+        content()
+    }
+}
+
+@Composable
+private fun CityList(content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxWidth().nimboGlass().clip(RoundedCornerShape(24.dp))) { content() }
+}
+
+@Composable
+private fun CityDivider() {
+    HorizontalDivider(
+        Modifier.padding(horizontal = 16.dp),
+        color = LocalNimboThemeTokens.current.divider
+    )
+}
+
+@Composable
+private fun CityRow(
+    location: Location,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onDelete: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().background(
+            if (isSelected) {
+                MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.08f
+                )
+            } else {
+                Color.Transparent
+            }
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            Modifier.weight(1f).sizeIn(minHeight = 76.dp)
+                .semantics(mergeDescendants = true) { selected = isSelected }
+                .clickable(role = Role.Button, onClick = onClick)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(
+                    if (isSelected) {
+                        Res.drawable.ic_city_selected
+                    } else {
+                        Res.drawable.ic_location
+                    }
+                ),
+                null,
+                Modifier.size(22.dp),
+                tint = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
+            )
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(
+                    location.name.ifBlank { stringResource(Res.string.current_location) },
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                if (location.regionAndCountry().isNotBlank()) {
+                    Text(
+                        location.regionAndCountry(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(Res.string.location_privacy),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                if (isSelected) {
+                    Text(
+                        stringResource(Res.string.active_place),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+        if (onDelete != null) {
+            IconButton(onClick = onDelete, modifier = Modifier.padding(end = 8.dp)) {
+                Icon(
+                    painterResource(Res.drawable.ic_delete),
+                    "${location.name}, ${stringResource(Res.string.remove_saved_place)}",
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CitySearchStatus(message: String, loading: Boolean = false) {
+    Row(
+        Modifier.fillMaxWidth().nimboGlass().padding(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (loading) {
+            CircularProgressIndicator(
+                Modifier.size(20.dp).clearAndSetSemantics {
+                },
+                strokeWidth = 2.dp
+            )
+        }
+        Text(
+            message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
+        )
     }
 }
 

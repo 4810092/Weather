@@ -144,4 +144,7 @@
     <string name="detail_sunset">सूर्यास्त</string>
     <string name="selected_units_description">%1$s और %2$s का उपयोग।</string>
     <string name="detail_humidity">नमी</string>
+    <string name="choose_city">शहर चुनें</string>
+    <string name="search_results">खोज परिणाम</string>
+    <string name="search_minimum">खोजने के लिए कम से कम 2 अक्षर दर्ज करें।</string>
 </resources>

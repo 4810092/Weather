@@ -145,4 +145,7 @@
     <string name="detail_sunset">Pôr do sol</string>
     <string name="selected_units_description">A usar %1$s e %2$s.</string>
     <string name="detail_humidity">Humidade</string>
+    <string name="choose_city">Escolha uma cidade</string>
+    <string name="search_results">Resultados da pesquisa</string>
+    <string name="search_minimum">Digite pelo menos 2 caracteres para pesquisar.</string>
 </resources>

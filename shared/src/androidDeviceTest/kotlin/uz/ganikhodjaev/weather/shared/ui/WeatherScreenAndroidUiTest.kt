@@ -28,7 +28,9 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
@@ -39,6 +41,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performSemanticsAction
@@ -93,6 +96,117 @@ class WeatherScreenAndroidUiTest {
             onNodeWithContentDescription("Bukhara, Remove saved place").performClick()
             onNodeWithText("Remove", useUnmergedTree = true).assertIsDisplayed().performClick()
             runOnIdle { assertEquals(BUKHARA, removed) }
+        }
+    }
+
+    @Test
+    fun cityPickerKeepsSearchAboveSavedPlacesAndWrapsQuickCities() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            var selected: Location? = null
+            var theme by mutableStateOf(ThemePreference.Light)
+            var density = 1f
+            setContent {
+                density = LocalDensity.current.density
+                TestWeatherScreen(
+                    state = onboardingState().copy(
+                        savedLocations = listOf(TASHKENT, BUKHARA),
+                        activeLocationId = TASHKENT.id,
+                        isOnboarding = false,
+                        canCancel = true
+                    ),
+                    theme = theme,
+                    onLocationSelected = { selected = it }
+                )
+            }
+            val field = onNode(hasSetTextAction()).assertIsDisplayed().fetchSemanticsNode()
+            val savedTitle = onNodeWithText("Saved places").fetchSemanticsNode()
+            assertTrue(field.boundsInRoot.bottom <= savedTitle.boundsInRoot.top)
+            assertTrue(
+                field.boundsInRoot.width / density <= 640f,
+                "Tablet search must remain constrained"
+            )
+            onNode(hasText("Tashkent") and hasText("Selected city") and hasClickAction())
+                .assertIsSelected().assertIsDisplayed()
+            onNodeWithContentDescription("Tashkent, Remove saved place").assertDoesNotExist()
+            waitForIdle()
+            saveGlassScreenshot(
+                "city-picker-light",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+            runOnIdle { theme = ThemePreference.Dark }
+            waitForIdle()
+            saveGlassScreenshot(
+                "city-picker-dark",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+            // The last quick city must be reachable through the same vertical scroll,
+            // without a second, undiscoverable horizontal carousel.
+            onNodeWithText("Nukus").performScrollTo().assertIsDisplayed().performClick()
+            runOnIdle { assertEquals("quick:uz:nukus", selected?.id) }
+            onNodeWithContentDescription("Cancel").assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun compactCitySearchKeepsResultsAndCloseReachable() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            var state by mutableStateOf(
+                onboardingState().copy(canCancel = true, savedLocations = listOf(TASHKENT))
+            )
+            var cancellations = 0
+            setContent {
+                Box(Modifier.fillMaxWidth().height(360.dp)) {
+                    TestWeatherScreen(
+                        state = state,
+                        onSearchQueryChanged = {
+                            state =
+                                state.copy(
+                                    query = it,
+                                    results = if (it.length >=
+                                        2
+                                    ) {
+                                        listOf(BUKHARA)
+                                    } else {
+                                        emptyList()
+                                    }
+                                )
+                        },
+                        onCancelLocationChange = { cancellations++ }
+                    )
+                }
+            }
+            onNode(hasSetTextAction()).performScrollTo().performTouchInput { click() }
+            onNode(hasSetTextAction()).performTextInput("B")
+            onNodeWithText(
+                "Enter at least 2 characters to search."
+            ).performScrollTo().assertIsDisplayed()
+            onNodeWithText("Popular cities in Uzbekistan").assertDoesNotExist()
+            onNodeWithText("Saved places").assertDoesNotExist()
+            onNode(hasSetTextAction()).performScrollTo().performTextInput("u")
+            onNodeWithText("Search results").performScrollTo().assertIsDisplayed()
+            onNode(hasText("Bukhara") and hasText("Uzbekistan") and hasClickAction())
+                .performScrollTo().assertIsDisplayed()
+            onNode(hasSetTextAction()).performScrollTo().performImeAction()
+            waitForIdle()
+            onNode(hasSetTextAction()).assertTextContains("Bu")
+            onNodeWithContentDescription("Cancel").assertIsDisplayed()
+            onNodeWithContentDescription("Clear search").performScrollTo().performClick()
+            onNodeWithText("Search results").assertDoesNotExist()
+            onNodeWithText("Saved places").performScrollTo().assertIsDisplayed()
+            onNodeWithContentDescription("Cancel").performClick()
+            runOnIdle { assertEquals(1, cancellations) }
         }
     }
 
@@ -352,6 +466,17 @@ class WeatherScreenAndroidUiTest {
                 .performScrollTo()
                 .assertIsDisplayed()
             onNode(hasSetTextAction()).performScrollTo().assertIsDisplayed()
+            waitForIdle()
+            saveGlassScreenshot(
+                "city-picker-ru-font-200",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
             onNodeWithText("Использовать приблизительное местоположение")
                 .performScrollTo()
                 .assertIsDisplayed()

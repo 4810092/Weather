@@ -145,4 +145,7 @@
     <string name="detail_sunset">Coucher du soleil</string>
     <string name="selected_units_description">Unités utilisées : %1$s et %2$s.</string>
     <string name="detail_humidity">Humidité</string>
+    <string name="choose_city">Choisissez une ville</string>
+    <string name="search_results">Résultats de recherche</string>
+    <string name="search_minimum">Saisissez au moins 2 caractères pour rechercher.</string>
 </resources>

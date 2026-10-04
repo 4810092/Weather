@@ -146,4 +146,7 @@
     <string name="detail_sunset">Закат</string>
     <string name="selected_units_description">Используются %1$s и %2$s.</string>
     <string name="detail_humidity">Влажность</string>
+    <string name="choose_city">Выберите город</string>
+    <string name="search_results">Результаты поиска</string>
+    <string name="search_minimum">Введите хотя бы 2 символа для поиска.</string>
 </resources>

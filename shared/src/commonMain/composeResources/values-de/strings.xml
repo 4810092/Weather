@@ -144,4 +144,7 @@
     <string name="detail_sunset">Sonnenuntergang</string>
     <string name="selected_units_description">Verwendet %1$s und %2$s.</string>
     <string name="detail_humidity">Luftfeuchtigkeit</string>
+    <string name="choose_city">Stadt auswählen</string>
+    <string name="search_results">Suchergebnisse</string>
+    <string name="search_minimum">Gib mindestens 2 Zeichen ein.</string>
 </resources>

@@ -143,4 +143,7 @@
     <string name="detail_sunset">Sunset</string>
     <string name="selected_units_description">Using %1$s and %2$s.</string>
     <string name="detail_humidity">Humidity</string>
+    <string name="choose_city">Choose a city</string>
+    <string name="search_results">Search results</string>
+    <string name="search_minimum">Enter at least 2 characters to search.</string>
 </resources>
