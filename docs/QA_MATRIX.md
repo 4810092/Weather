@@ -1,16 +1,18 @@
 # Release QA matrix
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `100d7e42c02ebe7697ea4380d7e5ddfc1af3add1`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `b8270b7ce31061c285d8d9af495986cb152a72bc`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 Status date: October 3, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 -->
+<!-- release-authority-current:start -->
+<!-- source_revision:b8270b7ce31061c285d8d9af495986cb152a72bc -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=104974e8f97b305d89292e80eb2a20b424a6dcfc3dee12c73daac8d2f401bc6b -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dac3e2fc288d7468f4e7248722c9a34e107dc7abb91603a3aebef11f3ec0d366 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a3c228fd67620264e2dea05bf72483ad375a7cb6118b1b96ea9500dce672157d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=97c49eb4230d8d9318789bfa02059e9e8534956fddeaa8008631d75705d9f70e -->
+<!-- release-authority-current:end -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-city-picker-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
@@ -30,11 +32,13 @@ remain exact.
 ## Exact-current 1.1.0 candidate
 
 <!-- release-qa-current:start -->
+<!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required runtime QA (legacy gate ID) | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Android phone/tablet | `1.1.0 (13)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
 | Wear OS | `1.1.0 (1000013)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
 | Apple app/widget/watch | `1.1.0 (13)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `ios_physical_smoke: blocked` | **BLOCKED** |
+<!-- release-qa-current:end -->
 <!-- release-qa-current:end -->
 
 `READY` is permitted only when the corresponding artifact is

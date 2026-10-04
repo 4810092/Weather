@@ -1,6 +1,6 @@
 # Release process
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `100d7e42c02ebe7697ea4380d7e5ddfc1af3add1`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `b8270b7ce31061c285d8d9af495986cb152a72bc`. City-picker redesign is undergoing fresh local validation. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
@@ -45,12 +45,14 @@ availability. Natural iPhone widget completion and a fresh crash window remain
 required before public release.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 -->
+<!-- release-authority-current:start -->
+<!-- source_revision:b8270b7ce31061c285d8d9af495986cb152a72bc -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=104974e8f97b305d89292e80eb2a20b424a6dcfc3dee12c73daac8d2f401bc6b -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=dac3e2fc288d7468f4e7248722c9a34e107dc7abb91603a3aebef11f3ec0d366 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=a3c228fd67620264e2dea05bf72483ad375a7cb6118b1b96ea9500dce672157d -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=97c49eb4230d8d9318789bfa02059e9e8534956fddeaa8008631d75705d9f70e -->
+<!-- release-authority-current:end -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04

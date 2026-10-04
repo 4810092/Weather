@@ -15,18 +15,18 @@
     "android_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source 100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 requires current phone13/Wear1000013 runtime evidence. Instrumented UI checks of shared code do not prove signed distribution bytes; prior build12 store evidence is historical."
+      "reason": "Legacy gate ID retains the owner-approved emulator-sufficient policy. Source b8270b7ce31061c285d8d9af495986cb152a72bc requires current phone13/Wear1000013 runtime evidence. Instrumented UI checks of shared code do not prove signed distribution bytes; prior build12 store evidence is historical."
     },
     "ios_physical_smoke": {
       "status": "blocked",
       "blocks_publication": true,
-      "reason": "Apple1.1.0(13) from 100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
+      "reason": "Apple1.1.0(13) from b8270b7ce31061c285d8d9af495986cb152a72bc requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
     },
     "release_artifact_source_sync": {
       "status": "blocked",
       "blocks_publication": true,
-      "source_revision": "100d7e42c02ebe7697ea4380d7e5ddfc1af3add1",
-      "reason": "UI completion source 100d7e42c02ebe7697ea4380d7e5ddfc1af3add1 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Earlier build13 and build12 results cannot validate changed source. The October4 request authorizes local implementation and checks only; upload and publication are separate. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
+      "source_revision": "b8270b7ce31061c285d8d9af495986cb152a72bc",
+      "reason": "UI completion source b8270b7ce31061c285d8d9af495986cb152a72bc requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Earlier build13 and build12 results cannot validate changed source. The October4 request authorizes local implementation and checks only; upload and publication are separate. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
     },
     "domain_activation": {
       "status": "pass",
