@@ -1,6 +1,6 @@
 # Release QA matrix
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `32c8f315bb84286424d4a62b6e88064dba55f720`. Recent-day ordering and initial scrolling are undergoing fresh local validation; earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `32c8f315bb84286424d4a62b6e88064dba55f720`. Recent-day ordering and scrolling passed fresh full local CI, 60 Android UI tests and a native iPhone history walkthrough; the Samsung debug build was updated and launched. Earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 Status date: October 3, 2026.
 
