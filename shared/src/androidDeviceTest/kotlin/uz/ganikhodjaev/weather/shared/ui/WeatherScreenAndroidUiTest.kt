@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
@@ -40,11 +41,13 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.test.v2.runAndroidComposeUiTest
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.intl.Locale as ComposeLocale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
@@ -544,6 +547,36 @@ class WeatherScreenAndroidUiTest {
     }
 
     @Test
+    fun arabicSettingsKeepDegreeSignsBeforeTheirUnitLetters() = withTestLocale("ar") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            setContent {
+                TestWeatherScreen(
+                    state = contentState().copy(unitPreference = UnitPreference.Automatic),
+                    fontScale = 2f
+                )
+            }
+            onNodeWithContentDescription("الإعدادات").performClick()
+            listOf("°C · km/h", "°F · mph").forEach { label ->
+                onNodeWithText(label, useUnmergedTree = true)
+                    .performScrollTo().assertIsDisplayed().assertUnitGlyphOrder(label.take(2))
+            }
+            onNodeWithText("يستخدم الوضع التلقائي", substring = true, useUnmergedTree = true)
+                .performScrollTo().assertIsDisplayed().assertUnitGlyphOrder("°C")
+            waitForIdle()
+            saveGlassScreenshot(
+                "ar-settings-font-200",
+                if (Build.VERSION.SDK_INT >=
+                    26
+                ) {
+                    onRoot().captureToImage().asAndroidBitmap()
+                } else {
+                    null
+                }
+            )
+        }
+    }
+
+    @Test
     fun russianSettingsRemainOperableAtTwoHundredPercentText() = withTestLocale("ru-RU") {
         runAndroidComposeUiTest<NimboLocaleTestActivity> {
             setContent { TestWeatherScreen(state = contentState(), fontScale = 2f) }
@@ -567,6 +600,18 @@ class WeatherScreenAndroidUiTest {
             onNodeWithText("Tashkent").assertIsDisplayed()
         }
     }
+}
+
+private fun SemanticsNodeInteraction.assertUnitGlyphOrder(unit: String) {
+    val layouts = mutableListOf<TextLayoutResult>()
+    performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
+    val layout = layouts.single()
+    val offset = layout.layoutInput.text.text.indexOf(unit)
+    assertTrue(offset >= 0)
+    assertTrue(
+        layout.getBoundingBox(offset).center.x < layout.getBoundingBox(offset + 1).center.x,
+        "The degree sign must render before its Latin unit letter in RTL text"
+    )
 }
 
 @Composable

@@ -72,6 +72,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -1232,6 +1233,7 @@ private fun UnitsCard(
     units: DisplayUnits,
     onPreferenceChanged: (UnitPreference) -> Unit
 ) {
+    val direction = LocalLayoutDirection.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1248,8 +1250,8 @@ private fun UnitsCard(
                 } else {
                     Res.string.selected_units_description
                 },
-                units.temperatureSymbol,
-                units.windSymbol
+                isolatedUnitSymbol(units.temperatureSymbol, direction),
+                isolatedUnitSymbol(units.windSymbol, direction)
             ),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodySmall
@@ -1266,6 +1268,9 @@ private fun UnitsCard(
         }
     }
 }
+
+private fun isolatedUnitSymbol(symbol: String, direction: LayoutDirection): String =
+    if (direction == LayoutDirection.Rtl) "\u2066$symbol\u2069" else symbol
 
 @Composable
 private fun ThemeCard(preference: ThemePreference, onPreferenceChanged: (ThemePreference) -> Unit) {
@@ -1353,7 +1358,13 @@ private fun UnitButton(
                 UnitPreference.Metric -> "°C · km/h"
                 UnitPreference.Imperial -> "°F · mph"
             },
-            style = MaterialTheme.typography.labelLarge
+            style = MaterialTheme.typography.labelLarge.copy(
+                textDirection = if (option == UnitPreference.Automatic) {
+                    TextDirection.Content
+                } else {
+                    TextDirection.Ltr
+                }
+            )
         )
     }
     if (selectedOption) {
