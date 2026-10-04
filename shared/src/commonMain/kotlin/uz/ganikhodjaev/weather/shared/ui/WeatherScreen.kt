@@ -247,27 +247,37 @@ private fun ChooseLocationScreen(
         }
     }
     val browsing = state.query.isBlank()
-    Box(Modifier.fillMaxSize().safeContentPadding().imePadding()) {
+    BoxWithConstraints(Modifier.fillMaxSize().safeContentPadding().imePadding()) {
+        val compactHeader = maxHeight < 320.dp
         Column(
             modifier = Modifier.align(Alignment.TopCenter)
                 .widthIn(max = 640.dp).fillMaxWidth().fillMaxHeight()
         ) {
             Row(
-                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(
+                    horizontal = 24.dp,
+                    vertical = if (compactHeader) 8.dp else 12.dp
+                ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text(
-                        stringResource(Res.string.brand),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.height(4.dp))
+                    if (!compactHeader) {
+                        Text(
+                            stringResource(Res.string.brand),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(Modifier.height(4.dp))
+                    }
                     Text(
                         stringResource(Res.string.choose_city),
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = if (compactHeader) {
+                            MaterialTheme.typography.titleLarge
+                        } else {
+                            MaterialTheme.typography.headlineSmall
+                        },
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.semantics { heading() }
                     )

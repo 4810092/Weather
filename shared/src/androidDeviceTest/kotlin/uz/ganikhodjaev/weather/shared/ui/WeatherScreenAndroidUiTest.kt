@@ -7,8 +7,11 @@ import android.os.Build
 import android.os.LocaleList
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -167,7 +170,9 @@ class WeatherScreenAndroidUiTest {
             )
             var cancellations = 0
             setContent {
-                Box(Modifier.fillMaxWidth().height(360.dp)) {
+                // This already represents the space left above the IME. Consuming
+                // its inset avoids subtracting the full-window keyboard twice.
+                Box(Modifier.fillMaxWidth().height(280.dp).consumeWindowInsets(WindowInsets.ime)) {
                     TestWeatherScreen(
                         state = state,
                         onSearchQueryChanged = {
@@ -195,6 +200,7 @@ class WeatherScreenAndroidUiTest {
             onNodeWithText("Popular cities in Uzbekistan").assertDoesNotExist()
             onNodeWithText("Saved places").assertDoesNotExist()
             onNode(hasSetTextAction()).performScrollTo().performTextInput("u")
+            waitForIdle()
             onNodeWithText("Search results").performScrollTo().assertIsDisplayed()
             onNode(hasText("Bukhara") and hasText("Uzbekistan") and hasClickAction())
                 .performScrollTo().assertIsDisplayed()
