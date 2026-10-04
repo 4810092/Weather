@@ -1,6 +1,6 @@
 # UI completion candidate 13 — local source boundary
 
-Source: `e9b043ee1097a95ddea6b0c01d3751928235c9b5`. Prepared October 4, 2026.
+Source: `c8511e87fba06855f987ce9dabd87fbd21435fe8`. Prepared October 4, 2026.
 
 Current candidates remain phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, Apple `1.1.0 (13)`. The changes cover shared Android/iOS UI, search cancellation, cached-data timestamps, date/detail presentation, library notices, and widget/watch update labels. The user authorized local implementation and verification only. No push, store upload, submission, or publication was performed.
 
@@ -28,3 +28,8 @@ Representative local screenshots (automated UI fixtures, not live weather):
 - `build/android-ui-diagnostics/phone-api36-glass/dark.png`
 - `build/android-ui-diagnostics/phone-api24-glass/ru-settings-font-200.png`
 - `build/android-ui-diagnostics/phone-api36-glass/daily-details.png`
+
+
+October4 resumed simulator check: Springfield and Guliston results include regions; changing a query removes prior results, no-result and clear states work, Search dismisses the software keyboard. A new Guliston was selected, loaded real weather after manual recovery, then removed after testing both Cancel and Remove confirmations. Original saved cities remain. Denied geolocation shows the city-search recovery message. Maximum Dynamic Type (Device Hub11) was verified in English/Russian after process restart, with Reduce Motion/Transparency enabled; Russian landscape settings also render without text truncation. These checks used e9b043e before the hour fix below. CUA coordinate gestures subsequently returned noWindowsAvailable; the user was asked to keep the Device Hub window visible.
+
+The live run also exposed premature current-hour selection after half past. Source `c8511e87fba06855f987ce9dabd87fbd21435fe8` uses the latest available hour whose start is not in the future, with an earliest-row fallback for an entirely future cache. Repository observation and refresh presentation share this rule; refresh uses its injected clock. Regression tests cover minute37, the midnight boundary, repeated DST hours, unsorted/incomplete caches and actual repository observation. Targeted host tests and ktlint passed (`/tmp/nimbo-hour-boundary-tests.log`). Full validation and installation of this final source are in progress; earlier full results do not validate the hour fix.
