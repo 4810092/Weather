@@ -26,7 +26,9 @@ logcat_file="$diagnostics_dir/${matrix_name}-logcat.txt"
 mkdir -p "$diagnostics_dir"
 
 capture_logcat() {
-  adb logcat -d -v threadtime > "$logcat_file" 2>&1 || true
+  # A disconnected emulator makes logcat wait forever; diagnostics must not trap a failed run.
+  python3 scripts/run_with_timeout.py 20 2 -- \
+    adb logcat -d -v threadtime > "$logcat_file" 2>&1 || true
 }
 trap capture_logcat EXIT
 
