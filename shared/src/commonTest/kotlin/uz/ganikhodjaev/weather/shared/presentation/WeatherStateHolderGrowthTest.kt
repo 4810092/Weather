@@ -1272,6 +1272,65 @@ class WeatherStateHolderGrowthTest {
     }
 
     @Test
+    fun uncachedCityOffersManualRecoveryWhenAutomaticRefreshIsDeferred() = runBlocking {
+        val nowEpochSeconds = 50_000L
+        val stores = listOf(
+            ThrowingAutomaticRefreshAttemptStore(),
+            InMemoryAutomaticRefreshAttemptStore().also {
+                it.writeDurably(
+                    TASHKENT.id,
+                    AutomaticRefreshAttemptState(
+                        1L,
+                        nowEpochSeconds - 1L,
+                        AutomaticRefreshAttemptPhase.Cooldown
+                    )
+                )
+            },
+            InMemoryAutomaticRefreshAttemptStore().also {
+                it.writeDurably(
+                    TASHKENT.id,
+                    AutomaticRefreshAttemptState(
+                        1L,
+                        nowEpochSeconds - 1L,
+                        AutomaticRefreshAttemptPhase.RetryPending
+                    )
+                )
+            }
+        )
+        for (attemptStore in stores) {
+            AutomaticRefreshCoordinator.resetAttemptHistoryForTests()
+            val repository = ScriptedWeatherDataSource(initialActiveLocation = TASHKENT)
+            val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+            val holder = createStateHolder(
+                repository = repository,
+                locationProvider = RecordingLocationProvider(),
+                onboardingStateStore = RecordingOnboardingStore(),
+                scope = holderScope,
+                currentEpochSeconds = { nowEpochSeconds },
+                automaticRefreshAttemptStore = attemptStore
+            )
+            try {
+                withTimeout(5_000L) {
+                    holder.start()
+                    val error = holder.state.filterIsInstance<WeatherUiState.EmptyError>().first()
+                    assertEquals(UiMessage.WeatherUnavailable, error.message)
+                    assertEquals(0, repository.refreshCallCount)
+
+                    holder.refresh()
+                    repository.nextRefresh().succeed(forecastId = nowEpochSeconds)
+                    val recovered = holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                        !it.isRefreshing
+                    }
+                    assertEquals(nowEpochSeconds, recovered.weather.fetchedAtEpochSeconds)
+                    assertEquals(1, repository.refreshCallCount)
+                }
+            } finally {
+                holderScope.cancel()
+            }
+        }
+    }
+
+    @Test
     fun automaticStoreFailureDoesNotBlockManualRefresh() = runBlocking {
         val nowEpochSeconds = 50_000L
         val attemptStore = ThrowingAutomaticRefreshAttemptStore()

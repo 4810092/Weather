@@ -608,6 +608,7 @@ internal class WeatherStateHolder(
                     throw cancelled
                 } catch (error: Throwable) {
                     logFailure("cached weather freshness check", error)
+                    handleObservationFailure(generation, location)
                     return
                 }
                 val refreshDue = cachedSnapshot?.isAutomaticRefreshDue(
@@ -624,7 +625,18 @@ internal class WeatherStateHolder(
                     is AutomaticRefreshClaimResult.Granted -> claim.token
                     AutomaticRefreshClaimResult.Cooldown,
                     AutomaticRefreshClaimResult.RetryDeferred,
-                    AutomaticRefreshClaimResult.StoreUnavailable -> return
+                    AutomaticRefreshClaimResult.StoreUnavailable -> {
+                        // A saved city can outlive its cache. Keep the automatic budget
+                        // intact, but expose manual recovery instead of waiting forever.
+                        if (cachedSnapshot == null &&
+                            isCurrentActivation(generation, location) &&
+                            mutableState.value is WeatherUiState.Loading
+                        ) {
+                            mutableState.value =
+                                WeatherUiState.EmptyError(UiMessage.WeatherUnavailable)
+                        }
+                        return
+                    }
                 }
             } else {
                 null
