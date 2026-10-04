@@ -1,11 +1,11 @@
 # Nimbo growth operations
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `59a0ad381aeee892dfac51a85ccd15c2fb294773`. Forecast interaction refinements passed fresh full local CI, the 57-test Android UI matrix and native iPhone/iPad checks; the Samsung debug build was updated and launched. Earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `32c8f315bb84286424d4a62b6e88064dba55f720`. Recent-day ordering and initial scrolling are undergoing fresh local validation; earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:59a0ad381aeee892dfac51a85ccd15c2fb294773 -->
+<!-- source_revision:32c8f315bb84286424d4a62b6e88064dba55f720 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

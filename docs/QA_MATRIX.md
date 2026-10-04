@@ -1,11 +1,11 @@
 # Release QA matrix
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `59a0ad381aeee892dfac51a85ccd15c2fb294773`. Forecast interaction refinements passed fresh full local CI, the 57-test Android UI matrix and native iPhone/iPad checks; the Samsung debug build was updated and launched. Earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `32c8f315bb84286424d4a62b6e88064dba55f720`. Recent-day ordering and initial scrolling are undergoing fresh local validation; earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
 
 Status date: October 3, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:59a0ad381aeee892dfac51a85ccd15c2fb294773 -->
+<!-- source_revision:32c8f315bb84286424d4a62b6e88064dba55f720 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
@@ -13,7 +13,7 @@ Status date: October 3, 2026.
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=566688748ecaf9aa38772dd3c353638bea6cd8164bb9b955b1a2fddaca9ac38d -->
 <!-- release-authority-current:end -->
 
-The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-forecast-feedback-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
+The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-recent-days-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
