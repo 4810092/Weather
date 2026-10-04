@@ -49,8 +49,8 @@ required before public release.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=79672d909b57d8675db1f3f6aaa14da8dcf5d75f340016e8be016b7153c94fc9 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=566688748ecaf9aa38772dd3c353638bea6cd8164bb9b955b1a2fddaca9ac38d -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=1c0cecbfa105e666288c8deda0f722ac4f2f8661af9ae4edabcd34229eb790e2 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a07ad05224622605ebbe5d351a6d0d8e77e3e8c29e95585146920137504da37 -->
 <!-- release-authority-current:end -->
 
 ## Nimbo 1.1.0 build-10 background-refresh correction — 2026-09-04
