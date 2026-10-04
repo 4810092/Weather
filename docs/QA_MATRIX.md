@@ -9,8 +9,8 @@ Status date: October 3, 2026.
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=350f77c3f3a254e4286c25a6730107e4ae38f2593bd92afaa46ddc00f7348948 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=382a5414f922d24ed6a43fce2cf80910ba936a28750bf5706902f81261c1dff2 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=e5c7c9d01dfc90bab6f48122b4df321b9299ee344f10da2475a6893639171991 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=f3515fd9a26fd2285b26effb3bcd38dc3e0d3d64f6f568610a0dfd9b9e336341 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-search-field-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
