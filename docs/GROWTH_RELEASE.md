@@ -9,15 +9,12 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- release-authority-current:start -->
 <!-- source_revision:b8270b7ce31061c285d8d9af495986cb152a72bc -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=350f77c3f3a254e4286c25a6730107e4ae38f2593bd92afaa46ddc00f7348948 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=382a5414f922d24ed6a43fce2cf80910ba936a28750bf5706902f81261c1dff2 -->
-<!-- release-authority-current:end -->
-<!-- release-authority-current:end -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
