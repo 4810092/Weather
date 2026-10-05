@@ -17,6 +17,14 @@ android {
         versionName = "1.1.0"
     }
 
+    buildTypes {
+        debug {
+            // Data Layer requires the same package and signing identity as the phone.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-dev"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

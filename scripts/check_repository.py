@@ -249,6 +249,12 @@ ios = (ROOT / "iosApp/project.yml").read_text()
 identity = "uz.ganikhodjaev.weather"
 if f'applicationId = "{identity}"' not in android:
     fail("Android production applicationId changed")
+if f'applicationId = "{identity}"' not in wear:
+    fail("Wear production applicationId must match the phone for Data Layer")
+for label, source in (("Android phone", android), ("Wear", wear)):
+    debug_block = re.search(r"debug\s*\{([^}]+)\}", source)
+    if debug_block is None or 'applicationIdSuffix = ".debug"' not in debug_block.group(1):
+        fail(f"{label} debug applicationId must use the shared .debug Data Layer identity")
 if "minSdk = 24" not in android:
     fail("Android phone/tablet minimum API must remain 24")
 if "isCoreLibraryDesugaringEnabled = true" not in android:
