@@ -1,6 +1,12 @@
-# Recent days — candidate 13 source boundary
+# Candidate 13 source boundary
 
-Source: `32c8f315bb84286424d4a62b6e88064dba55f720`. Prepared October 4, 2026.
+Source: `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Updated October 5, 2026.
+
+The current source also aligns the Wear debug package with the phone debug companion and adds a repository invariant for both identities. Release application IDs are unchanged. Current acceptance is recorded in [October 5 runtime evidence](release13-runtime-acceptance-2026-10-05.md); distribution signing remains blocked.
+
+## Historical recent-days verification
+
+The observations below were made against `32c8f315bb84286424d4a62b6e88064dba55f720` on October 4; they do not claim a new build of the current source.
 
 Recent days now run from the oldest of the preceding seven calendar days through the current snapshot day. The current day includes available history plus the current hour, with duplicate timestamps and future hours excluded. Missing days remain absent. Saved forecasts retain their actual local dates and end at the last available date, without inventing today’s data. Initial scrolling reveals the last card; a new city or calendar day returns to the end, while same-day refresh and a round trip through Settings preserve manual browsing. Cards keep uniform height.
 

@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Current development/test candidate (October 4): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `32c8f315bb84286424d4a62b6e88064dba55f720`. Recent-day ordering and scrolling passed fresh full local CI, 60 Android UI tests and a native iPhone history walkthrough; the Samsung debug build was updated and launched. Earlier source checks remain historical. Simulators are sufficient for this task; physical iPhone access is not required. Runtime limitations are recorded in the source evidence. Signing, upload and publication are separate from this local-only request. Build-12 store submissions are unchanged; their dated records below are historical relative to this source.
+Current development/test candidate (October 5): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Wear debug identity now matches the phone companion; release package identities are unchanged. Current local runtime evidence and its limits are recorded in `growth/quality/release13-runtime-acceptance-2026-10-05.md`. Simulators are sufficient for this task; physical iPhone access is not required. Signing, upload and publication remain separate and blocked. Build-12 store records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
@@ -9,12 +9,12 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:32c8f315bb84286424d4a62b6e88064dba55f720 -->
+<!-- source_revision:44d3f7862b61ef95bf2b686820cfba3fc05a7b25 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=1c0cecbfa105e666288c8deda0f722ac4f2f8661af9ae4edabcd34229eb790e2 -->
-<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=1a07ad05224622605ebbe5d351a6d0d8e77e3e8c29e95585146920137504da37 -->
+<!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bc7ab246ae2d6b23e0586505dc6ba8b175d2d08e570dc459b1c866afd45da005 -->
+<!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=988bc18650efa430edadc44d567140ad1225e01e3eb2a078bcad04363cd38c69 -->
 <!-- release-authority-current:end -->
 
 The machine-validated block binds source
