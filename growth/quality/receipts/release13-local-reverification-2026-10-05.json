@@ -1,0 +1,14 @@
+{
+  "execution": "local-independent-reverification",
+  "performed_on": "2026-10-05",
+  "hosted_candidate_run": 37322319203,
+  "command": "scripts/verify_signed_candidate.py",
+  "exit_code": 0,
+  "artifact_sha256": {
+    "android_phone": "a7f4f6b9d749be34a7e27a6f0040ddc1261c5114ad08ed1790283e53b6df54eb",
+    "apple": "9538a70063988eed24aa4a739e3cff01ad8c0387d3383c5f88d5daaaf12be99e",
+    "wear_os": "c9b79accdb4dcca8968e5e2a94759a0de67a8fc3882750cc25896512c2c662e4"
+  },
+  "candidate_tree_sha256": "84404972b8116b259cda684d9dc4936eb961a1aa3d47d556a7bbf352edeaf15e",
+  "boundary": "Local full-byte verification; no runtime QA, delivery, review or publication claim."
+}
