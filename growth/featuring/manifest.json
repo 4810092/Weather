@@ -124,8 +124,11 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Current UI completion source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 identifies phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). The current upload manifest is blocked pending new signing and byte verification. The listed build12 signing/materialization records and earlier delivery records are historical only. Fresh emulator/simulator runtime QA, Google Play Internal delivery, TestFlight delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact are separate and unproved for this candidate. The user requested testing only; no featuring or production action is authorized.",
+      "claim": "Current source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 identifies phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). Protected signing and independent local full-byte verification passed. October5 emulator/simulator runtime QA and its limits are recorded separately. Earlier build12 signing and delivery records are historical only. The owner authorized store submission. Google Play Internal delivery, TestFlight delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, and rank impact remain separate; signing does not prove those outcomes. No featuring or outreach action is authorized.",
       "evidence": [
+        "growth/quality/signed-candidate-run-37322319203.md",
+        "growth/quality/release13-signed-source-sync-2026-10-05.md",
+        "growth/quality/release13-runtime-acceptance-2026-10-05.md",
         "store/upload-manifest-1.1.0.json",
         "growth/quality/signed-candidate-run-36361077488.md",
         "growth/quality/release-materialization-2026-09-28-run-36363383305.md",
@@ -160,12 +163,6 @@
     },
     {
       "id": "android_physical_smoke",
-      "blocker_type": "operational_gate",
-      "status": "blocked",
-      "evidence": "growth/quality/gates.json"
-    },
-    {
-      "id": "release_artifact_source_sync",
       "blocker_type": "operational_gate",
       "status": "blocked",
       "evidence": "growth/quality/gates.json"

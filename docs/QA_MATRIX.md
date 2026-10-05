@@ -1,19 +1,19 @@
 # Release QA matrix
 
-Current development/test candidate (October 5): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Wear debug identity now matches the phone companion; release package identities are unchanged. Current local runtime evidence and its limits are recorded in `growth/quality/release13-runtime-acceptance-2026-10-05.md`. Simulators are sufficient for this task; physical iPhone access is not required. Signing, upload and publication remain separate and blocked. Build-12 store records below are historical relative to this source.
+Current development/test candidate (October 5): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Wear debug identity now matches the phone companion; release package identities are unchanged. Current local runtime evidence and its limits are recorded in `growth/quality/release13-runtime-acceptance-2026-10-05.md`. Simulators are sufficient for this task; physical iPhone access is not required. Protected signing run37322319203 and independent local full-byte verification passed. Store submission is authorized; delivery, review and publication remain separate. Exact-distribution runtime and health gates remain blocked. Build-12 store records below are historical relative to this source.
 
-Status date: October 3, 2026.
+Status date: October 5, 2026.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:44d3f7862b61ef95bf2b686820cfba3fc05a7b25 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bc7ab246ae2d6b23e0586505dc6ba8b175d2d08e570dc459b1c866afd45da005 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=988bc18650efa430edadc44d567140ad1225e01e3eb2a078bcad04363cd38c69 -->
 <!-- release-authority-current:end -->
 
-The machine-validated block binds the new build13 source to a **blocked** unsigned candidate. See [source transition](../growth/quality/release13-recent-days-source-sync-2026-10-04.md). Local validation does not transfer build12 signing or runtime authority.
+The machine-validated block binds build13 to independently verified signed bytes. See [current signed source evidence](../growth/quality/release13-signed-source-sync-2026-10-05.md). Runtime/publication readiness remains **BLOCKED**; build12 runtime evidence does not transfer.
 
 This document separates the exact `1.1.0` release candidate from historical
 store and device evidence. The current block below is checked against
@@ -32,9 +32,9 @@ remain exact.
 <!-- release-qa-current:start -->
 | Surface | Exact candidate | Manifest source sync | Manifest entry reverified/current | Release/source gate | Required runtime QA (legacy gate ID) | Fail-closed status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Android phone/tablet | `1.1.0 (13)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Wear OS | `1.1.0 (1000013)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `android_physical_smoke: blocked` | **BLOCKED** |
-| Apple app/widget/watch | `1.1.0 (13)` | `blocked` | `false` | `release_artifact_source_sync: blocked` | `ios_physical_smoke: blocked` | **BLOCKED** |
+| Android phone/tablet | `1.1.0 (13)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Wear OS | `1.1.0 (1000013)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `android_physical_smoke: blocked` | **BLOCKED** |
+| Apple app/widget/watch | `1.1.0 (13)` | `verified-current` | `true` | `release_artifact_source_sync: pass` | `ios_physical_smoke: blocked` | **BLOCKED** |
 <!-- release-qa-current:end -->
 
 `READY` is permitted only when the corresponding artifact is

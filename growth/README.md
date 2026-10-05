@@ -1,14 +1,14 @@
 # Nimbo growth operations
 
-Current development/test candidate (October 5): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Wear debug identity now matches the phone companion; release package identities are unchanged. Current local runtime evidence and its limits are recorded in `growth/quality/release13-runtime-acceptance-2026-10-05.md`. Simulators are sufficient for this task; physical iPhone access is not required. Signing, upload and publication remain separate and blocked. Build-12 store records below are historical relative to this source.
+Current development/test candidate (October 5): phone `1.1.0 (13)`, Wear `1.1.0 (1000013)`, and Apple `1.1.0 (13)` from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25`. Wear debug identity now matches the phone companion; release package identities are unchanged. Current local runtime evidence and its limits are recorded in `growth/quality/release13-runtime-acceptance-2026-10-05.md`. Simulators are sufficient for this task; physical iPhone access is not required. Protected signing run37322319203 and independent local full-byte verification passed. Store submission is authorized; delivery, review and publication remain separate. Exact-distribution runtime and health gates remain blocked. Build-12 store records below are historical relative to this source.
 
 The build-12 validation and delivery narrative below records the previous candidate; it does not establish build-13 authority.
 
 <!-- release-authority-current:start -->
 <!-- source_revision:44d3f7862b61ef95bf2b686820cfba3fc05a7b25 -->
-<!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
-<!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
+<!-- artifact:android_phone;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:wear_os;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
+<!-- artifact:apple;source_sync=verified-current;byte_verified=true;physical_qa_evidence=none -->
 <!-- physical_gate:android_physical_smoke=blocked;reason_sha256=bc7ab246ae2d6b23e0586505dc6ba8b175d2d08e570dc459b1c866afd45da005 -->
 <!-- physical_gate:ios_physical_smoke=blocked;reason_sha256=988bc18650efa430edadc44d567140ad1225e01e3eb2a078bcad04363cd38c69 -->
 <!-- release-authority-current:end -->

@@ -162,9 +162,9 @@
       {
         "id": "release_artifact_source_sync",
         "required": "pass",
-        "actual": "blocked",
-        "status": "fail",
-        "reason": "UI completion source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Earlier build13 and build12 results cannot validate changed source. The October4 request authorizes local implementation and checks only; upload and publication are separate. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
+        "actual": "pass",
+        "status": "pass",
+        "reason": "Source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 was signed by protected run37322319203 and independently full-byte verified locally on October5. Phone13, Wear1000013 and Apple app/widget/watch13 hashes, versions, certificates, embedded source and archive/mapping bindings match. See growth/quality/signed-candidate-run-37322319203.md. This passes signing/source verification only; distribution runtime, delivery, review and publication remain separate. The atomic 3/3 artifact set is verified-current."
       },
       {
         "id": "android_physical_smoke",

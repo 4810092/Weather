@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-05",
   "gates": {
     "ios_crash_gate": {
       "status": "blocked",
@@ -23,10 +23,10 @@
       "reason": "Apple1.1.0(13) from 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 requires current iPhone/iPad UI and signed-runtime validation. Natural widget/background completion and a fresh crash window remain required; build12 records do not validate build13."
     },
     "release_artifact_source_sync": {
-      "status": "blocked",
+      "status": "pass",
       "blocks_publication": true,
       "source_revision": "44d3f7862b61ef95bf2b686820cfba3fc05a7b25",
-      "reason": "UI completion source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 requires newly signed and independently verified phone13/Wear1000013/Apple13 bytes. Earlier build13 and build12 results cannot validate changed source. The October4 request authorizes local implementation and checks only; upload and publication are separate. The canonical registry atomically marks Apple, phone, and Wear artifacts blocked until signed-byte verification passes."
+      "reason": "Source 44d3f7862b61ef95bf2b686820cfba3fc05a7b25 was signed by protected run37322319203 and independently full-byte verified locally on October5. Phone13, Wear1000013 and Apple app/widget/watch13 hashes, versions, certificates, embedded source and archive/mapping bindings match. See growth/quality/signed-candidate-run-37322319203.md. This passes signing/source verification only; distribution runtime, delivery, review and publication remain separate. The atomic 3/3 artifact set is verified-current."
     },
     "domain_activation": {
       "status": "pass",
@@ -40,5 +40,5 @@
     }
   },
   "scale_status": "hold",
-  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. Candidate13 UI changes are being validated locally. Signing, signed-runtime evidence, delivery, review, production rollout and public availability remain separate. Existing build12 store submissions are unchanged."
+  "scale_status_reason": "Public outreach and acquisition scaling remain HOLD. Candidate13 signing and independent byte verification passed. The owner authorized store submission October5; current delivery/review will be recorded separately. Exact-distribution runtime, production health and public availability are not established by signing."
 }

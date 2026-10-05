@@ -25,6 +25,9 @@ EXPECTED_INTERNAL_ACTIONS = [
     "apple_testflight_internal_build10",
 ]
 CURRENT_EVIDENCE = [
+    "growth/quality/signed-candidate-run-37322319203.md",
+    "growth/quality/release13-signed-source-sync-2026-10-05.md",
+    "growth/quality/release13-runtime-acceptance-2026-10-05.md",
     "store/upload-manifest-1.1.0.json",
     "growth/quality/signed-candidate-run-36361077488.md",
     "growth/quality/release-materialization-2026-09-28-run-36363383305.md",
