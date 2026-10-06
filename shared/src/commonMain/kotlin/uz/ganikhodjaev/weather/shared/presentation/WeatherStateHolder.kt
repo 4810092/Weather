@@ -416,7 +416,17 @@ internal class WeatherStateHolder(
             }
             false
         }
-        if (!activated || !isCurrentActivation(generation, location)) return
+        if (!activated) {
+            // Activation cancels the old collector before persisting the new city. If persistence
+            // fails, keep the picker and restart observation of the still-active saved forecast.
+            val previous = activeLocation
+            if (previous != null && isCurrentActivation(generation, previous)) {
+                updateContentPreservingLocationPicker { it.copy(isRefreshing = false) }
+                observeWeather(previous, generation, refreshOnStart = false)
+            }
+            return
+        }
+        if (!isCurrentActivation(generation, location)) return
 
         if (deviceCoordinates != null) {
             placeResolutionJob = scope.launch {
@@ -424,6 +434,14 @@ internal class WeatherStateHolder(
             }
         }
 
+        observeWeather(location, generation, refreshOnStart = true)
+    }
+
+    private suspend fun observeWeather(
+        location: Location,
+        generation: Long,
+        refreshOnStart: Boolean
+    ) {
         coroutineScope {
             launch {
                 var retryDelayMillis = WEATHER_OBSERVATION_INITIAL_RETRY_MILLIS
@@ -487,12 +505,14 @@ internal class WeatherStateHolder(
                     }
                 }
             }
-            refreshInternal(
-                location,
-                generation,
-                forceRefresh = false,
-                nowEpochSeconds = null
-            )
+            if (refreshOnStart) {
+                refreshInternal(
+                    location,
+                    generation,
+                    forceRefresh = false,
+                    nowEpochSeconds = null
+                )
+            }
             awaitCancellation()
         }
     }

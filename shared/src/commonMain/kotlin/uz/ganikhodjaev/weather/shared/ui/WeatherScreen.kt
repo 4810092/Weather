@@ -188,7 +188,11 @@ internal fun WeatherScreen(
                         { page = "licenses" }
                     )
                     "licenses" -> LibraryLicenses { page = "settings" }
-                    else -> savedScreens.SaveableStateProvider("forecast") {
+                    // The picker/loading remove Content from composition. Scope restoration by
+                    // city too: rememberSaveable inputs alone cannot reject another city's state.
+                    else -> savedScreens.SaveableStateProvider(
+                        "forecast:${state.weather.location.id}"
+                    ) {
                         WeatherContent(
                             state,
                             onRetry,

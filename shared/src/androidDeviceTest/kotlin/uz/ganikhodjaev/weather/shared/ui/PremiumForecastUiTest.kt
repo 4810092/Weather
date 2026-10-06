@@ -30,6 +30,53 @@ import uz.ganikhodjaev.weather.shared.presentation.WeatherUiState
 @OptIn(ExperimentalTestApi::class)
 class PremiumForecastUiTest {
     @Test
+    fun cityPickerAndLoadingKeepForecastStateScopedToEachCity() = withTestLocale("en-US") {
+        runAndroidComposeUiTest<NimboLocaleTestActivity> {
+            val firstCity = premiumState()
+            val secondCity = firstCity.copy(
+                weather = firstCity.weather.copy(
+                    location = firstCity.weather.location.copy(
+                        id = "other-city",
+                        name = "Samarkand"
+                    )
+                )
+            )
+            var state by mutableStateOf<WeatherUiState>(firstCity)
+            setContent { TestWeatherScreen(state) }
+            fun selectedTime() = onNodeWithTag("selected-hour-time").fetchSemanticsNode()
+                .config[SemanticsProperties.Text].single().text
+            val current = selectedTime()
+            onNodeWithTag("hourly-forecast").performScrollTo().performTouchInput {
+                swipeLeft(durationMillis = 400)
+            }
+            onNodeWithTag("hourly-forecast").performTouchInput { click(center) }
+            waitForIdle()
+            val chosen = selectedTime()
+            assertNotEquals(current, chosen)
+
+            // The real city change removes Content while the picker and loading are visible.
+            // Updating Content directly cannot detect saveable-state restoration across cities.
+            runOnIdle { state = WeatherUiState.ChooseLocation() }
+            waitForIdle()
+            runOnIdle { state = WeatherUiState.Loading }
+            waitForIdle()
+            runOnIdle { state = secondCity }
+            waitForIdle()
+            assertEquals(current, selectedTime(), "A new city must start at its current hour")
+
+            runOnIdle { state = WeatherUiState.ChooseLocation() }
+            waitForIdle()
+            runOnIdle { state = firstCity }
+            waitForIdle()
+            assertEquals(
+                chosen,
+                selectedTime(),
+                "Returning to a city must restore its own selection"
+            )
+        }
+    }
+
+    @Test
     fun deterministicVisualMatrix() {
         val cases = listOf(
             Triple("ru", ThemePreference.Light, 1f),

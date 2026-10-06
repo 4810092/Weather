@@ -766,7 +766,7 @@ class WeatherStateHolderGrowthTest {
     }
 
     @Test
-    fun savedLocationLimitStillAllowsReturningToThePreviousForecast() = runBlocking {
+    fun savedLocationLimitStillAllowsReturningToThePreviousForecast() = runBlocking<Unit> {
         val fetchedAt = Clock.System.now().epochSeconds
         val repository = ScriptedWeatherDataSource(
             initialActiveLocation = TASHKENT,
@@ -796,6 +796,58 @@ class WeatherStateHolderGrowthTest {
             val restored = assertIs<WeatherUiState.Content>(holder.state.value)
             assertEquals(TASHKENT.id, restored.weather.location.id)
             assertEquals(fetchedAt, restored.weather.fetchedAtEpochSeconds)
+            repository.emitSnapshot(snapshot(TASHKENT, fetchedAt + 1))
+            withTimeout(1_000L) {
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    it.weather.fetchedAtEpochSeconds == fetchedAt + 1
+                }
+            }
+            holder.refresh()
+            repository.nextRefresh().succeed(fetchedAt + 2)
+            withTimeout(1_000L) {
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    !it.isRefreshing && it.weather.fetchedAtEpochSeconds == fetchedAt + 2
+                }
+            }
+        } finally {
+            holderScope.cancel()
+        }
+    }
+
+    @Test
+    fun failedCityPersistenceCancelsOldRefreshAndRestoresLiveObservation() = runBlocking<Unit> {
+        val fetchedAt = Clock.System.now().epochSeconds
+        val repository = ScriptedWeatherDataSource(
+            initialActiveLocation = TASHKENT,
+            initialSnapshot = snapshot(TASHKENT, fetchedAt),
+            setActiveLocationFailure = IllegalStateException("disk write failed")
+        )
+        val holderScope = CoroutineScope(coroutineContext + SupervisorJob())
+        val holder = createStateHolder(
+            repository,
+            RecordingLocationProvider(),
+            RecordingOnboardingStore(),
+            holderScope
+        )
+        try {
+            holder.start()
+            holder.state.filterIsInstance<WeatherUiState.Content>().first()
+            holder.refresh()
+            repository.nextRefresh()
+            holder.showLocationPicker()
+            holder.chooseLocation(BUKHARA)
+            holder.state.filterIsInstance<WeatherUiState.ChooseLocation>().first {
+                it.message == UiMessage.LocationUnavailable
+            }
+            holder.cancelLocationPicker()
+            assertFalse(assertIs<WeatherUiState.Content>(holder.state.value).isRefreshing)
+            holder.refresh()
+            repository.nextRefresh().succeed(fetchedAt + 1)
+            withTimeout(1_000L) {
+                holder.state.filterIsInstance<WeatherUiState.Content>().first {
+                    !it.isRefreshing && it.weather.fetchedAtEpochSeconds == fetchedAt + 1
+                }
+            }
         } finally {
             holderScope.cancel()
         }

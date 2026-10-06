@@ -68,7 +68,7 @@ fi
 
 python3 scripts/verify_android_ui_results.py \
   --root shared/build/outputs/androidTest-results \
-  --expected-tests 24
+  --expected-tests 25
 
 # Gradle collects additional test output before uninstalling the test APK.
 python3 - "$matrix_name" "$run_started" <<'PY_CAPTURE'
