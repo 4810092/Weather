@@ -252,7 +252,7 @@ class WeatherScreenAndroidUiTest {
             onNodeWithText("Dark").assertIsSelected()
             runOnIdle { assertEquals(ThemePreference.Dark, theme) }
             onNodeWithText("Back").performScrollTo().performClick()
-            onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
+            onNodeWithText("Tashkent").assertIsDisplayed()
             onNodeWithContentDescription("Refresh").assertHasClickAction()
             waitForIdle()
             saveGlassScreenshot(
@@ -286,7 +286,7 @@ class WeatherScreenAndroidUiTest {
                 onNodeWithContentDescription("Settings").performClick()
                 onNodeWithText("Dark").performScrollTo().assertIsDisplayed().assertIsSelected()
                 onNodeWithText("Back").performScrollTo().performClick()
-                onNodeWithText("Tashkent").performScrollTo().assertIsDisplayed()
+                onNodeWithText("Tashkent").assertIsDisplayed()
             }
         }
 
@@ -380,7 +380,8 @@ class WeatherScreenAndroidUiTest {
             }
 
             onNodeWithText("Tashkent").assertIsDisplayed()
-            onNodeWithContentDescription("Share weather")
+            onNodeWithText("Share weather")
+                .performScrollTo()
                 .assertIsDisplayed()
                 .assertHasClickAction()
                 .performClick()
@@ -419,7 +420,7 @@ class WeatherScreenAndroidUiTest {
     fun currentHourReturnsToScreenCenterIncludingTimelineEdges() = withTestLocale("en-US") {
         runAndroidComposeUiTest<NimboLocaleTestActivity> {
             val base = contentState()
-            val epoch = Clock.System.now().epochSeconds / 3_600 * 3_600
+            val epoch = TEST_EPOCH_SECONDS / 3_600 * 3_600
             fun weatherAt(index: Int) = base.weather.copy(
                 current = base.weather.current.copy(epochSeconds = epoch),
                 timeline = (0..48).map {
@@ -499,7 +500,7 @@ class WeatherScreenAndroidUiTest {
                 }
                 waitForIdle()
                 assertEquals(firstX, first.fetchSemanticsNode().boundsInRoot.center.x)
-                onNodeWithContentDescription("Настройки").performScrollTo().performClick()
+                onNodeWithContentDescription("Настройки").performClick()
                 onNodeWithText("Назад").performClick()
                 row.performScrollTo()
                 assertEquals(firstX, first.fetchSemanticsNode().boundsInRoot.center.x)
@@ -598,7 +599,7 @@ class WeatherScreenAndroidUiTest {
             onNodeWithText("Couldn’t refresh. Showing saved weather.")
                 .performScrollTo()
                 .assertIsDisplayed()
-            onNodeWithContentDescription("Refresh").performScrollTo().performClick()
+            onNodeWithContentDescription("Refresh").performClick()
             waitForIdle()
             onNodeWithText("Couldn’t refresh. Showing saved weather.").assertDoesNotExist()
             onNodeWithText("Tashkent").assertIsDisplayed()
@@ -849,7 +850,7 @@ class WeatherScreenAndroidUiTest {
             val browsedCard = hasContentDescription("70", substring = true) and hasClickAction()
             onNode(browsedCard).assertIsDisplayed()
             val browsedX = onNode(browsedCard).fetchSemanticsNode().positionInRoot.x
-            onNodeWithContentDescription("Settings").performScrollTo().performClick()
+            onNodeWithContentDescription("Settings").performClick()
             onNodeWithText("Back").performClick()
             waitForIdle()
             // Check before any helper can scroll horizontally. Header navigation changes only Y.
@@ -935,7 +936,7 @@ private fun SemanticsNodeInteraction.assertUnitGlyphOrder(unit: String) {
 }
 
 @Composable
-private fun TestWeatherScreen(
+internal fun TestWeatherScreen(
     state: WeatherUiState,
     fontScale: Float = 1f,
     theme: ThemePreference = ThemePreference.Light,
@@ -949,7 +950,8 @@ private fun TestWeatherScreen(
     onCancelLocationChange: () -> Unit = {},
     onShareText: (String) -> Unit = {},
     onAddLocationFromFirstForecastTip: () -> Unit = {},
-    onDismissFirstForecastTip: () -> Unit = {}
+    onDismissFirstForecastTip: () -> Unit = {},
+    nowEpochSeconds: Long = TEST_EPOCH_SECONDS
 ) {
     val currentDensity = LocalDensity.current
     val injectedLanguage = AndroidUiTestLocale.locale.language
@@ -958,6 +960,9 @@ private fun TestWeatherScreen(
         "Compose locale $composeLanguage does not match injected locale $injectedLanguage"
     }
     CompositionLocalProvider(
+        LocalWeatherClock provides object : Clock {
+            override fun now() = Instant.fromEpochSeconds(nowEpochSeconds)
+        },
         LocalContentColor provides
             if (theme ==
                 ThemePreference.Dark
@@ -1004,7 +1009,7 @@ private fun TestWeatherScreen(
 }
 
 @OptIn(ExperimentalTestApi::class)
-private fun ComposeUiTest.captureFeedbackScreenshot(name: String) {
+internal fun ComposeUiTest.captureFeedbackScreenshot(name: String) {
     waitForIdle()
     saveGlassScreenshot(
         name,
@@ -1048,19 +1053,23 @@ private fun ComposeUiTest.scrollForecastCardIntoView(
     return card.assertIsDisplayed()
 }
 
-private fun saveGlassScreenshot(name: String, captured: Bitmap?) {
-    val bitmap =
-        captured
-            ?: requireNotNull(
-                InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
-            )
-    val sampledColors = (1..16).flatMap { x ->
-        (1..16).map { y -> bitmap.getPixel(bitmap.width * x / 17, bitmap.height * y / 17) }
-    }.toSet()
-    assertTrue(
-        sampledColors.size > 16,
-        "Screenshot must contain rendered content, not a blank window"
-    )
+internal fun saveGlassScreenshot(name: String, captured: Bitmap?) {
+    val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+    fun hasRenderedPixels(bitmap: Bitmap): Boolean = (1..64).flatMap { x ->
+        (1..64).map { y -> bitmap.getPixel(bitmap.width * x / 65, bitmap.height * y / 65) }
+    }.toSet().size > 16
+    var bitmap = captured ?: requireNotNull(automation.takeScreenshot())
+    if (captured == null) {
+        // API24 screenshots read SurfaceFlinger, which can lag Compose's idle/draw signal.
+        // Wait for pixels, bounded to two seconds; retain the blank guard and failed image.
+        val deadline = android.os.SystemClock.uptimeMillis() + 2_000
+        while (!hasRenderedPixels(bitmap) && android.os.SystemClock.uptimeMillis() < deadline) {
+            android.os.SystemClock.sleep(32)
+            val next = requireNotNull(automation.takeScreenshot())
+            bitmap.recycle()
+            bitmap = next
+        }
+    }
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     val directory = File(context.externalMediaDirs.first(), "additional_test_output").apply {
         mkdirs()
@@ -1068,6 +1077,10 @@ private fun saveGlassScreenshot(name: String, captured: Bitmap?) {
     File(directory, "$name.png").outputStream().use {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
     }
+    assertTrue(
+        hasRenderedPixels(bitmap),
+        "Screenshot must contain rendered content, not a blank window"
+    )
 }
 
 private fun onboardingState() = WeatherUiState.ChooseLocation(
@@ -1075,7 +1088,7 @@ private fun onboardingState() = WeatherUiState.ChooseLocation(
     quickLocations = UzbekistanQuickLocations.all
 )
 
-private fun contentState(
+internal fun contentState(
     isStale: Boolean = false,
     refreshMessage: UiMessage? = null,
     showFirstForecastTip: Boolean = false
@@ -1109,7 +1122,7 @@ private fun contentState(
     )
 }
 
-private inline fun <T> withTestLocale(languageTag: String, block: () -> T): T {
+internal inline fun <T> withTestLocale(languageTag: String, block: () -> T): T {
     val originalLocales = LocaleList.getDefault()
     val originalTestLocale = AndroidUiTestLocale.locale
     AndroidUiTestLocale.locale = JavaLocale.forLanguageTag(languageTag)
@@ -1135,7 +1148,7 @@ class NimboLocaleTestActivity : ComponentActivity() {
     }
 }
 
-private object AndroidUiTestLocale {
+internal object AndroidUiTestLocale {
     @Volatile
     var locale: JavaLocale = JavaLocale.forLanguageTag("en-US")
 }
@@ -1158,7 +1171,7 @@ private val BUKHARA = Location(
     timezone = "Asia/Tashkent"
 )
 
-private const val TEST_EPOCH_SECONDS = 1_725_000_000L
+internal const val TEST_EPOCH_SECONDS = 1_725_000_000L
 
 private fun testDay() = DailyForecast(
     epochSeconds = TEST_EPOCH_SECONDS,

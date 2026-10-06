@@ -2,7 +2,9 @@ package uz.ganikhodjaev.weather.shared.data
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import uz.ganikhodjaev.weather.shared.model.WeatherHour
 
 class ForecastResponseMappingTest {
     @Test
@@ -17,6 +19,9 @@ class ForecastResponseMappingTest {
         assertEquals(75, rows[0].precipitationProbability)
         assertEquals(0, rows[1].precipitationProbability)
         assertEquals(0.0, rows[1].uvIndex)
+        assertTrue(rows[0].hasField(WeatherHour.RAIN_PROBABILITY))
+        assertFalse(rows[1].hasField(WeatherHour.RAIN_PROBABILITY))
+        assertEquals(WeatherHour.ALL_OPTIONAL_FIELDS, rows[1].missingFields)
     }
 
     @Test

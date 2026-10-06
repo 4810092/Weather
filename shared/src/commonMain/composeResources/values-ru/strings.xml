@@ -30,7 +30,7 @@
   <string name="refresh">Обновить</string>
   <string name="change_place">Сменить место</string>
   <string name="share_weather">Поделиться погодой</string>
-  <string name="share_weather_text">%1$s: %2$d°, вероятность дождя %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, вероятность дождя %3$s%% — Nimbo</string>
   <string name="share_store_cta">Скачайте Nimbo для следующей прогулки:</string>
   <string name="theme">Тема</string>
   <string name="theme_description">Использовать тему устройства или выбрать вручную.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Тёмная</string>
   <string name="feels_like">Ощущается как %1$d°</string>
   <string name="saved_weather">Сохранённая погода · нужно обновить</string>
-  <string name="timeline_title">24 часа назад · сейчас · 24 часа вперёд</string>
+  <string name="timeline_title">По часам</string>
   <string name="attribution">Погода и места: Open-Meteo · База мест: GeoNames</string>
   <string name="about_nimbo">О Nimbo</string>
   <string name="help_and_feedback">Помощь и обратная связь</string>
@@ -149,4 +149,14 @@
     <string name="choose_city">Выберите город</string>
     <string name="search_results">Результаты поиска</string>
     <string name="search_minimum">Введите хотя бы 2 символа для поиска.</string>
+    <string name="outside_title">Для прогулки</string>
+    <string name="outside_caution">Время с оговорками</string>
+    <string name="outside_no_window">Сегодня нет подходящего двухчасового окна</string>
+    <string name="caveat_rain">Возможны осадки</string>
+    <string name="caveat_heat">Жарко</string>
+    <string name="caveat_cold">Холодно</string>
+    <string name="caveat_wind">Ветрено</string>
+    <string name="caveat_uv">Высокий UV</string>
+    <string name="timeline_explore">Листайте шкалу · удерживайте и ведите для выбора</string>
+    <string name="hour_missing_data">Часть погодных данных недоступна</string>
 </resources>

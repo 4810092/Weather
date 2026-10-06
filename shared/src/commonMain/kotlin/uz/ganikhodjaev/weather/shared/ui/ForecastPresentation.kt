@@ -69,3 +69,54 @@ internal fun servicePageUrl(language: String, page: String = ""): String {
     require(page in setOf("", "support", "privacy"))
     return "https://nimbo.uz/$prefix" + if (page.isBlank()) "" else "$page/"
 }
+
+internal enum class DaylightPhase { Day, Night, Unknown }
+
+/** Never infer sun/moon from the device timezone, theme preference or a fixed 6am/6pm rule. */
+internal fun daylightAt(weather: WeatherSnapshot, epoch: Long, now: Long): DaylightPhase {
+    val zone = runCatching { TimeZone.of(weather.location.timezone) }.getOrNull()
+        ?: return DaylightPhase.Unknown
+    val date = Instant.fromEpochSeconds(epoch).toLocalDateTime(zone).date
+    val day = weather.dailyForecast.firstOrNull {
+        Instant.fromEpochSeconds(it.epochSeconds).toLocalDateTime(zone).date == date
+    } ?: return DaylightPhase.Unknown
+    if (now - day.fetchedAtEpochSeconds !in -300..86_400 ||
+        day.sunriseEpochSeconds <= 0 ||
+        day.sunsetEpochSeconds <= day.sunriseEpochSeconds ||
+        day.sunsetEpochSeconds - day.sunriseEpochSeconds >= 86_400 ||
+        Instant.fromEpochSeconds(day.sunriseEpochSeconds).toLocalDateTime(zone).date != date ||
+        Instant.fromEpochSeconds(day.sunsetEpochSeconds).toLocalDateTime(zone).date != date
+    ) {
+        return DaylightPhase.Unknown
+    }
+    return if (epoch >= day.sunriseEpochSeconds && epoch < day.sunsetEpochSeconds) {
+        DaylightPhase.Day
+    } else {
+        DaylightPhase.Night
+    }
+}
+
+internal data class TimelineSlot(val epochSeconds: Long, val hour: WeatherHour?)
+
+/** Missing hours occupy real time on the axis; no line is drawn across the resulting gap. */
+internal fun timelineSlots(hours: List<WeatherHour>): List<TimelineSlot> {
+    if (hours.isEmpty()) return emptyList()
+    val byTime = hours.groupBy { it.epochSeconds }
+    val start = byTime.keys.min()
+    val end = minOf(byTime.keys.max(), start + 167 * 3_600)
+    return (start..end step 3_600).map { epoch ->
+        TimelineSlot(
+            epoch,
+            byTime[epoch]?.distinct()?.singleOrNull()?.takeIf {
+                it.temperatureC.isFinite()
+            }
+        )
+    }
+}
+
+internal fun temperatureFraction(value: Double, minimum: Double, maximum: Double): Float =
+    if (!value.isFinite() || !minimum.isFinite() || !maximum.isFinite() || minimum == maximum) {
+        0.5f
+    } else {
+        ((value - minimum) / (maximum - minimum)).coerceIn(0.0, 1.0).toFloat()
+    }

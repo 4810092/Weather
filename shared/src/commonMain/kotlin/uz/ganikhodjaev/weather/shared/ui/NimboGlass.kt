@@ -51,34 +51,38 @@ internal data class GlassStyle(
     val highlight: Color,
     val shadow: Color,
     val glow: Color,
-    val blurRadius: Float = 8f,
-    val lensDepth: Float = 8f
+    val blurRadius: Float = 5f,
+    val lensDepth: Float = 3f
 )
 
 internal val LightGlassStyle = GlassStyle(
     tint = Color(0xBDF8FBFF),
     controlTint = Color(0x66F8FBFF),
     selectedTint = Color(0xE6D2EAF6),
-    highlight = Color(0xE6FFFFFF),
-    shadow = Color(0x14315D78),
-    glow = Color(0x99FFFFFF)
+    highlight = Color(0x408796A0),
+    shadow = Color(0x08315D78),
+    glow = Color(0x28FFFFFF)
 )
 
 internal val DarkGlassStyle = GlassStyle(
     tint = Color(0xC21F303B),
     controlTint = Color(0x801F303B),
     selectedTint = Color(0xE6284A5C),
-    highlight = Color(0x66E0F4FF),
-    shadow = Color(0x33000000),
-    glow = Color(0x183C627D)
+    highlight = Color(0x304D687B),
+    shadow = Color(0x18000000),
+    glow = Color(0x103C627D)
 )
 
 internal val LocalGlassBackdrop = staticCompositionLocalOf<Backdrop?> { null }
-private val LocalGlassPreferences = staticCompositionLocalOf { GlassPreferences() }
+internal val LocalGlassPreferences = staticCompositionLocalOf { GlassPreferences() }
 
 /** Record only the background, never the glass consuming it (which would recurse). */
 @Composable
-internal fun NimboGlassScene(condition: WeatherCondition, content: @Composable () -> Unit) {
+internal fun NimboGlassScene(
+    condition: WeatherCondition,
+    daylight: DaylightPhase = DaylightPhase.Unknown,
+    content: @Composable () -> Unit
+) {
     val tokens = LocalNimboThemeTokens.current
     val style = if (tokens.isDark) DarkGlassStyle else LightGlassStyle
     val backdrop = rememberLayerBackdrop()
@@ -87,7 +91,7 @@ internal fun NimboGlassScene(condition: WeatherCondition, content: @Composable (
         Box(
             Modifier.fillMaxSize()
                 .layerBackdrop(backdrop)
-                .background(tokens.ambience(condition))
+                .background(tokens.ambience(condition, daylight))
                 .drawWithCache {
                     val topLight = Brush.radialGradient(
                         listOf(style.glow, Color.Transparent),
@@ -115,7 +119,7 @@ internal fun NimboGlassScene(condition: WeatherCondition, content: @Composable (
 
 @Composable
 internal fun Modifier.nimboGlass(
-    shape: Shape = RoundedCornerShape(24.dp),
+    shape: Shape = RoundedCornerShape(NimboLayout.CardRadius),
     selected: Boolean = false,
     interactive: Boolean = false,
     pressProgress: () -> Float = { 0f }
@@ -130,7 +134,7 @@ internal fun Modifier.nimboGlass(
     }
     if (backdrop == null || preferences.reduceTransparency || !isRenderEffectSupported()) {
         return clip(shape).background(tint.copy(alpha = 1f), shape)
-            .border(1.dp, style.highlight, shape)
+            .border(NimboLayout.Hairline, style.highlight, shape)
     }
     return drawBackdrop(
         backdrop = backdrop,
@@ -140,9 +144,9 @@ internal fun Modifier.nimboGlass(
             if (isRuntimeShaderSupported()) {
                 lens(
                     refractionHeight = minOf(style.lensDepth.dp.toPx(), size.minDimension / 4f),
-                    refractionAmount = (if (interactive || selected) 18.dp else 4.dp).toPx(),
+                    refractionAmount = (if (interactive || selected) 4.dp else 1.dp).toPx(),
                     depthEffect = true,
-                    chromaticAberration = interactive
+                    chromaticAberration = false
                 )
             }
         },
@@ -213,7 +217,9 @@ internal fun GlassButton(
     val shape = RoundedCornerShape(50)
     Button(
         onClick = onClick,
-        modifier = modifier.sizeIn(minHeight = 48.dp).glassControl(source, shape, selected),
+        modifier = modifier.sizeIn(
+            minHeight = NimboLayout.ActionSize
+        ).glassControl(source, shape, selected),
         enabled = enabled,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
@@ -240,7 +246,10 @@ internal fun GlassIconButton(
     val source = remember { MutableInteractionSource() }
     IconButton(
         onClick = onClick,
-        modifier = modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+        modifier = modifier.sizeIn(
+            minWidth = NimboLayout.ActionSize,
+            minHeight = NimboLayout.ActionSize
+        )
             .glassControl(source, RoundedCornerShape(50), selected),
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(

@@ -35,7 +35,8 @@ class LocationRetentionTest {
                 humidity_percent = 50,
                 uv_index = 0.0,
                 source = "test",
-                fetched_at_epoch_seconds = 1
+                fetched_at_epoch_seconds = 1,
+                missing_fields = 0
             )
 
             repository.setActiveLocation(next)

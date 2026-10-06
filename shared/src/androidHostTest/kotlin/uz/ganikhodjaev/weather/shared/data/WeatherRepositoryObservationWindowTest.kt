@@ -171,7 +171,8 @@ class WeatherRepositoryObservationWindowTest {
                 humidity_percent = 50,
                 uv_index = 0.0,
                 source = "test",
-                fetched_at_epoch_seconds = START
+                fetched_at_epoch_seconds = START,
+                missing_fields = 0
             )
         }
 

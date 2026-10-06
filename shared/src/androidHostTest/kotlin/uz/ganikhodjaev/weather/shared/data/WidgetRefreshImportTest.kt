@@ -24,7 +24,7 @@ class WidgetRefreshImportTest {
     @Test
     fun neverOverwritesNewerCachedRows() = fixture { repository, database ->
         database.weatherQueries.insertOrReplaceWeatherHour(
-            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100
+            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100, 0
         )
 
         assertTrue(repository.importWidgetRefresh(payload(fetchedAt = HOUR)))
@@ -38,7 +38,7 @@ class WidgetRefreshImportTest {
     @Test
     fun malformedPrimaryPreservesExistingCache() = fixture { repository, database ->
         database.weatherQueries.insertOrReplaceWeatherHour(
-            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100
+            LOCATION.id, HOUR, 99.0, 99.0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, "test", HOUR + 100, 0
         )
 
         assertFalse(repository.importWidgetRefresh(payload(forecast = "{bad")))

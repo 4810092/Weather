@@ -114,7 +114,8 @@ class WeatherRepositoryCachePreservationTest {
                 humidity_percent = 40,
                 uv_index = 2.0,
                 source = "open-meteo",
-                fetched_at_epoch_seconds = 1
+                fetched_at_epoch_seconds = 1,
+                missing_fields = 0
             )
             val cachedBefore = database.weatherQueries
                 .selectTimeline(LOCATION.id, 0, Long.MAX_VALUE)

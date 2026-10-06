@@ -30,7 +30,7 @@
   <string name="refresh">Yenile</string>
   <string name="change_place">Yeri değiştir</string>
   <string name="share_weather">Hava durumunu paylaş</string>
-  <string name="share_weather_text">%1$s: %2$d°, yağmur olasılığı %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, yağmur olasılığı %3$s%% — Nimbo</string>
   <string name="share_store_cta">Bir sonraki yürüyüşünüz için Nimbo’yu indirin:</string>
   <string name="theme">Tema</string>
   <string name="theme_description">Cihaz temasını kullanın veya kendiniz seçin.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Koyu</string>
   <string name="feels_like">Hissedilen %1$d°</string>
   <string name="saved_weather">Kayıtlı hava · güncelleme gerekli</string>
-  <string name="timeline_title">24 saat önce · şimdi · 24 saat sonra</string>
+  <string name="timeline_title">Saatlik tahmin</string>
   <string name="attribution">Hava ve yer verileri Open-Meteo · Yerler GeoNames tabanlıdır</string>
   <string name="about_nimbo">Nimbo hakkında</string>
   <string name="help_and_feedback">Yardım ve geri bildirim</string>
@@ -147,4 +147,14 @@
     <string name="choose_city">Şehir seçin</string>
     <string name="search_results">Arama sonuçları</string>
     <string name="search_minimum">Aramak için en az 2 karakter girin.</string>
+    <string name="outside_title">Yürüyüş için</string>
+    <string name="outside_caution">Dikkat gerektiren zaman aralığı</string>
+    <string name="outside_no_window">Bugün uygun iki saatlik bir aralık yok</string>
+    <string name="caveat_rain">Yağış olabilir</string>
+    <string name="caveat_heat">Sıcak</string>
+    <string name="caveat_cold">Soğuk</string>
+    <string name="caveat_wind">Rüzgârlı</string>
+    <string name="caveat_uv">Yüksek UV</string>
+    <string name="timeline_explore">Kaydırarak gezin · seçmek için basılı tutup sürükleyin</string>
+    <string name="hour_missing_data">Bazı hava durumu verileri mevcut değil</string>
 </resources>

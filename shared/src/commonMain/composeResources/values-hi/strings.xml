@@ -30,7 +30,7 @@
   <string name="refresh">अपडेट करें</string>
   <string name="change_place">स्थान बदलें</string>
   <string name="share_weather">मौसम साझा करें</string>
-  <string name="share_weather_text">%1$s: %2$d°, बारिश की संभावना %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, बारिश की संभावना %3$s%% — Nimbo</string>
   <string name="share_store_cta">अपनी अगली सैर के लिए Nimbo पाएँ:</string>
   <string name="theme">थीम</string>
   <string name="theme_description">डिवाइस की थीम इस्तेमाल करें या खुद चुनें।</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">डार्क</string>
   <string name="feels_like">महसूस %1$d°</string>
   <string name="saved_weather">सहेजा गया मौसम · अपडेट आवश्यक</string>
-  <string name="timeline_title">24 घंटे पहले · अभी · 24 घंटे बाद</string>
+  <string name="timeline_title">घंटेवार पूर्वानुमान</string>
   <string name="attribution">मौसम और स्थान डेटा: Open-Meteo · स्थान GeoNames पर आधारित</string>
   <string name="about_nimbo">Nimbo के बारे में</string>
   <string name="help_and_feedback">सहायता और फ़ीडबैक</string>
@@ -147,4 +147,14 @@
     <string name="choose_city">शहर चुनें</string>
     <string name="search_results">खोज परिणाम</string>
     <string name="search_minimum">खोजने के लिए कम से कम 2 अक्षर दर्ज करें।</string>
+    <string name="outside_title">टहलने के लिए</string>
+    <string name="outside_caution">सावधानी के साथ उपयुक्त समय</string>
+    <string name="outside_no_window">आज दो घंटे का कोई उपयुक्त समय नहीं है</string>
+    <string name="caveat_rain">वर्षा संभव है</string>
+    <string name="caveat_heat">गर्मी</string>
+    <string name="caveat_cold">ठंड</string>
+    <string name="caveat_wind">तेज़ हवा</string>
+    <string name="caveat_uv">उच्च UV</string>
+    <string name="timeline_explore">स्क्रॉल करने के लिए स्वाइप करें · चुनने के लिए दबाकर खींचें</string>
+    <string name="hour_missing_data">मौसम के कुछ आँकड़े उपलब्ध नहीं हैं</string>
 </resources>

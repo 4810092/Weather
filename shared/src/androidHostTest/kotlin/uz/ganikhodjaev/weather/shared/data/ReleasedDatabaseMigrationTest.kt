@@ -48,6 +48,10 @@ class ReleasedDatabaseMigrationTest {
                     epoch_seconds_ = Long.MAX_VALUE
                 ).executeAsList().isNotEmpty()
             )
+            assertTrue(
+                migrated.weatherQueries.selectTimeline(location.id, 0, Long.MAX_VALUE)
+                    .executeAsList().all { it.missing_fields == 15L }
+            )
             migrated.weatherQueries.upsertSetting("unit_preference", "Metric")
             assertEquals(
                 "Metric",

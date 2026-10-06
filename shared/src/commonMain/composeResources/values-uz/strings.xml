@@ -30,7 +30,7 @@
   <string name="refresh">Yangilash</string>
   <string name="change_place">Joyni o‘zgartirish</string>
   <string name="share_weather">Ob-havoni ulashish</string>
-  <string name="share_weather_text">%1$s: %2$d°, yomg‘ir ehtimoli %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, yomg‘ir ehtimoli %3$s%% — Nimbo</string>
   <string name="share_store_cta">Keyingi sayringiz uchun Nimbo’ni yuklab oling:</string>
   <string name="theme">Mavzu</string>
   <string name="theme_description">Qurilma mavzusidan foydalaning yoki o‘zingiz tanlang.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Qorong‘i</string>
   <string name="feels_like">His qilinishi %1$d°</string>
   <string name="saved_weather">Saqlangan ob-havo · yangilash kerak</string>
-  <string name="timeline_title">24 soat oldin · hozir · 24 soat keyin</string>
+  <string name="timeline_title">Soatlik prognoz</string>
   <string name="attribution">Ob-havo va joylar: Open-Meteo · Joylar GeoNames asosida</string>
   <string name="about_nimbo">Nimbo haqida</string>
   <string name="help_and_feedback">Yordam va fikr-mulohaza</string>
@@ -147,4 +147,14 @@
     <string name="choose_city">Shaharni tanlang</string>
     <string name="search_results">Qidiruv natijalari</string>
     <string name="search_minimum">Qidirish uchun kamida 2 ta belgi kiriting.</string>
+    <string name="outside_title">Sayr uchun</string>
+    <string name="outside_caution">Ehtiyotkorlik bilan sayr qilish vaqti</string>
+    <string name="outside_no_window">Bugun mos ikki soatlik vaqt yo‘q</string>
+    <string name="caveat_rain">Yog‘ingarchilik bo‘lishi mumkin</string>
+    <string name="caveat_heat">Issiq</string>
+    <string name="caveat_cold">Sovuq</string>
+    <string name="caveat_wind">Shamolli</string>
+    <string name="caveat_uv">UV yuqori</string>
+    <string name="timeline_explore">Surib aylantiring · tanlash uchun bosib suring</string>
+    <string name="hour_missing_data">Ayrim ob-havo ma’lumotlari mavjud emas</string>
 </resources>

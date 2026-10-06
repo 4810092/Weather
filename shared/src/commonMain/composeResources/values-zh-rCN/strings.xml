@@ -30,7 +30,7 @@
   <string name="refresh">刷新</string>
   <string name="change_place">更改地点</string>
   <string name="share_weather">分享天气</string>
-  <string name="share_weather_text">%1$s：%2$d°，降雨概率 %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s：%2$d°，降雨概率 %3$s%% — Nimbo</string>
   <string name="share_store_cta">为下次出行下载 Nimbo：</string>
   <string name="theme">主题</string>
   <string name="theme_description">跟随设备外观或手动选择。</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">深色</string>
   <string name="feels_like">体感 %1$d°</string>
   <string name="saved_weather">已保存的天气 · 需要更新</string>
-  <string name="timeline_title">24 小时前 · 现在 · 24 小时后</string>
+  <string name="timeline_title">逐小时预报</string>
   <string name="attribution">天气和地点数据来自 Open-Meteo · 地点信息基于 GeoNames</string>
   <string name="about_nimbo">关于 Nimbo</string>
   <string name="help_and_feedback">帮助与反馈</string>
@@ -146,4 +146,14 @@
     <string name="choose_city">选择城市</string>
     <string name="search_results">搜索结果</string>
     <string name="search_minimum">请输入至少2个字符进行搜索。</string>
+    <string name="outside_title">散步参考</string>
+    <string name="outside_caution">需要留意的时段</string>
+    <string name="outside_no_window">今天没有适合的两小时时段</string>
+    <string name="caveat_rain">可能有降水</string>
+    <string name="caveat_heat">炎热</string>
+    <string name="caveat_cold">寒冷</string>
+    <string name="caveat_wind">风大</string>
+    <string name="caveat_uv">紫外线强</string>
+    <string name="timeline_explore">滑动浏览 · 长按并拖动选择</string>
+    <string name="hour_missing_data">部分天气数据不可用</string>
 </resources>

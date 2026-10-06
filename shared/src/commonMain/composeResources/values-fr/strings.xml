@@ -30,7 +30,7 @@
   <string name="refresh">Actualiser</string>
   <string name="change_place">Changer de lieu</string>
   <string name="share_weather">Partager la météo</string>
-  <string name="share_weather_text">%1$s : %2$d°, %3$d%% de risque de pluie — Nimbo</string>
+  <string name="share_weather_text">%1$s : %2$d°, %3$s%% de risque de pluie — Nimbo</string>
   <string name="share_store_cta">Téléchargez Nimbo pour votre prochaine sortie :</string>
   <string name="theme">Thème</string>
   <string name="theme_description">Utilisez l’apparence de l’appareil ou choisissez-en une.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Sombre</string>
   <string name="feels_like">Ressenti %1$d°</string>
   <string name="saved_weather">Météo enregistrée · actualisation requise</string>
-  <string name="timeline_title">24 h avant · maintenant · 24 h après</string>
+  <string name="timeline_title">Prévisions horaires</string>
   <string name="attribution">Données météo et de lieux par Open-Meteo · Lieux basés sur GeoNames</string>
   <string name="about_nimbo">À propos de Nimbo</string>
   <string name="help_and_feedback">Aide et commentaires</string>
@@ -148,4 +148,14 @@
     <string name="choose_city">Choisissez une ville</string>
     <string name="search_results">Résultats de recherche</string>
     <string name="search_minimum">Saisissez au moins 2 caractères pour rechercher.</string>
+    <string name="outside_title">Pour une promenade</string>
+    <string name="outside_caution">Un créneau avec réserves</string>
+    <string name="outside_no_window">Aucun créneau de deux heures adapté aujourd’hui</string>
+    <string name="caveat_rain">Précipitations possibles</string>
+    <string name="caveat_heat">Chaud</string>
+    <string name="caveat_cold">Froid</string>
+    <string name="caveat_wind">Venteux</string>
+    <string name="caveat_uv">UV élevés</string>
+    <string name="timeline_explore">Balayez pour défiler · appuyez longuement et glissez pour choisir</string>
+    <string name="hour_missing_data">Certaines données météo sont indisponibles</string>
 </resources>

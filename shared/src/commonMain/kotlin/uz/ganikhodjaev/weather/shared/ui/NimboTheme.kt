@@ -103,14 +103,25 @@ internal data class NimboThemeTokens(
     val divider: Color,
     val pastContentAlpha: Float
 ) {
-    fun ambience(condition: WeatherCondition): Brush = Brush.verticalGradient(
-        when (condition) {
-            WeatherCondition.Clear, WeatherCondition.MainlyClear -> clearBackground
-            WeatherCondition.Rain,
-            WeatherCondition.Showers,
-            WeatherCondition.Thunderstorm -> rainBackground
-            WeatherCondition.Snow -> snowBackground
-            else -> defaultBackground
+    fun ambience(
+        condition: WeatherCondition,
+        daylight: DaylightPhase = DaylightPhase.Unknown
+    ): Brush = Brush.verticalGradient(
+        when {
+            daylight == DaylightPhase.Unknown -> defaultBackground
+            daylight == DaylightPhase.Night -> if (isDark) {
+                listOf(Color(0xFF101C30), Color(0xFF1C2634))
+            } else {
+                listOf(Color(0xFFDDE2F0), Color(0xFFF0F2F7))
+            }
+            else -> when (condition) {
+                WeatherCondition.Clear, WeatherCondition.MainlyClear -> clearBackground
+                WeatherCondition.Rain,
+                WeatherCondition.Showers,
+                WeatherCondition.Thunderstorm -> rainBackground
+                WeatherCondition.Snow -> snowBackground
+                else -> defaultBackground
+            }
         }
     )
 }

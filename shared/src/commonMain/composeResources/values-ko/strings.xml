@@ -30,7 +30,7 @@
   <string name="refresh">새로고침</string>
   <string name="change_place">장소 변경</string>
   <string name="share_weather">날씨 공유</string>
-  <string name="share_weather_text">%1$s: %2$d°, 비 올 확률 %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, 비 올 확률 %3$s%% — Nimbo</string>
   <string name="share_store_cta">다음 산책을 위해 Nimbo를 받아보세요:</string>
   <string name="theme">테마</string>
   <string name="theme_description">기기 화면 모드를 따르거나 직접 선택하세요.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">다크</string>
   <string name="feels_like">체감 %1$d°</string>
   <string name="saved_weather">저장된 날씨 · 업데이트 필요</string>
-  <string name="timeline_title">24시간 전 · 지금 · 24시간 후</string>
+  <string name="timeline_title">시간별 예보</string>
   <string name="attribution">날씨 및 장소 데이터: Open-Meteo · 장소 정보는 GeoNames 기반</string>
   <string name="about_nimbo">Nimbo 정보</string>
   <string name="help_and_feedback">도움말 및 의견</string>
@@ -146,4 +146,14 @@
     <string name="choose_city">도시 선택</string>
     <string name="search_results">검색 결과</string>
     <string name="search_minimum">검색하려면 2자 이상 입력하세요.</string>
+    <string name="outside_title">산책 안내</string>
+    <string name="outside_caution">주의가 필요한 시간대</string>
+    <string name="outside_no_window">오늘은 적합한 두 시간 구간이 없습니다</string>
+    <string name="caveat_rain">강수 가능성</string>
+    <string name="caveat_heat">더움</string>
+    <string name="caveat_cold">추움</string>
+    <string name="caveat_wind">강한 바람</string>
+    <string name="caveat_uv">높은 자외선</string>
+    <string name="timeline_explore">밀어서 스크롤 · 길게 누르고 끌어서 선택</string>
+    <string name="hour_missing_data">일부 날씨 데이터가 없습니다</string>
 </resources>

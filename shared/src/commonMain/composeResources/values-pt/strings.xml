@@ -30,7 +30,7 @@
   <string name="refresh">Atualizar</string>
   <string name="change_place">Mudar local</string>
   <string name="share_weather">Partilhar o tempo</string>
-  <string name="share_weather_text">%1$s: %2$d°, %3$d%% de probabilidade de chuva — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, %3$s%% de probabilidade de chuva — Nimbo</string>
   <string name="share_store_cta">Obtenha o Nimbo para o seu próximo passeio:</string>
   <string name="theme">Tema</string>
   <string name="theme_description">Use o tema do dispositivo ou escolha um.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Escuro</string>
   <string name="feels_like">Sensação de %1$d°</string>
   <string name="saved_weather">Tempo guardado · atualização necessária</string>
-  <string name="timeline_title">24 horas antes · agora · 24 horas depois</string>
+  <string name="timeline_title">Previsão por hora</string>
   <string name="attribution">Dados de tempo e locais por Open-Meteo · Locais baseados no GeoNames</string>
   <string name="about_nimbo">Sobre o Nimbo</string>
   <string name="help_and_feedback">Ajuda e comentários</string>
@@ -148,4 +148,14 @@
     <string name="choose_city">Escolha uma cidade</string>
     <string name="search_results">Resultados da pesquisa</string>
     <string name="search_minimum">Digite pelo menos 2 caracteres para pesquisar.</string>
+    <string name="outside_title">Para passear</string>
+    <string name="outside_caution">Um período com ressalvas</string>
+    <string name="outside_no_window">Hoje não há um período adequado de duas horas</string>
+    <string name="caveat_rain">Possibilidade de precipitação</string>
+    <string name="caveat_heat">Calor</string>
+    <string name="caveat_cold">Frio</string>
+    <string name="caveat_wind">Vento</string>
+    <string name="caveat_uv">UV elevado</string>
+    <string name="timeline_explore">Deslize para percorrer · mantenha pressionado e arraste para escolher</string>
+    <string name="hour_missing_data">Alguns dados meteorológicos estão indisponíveis</string>
 </resources>

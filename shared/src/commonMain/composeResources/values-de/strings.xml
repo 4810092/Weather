@@ -30,7 +30,7 @@
   <string name="refresh">Aktualisieren</string>
   <string name="change_place">Ort ändern</string>
   <string name="share_weather">Wetter teilen</string>
-  <string name="share_weather_text">%1$s: %2$d°, %3$d%% Regenwahrscheinlichkeit — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, %3$s%% Regenwahrscheinlichkeit — Nimbo</string>
   <string name="share_store_cta">Hol dir Nimbo für deinen nächsten Spaziergang:</string>
   <string name="theme">Design</string>
   <string name="theme_description">Gerätedesign verwenden oder manuell auswählen.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Dunkel</string>
   <string name="feels_like">Gefühlt %1$d°</string>
   <string name="saved_weather">Gespeichertes Wetter · Aktualisierung nötig</string>
-  <string name="timeline_title">24 Stunden vorher · jetzt · 24 Stunden danach</string>
+  <string name="timeline_title">Stündliche Vorhersage</string>
   <string name="attribution">Wetter- und Ortsdaten von Open-Meteo · Orte basieren auf GeoNames</string>
   <string name="about_nimbo">Über Nimbo</string>
   <string name="help_and_feedback">Hilfe und Feedback</string>
@@ -147,4 +147,14 @@
     <string name="choose_city">Stadt auswählen</string>
     <string name="search_results">Suchergebnisse</string>
     <string name="search_minimum">Gib mindestens 2 Zeichen ein.</string>
+    <string name="outside_title">Für einen Spaziergang</string>
+    <string name="outside_caution">Zeitfenster mit Einschränkungen</string>
+    <string name="outside_no_window">Heute kein geeignetes Zwei-Stunden-Fenster</string>
+    <string name="caveat_rain">Niederschlag möglich</string>
+    <string name="caveat_heat">Heiß</string>
+    <string name="caveat_cold">Kalt</string>
+    <string name="caveat_wind">Windig</string>
+    <string name="caveat_uv">Hohe UV-Strahlung</string>
+    <string name="timeline_explore">Wischen zum Scrollen · gedrückt halten und ziehen zum Auswählen</string>
+    <string name="hour_missing_data">Einige Wetterdaten sind nicht verfügbar</string>
 </resources>

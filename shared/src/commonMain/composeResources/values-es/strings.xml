@@ -30,7 +30,7 @@
   <string name="refresh">Actualizar</string>
   <string name="change_place">Cambiar lugar</string>
   <string name="share_weather">Compartir el tiempo</string>
-  <string name="share_weather_text">%1$s: %2$d°, %3$d%% de probabilidad de lluvia — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°, %3$s%% de probabilidad de lluvia — Nimbo</string>
   <string name="share_store_cta">Descarga Nimbo para tu próximo paseo:</string>
   <string name="theme">Tema</string>
   <string name="theme_description">Usa el tema del dispositivo o elige uno.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">Oscuro</string>
   <string name="feels_like">Sensación de %1$d°</string>
   <string name="saved_weather">Tiempo guardado · requiere actualización</string>
-  <string name="timeline_title">24 horas antes · ahora · 24 horas después</string>
+  <string name="timeline_title">Previsión por horas</string>
   <string name="attribution">Datos del tiempo y lugares de Open-Meteo · Lugares basados en GeoNames</string>
   <string name="about_nimbo">Acerca de Nimbo</string>
   <string name="help_and_feedback">Ayuda y comentarios</string>
@@ -147,4 +147,14 @@
     <string name="choose_city">Elige una ciudad</string>
     <string name="search_results">Resultados de búsqueda</string>
     <string name="search_minimum">Escribe al menos 2 caracteres para buscar.</string>
+    <string name="outside_title">Para pasear</string>
+    <string name="outside_caution">Un intervalo con reservas</string>
+    <string name="outside_no_window">Hoy no hay un intervalo adecuado de dos horas</string>
+    <string name="caveat_rain">Posibles precipitaciones</string>
+    <string name="caveat_heat">Calor</string>
+    <string name="caveat_cold">Frío</string>
+    <string name="caveat_wind">Viento</string>
+    <string name="caveat_uv">Radiación UV alta</string>
+    <string name="timeline_explore">Desliza para desplazarte · mantén pulsado y arrastra para elegir</string>
+    <string name="hour_missing_data">Algunos datos del tiempo no están disponibles</string>
 </resources>

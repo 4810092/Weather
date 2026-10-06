@@ -14,6 +14,7 @@ class WeatherInsightEngineTest {
         val yesterday = hour(now - 86_400L, temperature = 24.0)
         val current = hour(now, temperature = 28.0)
         val rain = hour(now + 3_600L, temperature = 27.0, rainChance = 70)
+            .copy(fetchedAtEpochSeconds = now)
         val insights = WeatherInsightEngine().evaluate(
             snapshot(current, listOf(yesterday, current, rain))
         )
@@ -32,6 +33,33 @@ class WeatherInsightEngineTest {
 
         assertEquals(TemperatureComparison.Unavailable, insights.comparison)
         assertEquals(null, insights.upcoming)
+    }
+
+    @Test
+    fun upcomingChangeAdvancesWithClockAndDoesNotReuseExpiredHours() {
+        val now = 200_000L
+        val hours = (0..3).map { offset ->
+            hour(now + offset * 3_600, rainChance = if (offset == 1) 80 else 0)
+                .copy(fetchedAtEpochSeconds = now)
+        }
+        val weather = snapshot(hours[0], hours)
+        assertIs<UpcomingInsight.RainLikely>(WeatherInsightEngine().evaluate(weather, now).upcoming)
+        assertEquals(null, WeatherInsightEngine().evaluate(weather, now + 7_200).upcoming)
+        assertEquals(null, WeatherInsightEngine().evaluate(weather, now + 21_601).upcoming)
+        assertEquals(
+            null,
+            WeatherInsightEngine().evaluate(weather.copy(isStale = true), now).upcoming
+        )
+        val staleFuture = weather.copy(
+            timeline = listOf(
+                hours[0],
+                hours[1].copy(
+                    fetchedAtEpochSeconds =
+                    now - 86_400
+                )
+            )
+        )
+        assertEquals(null, WeatherInsightEngine().evaluate(staleFuture, now).upcoming)
     }
 
     private fun snapshot(current: WeatherHour, timeline: List<WeatherHour>) = WeatherSnapshot(

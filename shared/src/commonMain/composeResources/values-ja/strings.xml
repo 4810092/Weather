@@ -30,7 +30,7 @@
   <string name="refresh">更新</string>
   <string name="change_place">場所を変更</string>
   <string name="share_weather">天気を共有</string>
-  <string name="share_weather_text">%1$s：%2$d°、降水確率%3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s：%2$d°、降水確率%3$s%% — Nimbo</string>
   <string name="share_store_cta">次のお出かけにNimboをどうぞ：</string>
   <string name="theme">テーマ</string>
   <string name="theme_description">デバイスの外観を使用するか選択します。</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">ダーク</string>
   <string name="feels_like">体感 %1$d°</string>
   <string name="saved_weather">保存済みの天気 · 更新が必要です</string>
-  <string name="timeline_title">24時間前 · 現在 · 24時間後</string>
+  <string name="timeline_title">時間別予報</string>
   <string name="attribution">天気・地域データ: Open-Meteo · 地域情報は GeoNames に基づきます</string>
   <string name="about_nimbo">Nimbo について</string>
   <string name="help_and_feedback">ヘルプとフィードバック</string>
@@ -146,4 +146,14 @@
     <string name="choose_city">都市を選択</string>
     <string name="search_results">検索結果</string>
     <string name="search_minimum">検索するには2文字以上入力してください。</string>
+    <string name="outside_title">散歩の目安</string>
+    <string name="outside_caution">注意が必要な時間帯</string>
+    <string name="outside_no_window">今日は適した2時間の時間帯がありません</string>
+    <string name="caveat_rain">降水の可能性あり</string>
+    <string name="caveat_heat">暑い</string>
+    <string name="caveat_cold">寒い</string>
+    <string name="caveat_wind">風が強い</string>
+    <string name="caveat_uv">紫外線が強い</string>
+    <string name="timeline_explore">スワイプで移動・長押ししてドラッグで選択</string>
+    <string name="hour_missing_data">一部の気象データがありません</string>
 </resources>

@@ -21,8 +21,20 @@ data class WeatherHour(
     val gustKph: Double,
     val humidityPercent: Int,
     val uvIndex: Double,
-    val fetchedAtEpochSeconds: Long
-)
+    val fetchedAtEpochSeconds: Long,
+    /** Bit mask preserves absent provider fields across cache round trips (legacy rows: all unknown). */
+    val missingFields: Int = 0
+) {
+    fun hasField(field: Int): Boolean = missingFields and field == 0
+
+    companion object {
+        const val RAIN_PROBABILITY = 1
+        const val RAIN_AMOUNT = 2
+        const val GUST = 4
+        const val UV = 8
+        const val ALL_OPTIONAL_FIELDS = 15
+    }
+}
 
 data class DailyForecast(
     val epochSeconds: Long,

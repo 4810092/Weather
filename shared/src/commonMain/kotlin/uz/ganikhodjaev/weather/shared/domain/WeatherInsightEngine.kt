@@ -1,7 +1,9 @@
 package uz.ganikhodjaev.weather.shared.domain
 
 import kotlin.math.abs
+import uz.ganikhodjaev.weather.shared.model.WeatherHour
 import uz.ganikhodjaev.weather.shared.model.WeatherSnapshot
+import uz.ganikhodjaev.weather.shared.model.weatherHourAt
 
 internal enum class TemperatureComparison {
     MuchWarmer,
@@ -24,10 +26,23 @@ internal data class WeatherInsights(
 )
 
 internal class WeatherInsightEngine {
-    fun evaluate(weather: WeatherSnapshot): WeatherInsights = WeatherInsights(
-        comparison = compareWithYesterday(weather),
-        upcoming = findUpcomingChange(weather)
-    )
+    fun evaluate(
+        weather: WeatherSnapshot,
+        now: Long = weather.current.epochSeconds
+    ): WeatherInsights {
+        if (weather.isStale || now - weather.fetchedAtEpochSeconds !in -300..21_600) {
+            return WeatherInsights(TemperatureComparison.Unavailable, null)
+        }
+        val current = weather.timeline.weatherHourAt(now)?.takeIf {
+            now in it.epochSeconds until it.epochSeconds + 3_600 &&
+                now - it.fetchedAtEpochSeconds in -300..21_600
+        } ?: return WeatherInsights(TemperatureComparison.Unavailable, null)
+        val currentWeather = weather.copy(current = current)
+        return WeatherInsights(
+            compareWithYesterday(currentWeather),
+            findUpcomingChange(currentWeather, now)
+        )
+    }
 
     private fun compareWithYesterday(weather: WeatherSnapshot): TemperatureComparison {
         val target = sameLocalTimeDaysAgo(
@@ -49,12 +64,16 @@ internal class WeatherInsightEngine {
         }
     }
 
-    private fun findUpcomingChange(weather: WeatherSnapshot): UpcomingInsight? {
+    private fun findUpcomingChange(weather: WeatherSnapshot, now: Long): UpcomingInsight? {
         val future = weather.timeline.filter {
-            it.epochSeconds > weather.current.epochSeconds &&
-                it.epochSeconds <= weather.current.epochSeconds + LOOK_AHEAD_SECONDS
+            it.epochSeconds > now &&
+                it.epochSeconds <= now + LOOK_AHEAD_SECONDS &&
+                now - it.fetchedAtEpochSeconds in -300..21_600
         }
-        future.firstOrNull { it.precipitationProbability >= 60 || it.precipitationMm >= 0.5 }
+        future.firstOrNull {
+            (it.hasField(WeatherHour.RAIN_PROBABILITY) && it.precipitationProbability >= 60) ||
+                (it.hasField(WeatherHour.RAIN_AMOUNT) && it.precipitationMm >= 0.5)
+        }
             ?.let { return UpcomingInsight.RainLikely(it.epochSeconds) }
 
         val baseline = weather.current.apparentTemperatureC

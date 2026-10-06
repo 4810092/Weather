@@ -110,7 +110,8 @@ internal class WeatherRepository(
                     humidity,
                     uv,
                     _,
-                    fetchedAt
+                    fetchedAt,
+                    missingFields
                 ->
                 WeatherHour(
                     epochSeconds = epoch,
@@ -123,7 +124,8 @@ internal class WeatherRepository(
                     gustKph = gust,
                     humidityPercent = humidity.toInt(),
                     uvIndex = uv,
-                    fetchedAtEpochSeconds = fetchedAt
+                    fetchedAtEpochSeconds = fetchedAt,
+                    missingFields = missingFields.toInt()
                 )
             }.asFlow().mapToList(Dispatchers.Default)
             val zone = runCatching { TimeZone.of(location.timezone) }.getOrElse { TimeZone.UTC }
@@ -283,7 +285,8 @@ internal class WeatherRepository(
                     humidity_percent = row.humidityPercent.toLong(),
                     uv_index = row.uvIndex,
                     source = "open-meteo",
-                    fetched_at_epoch_seconds = fetchedAt
+                    fetched_at_epoch_seconds = fetchedAt,
+                    missing_fields = row.missingFields.toLong()
                 )
                 wroteWeather = true
                 if (
@@ -592,19 +595,34 @@ internal fun ForecastResponse.toWeatherRows(fetchedAt: Long): List<WeatherHour> 
         hourly.windSpeed.size,
         hourly.humidity.size
     ).min()
-    return List(requiredSize) { index ->
+    return (0 until requiredSize).mapNotNull { index ->
+        if (!hourly.temperature[index].isFinite() ||
+            !hourly.apparentTemperature[index].isFinite() ||
+            !hourly.windSpeed[index].isFinite() ||
+            hourly.windSpeed[index] < 0
+        ) {
+            return@mapNotNull null
+        }
+        val probability = hourly.precipitationProbability.getOrNull(index)?.takeIf { it in 0..100 }
+        val rain = hourly.precipitation.getOrNull(index)?.takeIf { it.isFinite() && it >= 0 }
+        val gust = hourly.windGusts.getOrNull(index)?.takeIf { it.isFinite() && it >= 0 }
+        val uv = hourly.uvIndex.getOrNull(index)?.takeIf { it.isFinite() && it >= 0 }
         WeatherHour(
             epochSeconds = hourly.time[index],
             temperatureC = hourly.temperature[index],
             apparentTemperatureC = hourly.apparentTemperature[index],
             weatherCode = hourly.weatherCode[index],
-            precipitationProbability = hourly.precipitationProbability.getOrNull(index) ?: 0,
-            precipitationMm = hourly.precipitation.getOrNull(index) ?: 0.0,
+            precipitationProbability = probability ?: 0,
+            precipitationMm = rain ?: 0.0,
             windKph = hourly.windSpeed[index],
-            gustKph = hourly.windGusts.getOrNull(index) ?: 0.0,
+            gustKph = gust ?: 0.0,
             humidityPercent = hourly.humidity[index],
-            uvIndex = hourly.uvIndex.getOrNull(index) ?: 0.0,
-            fetchedAtEpochSeconds = fetchedAt
+            uvIndex = uv ?: 0.0,
+            fetchedAtEpochSeconds = fetchedAt,
+            missingFields = (if (probability == null) WeatherHour.RAIN_PROBABILITY else 0) or
+                (if (rain == null) WeatherHour.RAIN_AMOUNT else 0) or
+                (if (gust == null) WeatherHour.GUST else 0) or
+                (if (uv == null) WeatherHour.UV else 0)
         )
     }
 }

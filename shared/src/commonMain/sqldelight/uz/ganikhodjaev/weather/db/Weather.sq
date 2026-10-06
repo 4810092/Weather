@@ -23,6 +23,7 @@ CREATE TABLE weather_hour (
   uv_index REAL NOT NULL,
   source TEXT NOT NULL,
   fetched_at_epoch_seconds INTEGER NOT NULL,
+  missing_fields INTEGER NOT NULL DEFAULT 15,
   PRIMARY KEY (location_id, epoch_seconds, source),
   FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE
 );
@@ -140,8 +141,9 @@ INSERT OR REPLACE INTO weather_hour(
   humidity_percent,
   uv_index,
   source,
-  fetched_at_epoch_seconds
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+  fetched_at_epoch_seconds,
+  missing_fields
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectWeatherFetchedAt:
 SELECT fetched_at_epoch_seconds FROM weather_hour

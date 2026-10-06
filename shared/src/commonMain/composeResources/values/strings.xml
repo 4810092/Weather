@@ -29,7 +29,7 @@
     <string name="refresh">Refresh</string>
     <string name="change_place">Change place</string>
     <string name="share_weather">Share weather</string>
-    <string name="share_weather_text">%1$s: %2$d°, %3$d%% chance of rain — Nimbo</string>
+    <string name="share_weather_text">%1$s: %2$d°, %3$s%% chance of rain — Nimbo</string>
     <string name="share_store_cta">Get Nimbo for your next walk:</string>
     <string name="theme">Theme</string>
     <string name="theme_description">Follow the device appearance or choose one.</string>
@@ -38,7 +38,7 @@
     <string name="theme_dark">Dark</string>
     <string name="feels_like">Feels like %1$d°</string>
     <string name="saved_weather">Saved weather · update needed</string>
-    <string name="timeline_title">24 hours before · now · 24 hours ahead</string>
+    <string name="timeline_title">Hourly forecast</string>
     <string name="attribution">Weather and place data by Open-Meteo · Places based on GeoNames</string>
     <string name="about_nimbo">About Nimbo</string>
     <string name="help_and_feedback">Help and feedback</string>
@@ -146,4 +146,14 @@
     <string name="choose_city">Choose a city</string>
     <string name="search_results">Search results</string>
     <string name="search_minimum">Enter at least 2 characters to search.</string>
+    <string name="outside_title">For a walk</string>
+    <string name="outside_caution">A window with reservations</string>
+    <string name="outside_no_window">No suitable two-hour window today</string>
+    <string name="caveat_rain">Rain is possible</string>
+    <string name="caveat_heat">Hot</string>
+    <string name="caveat_cold">Cold</string>
+    <string name="caveat_wind">Windy</string>
+    <string name="caveat_uv">Strong UV</string>
+    <string name="timeline_explore">Swipe to scroll · hold and drag to explore</string>
+    <string name="hour_missing_data">Some weather measurements are unavailable</string>
 </resources>

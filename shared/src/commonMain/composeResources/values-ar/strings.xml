@@ -30,7 +30,7 @@
   <string name="refresh">تحديث</string>
   <string name="change_place">تغيير المكان</string>
   <string name="share_weather">مشاركة الطقس</string>
-  <string name="share_weather_text">%1$s: %2$d°، احتمال المطر %3$d%% — Nimbo</string>
+  <string name="share_weather_text">%1$s: %2$d°، احتمال المطر %3$s%% — Nimbo</string>
   <string name="share_store_cta">حمّل Nimbo لنزهتك القادمة:</string>
   <string name="theme">المظهر</string>
   <string name="theme_description">استخدم مظهر الجهاز أو اختر مظهرًا.</string>
@@ -39,7 +39,7 @@
   <string name="theme_dark">داكن</string>
   <string name="feels_like">المحسوسة ⁦%1$d°⁩</string>
   <string name="saved_weather">طقس محفوظ · يلزم التحديث</string>
-  <string name="timeline_title">قبل 24 ساعة · الآن · بعد 24 ساعة</string>
+  <string name="timeline_title">التوقعات بالساعة</string>
   <string name="attribution">بيانات الطقس والأماكن من Open-Meteo · الأماكن مبنية على GeoNames</string>
   <string name="about_nimbo">حول Nimbo</string>
   <string name="help_and_feedback">المساعدة والملاحظات</string>
@@ -151,4 +151,14 @@
     <string name="choose_city">اختر مدينة</string>
     <string name="search_results">نتائج البحث</string>
     <string name="search_minimum">أدخل حرفين على الأقل للبحث.</string>
+    <string name="outside_title">للتنزه</string>
+    <string name="outside_caution">فترة مناسبة مع تحفّظات</string>
+    <string name="outside_no_window">لا توجد فترة مناسبة لساعتين اليوم</string>
+    <string name="caveat_rain">هطول محتمل</string>
+    <string name="caveat_heat">حار</string>
+    <string name="caveat_cold">بارد</string>
+    <string name="caveat_wind">رياح</string>
+    <string name="caveat_uv">أشعة فوق بنفسجية قوية</string>
+    <string name="timeline_explore">اسحب للتمرير · اضغط مطولاً واسحب للاختيار</string>
+    <string name="hour_missing_data">بعض بيانات الطقس غير متاحة</string>
 </resources>
