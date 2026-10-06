@@ -62,6 +62,66 @@ class WeatherInsightEngineTest {
         assertEquals(null, WeatherInsightEngine().evaluate(staleFuture, now).upcoming)
     }
 
+    @Test
+    fun ongoingRainIsNotAnnouncedAsANewChange() {
+        val now = 200_000L
+        val current = hour(now, code = 61, rainChance = 97, rainMm = 1.0)
+        val rain = current.copy(epochSeconds = now + 3_600)
+        assertEquals(
+            null,
+            WeatherInsightEngine().evaluate(snapshot(current, listOf(current, rain))).upcoming
+        )
+        val wetCodeWithZeroAmount = current.copy(
+            precipitationProbability = 0,
+            precipitationMm = 0.0
+        )
+        assertEquals(
+            null,
+            WeatherInsightEngine().evaluate(
+                snapshot(wetCodeWithZeroAmount, listOf(wetCodeWithZeroAmount, rain))
+            ).upcoming
+        )
+    }
+
+    @Test
+    fun nearestChangeWinsAndRainCanReturnAfterADryHour() {
+        val now = 200_000L
+        val current = hour(now)
+        val cooler = current.copy(epochSeconds = now + 3_600, apparentTemperatureC = 16.0)
+        val rain = current.copy(epochSeconds = now + 7_200, precipitationProbability = 80)
+        assertIs<UpcomingInsight.TurningCooler>(
+            WeatherInsightEngine().evaluate(
+                snapshot(current, listOf(rain, current, cooler))
+            ).upcoming
+        )
+        val coolerAndRain = cooler.copy(precipitationProbability = 80)
+        assertEquals(
+            UpcomingInsight.RainLikely(cooler.epochSeconds),
+            WeatherInsightEngine().evaluate(
+                snapshot(current, listOf(current, coolerAndRain))
+            ).upcoming
+        )
+        val wetCurrent = current.copy(weatherCode = 61, precipitationProbability = 80)
+        val dry = current.copy(epochSeconds = now + 3_600)
+        assertEquals(
+            UpcomingInsight.RainLikely(rain.epochSeconds),
+            WeatherInsightEngine().evaluate(
+                snapshot(wetCurrent, listOf(wetCurrent, dry, rain))
+            ).upcoming
+        )
+        assertEquals(
+            null,
+            WeatherInsightEngine().evaluate(snapshot(current, listOf(current, rain))).upcoming
+        )
+        val unknown = current.copy(missingFields = WeatherHour.RAIN_PROBABILITY)
+        assertEquals(
+            null,
+            WeatherInsightEngine().evaluate(
+                snapshot(unknown, listOf(unknown, rain.copy(epochSeconds = now + 3_600)))
+            ).upcoming
+        )
+    }
+
     private fun snapshot(current: WeatherHour, timeline: List<WeatherHour>) = WeatherSnapshot(
         location = Location("test", "Test", "Test", 0.0, 0.0, "UTC"),
         current = current,

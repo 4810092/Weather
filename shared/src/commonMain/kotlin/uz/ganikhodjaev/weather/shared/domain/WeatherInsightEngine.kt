@@ -69,20 +69,41 @@ internal class WeatherInsightEngine {
             it.epochSeconds > now &&
                 it.epochSeconds <= now + LOOK_AHEAD_SECONDS &&
                 now - it.fetchedAtEpochSeconds in -300..21_600
-        }
-        future.firstOrNull {
-            (it.hasField(WeatherHour.RAIN_PROBABILITY) && it.precipitationProbability >= 60) ||
-                (it.hasField(WeatherHour.RAIN_AMOUNT) && it.precipitationMm >= 0.5)
-        }
-            ?.let { return UpcomingInsight.RainLikely(it.epochSeconds) }
-
+        }.sortedBy { it.epochSeconds }
         val baseline = weather.current.apparentTemperatureC
-        future.firstOrNull { it.apparentTemperatureC <= baseline - 3.0 }
-            ?.let { return UpcomingInsight.TurningCooler(it.epochSeconds) }
-        future.firstOrNull { it.apparentTemperatureC >= baseline + 3.0 }
-            ?.let { return UpcomingInsight.TurningWarmer(it.epochSeconds) }
+        var previous = weather.current
+        for (hour in future) {
+            // An ongoing wet spell is not a new change. Only reannounce rain
+            // after a reliably dry, adjacent hour; gaps cannot establish onset.
+            if (hour.epochSeconds == previous.epochSeconds + 3_600 &&
+                previous.isReliablyDry() &&
+                hour.hasLikelyRain()
+            ) {
+                return UpcomingInsight.RainLikely(hour.epochSeconds)
+            }
+            if (hour.apparentTemperatureC <= baseline - 3.0) {
+                return UpcomingInsight.TurningCooler(hour.epochSeconds)
+            }
+            if (hour.apparentTemperatureC >= baseline + 3.0) {
+                return UpcomingInsight.TurningWarmer(hour.epochSeconds)
+            }
+            previous = hour
+        }
         return null
     }
+
+    private fun WeatherHour.hasLikelyRain(): Boolean =
+        (hasField(WeatherHour.RAIN_PROBABILITY) && precipitationProbability >= 60) ||
+            (hasField(WeatherHour.RAIN_AMOUNT) && precipitationMm >= 0.5)
+
+    private fun WeatherHour.isReliablyDry(): Boolean = hasField(WeatherHour.RAIN_PROBABILITY) &&
+        hasField(WeatherHour.RAIN_AMOUNT) &&
+        precipitationProbability < 60 &&
+        precipitationMm < 0.5 &&
+        weatherCode !in 51..67 &&
+        weatherCode !in 71..77 &&
+        weatherCode !in 80..86 &&
+        weatherCode !in 95..99
 
     private companion object {
         const val MATCH_WINDOW_SECONDS = 90L * 60L
