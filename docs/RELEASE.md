@@ -1,6 +1,6 @@
 # Release process
 
-Current local development source (October 6): `9d09fb0a2ff6425bf3da2e337954caff8ecd9bf0` implements premium forecast guidance and UI. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current local development source (October 7): `b845cfb20361cd86d405f67f6e55e7b61d5ac0bd` includes premium forecast guidance/UI and independent acceptance fixes for city-scoped state and failed-activation recovery. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
@@ -45,7 +45,7 @@ availability. Natural iPhone widget completion and a fresh crash window remain
 required before public release.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:9d09fb0a2ff6425bf3da2e337954caff8ecd9bf0 -->
+<!-- source_revision:b845cfb20361cd86d405f67f6e55e7b61d5ac0bd -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

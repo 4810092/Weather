@@ -1,6 +1,6 @@
-# Local premium source boundary — October 6, 2026
+# Local premium source boundary — updated October 7, 2026
 
-Product source: `9d09fb0a2ff6425bf3da2e337954caff8ecd9bf0`. The premium forecast/UI work is local only. Source-current Android phone, Wear OS and Apple distribution artifacts are **blocked**, with no current hashes or signing/runtime evidence. Build identities are unchanged for local development; a separately authorized future release must allocate new identities before delivery.
+Product source: `b845cfb20361cd86d405f67f6e55e7b61d5ac0bd`. The premium forecast/UI work and independent acceptance fixes (city-scoped saved UI state; resumed observation after failed activation) are local only. Previous October 6 validation on `9d09fb0` remains a historical baseline; new-source validation is recorded in `docs/TESTING.md`. Source-current Android phone, Wear OS and Apple distribution artifacts are **blocked**, with no current hashes or signing/runtime evidence. Build identities are unchanged for local development; a separately authorized future release must allocate new identities before delivery.
 
 The previous atomic set from `44d3f7862b61ef95bf2b686820cfba3fc05a7b25` remains preserved in the manifest's historical candidates and `signed-candidate-run-37322319203.md`. “Historical-superseded” refers only to correspondence with local product source, not cancellation, replacement, review or public state in either store. The build13 delivery record `release13-store-submission-2026-10-05.md` is untouched.
 
