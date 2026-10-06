@@ -76,17 +76,20 @@ internal class BestTimeOutsideEngine {
                 hours.all { isReliable(it, nowEpochSeconds) }
         }
         if (windows.isEmpty()) {
-            val knownHazards = today.filter {
+            val remaining = timeline.filter {
+                it.epochSeconds + HOUR_SECONDS > nowEpochSeconds && it.epochSeconds < dayEnd
+            }
+            val knownHazards = remaining.filter {
                 nowEpochSeconds - it.fetchedAtEpochSeconds in
                     -300..MAX_AGE_SECONDS
             }
                 .flatMap(::hazards).toSet()
-            return if (knownHazards.isEmpty()) {
-                OutsideRecommendation.Unavailable
-            } else {
-                OutsideRecommendation.Unsafe(
-                    knownHazards
-                )
+            return when {
+                knownHazards.isNotEmpty() -> OutsideRecommendation.Unsafe(knownHazards)
+                dayEnd - nowEpochSeconds < WINDOW_HOURS * HOUR_SECONDS &&
+                    remaining.any { isReliable(it, nowEpochSeconds) } ->
+                    OutsideRecommendation.NoSuitableWindow(emptySet())
+                else -> OutsideRecommendation.Unavailable
             }
         }
         val safe = windows.filter { it.flatMap(::hazards).isEmpty() }

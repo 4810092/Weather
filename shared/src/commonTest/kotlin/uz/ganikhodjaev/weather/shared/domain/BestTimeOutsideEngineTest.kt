@@ -232,9 +232,26 @@ class BestTimeOutsideEngineTest {
         // 23:00 in Tashkent leaves only one complete hour; tomorrow is not today's guidance.
         val late = Instant.parse("2026-10-06T18:00:00Z").epochSeconds
         val lateHours = (0..4).map { hour(late + it * 3_600).copy(fetchedAtEpochSeconds = late) }
+        assertIs<OutsideRecommendation.NoSuitableWindow>(
+            engine.evaluate(lateHours, "Asia/Tashkent", late)
+        )
+        assertIs<OutsideRecommendation.NoSuitableWindow>(
+            engine.evaluate(lateHours, "Asia/Tashkent", late + 1_800)
+        )
+        assertIs<OutsideRecommendation.Unsafe>(
+            engine.evaluate(
+                lateHours.map { it.copy(weatherCode = 95) },
+                "Asia/Tashkent",
+                late + 1_800
+            )
+        )
         assertEquals(
             OutsideRecommendation.Unavailable,
-            engine.evaluate(lateHours, "Asia/Tashkent", late)
+            engine.evaluate(
+                lateHours.map { it.copy(fetchedAtEpochSeconds = late - 86_400) },
+                "Asia/Tashkent",
+                late + 1_800
+            )
         )
         assertEquals(
             late + 3_600,
