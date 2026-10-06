@@ -507,6 +507,8 @@ class WeatherScreenAndroidUiTest {
 
                 runOnIdle { state = state.copy(weather = state.weather.copy(location = BUKHARA)) }
                 waitForIdle()
+                // A new city opens at the top; expose the row without changing its horizontal position.
+                row.performScrollTo()
                 onNodeWithTag("recent-day-2026-10-04").assertIsDisplayed()
                 row.performScrollToIndex(0)
                 runOnIdle {
