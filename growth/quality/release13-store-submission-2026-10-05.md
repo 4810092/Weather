@@ -14,9 +14,13 @@ Managed Publishing remains on. The separate older request15, phone12/Wear1000012
 
 ## Apple
 
-The verified `Nimbo.ipa` build13 is retained locally under `.codex/release13-artifacts/extracted/bytes/`. Transporter was already authenticated, but native CUA subsequently reported that the Mac was locked and automatic unlock failed. The owner was asked to unlock the Mac. No IPA delivery or build13 App Review submission is claimed.
+On **October 6 at 13:31 Asia/Tashkent**, Transporter confirmed **DELIVERED** for Nimbo Weather `1.1.0 (13)`, app ID `6799886897`. The exact `Nimbo.ipa` from `.codex/release13-artifacts/extracted/bytes/` was uploaded. Immediately before delivery, `scripts/verify_release_artifacts.py` rechecked the retained three-artifact set and exited0; all SHA-256 values and signatures/source identities still matched the current manifest. The local record is `/tmp/nimbo-release13-pre-apple-delivery-2026-10-06.json`.
 
-The existing version1.1.0 build12 remains Pending Developer Release; it was neither cancelled nor released. Manual release and seven-day phasing were preserved. Once Transporter access is restored, deliver the exact verified IPA, confirm processing, replace the old candidate and submit build13.
+Transporter currently reports **THE APP IS PROCESSING**. Delivery is confirmed; processing completion and App Review submission are not yet established. The browser's App Store Connect session expired and shows the password form. The owner was asked to sign in directly and complete any Apple verification; no password or verification code was requested in chat.
+
+The existing version1.1.0 build12 remains Pending Developer Release according to Transporter; it was neither cancelled nor released. After browser access is restored and build13 finishes processing, replace the old candidate and submit build13 while preserving manual release and seven-day phasing.
+
+Google Play was also reloaded on October6: phone13 and Wear1000013 remain under review, Managed Publishing is on, and the old12/1000012 remain separately ReadyToPublish. No production rollout was performed.
 
 ## Verification boundary
 
