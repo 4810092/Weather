@@ -1,0 +1,42 @@
+{
+  "clock_epoch_seconds": 1725000000,
+  "night_clock_epoch_seconds": 1725036000,
+  "location_timezone": "Asia/Tashkent",
+  "renderer": "API36 arm64, swiftshader_indirect, animation scales 0",
+  "fixtures": "PremiumForecastUiTest.deterministicVisualMatrix (no network)",
+  "matrix": "tablet-api36",
+  "image_size": [
+    1600,
+    2560
+  ],
+  "locales": [
+    "ru",
+    "uz",
+    "ar",
+    "en-US"
+  ],
+  "font_scales": [
+    1,
+    2
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "screenshots": [
+    "premium-ar-light-1.png",
+    "premium-ar-offline-1.png",
+    "premium-error.png",
+    "premium-first-launch.png",
+    "premium-loading.png",
+    "premium-negative-gap.png",
+    "premium-night.png",
+    "premium-rain-all-day.png",
+    "premium-ru-dark-2.png",
+    "premium-ru-light-1.png",
+    "premium-ru-offline-1.png",
+    "premium-ru-offline-2.png",
+    "premium-uz-dark-1.png",
+    "premium-uz-offline-1.png"
+  ]
+}

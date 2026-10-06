@@ -1,4 +1,26 @@
-# Performance checkpoint
+# Performance checkpoints
+
+
+## Premium UI comparison — October 6, 2026
+
+The fixed-clock `ForecastPerformanceTest` uses the same 49-hour data, en-US, 1× text, light theme, debug test package and API36 arm64 phone AVD (1080×2424, 420dpi, SwiftShader, animation scales zero) before and after the UI changes. Raw data is in `build/premium-quality/{before,after}`. These are local rendering proxies, not release/device benchmarks or provider-latency measurements.
+
+| Same-scenario measurement | Before | After |
+| --- | --- | --- |
+| First Compose render (one sample) | 1195 ms | 1215 ms |
+| Refresh state → usable UI, median of 5 | 366 ms | 333 ms |
+| Synthetic scroll frames | 25 | 25 |
+| Frame p50 / p90 | 77 / 97 ms | 69 / 89 ms |
+
+The 1.7% first-render difference is too small to establish a regression from one sample. Refresh rendering improved 9%; frame percentiles improved, but the software renderer still misses most frame deadlines (84% before, 96% after). Eight virtual-time test gestures generate only 25 real frames, so neither the deadline fraction nor these samples establishes smooth 60fps interaction. A separate real-time ADB gesture diagnostic of the current debug app produced 103 frames, p50/p90 77/125ms on SwiftShader; software GPU draw commands dominated. It is deliberately not compared to the synthetic sequence.
+
+The first cold-start baseline accidentally used an older preinstalled release package, whereas the after sample used the current debug package. They are not comparable and are excluded from the before/after conclusion. Current debug cold activity launch was 762–1071ms, median 829ms; it is an `am start -W` proxy, not first meaningful forecast. A future release-device benchmark must capture both revisions with matched build and cache states.
+
+An isolated test package also ran on a physical Samsung SM-S908E / Android16, 1440×3088 at 600dpi, existing animator scale 1.0. No device preferences or personal app data changed. First Compose render 886ms, refresh median 350ms, synthetic scroll 30 frames p50/p90 65/133ms. The physical renderer’s GPU p50/p90 was 6/9ms. This is a debug instrumentation sample without a physical before baseline; it does not validate distribution-build frame pacing, battery drain, background scheduling, or screen-reader speech.
+
+Reproduce fixed-data measurements with `ANDROID_SERIAL=<test-device> scripts/measure_forecast_rendering.sh <label>`. Keep the same device, build type, animation/thermal state and cache; the script records environment and never changes device settings.
+
+## Historical checkpoint — August 10, 2026
 
 Measured on 2026-08-10. These numbers are engineering evidence, not device-wide product claims.
 

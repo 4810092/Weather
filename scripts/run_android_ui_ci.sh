@@ -50,6 +50,7 @@ fi
 
 adb logcat -c
 
+run_started="$(python3 -c 'import time; print(time.time_ns())')"
 set +e
 python3 scripts/run_with_timeout.py 1680 60 -- \
   ./gradlew --no-daemon --max-workers=2 \
@@ -67,10 +68,10 @@ fi
 
 python3 scripts/verify_android_ui_results.py \
   --root shared/build/outputs/androidTest-results \
-  --expected-tests 20
+  --expected-tests 24
 
 # Gradle collects additional test output before uninstalling the test APK.
-python3 - "$matrix_name" <<'PY_CAPTURE'
+python3 - "$matrix_name" "$run_started" <<'PY_CAPTURE'
 import shutil
 import sys
 from pathlib import Path
@@ -78,6 +79,13 @@ from pathlib import Path
 root = Path("shared/build/outputs/connected_android_test_additional_output")
 destination = Path("build/android-ui-diagnostics") / f"{sys.argv[1]}-glass"
 destination.mkdir(parents=True, exist_ok=True)
+run_started = int(sys.argv[2])
+
+def require_current(path):
+    if path.stat().st_mtime_ns < run_started:
+        raise SystemExit(f"Stale instrumentation artifact from an earlier run: {path}")
+    return path
+
 for name in (
     "light.png", "dark.png", "daily-details.png", "ru-settings-font-200.png",
     "city-picker-light.png", "city-picker-dark.png", "city-picker-ru-font-200.png",
@@ -88,6 +96,23 @@ for name in (
     matches = list(root.rglob(name))
     if len(matches) != 1:
         raise SystemExit(f"Expected one current {name} screenshot under {root}, found {len(matches)}")
-    shutil.copy2(matches[0], destination / name)
+    shutil.copy2(require_current(matches[0]), destination / name)
+premium = list(root.rglob("premium-*.png"))
+if len(premium) != 14 or len({path.name for path in premium}) != 14:
+    raise SystemExit(f"Expected 14 unique current premium screenshots, found {len(premium)}")
+for previous in destination.glob("premium-*.png"):
+    previous.unlink()
+for screenshot in premium:
+    shutil.copy2(require_current(screenshot), destination / screenshot.name)
+for name in ("performance-render.json", "performance-frames.txt", "performance-first-screen.png"):
+    matches = list(root.rglob(name))
+    if len(matches) != 1:
+        raise SystemExit(f"Expected one current {name}, found {len(matches)}")
+    shutil.copy2(require_current(matches[0]), destination / name)
 print(f"Glass screenshots saved to {destination}")
 PY_CAPTURE
+
+if [[ "$matrix_name" == "phone-api36" || "$matrix_name" == "tablet-api36" ]]; then
+  python3 scripts/check_visual_regressions.py \
+    --matrix "$matrix_name" --actual "$diagnostics_dir/${matrix_name}-glass"
+fi

@@ -25,8 +25,8 @@ scripts/growth/tests -p 'test_*.py'`; its `Ran N tests` summary is authoritative
 
 The Compose suite renders deterministic production `WeatherScreen` states; it
 does not call the live provider and does not replace signed physical-device or
-assistive-technology QA. Screenshot-golden and end-to-end live-provider tests
-remain known gaps. [QUALITY.md](QUALITY.md) and [QA_MATRIX.md](QA_MATRIX.md)
+assistive-technology QA. Fixed-state screenshot goldens now run on the pinned API36 phone/tablet.
+Automated end-to-end live-provider tests remain a known gap. [QUALITY.md](QUALITY.md) and [QA_MATRIX.md](QA_MATRIX.md)
 distinguish emulator automation from manual evidence.
 
 ## Fast contributor checks
@@ -59,10 +59,10 @@ Run only the targeted checks that help during development. Before integration,
 GitHub-hosted CI is not the routine authority and is not started by pushes or
 pull requests.
 
-## Clean Android/shared gate
+## Android/shared gate
 
 ```sh
-./gradlew clean ktlintCheck \
+./gradlew ktlintCheck \
   :shared:allTests \
   :shared:testAndroidHostTest \
   :app:testDebugUnitTest \
@@ -167,3 +167,20 @@ checked against reviewed SHA-256 pins before signing, copied outside the
 checkout, rehashed after signing material is destroyed, and launched with
 isolated Python path handling. The verifier rejects either detached-build or
 current-checkout release-source drift from the manifest revision.
+
+## Premium forecast visual and interaction checks
+
+`PremiumForecastUiTest` uses a fixed clock (1725000000; night fixture +10 hours), fixed Tashkent timezone/data, explicit locale/theme/font scale and no provider network. The API24/36 phone and API36 tablet matrix covers sticky city/actions, all-day rain, stale/retry, preserved selection and vertical/horizontal scroll, pull refresh and tap/hold-drag selection. Arabic keeps the surrounding UI RTL and the time axis LTR. A semantic assertion does **not** prove TalkBack/VoiceOver speech.
+
+API36 visual baselines live under `qa/visual/<matrix>`. The screenshot comparison preserves original dimensions; it tolerates channel deltas ≤12, at most 0.3% changed pixels and a mean channel delta ≤0.4. It writes amplified differences and JSON results beside actual screenshots. A changed inventory, resolution, or artifact predating the current run fails. These are pinned SwiftShader emulator baselines, not cross-device pixel expectations. The recorded environment is Android Emulator 37.1.11.0 (build 15917651), Google APIs API36 arm64 image revision 7 / extension 17, phone 1080×2424 at 420dpi and tablet 1600×2560 at 320dpi, with system animation scales 0. Test locale/theme/font and time are set in the fixtures; system-image/emulator changes require a reviewed baseline update. Review new screenshots before explicitly using `python3 scripts/check_visual_regressions.py --matrix phone-api36 --actual build/android-ui-diagnostics/phone-api36-glass --record` (similarly for tablet). Recording is never part of a normal gate.
+
+`scripts/measure_forecast_rendering.sh` repeats the same fixed-data render, five refresh transitions and eight horizontal swipes. It records device/API/density/animation setting and gfx frame diagnostics. It deliberately does not change device settings. Run with an explicit `ANDROID_SERIAL` and before/after label. The first-render number includes Compose test synchronization; refresh is a rendering measurement, not provider latency or network recovery. Compare like-for-like and keep physical-device results separate from emulator results.
+
+
+## Local premium-quality validation — October 6, 2026
+
+`scripts/local-ci.sh full` passed on the final product source `9d09fb0`: 368 Python checks, 172 Android-host/shared tests, 158 shared iOS Simulator tests, 13 phone and 10 Wear unit tests, 37 Swift surface/widget tests, Kotlin lint, migration verification, release lint, Android/Wear bundles and unsigned iOS/watchOS builds. All three Android UI targets passed 24/24 without skips; all 28 visual goldens matched exactly. Full log: `/tmp/nimbo-premium-final-full.log`.
+
+Runtime screenshots are in `build/premium-quality/runtime`; deterministic phone/tablet baselines are in `qa/visual`. Final Android, iPhone and iPad builds were launched and visually inspected. iPhone Dynamic Type at Device Hub level8 (applied after restart), Reduce Motion/Transparency and vertical scrolling were checked, then the simulator settings restored to level3/off. Live Android checks covered denied location, manual Samarkand search, a Tashkent city switch, retained offline data, a visible failed refresh and network recovery. iPhone/iPad simulators were inspected with RU/UZ, light/dark, night symbols, selected-hour/settings return and reduced effects. The fixed UI matrix additionally covers Arabic RTL, 200% text, a long city name, first launch/loading/error, all-day rain, negative/equal temperatures and an hour gap.
+
+Physical Samsung debug instrumentation measured rendering and refresh without changing settings; TalkBack was disabled. A later ordinary-app measurement was stopped when another foreground app appeared, so no real-time physical scroll result is claimed. The temporary `.premiumqa` package was removed. Its initial build configuration also updated the pre-existing `.debug` binary; no data reset or main-package update occurred. Physical iPhone was unavailable; the paired iPad cannot use these unsigned simulator binaries. Real VoiceOver/TalkBack speech, natural background/widget scheduling, battery drain, and distribution-build physical performance remain separate device checks. See [PERFORMANCE.md](PERFORMANCE.md) for comparable measurements and limits.

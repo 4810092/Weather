@@ -611,9 +611,11 @@ weather_content_source = weather_screen_source.split(
     "private fun WeatherContent(", maxsplit=1
 )[-1].split("private fun FirstForecastTip(", maxsplit=1)[0]
 primary_section_markers = [
-    "CurrentSummary(state = state, condition = condition, insights = insights)",
-    "OutsideCard(outside, weather.location.timezone)",
-    "onAddLocation = onAddLocationFromFirstForecastTip",
+    "CurrentSummary(state, condition, insights, now)",
+    "Timeline(",
+    "SelectedHour(",
+    "OutsideCard(",
+    "FirstForecastTip(",
     "WeatherDetails(",
 ]
 primary_section_positions = [
@@ -623,14 +625,13 @@ if any(position < 0 for position in primary_section_positions):
     fail("weather primary section markers are incomplete")
 if primary_section_positions != sorted(primary_section_positions):
     fail(
-        "Best Time Outside must render after the current summary and before "
-        "the first-forecast tip and hourly details"
+        "Weather sections must render current summary, hourly timeline, selected hour, "
+        "walk guidance, first-forecast tip and remaining details in that order"
     )
 
 first_forecast_tip_contract = (
     "onAddLocationFromFirstForecastTip: () -> Unit",
-    "onAddLocation = onAddLocationFromFirstForecastTip",
-    "onDismiss = onDismissFirstForecastTip",
+    "FirstForecastTip(\n                                onAddLocationFromFirstForecastTip,\n                                onDismissFirstForecastTip",
     "private fun FirstForecastTip(onAddLocation: () -> Unit, onDismiss: () -> Unit)",
     "onClick = onAddLocation",
     "Res.string.first_forecast_tip_add_city",
