@@ -1,5 +1,22 @@
 # Performance checkpoints
 
+## Independent acceptance — October 7, 2026
+
+Acceptance source `90ec87f` contains product fixes from `b845cfb` plus the city-scroll UI test correction. The ordinary Android runtime APK was built at `b845cfb` (SHA-256 `8e83a0a883817d66706338adb2b759be527277b2bd07b3d8c14c0e5c228c376d`); subsequent source changes are tests and release-evidence metadata. Raw current evidence is under `build/acceptance-2026-10-06` (directory date is UTC). These are **emulator debug baselines**, not physical-device or distribution measurements.
+
+| Method and environment | Current result |
+| --- | --- |
+| Five cached cold activity launches, `am start -S -W`, API36 phone 1080×2424/420dpi, SwiftShader | 1315 / 962 / 1232 / 1204 / 1195 ms; median 1204 ms |
+| Fixed-data matrix `ForecastPerformanceTest`, same phone, en-US/light/1×, epoch1725000000, animation scales0 | First Compose render819 ms; refresh588 / 418 / 383 / 333 / 634 ms, median418 ms |
+| Same synthetic timeline sequence | 24 frames, p50/p90 69/97 ms, 22 deadline misses |
+| Separate manual CUA selection/scroll/return-to-now/refresh, ordinary app | 54 frames, p50/p90 93/200 ms, 54 deadline misses |
+
+Launch evidence is `emulator-cold-starts.txt`; ordinary interaction diagnostics are `emulator-interaction-gfxinfo.txt`; fixed fixture results are `final-matrix/phone-api36-performance-{render.json,frames.txt}`. Launch time excludes any claim about first meaningful network content. The manual sequence is not comparable to the synthetic test. GPU percentile buckets reaching4950ms in SwiftShader are not interpreted as physical GPU timings.
+
+Compared with the October6 fixture sample, current refresh rendering is higher (median418 versus333ms), while initial composition is lower (819 versus1215ms) and frame p50 remains69ms. The host was concurrently running another project's device/build acceptance and several Apple simulators. There is no matched idle-host before sample, so these values establish neither an improvement percentage nor a causal regression. Inspection of the acceptance diff found no added refresh rendering work: the screen key changes only when the city changes, and the restored observer branch runs only after failed activation. The short software-renderer samples do not establish60fps smoothness. A controlled physical run remains necessary.
+
+The connected Samsung SM-S908E/API36 was occupied by another QA session and later locked. Its existing `.debug` signature matched the local package, but no update, foreground takeover or new physical measurement was performed. The physical iPhone was unavailable. A paired iPad mini on26.7.1 had developer-built1.1.0(13), but launch timed out and Device Hub screen sharing requires27+. No usable libimobiledevice transport was present. Current-source physical launch/scroll/refresh, idle power and natural background activity therefore remain open; use a free unlocked test device and a source-proven compatible build. No battery-life claim is made from these simulator or historical short samples.
+
 
 ## Premium UI comparison — October 6, 2026
 
