@@ -16,6 +16,25 @@ import threading
 import time
 
 
+def parse_frames(raw, cutoff):
+    """Read either gfxinfo header format without assuming fixed column positions."""
+    columns = None
+    for line in raw.splitlines():
+        if line.startswith("Flags,") and "IntendedVsync," in line:
+            columns = line.rstrip(",").split(",")
+        elif columns and line and line[0].isdigit() and "," in line:
+            values = line.rstrip(",").split(",")
+            if len(values) == len(columns):
+                row = dict(zip(columns, map(int, values)))
+                if row.get("FrameCompleted", 0) > 0 and row["IntendedVsync"] >= cutoff:
+                    yield row
+
+
+def valid_frame(row):
+    # Do not trim slow outliers: even a multi-second stall is relevant evidence.
+    return row["Flags"] == 0 and row["FrameCompleted"] > row["IntendedVsync"]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--serial", required=True)
@@ -80,16 +99,8 @@ def main():
     try:
         while not stop.is_set() and time.monotonic() - start < args.seconds:
             raw = capture(f"gfx-{count:03d}.txt", f"dumpsys gfxinfo {args.package} framestats")
-            columns = None
-            for line in raw.splitlines():
-                if line.startswith("Flags,") and "IntendedVsync," in line:
-                    columns = line.rstrip(",").split(",")
-                elif columns and line and line[0].isdigit() and "," in line:
-                    values = line.rstrip(",").split(",")
-                    if len(values) == len(columns):
-                        row = dict(zip(columns, map(int, values)))
-                        if row.get("FrameCompleted", 0) > 0 and row["IntendedVsync"] >= cutoff:
-                            frames[row["IntendedVsync"]] = row
+            for row in parse_frames(raw, cutoff):
+                frames[row["IntendedVsync"]] = row
             count += 1
             stop.wait(0.75)
     finally:
@@ -107,8 +118,7 @@ def main():
         writer = csv.DictWriter(file, fieldnames=ordered[0].keys())
         writer.writeheader()
         writer.writerows(ordered)
-    valid = [row for row in ordered if row["Flags"] == 0 and
-             0 < row["FrameCompleted"] - row["IntendedVsync"] < 10_000_000_000]
+    valid = [row for row in ordered if valid_frame(row)]
     times = sorted((row["FrameCompleted"] - row["IntendedVsync"]) / 1e6 for row in valid)
     def percentile(p):
         return times[max(0, math.ceil(len(times) * p) - 1)] if times else None
