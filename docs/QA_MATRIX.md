@@ -1,13 +1,13 @@
 # Release QA matrix
 
-Current local development source (October 7): `90ec87f827f027431602b7484e1f836937650fc5` includes premium forecast guidance/UI and independent acceptance fixes for city-scoped state and failed-activation recovery. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current local development source (October 7): `decc8510c2c554038525b76ee9f17c40a4b702d1` adds measured glass rendering optimization to the premium forecast UI and the city-state/failed-activation fixes. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 Local acceptance on October 7 passed the complete local gate: 75 UI tests, 28 exact visual comparisons, and shared/platform/surface tests. Two state-restoration defects were fixed and checked in running apps. [TESTING.md](TESTING.md#independent-acceptance--october-7-2026) records source identity, live simulator recovery/accessibility checks, foreground Watch delivery, physical-device blockers and the uncompleted speech/widget/background paths. [PERFORMANCE.md](PERFORMANCE.md) records current emulator baselines without transferring historical physical or release proof.
 
 Status date: October 7, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:90ec87f827f027431602b7484e1f836937650fc5 -->
+<!-- source_revision:decc8510c2c554038525b76ee9f17c40a4b702d1 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
