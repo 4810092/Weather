@@ -25,23 +25,17 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.kyant.backdrop.Backdrop
-import com.kyant.backdrop.backdrops.layerBackdrop
-import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.kyant.backdrop.drawBackdrop
-import com.kyant.backdrop.effects.blur
-import com.kyant.backdrop.effects.lens
-import com.kyant.backdrop.highlight.Highlight
-import com.kyant.backdrop.highlight.HighlightStyle
 import com.kyant.backdrop.isRenderEffectSupported
-import com.kyant.backdrop.isRuntimeShaderSupported
-import com.kyant.backdrop.shadow.Shadow
 import uz.ganikhodjaev.weather.shared.model.WeatherCondition
 
 internal data class GlassStyle(
@@ -50,9 +44,7 @@ internal data class GlassStyle(
     val selectedTint: Color,
     val highlight: Color,
     val shadow: Color,
-    val glow: Color,
-    val blurRadius: Float = 5f,
-    val lensDepth: Float = 3f
+    val glow: Color
 )
 
 internal val LightGlassStyle = GlassStyle(
@@ -73,10 +65,10 @@ internal val DarkGlassStyle = GlassStyle(
     glow = Color(0x103C627D)
 )
 
-internal val LocalGlassBackdrop = staticCompositionLocalOf<Backdrop?> { null }
+internal val LocalGlassScene = staticCompositionLocalOf { false }
 internal val LocalGlassPreferences = staticCompositionLocalOf { GlassPreferences() }
 
-/** Record only the background, never the glass consuming it (which would recurse). */
+/** Glass rests on this smooth ambience; there is no detailed backdrop to filter. */
 @Composable
 internal fun NimboGlassScene(
     condition: WeatherCondition,
@@ -85,12 +77,10 @@ internal fun NimboGlassScene(
 ) {
     val tokens = LocalNimboThemeTokens.current
     val style = if (tokens.isDark) DarkGlassStyle else LightGlassStyle
-    val backdrop = rememberLayerBackdrop()
     val preferences = rememberGlassPreferences()
     Box(Modifier.fillMaxSize()) {
         Box(
             Modifier.fillMaxSize()
-                .layerBackdrop(backdrop)
                 .background(tokens.ambience(condition, daylight))
                 .drawWithCache {
                     val topLight = Brush.radialGradient(
@@ -110,7 +100,7 @@ internal fun NimboGlassScene(
                 }
         )
         CompositionLocalProvider(
-            LocalGlassBackdrop provides backdrop,
+            LocalGlassScene provides true,
             LocalGlassPreferences provides preferences,
             content = content
         )
@@ -125,63 +115,50 @@ internal fun Modifier.nimboGlass(
     pressProgress: () -> Float = { 0f }
 ): Modifier {
     val style = if (LocalNimboThemeTokens.current.isDark) DarkGlassStyle else LightGlassStyle
-    val backdrop = LocalGlassBackdrop.current
+    val inGlassScene = LocalGlassScene.current
     val preferences = LocalGlassPreferences.current
     val tint = when {
         selected -> style.selectedTint
         interactive -> style.controlTint
         else -> style.tint
     }
-    if (backdrop == null || preferences.reduceTransparency || !isRenderEffectSupported()) {
+    if (!inGlassScene || preferences.reduceTransparency || !isRenderEffectSupported()) {
         return clip(shape).background(tint.copy(alpha = 1f), shape)
             .border(NimboLayout.Hairline, style.highlight, shape)
     }
-    return drawBackdrop(
-        backdrop = backdrop,
-        shape = { shape },
-        effects = {
-            blur((if (interactive) 2f else style.blurRadius).dp.toPx())
-            if (isRuntimeShaderSupported()) {
-                lens(
-                    refractionHeight = minOf(style.lensDepth.dp.toPx(), size.minDimension / 4f),
-                    refractionAmount = (if (interactive || selected) 4.dp else 1.dp).toPx(),
-                    depthEffect = true,
-                    chromaticAberration = false
-                )
-            }
-        },
-        highlight = {
-            Highlight(
-                width = 1.dp,
-                style = HighlightStyle.Default(
-                    color = if (interactive ||
-                        selected
-                    ) {
-                        style.highlight
-                    } else {
-                        style.highlight.copy(
-                            alpha =
-                            style.highlight.alpha * 0.4f
-                        )
-                    },
-                    angle = 40f + pressProgress() * 35f
-                )
+    // Sampling, blurring and refracting the same low-frequency scene for every
+    // scrolling card adds offscreen passes without resolving visible detail.
+    // Composite the tint directly and keep depth in a cached edge and native shadow.
+    val emphasized = interactive || selected
+    return shadow(
+        elevation = if (emphasized) 8.dp else 3.dp,
+        shape = shape,
+        ambientColor = style.shadow,
+        spotColor = style.shadow
+    ).background(tint, shape).drawWithCache {
+        val outline = shape.createOutline(size, layoutDirection, this)
+        val highlight = style.highlight.copy(
+            alpha = style.highlight.alpha * if (emphasized) 1f else 0.4f
+        )
+        val edge = Brush.linearGradient(
+            0f to highlight,
+            0.5f to Color.Transparent,
+            1f to highlight.copy(alpha = highlight.alpha * 0.55f),
+            start = Offset.Zero,
+            end = Offset(size.width, size.height)
+        )
+        val stroke = Stroke(2 * NimboLayout.Hairline.toPx())
+        onDrawWithContent {
+            drawContent()
+            drawOutline(
+                outline = outline,
+                brush = edge,
+                alpha = 0.8f + pressProgress() * 0.2f,
+                style = stroke,
+                blendMode = BlendMode.Plus
             )
-        },
-        shadow = {
-            Shadow(
-                radius = if (interactive ||
-                    selected
-                ) {
-                    8.dp
-                } else {
-                    3.dp
-                },
-                color = style.shadow
-            )
-        },
-        onDrawSurface = { drawRect(tint) }
-    )
+        }
+    }
 }
 
 @Composable

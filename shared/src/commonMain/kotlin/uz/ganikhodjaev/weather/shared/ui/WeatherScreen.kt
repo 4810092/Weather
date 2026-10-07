@@ -228,8 +228,8 @@ private fun ChooseLocationScreen(
     }
     var pendingDeletion by remember { mutableStateOf<Location?>(null) }
     pendingDeletion?.let { location ->
-        // Dialogs have their own window; do not sample the main window's graphics layer.
-        CompositionLocalProvider(LocalGlassBackdrop provides null) {
+        // Dialogs have their own opaque surface rather than the ambient scene.
+        CompositionLocalProvider(LocalGlassScene provides false) {
             AlertDialog(
                 onDismissRequest = { pendingDeletion = null },
                 title = { Text(stringResource(Res.string.remove_saved_place)) },
