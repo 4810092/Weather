@@ -1,6 +1,6 @@
 # Release process
 
-Current local development source (October 7): `decc8510c2c554038525b76ee9f17c40a4b702d1` adds measured glass rendering optimization to the premium forecast UI and the city-state/failed-activation fixes. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current local development source (October 7): `70fc7a89194aeaf3532362d4edc026ee56f2f63a` adds measured glass rendering optimization and live iOS Dynamic Type updates to the premium forecast UI and the city-state/failed-activation fixes. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
@@ -45,7 +45,7 @@ availability. Natural iPhone widget completion and a fresh crash window remain
 required before public release.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:decc8510c2c554038525b76ee9f17c40a4b702d1 -->
+<!-- source_revision:70fc7a89194aeaf3532362d4edc026ee56f2f63a -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
