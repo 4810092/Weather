@@ -1,5 +1,13 @@
 # Testing and validation
 
+## Dependency integration — October 16, 2026
+
+Current dependency source: `23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd`. The integration updates Gradle to 9.7.1, AGP to 9.4.1, Kotlin to 2.4.21, Compose to 1.12.1, Ktor to 3.6.0, desugar to 2.1.5, and the pinned setup-java/setup-python/deploy-pages actions. Strict workflow guards remain enabled. Dependency verification now covers 2,568 artifacts; all previous checksums were preserved.
+
+All locally reproducible CI components passed. `scripts/local-ci.sh full` completed the 371 Python checks, 173 Android shared tests, 161 shared iOS tests, 13 phone/10 Wear unit tests, lint, migrations, Android/Wear bundles, and all 75 Android UI tests. All 28 visual goldens passed unchanged. Its Apple build exposed a missing Compose iOS Arm64 resource checksum; after adding that checksum, `scripts/local-ci.sh apple` passed all 37 Swift tests and both unsigned iOS/watchOS Release simulator builds. Final repository, release-contract, QA-matrix, dashboard and 32 signing-policy checks passed. Logs: `build/branch-integration-2026-10-16/{full-through-android,apple-final,static-final}.log`.
+
+The Linux AAPT2 and Kotlin/Native archive checksums were computed from official repository bytes and checked against publisher SHA-1 values to retain Ubuntu fallback coverage; Linux/hosted execution was not run. The local Python installation emitted existing `blake2b`/`blake2s` import diagnostics without failing the checks. No test was disabled, checksum guard relaxed or visual baseline replaced. Earlier physical runtime/performance evidence below remains historical for its recorded dependency set; current distribution artifacts remain blocked.
+
 ## Glass optimization acceptance — October 7, 2026
 
 Current product source: `70fc7a89194aeaf3532362d4edc026ee56f2f63a`. This pass implements the glass rendering optimization and live iOS Dynamic Type updates; previous acceptance sections below are historical. Detailed physical methodology and the still-unmet strict smoothness threshold are in [PERFORMANCE.md](PERFORMANCE.md#glass-optimization--october-7-2026). Evidence root: `build/glass-optimization-2026-10-07`; artifact hashes and validation counts: `build-and-validation-receipt.json`.
