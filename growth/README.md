@@ -1,11 +1,11 @@
 # Nimbo growth operations
 
-Current local development source (October 7): `70fc7a89194aeaf3532362d4edc026ee56f2f63a` adds measured glass rendering optimization and live iOS Dynamic Type updates to the premium forecast UI and the city-state/failed-activation fixes. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current development source (October 16): `f4d92e16949c167ade24d9e81f39a1cc285ac729` integrates Gradle 9.7.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.1, Ktor 3.6.0 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:70fc7a89194aeaf3532362d4edc026ee56f2f63a -->
+<!-- source_revision:f4d92e16949c167ade24d9e81f39a1cc285ac729 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

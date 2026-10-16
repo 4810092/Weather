@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "release": "1.1.0",
-  "source_revision": "70fc7a89194aeaf3532362d4edc026ee56f2f63a",
-  "prepared_on": "2026-10-07",
+  "source_revision": "f4d92e16949c167ade24d9e81f39a1cc285ac729",
+  "prepared_on": "2026-10-16",
   "status": "draft-blocked",
   "metadata": "store/metadata.json",
   "creative_manifest": "store/creative-sets/growth-2026-08.json",

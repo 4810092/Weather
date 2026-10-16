@@ -124,7 +124,7 @@
     },
     {
       "id": "candidate_artifact_boundary",
-      "claim": "Local source 70fc7a89194aeaf3532362d4edc026ee56f2f63a retains development identities phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). No distribution-signed artifacts match this source. Historical build13 signing and delivery evidence is preserved without transferring authority. New build identities and separate action-time authorization are required before release. Local emulator/simulator runtime QA is separate from Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, rank impact. No featuring, outreach, signing, or store action is authorized by the local quality task.",
+      "claim": "Local source f4d92e16949c167ade24d9e81f39a1cc285ac729 retains development identities phone 1.1.0 (13), Wear OS 1.1.0 (1000013), and Apple 1.1.0 (13). No distribution-signed artifacts match this source. Historical build13 signing and delivery evidence is preserved without transferring authority. New build identities and separate action-time authorization are required before release. Local emulator/simulator runtime QA is separate from Google Play Internal delivery, App Store review, post-delivery Vitals, crash close-out, production release, public availability, rank impact. No featuring, outreach, signing, or store action is authorized by the local quality task.",
       "evidence": [
         "growth/quality/signed-candidate-run-37322319203.md",
         "growth/quality/release13-signed-source-sync-2026-10-05.md",
