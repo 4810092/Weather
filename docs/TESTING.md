@@ -187,7 +187,7 @@ to the same local script to prevent command drift. Automatic GitHub execution
 is reserved for capabilities that need a hosted trust boundary, OIDC, or the
 unattended canonical rank writer. The former Trusted-to-Pages chain is dormant;
 restoring a manual Pages publication path is a separately authorized workflow
-change. The Gradle wrapper validates the official 9.7.0 distribution SHA-256,
+change. The Gradle wrapper validates the official 9.7.1 distribution SHA-256,
 and normal task resolution enforces the checked-in dependency verification
 metadata.
 

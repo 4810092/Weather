@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "877ffa2656f160b4699de88020bb4952e0ffaa3ae00febdf4c1d6e85acf116d7"
+WORKFLOW_SHA256 = "d9e68562164192f630b434e342a1b68431f8ccd1a48609ba838e1c330ad68df3"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -45,8 +45,8 @@ REPOSITORY_GUARD = (
 SIGNING_GUARD = REPOSITORY_GUARD + " && needs.build-unsigned.result == 'success'"
 APPROVED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
-    "actions/setup-java": "dd06d9cba3e5552c54d9f8ea23572deb30010f7c",
-    "actions/setup-python": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+    "actions/setup-java": "de7274f081f381c8f8158605e0321c36c376e2e6",
+    "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
     "gradle/actions/setup-gradle": "9c971963bec38e04b3d30dcc455b5382be2fdbfb",
     "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
     "actions/download-artifact": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
@@ -107,8 +107,8 @@ SECRET_STEP_ENVS = {
 }
 BUILD_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
-    ("uses", "actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c"),
-    ("uses", "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1"),
+    ("uses", "actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6"),
+    ("uses", "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97"),
     ("uses", "gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb"),
     ("name", "Resolve exact release source and unsigned staging paths"),
     ("name", "Validate and seal exact release inputs"),
@@ -121,8 +121,8 @@ BUILD_STEP_INVENTORY = [
 ]
 SIGN_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
-    ("uses", "actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c"),
-    ("uses", "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1"),
+    ("uses", "actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6"),
+    ("uses", "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97"),
     ("uses", "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"),
     ("name", "Validate and unpack inert unsigned inputs"),
     ("name", "Fetch pinned Bundletool"),
@@ -137,15 +137,15 @@ SIGN_STEP_INVENTORY = [
 ]
 BUILD_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
-    "dcc5a242142f07133cff6aa7d84c0b2701cb05fa4bd0bc8bca60a640470fcfef",
-    "68d8c78fc03544c83d10de90b661200da54135d5b13e5c09129e276eeec0f83e",
+    "e43fb63c23f0fb971e52792ed534077ac6fd127789a9b7c5e9947b7081612825",
+    "001fcb06a1e64ee13025b5af1062845a0726dfdbfb97f982d79e723de8b828a9",
     "f20e72094b208a255e173807f2ae783a60e4735c8ec46973c31354533b2a37aa",
     "c064477d9afaac14ad4839d44fd7599f8c88aaedd60b09ee39d8e3b2b1a2bbd1",
 ]
 SIGN_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
-    "dcc5a242142f07133cff6aa7d84c0b2701cb05fa4bd0bc8bca60a640470fcfef",
-    "68d8c78fc03544c83d10de90b661200da54135d5b13e5c09129e276eeec0f83e",
+    "e43fb63c23f0fb971e52792ed534077ac6fd127789a9b7c5e9947b7081612825",
+    "001fcb06a1e64ee13025b5af1062845a0726dfdbfb97f982d79e723de8b828a9",
     "6c10ee9ea85054e7903d406a87ad58351a0a84d295fdb7b8e59296a59da50e63",
     "c7a5e71576651099391a847844b2b8e051a8b6fb487340b445fc845ba742b509",
 ]

@@ -7,7 +7,7 @@ This guide covers an unsigned contributor workflow. Production signing, store co
 | Tool | Required or verified state |
 | --- | --- |
 | JDK | JDK 17 is the local baseline and the Xcode build script selects it. |
-| Gradle | Use the checked-in Gradle 9.7.0 wrapper. Do not substitute a system Gradle. |
+| Gradle | Use the checked-in Gradle 9.7.1 wrapper. Do not substitute a system Gradle. |
 | Android | Android SDK 36; phone/tablet min SDK 24; Wear OS min SDK 30. |
 | Apple | macOS and Xcode 26+; Xcode 26.6 with iOS/watchOS 26.5 SDKs is locally verified. |
 | Python | Python 3.11 for the canonical local gate. |

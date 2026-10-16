@@ -11,8 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "567928954c05785043697a3264ec383a459b380d16b96b63c1073714856250bd"
-PAGES_SHA256 = "6a7f34c5ecf52a0fe23c72e1942d18e7a712d139e6def0663d1bba57c076ca9d"
+TRUSTED_SHA256 = "7bbc717385eaa000d31c93416fa4fef54959baf792e70f00e2cce5eec5fd586b"
+PAGES_SHA256 = "aea371b590e9225024423bb422101bd27e3151345dab4a6c6e75356c6fabdf81"
 
 TRUSTED_REQUIRED = (
     "name: Trusted release verification",
@@ -112,7 +112,7 @@ PAGES_REQUIRED = (
     "python3 scripts/verify_release_artifacts.py --contract-only",
     "python3 scripts/check_release_qa_matrix.py --contract-only",
     "actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9",
-    "actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128",
+    "actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346",
 )
 
 

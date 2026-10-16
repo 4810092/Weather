@@ -451,7 +451,7 @@ Every third-party action is pinned to a reviewed full commit SHA. Repository
 checks bind the complete workflow bytes, complete action-step blocks (including
 artifact paths), run bodies, shells, and exact secret-step environments. This
 is intentionally narrow: any workflow mutation requires an explicit policy
-update and regression run. The Gradle 9.7.0 wrapper ZIP is pinned to its
+update and regression run. The Gradle 9.7.1 wrapper ZIP is pinned to its
 official SHA-256, and every resolved Gradle dependency artifact is covered by
 `gradle/verification-metadata.xml`.
 
