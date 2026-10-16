@@ -1,6 +1,6 @@
 # Release process
 
-Current development source (October 16): `507dda73adf6804999494e03b6099208ecf2ac3a` integrates Gradle 9.7.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.1, Ktor 3.6.0 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current development source (October 16): `23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd` integrates Gradle 9.7.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.1, Ktor 3.6.0 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
@@ -45,7 +45,7 @@ availability. Natural iPhone widget completion and a fresh crash window remain
 required before public release.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:507dda73adf6804999494e03b6099208ecf2ac3a -->
+<!-- source_revision:23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

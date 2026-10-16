@@ -164,7 +164,7 @@
         "required": "pass",
         "actual": "blocked",
         "status": "fail",
-        "reason": "Local premium forecast source 507dda73adf6804999494e03b6099208ecf2ac3a changes product code after signed build13. No source-current distribution artifacts exist. Build13 hashes/signing/delivery evidence remain historical and unchanged; local tests do not transfer their signing proof. See growth/quality/premium-local-source-2026-10-06.md. No signing, upload or publication is authorized by this task. The local registry atomically marks Apple, phone, and Wear artifacts blocked."
+        "reason": "Local premium forecast source 23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd changes product code after signed build13. No source-current distribution artifacts exist. Build13 hashes/signing/delivery evidence remain historical and unchanged; local tests do not transfer their signing proof. See growth/quality/premium-local-source-2026-10-06.md. No signing, upload or publication is authorized by this task. The local registry atomically marks Apple, phone, and Wear artifacts blocked."
       },
       {
         "id": "android_physical_smoke",
