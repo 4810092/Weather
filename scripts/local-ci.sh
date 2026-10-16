@@ -2,6 +2,14 @@
 
 set -euo pipefail
 
+# dev-storage: local SSD guard and verified archival of completed results.
+if [[ "$(uname -s)" == "Darwin" && -z "${DEV_STORAGE_JOB:-}" && -x "$HOME/Desktop/mac-security-audit/dev-storage" ]]; then
+  exec "$HOME/Desktop/mac-security-audit/dev-storage" run \
+    --project "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)" --heavy \
+    -- /bin/bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")" "$@"
+fi
+# end dev-storage
+
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 

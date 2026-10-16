@@ -1,5 +1,74 @@
 # Performance checkpoints
 
+## Glass optimization — October 7, 2026
+
+Product source `decc8510c2c554038525b76ee9f17c40a4b702d1` removes per-card backdrop recording, blur and lens processing over the smooth ambience. Cards retain translucent tint, a cached gradient edge, native shadow, clipping, selected/pressed feedback and the existing opaque accessibility fallback. No forecast, recommendation or persistence rules changed. Final local QA APK: `build/glass-optimization-2026-10-07/single-clip.apk`, SHA-256 `a03f0ca5a282336d74e7aeac3369bbdb1b40d670610d56c89e36d84eb99e39ec`; R8/resource-shrunk release, non-debuggable, `.physicalqa`, local debug certificate. This is not a distribution artifact.
+
+### Controlled physical comparison
+
+Same Samsung SM-S908E/Android16, 1440×3088/600dpi, min/peak refresh fixed to60Hz, brightness86/manual, animation scales1, RU/light/font0.9, Bukhara snapshot fetched09:22, provider network disabled during the pair. Android Studio mirroring remained on for both versions. CUA alternated0.2-page up/down movements in the same middle section (selected hour/outside/AQI), after40 warm actions. The position returned to its starting point without triggering pull-to-refresh. Each run collected120seconds; input pauses and frame counts are retained rather than normalized away.
+
+| Matched method | Original `219dd53` | Direct glass, duplicate clip | Final, one clipping layer |
+| --- | ---: | ---: | ---: |
+| Duration | 120.83s | 120.05s | 120.75s |
+| Valid frames | 2670 | 1769 | 2013 |
+| Frame p50 | 33.39ms | 11.98ms | 11.90ms |
+| Frame p95 | 41.87ms | 18.22ms | 17.53ms |
+| Frame p99 | 46.04ms | 21.21ms | 20.60ms |
+| Missed frame deadlines | 16.14% | 8.03% | 6.71% |
+| Graphics memory after | 255.7MiB | 78.0MiB | 78.0MiB |
+| Total PSS after | 329.0MiB | 130.5MiB | 128.9MiB |
+| AP temperature, start→end | 32.6→41.2°C | 36.9→40.1°C | 39.4→37.8°C |
+| Battery temperature, start→end | 30.4→31.1°C | 31.4→31.4°C | 31.4→31.7°C |
+| Skin temperature, start→end | 30.8→32.9°C | 32.9→33.0°C | 32.7→33.2°C |
+
+Thermal status stayed0 in all captures. The temperature ranges overlap, but starts were not temperature-identical. USB charging and mirrored CUA input limit interpretation; these are not unplugged-energy or unmirrored finger-input results. The final p95 improved58.1% and graphics memory about69.5%, but **the requested p95≤16.7ms and deadline misses≤5% target has not passed**. A short or favorable sample must not replace these results.
+
+[scripts/profile_glass.py](../scripts/profile_glass.py) polls `dumpsys gfxinfo framestats` every0.75s, deduplicates IntendedVsync and excludes entries predating the reset. Frame time is `FrameCompleted−IntendedVsync`; misses use each frame's own `FrameDeadline`; percentiles use nearest rank. Nonzero Flags/invalid timestamps are excluded (final55 of2068 entries), never long valid frames. Raw samples, frame CSV, settings, thermal/display/memory captures and summaries are in `build/glass-optimization-2026-10-07/{baseline-fixed-01,direct-fixed-01,single-clip-fixed-01}`. Android histogram GPU overflow buckets at4950ms are not treated as actual multi-second GPU work.
+
+### Attribution and limitations
+
+Earlier120second mixed-scroll pilots produced original p95=43.23/45.72ms, no-lens37.53ms, no-lens/no-blur26.73ms. Those pilots included overscroll/refresh, so they establish effect-cost direction rather than final pure-scroll acceptance. Incomplete `baseline-fixed-range`/`baseline-fixed-final` collectors overlapped a screenshot dialog and are excluded.
+
+The original130second Perfetto trace (`baseline.perfetto-trace`) contains2581 app FrameTimeline frames,177 explicit App Deadline Missed events (6.86%). Most other Late Present entries are Buffer Stuffing and are not counted as app deadline failures. RenderThread consumed18.878 CPU-seconds versus12.747 on the main thread;930 layer flushes averaged7.134ms,2582 Drawing slices averaged8.362ms, and736 recompositions averaged0.569ms. This supports removing per-card effect/layer work over the gradient. No ftrace overruns or frame-token errors were reported;28 unsupported vendor events and absence of GPU busy/call-stack tracks prevent a precise GPU-versus-CPU attribution. FrameTimeline and gfxinfo use different definitions and workloads here and must not be combined as one percentage. See [Perfetto FrameTimeline](https://github.com/google/perfetto/blob/main/docs/data-sources/frametimeline.md) and [Android dumpsys](https://developer.android.com/tools/dumpsys).
+
+
+### Sustained background resource observation
+
+The optimized QA process remained PID3511 throughout 61 samples from 10:02:56 to 11:06:04 local, with no activity launch after 09:57:57. The first four samples used ordinary `dumpsys meminfo`, which induces GC, and are labelled and excluded from the passive trend. The remaining 57 used `dumpsys meminfo --local`: PSS ranged 29,556–53,730KiB, repeatedly rising and falling, from 30,601KiB initially to 35,886KiB finally. There was no monotonic growth in this observation. Sampled app CPU was 0–0.5%; thermal status remained0 (AP30.0–37.6°C, battery28.3–30.4°C, skin28.7–30.6°C). Inspected logs contained no crash/ANR after the observation cutoff.
+
+The natural 11:00 worker completed with background network traffic and a widget update request; [TESTING.md](TESTING.md#natural-background-observation-and-remaining-acceptance) distinguishes this from the still-unverified visible fresh timestamp. USB power, an active standby bucket, mirroring and concurrent Cooksy QA after10:41 prevent battery-life, Doze or isolated whole-device resource conclusions. This hour-long trace is a bounded stability observation. It does not prove absence of leaks over days. The read-only observer was stopped after capture; temporary refresh/brightness overrides and IDE mirroring were restored.
+
+## Physical Samsung follow-up — October 7, 2026
+
+Samsung Galaxy S22 Ultra SM-S908E, Android16/API36, 1440×3088/600dpi, adaptive refresh and animation scales1.0. The source-proven APK was built from `219dd5324dde095226d73825ed57e860ce135fd3` with release R8/resource shrinking, package suffix `.physicalqa`, and ordinary local Android debug-certificate signing. The installed package is **not debuggable**; it is not a distribution artifact. SHA-256: `c890d17b869dc384861a628da00867b143a250afa0a13b15d29afd5d7a0f8260`. Build receipt, raw diagnostics and screenshots are in `build/samsung-acceptance-2026-10-07`.
+
+| Physical measurement | Result |
+| --- | --- |
+| Five cached cold launches through the home widget; background PID absence verified before each | 340 / 292 / 271 / 332 / 276 ms; median292 ms |
+| Warm vertical scroll, normal glass, 102 frames | Jank29.41%; frame p50/p95 27/36 ms; GPU p50/p95 12/19 ms |
+| Same eight CUA scroll actions, high-contrast text/opaque cards, 109 frames | Jank8.26%; frame p50/p95 10/18 ms; GPU p50/p95 5/10 ms |
+| Normal glass restored, warmed repeat, 104 frames | Jank25.96%; frame p50/p95 27/36 ms; GPU p50/p95 13/19 ms |
+
+Launch time is Android's `ActivityTaskManager Displayed` proxy, not first network content. These are current-build measurements without a matched earlier-revision baseline. Scroll samples use Android Studio mirroring and mouse-driven CUA input, with small frame counts and adaptive display timing; they do not certify continuous finger-driven60/120fps. The opaque setting changes text rendering as well as card effects. Nevertheless, the repeatable GPU difference is evidence that the glass path deserves optimization/profiling before premium-smoothness acceptance. `nimboGlass` applies backdrop blur, lens shader and shadow; high-contrast text bypasses that path. No speculative product change or visual-baseline replacement was made during this QA pass.
+
+An early mixed-interaction sample was216frames/8.33%jank, p50/p95 8/34ms; a short horizontal sample was only33frames and is excluded from a smoothness claim. One memory snapshot was370230KiB PSS, including301812KiB graphics; this is a point sample, not evidence of a leak. At08:49 thermal status was0, AP34.5°C, battery31.6°C and skin32.2°C. Charging and mirroring were active. Battery percentage, power attribution and sustained unplugged consumption cannot be inferred from this session; package-filtered CPU/wakeup commands did not yield useful app-energy measurements.
+
+The natural hourly worker ran at08:59:17 and returned `SUCCESS`, with the next run scheduled about60minutes later. The app had been backgrounded at08:58; no clock or job forcing was used. The08:06 snapshot was only53minutes old, so the documented60minute freshness gate legitimately republished cache without fetching. At09:00 the home widget advanced10→13°C and AQI31→30 while retaining the08:06 fetch timestamp. This establishes natural scheduling and cached time rollover, not a fresh network fetch, overnight idle reliability or battery life. See [TESTING.md](TESTING.md#physical-samsung-acceptance--october-7-2026) for the physical functional and accessibility scope.
+
+## Simulator follow-up — October 7, 2026
+
+The existing `ForecastPerformanceTest` passed 1/1 on API36 `NimboPhoneApi36`, 1080×2424/420dpi, with the host renderer (`Android Emulator OpenGL ES Translator`, Apple M3 Max; Skia OpenGL). Product source remains equivalent to `b845cfb`; HEAD during this check was `219dd53`. The fixed en-US/light/1× fixture and existing animation scales0 were retained. Raw evidence is `build/premium-quality/simulator-host-gpu-20261007`; command output is `build/simulator-acceptance-2026-10-07/performance-command.log`.
+
+| Measurement | Result |
+| --- | --- |
+| First Compose render, one sample | 628 ms |
+| Refresh rendering, five samples | 326 / 267 / 233 / 233 / 233 ms; median233 ms |
+| Synthetic frames | 24 frames; p50/p90/p95 32/48/48 ms; 19 deadline misses |
+| GPU percentiles | p50/p90 15/16 ms |
+
+This changes the renderer from the earlier SwiftShader run and overlaps simulator/IDE activity. It is not a matched before/after comparison. The small debug instrumentation sample does not establish 60fps interaction, cold-start improvement, physical-device performance or battery life. No physical devices or distribution signing were used in this follow-up.
+
 ## Independent acceptance — October 7, 2026
 
 Acceptance source `90ec87f` contains product fixes from `b845cfb` plus the city-scroll UI test correction. The ordinary Android runtime APK was built at `b845cfb` (SHA-256 `8e83a0a883817d66706338adb2b759be527277b2bd07b3d8c14c0e5c228c376d`); subsequent source changes are tests and release-evidence metadata. Raw current evidence is under `build/acceptance-2026-10-06` (directory date is UTC). These are **emulator debug baselines**, not physical-device or distribution measurements.
