@@ -1,6 +1,6 @@
 # Nimbo Uzbekistan growth implementation
 
-Current development source (October 16): `23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd` integrates Gradle 9.7.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.1, Ktor 3.6.0 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current development source (October 19): `f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf` integrates Gradle 9.8.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.2, Ktor 3.6.0, SQLDelight 2.4.1, backdrop 2.0.1, Fragment 1.9.1 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
@@ -9,7 +9,7 @@ Target checkpoint: February 28, 2027
 Current decision: **HOLD ACQUISITION**
 
 <!-- release-authority-current:start -->
-<!-- source_revision:23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd -->
+<!-- source_revision:f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
