@@ -1,6 +1,6 @@
 # Release process
 
-Current development source (October 19): `f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf` integrates Gradle 9.8.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.2, Ktor 3.6.0, SQLDelight 2.4.1, backdrop 2.0.1, Fragment 1.9.1 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current development source (October 19): `551ea2177a699aa9e7e12634e7b6c14e65fcccd8` integrates Gradle 9.8.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.2, Ktor 3.6.0, SQLDelight 2.4.1, backdrop 2.0.1, Fragment 1.9.1 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 The earlier signing, validation and delivery narrative below is historical; it does not establish authority for the new local source.
 
@@ -45,7 +45,7 @@ availability. Natural iPhone widget completion and a fresh crash window remain
 required before public release.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf -->
+<!-- source_revision:551ea2177a699aa9e7e12634e7b6c14e65fcccd8 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->

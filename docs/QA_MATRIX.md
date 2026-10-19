@@ -1,13 +1,13 @@
 # Release QA matrix
 
-Current development source (October 19): `f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf` integrates Gradle 9.8.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.2, Ktor 3.6.0, SQLDelight 2.4.1, backdrop 2.0.1, Fragment 1.9.1 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
+Current development source (October 19): `551ea2177a699aa9e7e12634e7b6c14e65fcccd8` integrates Gradle 9.8.1, AGP 9.4.1, Kotlin 2.4.21, Compose 1.12.2, Ktor 3.6.0, SQLDelight 2.4.1, backdrop 2.0.1, Fragment 1.9.1 and desugar 2.1.5 while retaining the glass, Dynamic Type and forecast-state fixes. October 7 runtime and performance results remain historical evidence for the earlier dependency set. Distribution artifacts are **blocked** until a separately authorized release signs this source with new build identities. Build13 signing and delivery evidence remains historical and preserved; no store state changed during this task. See `growth/quality/premium-local-source-2026-10-06.md`.
 
 Local acceptance on October 7 passed the complete local gate: 75 UI tests, 28 exact visual comparisons, and shared/platform/surface tests. Two state-restoration defects were fixed and checked in running apps. [TESTING.md](TESTING.md#independent-acceptance--october-7-2026) records source identity, live simulator recovery/accessibility checks, foreground Watch delivery, physical-device blockers and the uncompleted speech/widget/background paths. [PERFORMANCE.md](PERFORMANCE.md) records current emulator baselines without transferring historical physical or release proof.
 
 Status date: October 7, 2026.
 
 <!-- release-authority-current:start -->
-<!-- source_revision:f2d5ddfbe0840c5cc3ab0e4a0f4428cdc4be55cf -->
+<!-- source_revision:551ea2177a699aa9e7e12634e7b6c14e65fcccd8 -->
 <!-- artifact:android_phone;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:wear_os;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
 <!-- artifact:apple;source_sync=blocked;byte_verified=false;physical_qa_evidence=none -->
