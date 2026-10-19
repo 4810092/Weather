@@ -453,8 +453,8 @@ if 'coreSplashscreen = "1.2.0"' not in version_catalog:
     fail("Wear OS must use the reviewed AndroidX Core SplashScreen 1.2.0 release")
 if "androidx.fragment:fragment" not in version_catalog:
     fail("AndroidX Fragment override is missing from the version catalog")
-if 'fragment = "1.9.0"' not in version_catalog:
-    fail("release graphs must use the reviewed AndroidX Fragment 1.9.0 override")
+if 'fragment = "1.9.1"' not in version_catalog:
+    fail("release graphs must use the reviewed AndroidX Fragment 1.9.1 override")
 for module_name, module_gradle in (
     ("phone", android),
     ("shared Android", shared_gradle),
