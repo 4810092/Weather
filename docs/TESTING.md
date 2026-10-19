@@ -1,5 +1,14 @@
 # Testing and validation
 
+## Branch integration — October 19, 2026
+
+Product/build source: `551ea2177a699aa9e7e12634e7b6c14e65fcccd8`. Eight Dependabot branches update Gradle to 9.8.1, Compose to 1.12.2, SQLDelight to 2.4.1, backdrop to 2.0.1, Fragment to 1.9.1, and the pinned download-artifact/setup-java/setup-gradle actions. Official Gradle ZIP/wrapper hashes and upstream action tag commits were checked. Strict dependency verification retains all 2,568 previous artifacts and adds 316, for 2,884 total.
+
+All locally reproducible CI components passed. `scripts/local-ci.sh full` passed 372 Python tests, 173 Android shared tests, 161 iOS shared tests, 13 phone/10 Wear unit tests, lint, migrations, Android/Wear bundles, and all 75 Android UI tests with no skips. All 28 visual goldens passed unchanged. The Apple build then exposed three missing lazy resource-archive checksums; their values were checked against the checksum-pinned publisher module descriptors. After adding them, `scripts/local-ci.sh apple` passed 37 Swift tests and both unsigned iOS/watchOS Release simulator builds. Final repository, release-contract, QA-matrix and dashboard checks passed. Logs: `build/branch-integration-2026-10-19/{full-through-android,apple-final,static-final}.log`.
+
+All 49 hosted rank capture bundles through October 19 were imported byte-for-byte from `growth-observations` (147 files). Dated evaluations remain immutable and match the hosted receipts; the dashboard's reconciled release evidence now uses `growth/reports/evaluation-current.json`. The earlier reconciled August 31 evaluation is preserved separately. The canonical daily writer remains on `growth-observations`; dashboard rank observations were not advanced by this import. Distribution artifacts remain blocked and historical delivery evidence remains unchanged. Hosted execution, signing, store delivery and publication were not run.
+
+
 ## Dependency integration — October 16, 2026
 
 Current dependency source: `23d6643cbb3c5f0863ee73a84e0f4b52c3af25fd`. The integration updates Gradle to 9.7.1, AGP to 9.4.1, Kotlin to 2.4.21, Compose to 1.12.1, Ktor to 3.6.0, desugar to 2.1.5, and the pinned setup-java/setup-python/deploy-pages actions. Strict workflow guards remain enabled. Dependency verification now covers 2,568 artifacts; all previous checksums were preserved.
