@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import tempfile
 import unittest
@@ -22,6 +23,19 @@ SOURCE_REVISION = "1" * 40
 
 
 class HostedRankStateTest(unittest.TestCase):
+    def test_committed_hosted_receipts_match_immutable_payloads(self) -> None:
+        receipts = sorted((ROOT / "growth/data/public-rank/hosted-receipts").glob("*.json"))
+        self.assertTrue(receipts, "imported hosted evidence must remain available")
+        for path in receipts:
+            receipt = load_json(path)
+            for kind in ("snapshot", "evaluation"):
+                with self.subTest(receipt=path.name, payload=kind):
+                    payload = receipt[kind]
+                    self.assertEqual(
+                        hashlib.sha256((ROOT / payload["path"]).read_bytes()).hexdigest(),
+                        payload["sha256"],
+                    )
+
     def test_category_goal_contract_marker_starts_a_new_fingerprint_epoch(self) -> None:
         config = load_json(ROOT / "growth/config.json")
         self.assertEqual(

@@ -119,12 +119,12 @@ class SignedCandidateWorkflowSecurityTest(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn(
             "distributionUrl=https\\://services.gradle.org/distributions/"
-            "gradle-9.7.1-bin.zip\n",
+            "gradle-9.8.1-bin.zip\n",
             properties,
         )
         self.assertIn(
             "distributionSha256Sum="
-            "acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a\n",
+            "dce76f55f8e251a3a1f130eb120f30b3d271de2b76c9b0729d316b5a1b6dc01f\n",
             properties,
         )
 

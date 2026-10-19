@@ -384,13 +384,13 @@ gradle_wrapper_properties = (
     ROOT / "gradle/wrapper/gradle-wrapper.properties"
 ).read_text(encoding="utf-8")
 if (
-    "distributionUrl=https\\://services.gradle.org/distributions/gradle-9.7.1-bin.zip\n"
+    "distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.1-bin.zip\n"
     not in gradle_wrapper_properties
 ):
-    fail("Gradle wrapper distribution must remain pinned to 9.7.1 bin")
+    fail("Gradle wrapper distribution must remain pinned to 9.8.1 bin")
 if (
     "distributionSha256Sum="
-    "acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a\n"
+    "dce76f55f8e251a3a1f130eb120f30b3d271de2b76c9b0729d316b5a1b6dc01f\n"
     not in gradle_wrapper_properties
 ):
     fail("Gradle wrapper distribution must retain the official SHA-256 pin")

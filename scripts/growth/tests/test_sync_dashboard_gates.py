@@ -29,7 +29,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 artifact_path,
                 gate_sql_path,
                 ROOT / "growth/quality/gates.json",
-                ROOT / "growth/reports/evaluation-2026-09-01.json",
+                ROOT / "growth/reports/evaluation-current.json",
                 "2026-08-30T12:34:56Z",
             )
 
@@ -238,7 +238,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
             )
             self.assertEqual(
                 evaluation_source["path"],
-                "growth/reports/evaluation-2026-09-01.json",
+                "growth/reports/evaluation-current.json",
             )
             self.assertNotIn(
                 "neither candidate run yielded a retained",
@@ -269,7 +269,7 @@ class SyncDashboardGatesTest(unittest.TestCase):
                 (ROOT / "growth/dashboard/gate_snapshot.sql", gate_sql_path),
                 (ROOT / "growth/quality/gates.json", gates_path),
                 (
-                    ROOT / "growth/reports/evaluation-2026-09-01.json",
+                    ROOT / "growth/reports/evaluation-current.json",
                     evaluation_path,
                 ),
             ):

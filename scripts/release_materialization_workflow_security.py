@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-WORKFLOW_SHA256 = "278d9d72ad6c995858a63f64d79279e7ebbe3d6ab86e06f937636382a0daca9e"
+WORKFLOW_SHA256 = "dc0cb5d160a6a33afff0343fafd0d71d40b64f125215fa758181e586dec8b993"
 REPOSITORY_GUARD = (
     "github.repository == '4810092/Weather' && "
     "github.repository_id == '1329018769' && "
@@ -17,7 +17,7 @@ REPOSITORY_GUARD = (
 )
 DOWNLOAD_ACTION = (
     "actions/download-artifact@"
-    "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
+    "9000827ccba6bdab643e8b6fd33ac0654aef8333"
 )
 STEP_INVENTORY = [
     ("name", "Validate immutable source provenance"),
@@ -27,7 +27,7 @@ STEP_INVENTORY = [
     ("name", "Upload only missing exact assets"),
     ("name", "Verify exact unpublished materialization"),
 ]
-ACTION_STEP_SHA256 = "5e297e4a9c8562f204300624fd3afffbbaaabb5d9630d40332adbd3fe0e754f6"
+ACTION_STEP_SHA256 = "7a618b14fa429dd7f4664a055e0499ad8b5c680e8574fe6b6c37c7159d314b2a"
 RUN_SHA256 = {
     "Validate immutable source provenance": (
         "34160d7df1b7b33ac7174683bb252bf016963235faa26380ab2f04e99a785112"

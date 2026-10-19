@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "7bbc717385eaa000d31c93416fa4fef54959baf792e70f00e2cce5eec5fd586b"
+TRUSTED_SHA256 = "a185289305770cbed39d727b11c118e791d0b1bb4e0b06e66dad2cd206beddbc"
 PAGES_SHA256 = "aea371b590e9225024423bb422101bd27e3151345dab4a6c6e75356c6fabdf81"
 
 TRUSTED_REQUIRED = (
@@ -50,7 +50,7 @@ TRUSTED_REQUIRED = (
     '"published_at": None',
     '"immutable": False',
     "draft release asset ID set mismatch",
-    "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+    "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
     "name: trusted-candidate-stage-${{ github.sha }}",
     "downloaded staged asset inventory mismatch",
     "post-verification staged asset inventory mismatch",

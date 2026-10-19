@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ARTIFACT = ROOT / "growth/dashboard/artifact.json"
 DEFAULT_GATE_SQL = ROOT / "growth/dashboard/gate_snapshot.sql"
 DEFAULT_GATES = ROOT / "growth/quality/gates.json"
-DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-2026-09-01.json"
+DEFAULT_EVALUATION = ROOT / "growth/reports/evaluation-current.json"
 DEFAULT_RANK = ROOT / "growth/data/public-rank/2026-09-01.json"
 DEFAULT_BASELINE = ROOT / "growth/baseline/2026-08-31.json"
 DEFAULT_BASELINE_SQL = ROOT / "growth/dashboard/baseline_snapshot.sql"
@@ -561,7 +561,7 @@ def sync(
     gate_query["sql"] = sql
     gate_query["executed_at"] = generated_at
     evaluation_source["label"] = f"{rank_date} growth evaluation"
-    evaluation_source["path"] = f"growth/reports/evaluation-{rank_date}.json"
+    evaluation_source["path"] = "growth/reports/evaluation-current.json"
     evaluation_query["sql"] = (
         "SELECT * FROM (VALUES ("
         f"{_sql_literal(rank_date)},{top10_goal['current_streak_days']},"
@@ -573,7 +573,7 @@ def sync(
         "Loads the evaluated Top-10 streak state for the latest UZ rank day."
     )
     evaluation_query["tables_used"] = [
-        f"inline evaluation values backed by growth/reports/evaluation-{rank_date}.json"
+        "inline evaluation values backed by growth/reports/evaluation-current.json"
     ]
     evaluation_query["filters"] = [
         "Current comparable config fingerprint",
@@ -710,7 +710,7 @@ def sync(
             raise ValueError("dashboard rank/evaluation source registry is malformed")
         rank_entries[0]["label"] = f"{rank_date} UZ rank snapshot"
         evaluation_entries[0]["label"] = f"{rank_date} growth evaluation"
-        evaluation_entries[0]["path"] = f"growth/reports/evaluation-{rank_date}.json"
+        evaluation_entries[0]["path"] = "growth/reports/evaluation-current.json"
     play_context_blocks = [
         block
         for block in blocks

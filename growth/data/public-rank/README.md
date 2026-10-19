@@ -52,6 +52,14 @@ The observation branch does not itself update the public dashboard or GitHub
 Pages. Those surfaces change only after review promotes the exact branch bytes
 to `master` and the existing validation pipeline succeeds.
 
+The October 19 integration preserves all 49 hosted capture bundles through that
+date byte-for-byte in `master`, including their original dated evaluations.
+The dashboard's reconciled release-gate evaluation lives separately at
+`growth/reports/evaluation-current.json`; it must not overwrite a hash-bound
+historical evaluation. The earlier reconciled August 31 report is retained at
+`growth/reports/evaluation-2026-08-31-reconciled.json`. This import does not
+advance the dashboard's rank date or authorize publication.
+
 ## Live and intraday checks
 
 Exactly one root-level `YYYY-MM-DD.json` is eligible for the daily streak. A

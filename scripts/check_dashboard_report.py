@@ -36,14 +36,14 @@ EXPECTED_SOURCE_PATHS = {
     "baseline_snapshot": "growth/dashboard/baseline_snapshot.sql",
     "driver_comparison": "growth/dashboard/driver_comparison.sql",
     "rank_snapshot": "growth/dashboard/rank_snapshot.sql",
-    "evaluation_snapshot": "growth/reports/evaluation-2026-09-01.json",
+    "evaluation_snapshot": "growth/reports/evaluation-current.json",
     "gate_snapshot": "growth/dashboard/gate_snapshot.sql",
     "quality_guardrail_snapshot": "growth/dashboard/guardrail_snapshot.sql",
 }
 BACKING_JSON_PATHS = {
     "baseline": "growth/baseline/2026-08-31.json",
     "rank": "growth/data/public-rank/2026-09-01.json",
-    "evaluation": "growth/reports/evaluation-2026-09-01.json",
+    "evaluation": "growth/reports/evaluation-current.json",
     "framework": "growth/kpi-framework.json",
     "gates": "growth/quality/gates.json",
 }
