@@ -52,7 +52,7 @@ jobs:
             "$evidence" \
             --output "$normalized"
       - name: Upload aggregate evidence only
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: google-play-vitals-${{ inputs.week_end }}
           path: |
