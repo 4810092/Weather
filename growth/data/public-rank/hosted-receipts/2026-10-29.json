@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "kind": "nimbo-uz-hosted-canonical-rank",
+  "date": "2026-10-29",
+  "timezone": "Asia/Tashkent",
+  "captured_at": "2026-10-29T03:58:32+05:00",
+  "source_revision": "864f2ec87c8f7bb3469ad1e960376b6010c2dbf7",
+  "state_parent_revision": "8c1bf5b845489688c689873fcb2e11a8c3d2a430",
+  "observation_branch": "growth-observations",
+  "monitor_exit_code": 0,
+  "daily_evaluation_status": "fail",
+  "config_fingerprint": "80f1cc45fcba1c08da1e58e1f674f2042add749cc9264dadbfc2b19723af08f6",
+  "snapshot": {
+    "path": "growth/data/public-rank/2026-10-29.json",
+    "sha256": "c2fa3c4703cdcb85d42af13995f0f85430f5ccd2aca23ecc27dac4df997de2e1"
+  },
+  "evaluation": {
+    "path": "growth/reports/evaluation-2026-10-29.json",
+    "sha256": "2cd6021773b517b85b215844998ce4cd99e96411698f6300c1d86ea5efdd8122",
+    "current_streak_days": 0,
+    "goal_achieved": false
+  },
+  "workflow": {
+    "repository": "4810092/Weather",
+    "run_id": 40783953737,
+    "run_attempt": 1,
+    "event_name": "schedule",
+    "ref": "refs/heads/master"
+  }
+}
