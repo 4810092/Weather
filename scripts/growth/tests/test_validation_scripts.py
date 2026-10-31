@@ -1333,7 +1333,7 @@ class ValidationScriptsTest(unittest.TestCase):
         pages = (ROOT / ".github/workflows/pages.yml").read_text()
         for action in (
             "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
-            "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+            "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
             "actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d",
             "actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9",
             "actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346",

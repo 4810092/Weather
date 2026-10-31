@@ -13,7 +13,7 @@ WORKFLOW = ROOT / ".github/workflows/google-play-vitals-readonly.yml"
 PINNED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "google-github-actions/auth": "7c6bc770dae815cd3e89ee6cdf493a5fab2cc093",  # gitleaks:allow -- pinned action commit
-    "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+    "actions/upload-artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
 }
 
 

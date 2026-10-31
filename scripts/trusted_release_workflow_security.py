@@ -11,8 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRUSTED_WORKFLOW = ROOT / ".github/workflows/trusted-release-verification.yml"
 PAGES_WORKFLOW = ROOT / ".github/workflows/pages.yml"
-TRUSTED_SHA256 = "a185289305770cbed39d727b11c118e791d0b1bb4e0b06e66dad2cd206beddbc"
-PAGES_SHA256 = "aea371b590e9225024423bb422101bd27e3151345dab4a6c6e75356c6fabdf81"
+TRUSTED_SHA256 = "ddbbb491f3973946203caf5c304a142ab9e63ebb03785fca098f6b62e8302ede"
+PAGES_SHA256 = "a0c186dc722e4f5475c75f9e40aa7dfbd2554687e02d7e08a2059b9a041c2a27"
 
 TRUSTED_REQUIRED = (
     "name: Trusted release verification",
@@ -83,7 +83,7 @@ TRUSTED_REQUIRED = (
     '"workflow_sha": sys.argv[3]',
     '"candidate_source_revision": "0faf1105cc5da072e4e9ee043c46e2e9de4f4ada"',
     "This receipt contains identities only; no signed candidate bytes are included.",
-    "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+    "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
     "path: ${{ runner.temp }}/nimbo-trusted-receipt/trusted-release-verification.json",
 )
 

@@ -46,7 +46,7 @@ class GooglePlayVitalsWorkflowSecurityTest(unittest.TestCase):
     def test_action_tag_is_rejected(self) -> None:
         self.assert_rejected(
             self.workflow.replace(
-                "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+                "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
                 "actions/upload-artifact@v4",
             ),
             "reviewed full-commit pins",

@@ -7,7 +7,7 @@ import hashlib
 import re
 
 
-WORKFLOW_SHA256 = "9c29a37eaebca2b32711f69784d610abf872fe60e702f7ad7ec7b620e009e745"
+WORKFLOW_SHA256 = "2fde461ce5f3bcf7d3da96e1bb73e3b1697dff235ff425cb462ddedbe534456b"
 FORBIDDEN_GRADLE_VERIFICATION_OVERRIDES = (
     "--write-verification-metadata",
     "--dependency-verification",
@@ -46,9 +46,9 @@ SIGNING_GUARD = REPOSITORY_GUARD + " && needs.build-unsigned.result == 'success'
 APPROVED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "actions/setup-java": "b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
-    "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+    "actions/setup-python": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
     "gradle/actions/setup-gradle": "3f5f9adaf7d9fecd50b5935e54106014257a94e6",
-    "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+    "actions/upload-artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
     "actions/download-artifact": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
 }
 EXPECTED_ACTION_COUNTS = {
@@ -108,7 +108,7 @@ SECRET_STEP_ENVS = {
 BUILD_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
     ("uses", "actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad"),
-    ("uses", "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97"),
+    ("uses", "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0"),
     ("uses", "gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6"),
     ("name", "Resolve exact release source and unsigned staging paths"),
     ("name", "Validate and seal exact release inputs"),
@@ -116,13 +116,13 @@ BUILD_STEP_INVENTORY = [
     ("name", "Build exact-source unsigned Apple archive"),
     ("name", "Verify exact release inputs remained sealed"),
     ("name", "Package inert unsigned build outputs"),
-    ("uses", "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"),
+    ("uses", "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"),
     ("name", "Remove unsigned build clone"),
 ]
 SIGN_STEP_INVENTORY = [
     ("uses", "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
     ("uses", "actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad"),
-    ("uses", "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97"),
+    ("uses", "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0"),
     ("uses", "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333"),
     ("name", "Validate and unpack inert unsigned inputs"),
     ("name", "Fetch pinned Bundletool"),
@@ -132,22 +132,22 @@ SIGN_STEP_INVENTORY = [
     ("name", "Export and retain distribution-signed Apple candidate"),
     ("name", "Destroy signing material before byte verification"),
     ("name", "Byte-verify the complete signed candidate"),
-    ("uses", "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"),
+    ("uses", "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"),
     ("name", "Destroy ephemeral signing material"),
 ]
 BUILD_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
     "37869e1d52d37f8b4974ec66a06d5703e891b0a7065bcdd758211112a729da87",
-    "001fcb06a1e64ee13025b5af1062845a0726dfdbfb97f982d79e723de8b828a9",
+    "52ee296a0895680b0238baf49049812daa2b8ef0090de618230af3ee6f4e8293",
     "4059de5262a2cc2c3a15c68648039868a6fa0e9ed90bbd966a30d2252a723135",
-    "c064477d9afaac14ad4839d44fd7599f8c88aaedd60b09ee39d8e3b2b1a2bbd1",
+    "a35638ce04f1d246df25398f08fe481ad291a4a61bc72cdfe6e110ea3bdb3ab3",
 ]
 SIGN_ACTION_STEP_SHA256 = [
     "34acf24a5d811131306562912e4c531943c77e84521386b52e487a94012dfb91",
     "37869e1d52d37f8b4974ec66a06d5703e891b0a7065bcdd758211112a729da87",
-    "001fcb06a1e64ee13025b5af1062845a0726dfdbfb97f982d79e723de8b828a9",
+    "52ee296a0895680b0238baf49049812daa2b8ef0090de618230af3ee6f4e8293",
     "5fab149a3de5881eb4396b92c2cd28814ab77766203e244ef1f15cc0d3b741a2",
-    "c7a5e71576651099391a847844b2b8e051a8b6fb487340b445fc845ba742b509",
+    "1d62ea4227bc8778c2ea4ce73208a00f5d0984ccc50a786a1fb92bbf6a1adc67",
 ]
 REVIEWED_VERIFIER_SHA256 = {
     "verify_signed_candidate.py": "b72c99e5cf5b0fb85e79fdee874cddd26838472dab8eb4669461a567729d45f8",
